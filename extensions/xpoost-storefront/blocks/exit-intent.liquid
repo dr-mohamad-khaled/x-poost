@@ -1,0 +1,25 @@
+{% comment %}
+  XPoost — Exit-Intent Countdown Saver Modal
+  App Embed block: detects exit cursor trajectory and mobile fast upward scroll.
+{% endcomment %}
+<div id="xpoost-exit-root" class="xpoost-root">
+  <div
+    id="xpoost-exit-intent"
+    class="xpoost-exit-intent"
+    data-shop="{{ shop.permanent_domain }}"
+    data-proxy-path="/apps/xpoost/config"
+    role="dialog"
+    aria-modal="true"
+    aria-hidden="true"
+  ></div>
+</div>
+
+{{ 'xpoost-retention.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'xpoost-retention.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "XPoost: Exit Saver",
+  "target": "body"
+}
+{% endschema %}

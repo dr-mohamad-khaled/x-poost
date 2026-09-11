@@ -1,0 +1,23 @@
+{% comment %}
+  XPoost — Omnichannel Social & Support Action Bar
+  App Embed block: merchants enable it once from Theme Editor > App embeds.
+{% endcomment %}
+<div id="xpoost-social-root" class="xpoost-root">
+  <div
+    id="xpoost-social-bar"
+    class="xpoost-social-bar"
+    data-shop="{{ shop.permanent_domain }}"
+    data-proxy-path="/apps/xpoost/config"
+    aria-label="Social and support options"
+  ></div>
+</div>
+
+{{ 'xpoost-social-bar.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'xpoost-social-bar.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "XPoost: Social Bar",
+  "target": "body"
+}
+{% endschema %}

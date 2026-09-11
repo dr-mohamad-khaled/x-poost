@@ -1,0 +1,21 @@
+{% comment %}
+  XPoost — Tiered Shipping Progress Bar (Theme App Block)
+  Can be placed explicitly within cart sections or cart drawer templates.
+{% endcomment %}
+<div id="xpoost-shipping-root" class="xpoost-root">
+  <div
+    class="xpoost-shipping-bar-block"
+    data-shop="{{ shop.permanent_domain }}"
+    data-proxy-path="/apps/xpoost/config"
+  ></div>
+</div>
+
+{{ 'xpoost-cart-engine.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'xpoost-cart-engine.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "XPoost: Shipping Bar",
+  "target": "section"
+}
+{% endschema %}

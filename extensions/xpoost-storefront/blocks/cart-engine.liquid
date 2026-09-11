@@ -1,0 +1,22 @@
+{% comment %}
+  XPoost — Cart Engine (Pre-Purchase Modal, In-Cart Drawer Upsells & Shipping Bar)
+  App Embed block: provides Ajax cart interception and cart enhancements.
+{% endcomment %}
+<div id="xpoost-cart-root" class="xpoost-root">
+  <div
+    id="xpoost-cart-engine"
+    class="xpoost-cart-engine"
+    data-shop="{{ shop.permanent_domain }}"
+    data-proxy-path="/apps/xpoost/config"
+  ></div>
+</div>
+
+{{ 'xpoost-cart-engine.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'xpoost-cart-engine.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "XPoost: Cart Engine",
+  "target": "body"
+}
+{% endschema %}

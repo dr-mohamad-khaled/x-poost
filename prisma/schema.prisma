@@ -1,0 +1,223 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Session {
+  id            String    @id
+  shop          String
+  state         String
+  isOnline      Boolean   @default(false)
+  scope         String?
+  expires       DateTime?
+  accessToken   String
+  userId        BigInt?
+  firstName     String?
+  lastName      String?
+  email         String?
+  accountOwner  Boolean   @default(false)
+  locale        String?
+  collaborator  Boolean?  @default(false)
+  emailVerified Boolean?  @default(false)
+  refreshToken        String?
+  refreshTokenExpires DateTime?
+}
+
+// ─────────────────────────────────────────────────────────────
+// XPoost feature models — tenant isolation via shopDomain / shopId
+// ─────────────────────────────────────────────────────────────
+
+model Shop {
+  id       String @id @default(cuid())
+  shopDomain String @unique
+
+  // Feature activation flags
+  scarcityEnabled     Boolean @default(false)
+  prePurchaseEnabled  Boolean @default(false)
+  inCartUpsellEnabled Boolean @default(false)
+  socialBarEnabled    Boolean @default(false)
+  shippingBarEnabled  Boolean @default(false)
+  exitIntentEnabled   Boolean @default(false)
+  stickyBarEnabled    Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  scarcityConfig    ScarcityWidgetConfig?
+  upsellRules       UpsellRule[]
+  socialConfig      SocialWidgetConfig?
+  shippingConfig    ShippingBarConfig?
+  exitIntentConfig  ExitIntentConfig?
+  stickyBarConfig   StickyBarConfig?
+  upsellStyleConfig UpsellStyleConfig?
+
+  @@index([shopDomain])
+}
+
+///// Feature 1: Scarcity & Social Proof Corner Toast
+model ScarcityWidgetConfig {
+  id     String @id @default(cuid())
+  shopId String @unique
+  shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  active                Boolean @default(true)
+  showOn                String  @default("all") // all | home_product | product_only
+  position              String  @default("bottom-left") // bottom-left | bottom-right
+  onsetDelayMs          Int     @default(3000)
+  displayDurationMs     Int     @default(6000)
+  intervalDelayMs       Int     @default(8000)
+  desktopBottomOffsetPx Int     @default(24)
+  mobileBottomOffsetPx  Int     @default(24)
+  backgroundColor       String  @default("#0B0B0B")
+  accentColor           String  @default("#D4AF37")
+  textColor             String  @default("#FFFFFF")
+  borderRadiusPx        Int     @default(12)
+  showCloseButton       Boolean @default(true)
+  showProgressBar       Boolean @default(true)
+  pauseOnHover          Boolean @default(true)
+  // JSON-encoded array of { type, icon, badge, text, pill, url, ... } cycling messages
+  messagesJson          String  @default("[]")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Features 2 & 3: Pre-Purchase Upsell Modal + In-Cart Drawer Upsells
+model UpsellRule {
+  id     String @id @default(cuid())
+  shopId String
+  shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  type                String  // "PRE_PURCHASE" | "IN_CART"
+  triggerProductId    String  // Shopify product GID (parent), or "ALL"
+  triggerProductTitle String?
+  targetProductId     String  // Shopify product GID (upsell)
+  targetProductTitle  String?
+  targetVariantId     String? // Shopify variant GID (optional pre-selection)
+  targetProductPrice  String?
+  targetProductImage  String?
+  offerHeadline       String? @default("Special Upgrade Offer")
+  offerDescription    String?
+  discountPercent     Float?
+  discountCode        String?
+  active              Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([shopId])
+  @@index([shopId, triggerProductId])
+}
+
+/// Feature 4: Omnichannel Social & Support Action Bar
+model SocialWidgetConfig {
+  id     String @id @default(cuid())
+  shopId String @unique
+  shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  active            Boolean @default(true)
+  position          String  @default("bottom-right") // bottom-right | bottom-left
+  badgeText         String  @default("Need help? Chat with us")
+  whatsappNumber    String?
+  whatsappMessage   String?
+  instagramUrl      String?
+  facebookUrl       String?
+  tiktokUrl         String?
+  vipCommunityLabel String? @default("Join our VIP Deals Group")
+  vipCommunityUrl   String?
+  backgroundColor   String  @default("#0B0B0B")
+  accentColor       String  @default("#D4AF37")
+  textColor         String  @default("#FFFFFF")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Feature 5: Smart Tiered Shipping Progress Bar
+model ShippingBarConfig {
+  id     String @id @default(cuid())
+  shopId String @unique
+  shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  active             Boolean @default(true)
+  currency           String  @default("USD")
+  currencySymbol     String  @default("$")
+  // JSON-encoded array of { targetAmount, rewardTitle, unlockedMessage }
+  tiersJson          String  @default("[]")
+  progressColor      String  @default("#D4AF37")
+  trackColor         String  @default("#222222")
+  backgroundColor    String  @default("#0B0B0B")
+  textColor          String  @default("#FFFFFF")
+  initialMessage     String? @default("Add items to unlock Free Shipping!")
+  allUnlockedMessage String? @default("Congratulations! You unlocked all rewards!")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Feature 6: Exit-Intent Countdown Saver Modal
+model ExitIntentConfig {
+  id     String @id @default(cuid())
+  shopId String @unique
+  shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  active           Boolean @default(true)
+  countdownSeconds Int     @default(600)
+  discountCode     String? @default("SAVE10")
+  headline         String? @default("Wait! Don't leave empty handed")
+  bodyText         String? @default("Take an extra 10% off your entire order right now.")
+  buttonText       String? @default("Claim 10% Off & Checkout")
+  suppressionDays  Int     @default(1)
+  backgroundColor  String  @default("#0B0B0B")
+  accentColor      String  @default("#D4AF37")
+  textColor        String  @default("#FFFFFF")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Feature 7: Mobile Sticky Add-to-Cart Ribbon (Deprecated)
+model StickyBarConfig {
+  id     String @id @default(cuid())
+  shopId String @unique
+  shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  active              Boolean @default(false)
+  mobileOnly          Boolean @default(true)
+  showPrice           Boolean @default(true)
+  showCompareAtPrice  Boolean @default(true)
+  buttonStyle         String  @default("solid")
+  buttonLabel         String  @default("Add to Cart")
+  backgroundColor     String  @default("#0B0B0B")
+  accentColor         String  @default("#D4AF37")
+  textColor           String  @default("#FFFFFF")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Styling Configuration for Pre-Purchase Modal and In-Cart Drawer
+model UpsellStyleConfig {
+  id                String   @id @default(cuid())
+  shopId            String   @unique
+  shop              Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  prePurchaseBg     String   @default("#0B0B0B")
+  prePurchaseAccent String   @default("#D4AF37")
+  prePurchaseText   String   @default("#FFFFFF")
+
+  inCartBg          String   @default("#0B0B0B")
+  inCartAccent      String   @default("#D4AF37")
+  inCartText        String   @default("#FFFFFF")
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}

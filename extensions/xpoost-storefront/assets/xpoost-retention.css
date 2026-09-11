@@ -1,0 +1,147 @@
+/* XPoost: Retention Triggers (Exit-Intent Saver & Sticky Add-to-Cart) */
+#xpoost-root {
+  --xpr-bg: #0B0B0B;
+  --xpr-gold: #D4AF37;
+  --xpr-text: #FFFFFF;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Feature 6: Exit-Intent Modal
+   ───────────────────────────────────────────────────────────── */
+#xpoost-root .xpr-exit-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.25s ease;
+}
+
+#xpoost-root .xpr-exit-backdrop.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+#xpoost-root .xpr-exit-modal {
+  background: var(--xpr-bg);
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 420px;
+  padding: 28px 24px;
+  color: var(--xpr-text);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(212, 175, 55, 0.2);
+  text-align: center;
+  position: relative;
+  transform: scale(0.92);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#xpoost-root .xpr-exit-backdrop.is-open .xpr-exit-modal {
+  transform: scale(1);
+}
+
+#xpoost-root .xpr-exit-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 24px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+#xpoost-root .xpr-exit-timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--xpr-gold);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--xpr-gold);
+  margin-bottom: 12px;
+}
+
+#xpoost-root .xpr-exit-digits {
+  font-family: monospace;
+  font-size: 15px;
+}
+
+#xpoost-root .xpr-exit-headline {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 8px;
+  color: #fff;
+}
+
+#xpoost-root .xpr-exit-body {
+  font-size: 13px;
+  color: #b0b0b0;
+  line-height: 1.4;
+  margin: 0 0 18px;
+}
+
+#xpoost-root .xpr-exit-coupon {
+  border: 1px dashed var(--xpr-gold);
+  border-radius: 8px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  margin-bottom: 18px;
+  transition: background 0.15s ease;
+}
+
+#xpoost-root .xpr-exit-coupon:hover {
+  background: rgba(212, 175, 55, 0.08);
+}
+
+#xpoost-root .xpr-coupon-code {
+  font-family: monospace;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #fff;
+}
+
+#xpoost-root .xpr-coupon-copy {
+  background: var(--xpr-gold);
+  color: #0B0B0B;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+#xpoost-root .xpr-exit-btn {
+  background: var(--xpr-gold);
+  color: #0B0B0B;
+  border: none;
+  border-radius: 8px;
+  padding: 13px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  width: 100%;
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.35);
+  transition: opacity 0.15s ease;
+}
+
+#xpoost-root .xpr-exit-btn:hover {
+  opacity: 0.92;
+}

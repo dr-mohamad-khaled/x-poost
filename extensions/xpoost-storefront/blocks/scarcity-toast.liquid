@@ -1,0 +1,28 @@
+{% comment %}
+  XPoost — Scarcity & Social Proof Corner Toast
+  App Embed block: merchants enable it once from Theme Editor > App embeds.
+  All copy/timing/color config is pulled live from the XPoost admin
+  dashboard via the app proxy — nothing here needs editing per-theme.
+{% endcomment %}
+<div id="xpoost-scarcity-wrap" class="xpoost-root">
+  <div
+    id="xpoost-scarcity-toast"
+    class="xpoost-scarcity-toast"
+    data-shop="{{ shop.permanent_domain }}"
+    data-proxy-path="/apps/xpoost/config"
+    data-alt-proxy-path="/apps/xpoost/scarcity-config"
+    data-page-type="{{ request.page_type }}"
+    role="status"
+    aria-live="polite"
+  ></div>
+</div>
+
+{{ 'xpoost-scarcity-toast.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'xpoost-scarcity-toast.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "XPoost: Scarcity Toast",
+  "target": "body"
+}
+{% endschema %}

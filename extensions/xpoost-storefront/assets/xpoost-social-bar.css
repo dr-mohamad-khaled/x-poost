@@ -1,0 +1,764 @@
+/* XPoost: Omnichannel Social & Support Action Bar */
+#xpoost-root .xpoost-social-bar {
+  position: fixed;
+  bottom: var(--xpsb-bottom-desktop, 24px);
+  z-index: 99998;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  transition: bottom 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (max-width: 768px) {
+  #xpoost-root .xpoost-social-bar {
+    bottom: var(--xpsb-bottom-mobile, var(--xpsb-bottom-desktop, 24px));
+  }
+}
+
+#xpoost-root .xpoost-social-bar--bottom-right {
+  right: 24px;
+}
+
+#xpoost-root .xpoost-social-bar--bottom-left {
+  left: 24px;
+}
+
+@media (max-width: 480px) {
+  #xpoost-root .xpoost-social-bar--bottom-right {
+    right: 16px;
+  }
+  #xpoost-root .xpoost-social-bar--bottom-left {
+    left: 16px;
+  }
+}
+
+/* Floating Trigger Button */
+#xpoost-root .xpsb-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--xpsb-bg, #0B0B0B);
+  color: var(--xpsb-text, #FFFFFF);
+  border: 1px solid var(--xpsb-gold, #D4AF37);
+  border-radius: 50px;
+  padding: 10px 18px;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+}
+
+#xpoost-root .xpsb-trigger:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 12px rgba(212, 175, 55, 0.35);
+}
+
+#xpoost-root .xpsb-icon-wrap {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--xpsb-gold, #D4AF37);
+  flex-shrink: 0;
+}
+
+#xpoost-root .xpsb-icon-wrap svg {
+  width: 100%;
+  height: 100%;
+}
+
+#xpoost-root .xpsb-trigger-text {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* Action Deck (Flyout Menu Base) */
+#xpoost-root .xpsb-deck {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 12px);
+  width: 300px;
+  max-width: calc(100vw - 32px);
+  background: var(--xpsb-bg, #0B0B0B);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  transform: translateY(10px) scale(0.96);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+}
+
+#xpoost-root .xpoost-social-bar--bottom-right .xpsb-deck {
+  right: 0;
+}
+
+#xpoost-root .xpoost-social-bar--bottom-left .xpsb-deck {
+  left: 0;
+}
+
+#xpoost-root .xpsb-deck.is-open {
+  display: block;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+#xpoost-root .xpsb-deck-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+#xpoost-root .xpsb-deck-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--xpsb-gold, #D4AF37);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+#xpoost-root .xpsb-deck-close {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  padding: 2px 6px;
+  font-size: 18px;
+  line-height: 1;
+  transition: color 0.15s;
+}
+
+#xpoost-root .xpsb-deck-close:hover {
+  color: #fff;
+}
+
+/* ===================================================
+   LAYOUT 1: Action Stack (Multi-layered buttons)
+   =================================================== */
+#xpoost-root .xpsb-stack-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  text-decoration: none;
+  margin-bottom: 10px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+}
+#xpoost-root .xpsb-stack-btn:hover {
+  transform: translateY(-2px);
+}
+#xpoost-root .xpsb-stack-btn-wa {
+  background: #25D366;
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+}
+#xpoost-root .xpsb-stack-btn-wa:hover {
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.45);
+}
+#xpoost-root .xpsb-stack-btn-vip {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px dashed var(--xpsb-gold, #D4AF37);
+  color: #ffffff;
+}
+#xpoost-root .xpsb-stack-btn-vip:hover {
+  background: rgba(212, 175, 55, 0.08);
+}
+#xpoost-root .xpsb-stack-icon {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#xpoost-root .xpsb-stack-icon svg {
+  width: 100%;
+  height: 100%;
+}
+#xpoost-root .xpsb-stack-info {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+#xpoost-root .xpsb-stack-info strong {
+  font-size: 13px;
+  color: #ffffff;
+}
+#xpoost-root .xpsb-stack-info small {
+  font-size: 10px;
+  opacity: 0.88;
+}
+#xpoost-root .xpsb-stack-arrow {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+}
+#xpoost-root .xpsb-stack-badge {
+  font-size: 9px;
+  font-weight: 800;
+  background: var(--xpsb-gold, #D4AF37);
+  color: #0B0B0B;
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+#xpoost-root .xpsb-stack-social-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 10px;
+  margin-top: 4px;
+}
+#xpoost-root .xpsb-stack-social-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffffff;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+#xpoost-root .xpsb-stack-social-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(3px);
+  color: var(--xpsb-gold, #D4AF37);
+}
+#xpoost-root .xpsb-stack-sm-icon {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+#xpoost-root .xpsb-stack-sm-icon svg {
+  width: 100%;
+  height: 100%;
+}
+#xpoost-root .xpsb-stack-sub-arrow {
+  margin-left: auto;
+  opacity: 0.6;
+}
+
+/* ===================================================
+   LAYOUT 2: Concierge Portal
+   =================================================== */
+#xpoost-root .xpsb-concierge-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+#xpoost-root .xpsb-concierge-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--xpsb-gold, #D4AF37);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--xpsb-gold, #D4AF37);
+}
+#xpoost-root .xpsb-concierge-avatar svg {
+  width: 20px;
+  height: 20px;
+}
+#xpoost-root .xpsb-live-dot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #25D366;
+  border: 2px solid var(--xpsb-bg, #0B0B0B);
+  box-shadow: 0 0 6px #25D366;
+}
+#xpoost-root .xpsb-concierge-meta {
+  flex-grow: 1;
+}
+#xpoost-root .xpsb-concierge-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+}
+#xpoost-root .xpsb-concierge-status {
+  font-size: 11px;
+  font-weight: 600;
+  color: #25D366;
+}
+#xpoost-root .xpsb-chips-label {
+  font-size: 11px;
+  color: #888;
+  margin: 6px 0 4px;
+}
+#xpoost-root .xpsb-chips-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+#xpoost-root .xpsb-chip {
+  font-size: 11px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+#xpoost-root .xpsb-chip:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: var(--xpsb-gold, #D4AF37);
+  color: var(--xpsb-gold, #D4AF37);
+}
+
+/* ===================================================
+   LAYOUT 3: VIP Funnel
+   =================================================== */
+#xpoost-root .xpsb-vip-hero {
+  border: 1px solid var(--xpsb-gold, #D4AF37);
+  border-radius: 10px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+#xpoost-root .xpsb-vip-hero-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#xpoost-root .xpsb-vip-hero-note {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--xpsb-gold, #D4AF37);
+  letter-spacing: 0.5px;
+}
+#xpoost-root .xpsb-vip-hero-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+}
+#xpoost-root .xpsb-vip-checklist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  color: #ddd;
+}
+#xpoost-root .xpsb-check-ico {
+  display: inline-flex;
+  width: 14px;
+  height: 14px;
+  color: #25D366;
+  margin-right: 6px;
+  vertical-align: -2px;
+}
+#xpoost-root .xpsb-check-ico svg {
+  width: 100%;
+  height: 100%;
+}
+#xpoost-root .xpsb-vip-claim-btn {
+  background: var(--xpsb-gold, #D4AF37);
+  color: #0B0B0B;
+  font-weight: 800;
+  font-size: 12px;
+  text-align: center;
+  padding: 10px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+#xpoost-root .xpsb-vip-claim-btn:hover {
+  opacity: 0.9;
+}
+#xpoost-root .xpsb-secondary-wa-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(37, 211, 102, 0.12);
+  border: 1px solid rgba(37, 211, 102, 0.35);
+  color: #25D366;
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+#xpoost-root .xpsb-secondary-wa-btn:hover {
+  background: rgba(37, 211, 102, 0.2);
+}
+#xpoost-root .xpsb-secondary-wa-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+/* ===================================================
+   Standard VIP Card & WhatsApp Button (Layout 2 & Fallbacks)
+   =================================================== */
+#xpoost-root .xpsb-vip-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px dashed var(--xpsb-gold, #D4AF37);
+  border-radius: 10px;
+  padding: 12px 14px;
+  text-decoration: none;
+  margin-bottom: 12px;
+  position: relative;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+#xpoost-root .xpsb-vip-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-1px);
+}
+#xpoost-root .xpsb-vip-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#xpoost-root .xpsb-vip-card-top svg {
+  width: 16px;
+  height: 16px;
+  stroke: var(--xpsb-gold, #D4AF37);
+  flex-shrink: 0;
+}
+#xpoost-root .xpsb-vip-badge {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  background: var(--xpsb-gold, #D4AF37);
+  color: #0B0B0B;
+  display: inline-block;
+  width: fit-content;
+}
+#xpoost-root .xpsb-vip-text {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 2px 0;
+}
+#xpoost-root .xpsb-vip-sub {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--xpsb-gold, #D4AF37);
+}
+#xpoost-root .xpsb-wa-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #25D366;
+  color: #ffffff !important;
+  border-radius: 10px;
+  padding: 12px 14px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 15px rgba(37, 211, 102, 0.35);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+}
+#xpoost-root .xpsb-wa-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
+  color: #ffffff !important;
+}
+#xpoost-root .xpsb-wa-btn svg {
+  width: 22px;
+  height: 22px;
+  fill: #ffffff;
+  flex-shrink: 0;
+}
+#xpoost-root .xpsb-wa-text {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+#xpoost-root .xpsb-wa-text strong {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+}
+#xpoost-root .xpsb-wa-text small {
+  display: block;
+  font-size: 10px;
+  font-weight: normal;
+  color: rgba(255, 255, 255, 0.88);
+}
+#xpoost-root .xpsb-concierge-social-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+#xpoost-root .xpsb-social-circle-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+}
+#xpoost-root .xpsb-social-circle-btn svg {
+  width: 15px;
+  height: 15px;
+  fill: currentColor;
+}
+#xpoost-root .xpsb-social-circle-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: var(--xpsb-gold, #D4AF37);
+  color: var(--xpsb-gold, #D4AF37);
+  transform: translateY(-2px);
+}
+#xpoost-root .xpsb-funnel-social-follow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+#xpoost-root .xpsb-funnel-social-label {
+  font-size: 11px;
+  color: #888;
+}
+
+/* ===================================================
+   LAYOUT 4: Compact Horizontal Command Dock
+   =================================================== */
+#xpoost-root .xpsb-deck--dock {
+  width: auto !important;
+  max-width: 90vw !important;
+  padding: 6px 12px !important;
+  border-radius: 40px !important;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6), 0 0 15px rgba(212, 175, 55, 0.15) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+#xpoost-root .xpsb-dock-strip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+#xpoost-root .xpsb-dock-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 20px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  white-space: nowrap;
+}
+#xpoost-root .xpsb-dock-pill svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+#xpoost-root .xpsb-dock-pill-wa {
+  background: rgba(37, 211, 102, 0.16);
+  border: 1px solid rgba(37, 211, 102, 0.45);
+  color: #25D366;
+}
+#xpoost-root .xpsb-dock-pill-wa:hover {
+  background: #25D366;
+  color: #0B0B0B;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.35);
+}
+#xpoost-root .xpsb-dock-pill-vip {
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  color: var(--xpsb-gold, #D4AF37);
+}
+#xpoost-root .xpsb-dock-pill-vip:hover {
+  background: var(--xpsb-gold, #D4AF37);
+  color: #0B0B0B;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.35);
+}
+#xpoost-root .xpsb-dock-divider {
+  width: 1px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.15);
+  flex-shrink: 0;
+}
+#xpoost-root .xpsb-dock-social-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+#xpoost-root .xpsb-dock-social-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+#xpoost-root .xpsb-dock-social-btn svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+#xpoost-root .xpsb-dock-social-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: var(--xpsb-gold, #D4AF37);
+  color: var(--xpsb-gold, #D4AF37);
+  transform: translateY(-2px);
+}
+#xpoost-root .xpsb-dock-close {
+  background: transparent;
+  border: none;
+  color: #888;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0 4px;
+  margin-left: 4px;
+  line-height: 1;
+}
+#xpoost-root .xpsb-dock-close:hover {
+  color: #fff;
+}
+
+/* ===================================================
+   6 CURATED DESIGN THEMES
+   =================================================== */
+/* Theme 1: Royal Onyx & Gold */
+#xpoost-root .xpoost-social-bar--theme-gold_luxury .xpsb-trigger {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 10px rgba(212, 175, 55, 0.2);
+}
+#xpoost-root .xpoost-social-bar--theme-gold_luxury .xpsb-trigger:hover {
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 18px rgba(212, 175, 55, 0.4);
+}
+
+/* Theme 2: Frosted Crystal Glassmorphism */
+#xpoost-root .xpoost-social-bar--theme-glassmorphism .xpsb-trigger {
+  background: rgba(18, 20, 26, 0.72) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+#xpoost-root .xpoost-social-bar--theme-glassmorphism .xpsb-deck {
+  background: rgba(18, 20, 26, 0.8) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* Theme 3: Rose Gold & Silk */
+#xpoost-root .xpoost-social-bar--theme-rose_beauty .xpsb-trigger {
+  border-color: #E8A598;
+  box-shadow: 0 8px 24px rgba(28, 14, 20, 0.5), 0 0 12px rgba(232, 165, 152, 0.25);
+}
+#xpoost-root .xpoost-social-bar--theme-rose_beauty .xpsb-deck {
+  border-color: rgba(232, 165, 152, 0.35);
+  box-shadow: 0 16px 40px rgba(28, 14, 20, 0.7), 0 0 15px rgba(232, 165, 152, 0.15);
+}
+#xpoost-root .xpoost-social-bar--theme-rose_beauty .xpsb-deck-title,
+#xpoost-root .xpoost-social-bar--theme-rose_beauty .xpsb-vip-sub,
+#xpoost-root .xpoost-social-bar--theme-rose_beauty .xpsb-icon-wrap {
+  color: #E8A598;
+}
+
+/* Theme 4: Emerald Concierge */
+#xpoost-root .xpoost-social-bar--theme-emerald_care .xpsb-trigger {
+  border-color: #25D366;
+  box-shadow: 0 8px 24px rgba(6, 33, 23, 0.6), 0 0 12px rgba(37, 211, 102, 0.25);
+}
+#xpoost-root .xpoost-social-bar--theme-emerald_care .xpsb-deck {
+  border-color: rgba(37, 211, 102, 0.35);
+  box-shadow: 0 16px 45px rgba(6, 33, 23, 0.85), 0 0 16px rgba(37, 211, 102, 0.2);
+}
+#xpoost-root .xpoost-social-bar--theme-emerald_care .xpsb-deck-title,
+#xpoost-root .xpoost-social-bar--theme-emerald_care .xpsb-vip-sub,
+#xpoost-root .xpoost-social-bar--theme-emerald_care .xpsb-icon-wrap {
+  color: #25D366;
+}
+
+/* Theme 5: Midnight Stealth Minimal */
+#xpoost-root .xpoost-social-bar--theme-midnight_minimal .xpsb-trigger {
+  border: 1px solid #FFFFFF !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
+}
+#xpoost-root .xpoost-social-bar--theme-midnight_minimal .xpsb-deck {
+  border: 1px solid #333333;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8);
+}
+#xpoost-root .xpoost-social-bar--theme-midnight_minimal .xpsb-deck-title {
+  color: #FFFFFF;
+}
+
+/* Theme 6: Sunset Aurora Gradient */
+#xpoost-root .xpoost-social-bar--theme-cyber_gradient .xpsb-trigger {
+  border: 2px solid transparent !important;
+  background-image: linear-gradient(var(--xpsb-bg, #110E1D), var(--xpsb-bg, #110E1D)), linear-gradient(135deg, #FF5E7E, #8A2BE2, #00D2FF);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  box-shadow: 0 8px 25px rgba(138, 43, 226, 0.35);
+}
+#xpoost-root .xpoost-social-bar--theme-cyber_gradient .xpsb-deck {
+  border: 2px solid transparent !important;
+  background-image: linear-gradient(var(--xpsb-bg, #110E1D), var(--xpsb-bg, #110E1D)), linear-gradient(135deg, #FF5E7E, #8A2BE2, #00D2FF);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  box-shadow: 0 18px 50px rgba(138, 43, 226, 0.4);
+}
+#xpoost-root .xpoost-social-bar--theme-cyber_gradient .xpsb-deck-title,
+#xpoost-root .xpoost-social-bar--theme-cyber_gradient .xpsb-icon-wrap {
+  color: #FF5E7E;
+}
