@@ -2,11 +2,11 @@
 
 client_id = "872f7f6415d1c243c11ccdfe9426b07f"
 name = "XPoost"
-application_url = "https://example.com"
+application_url = "https://x-poost.onrender.com"
 embedded = true
 
 [app_proxy]
-url = "https://example.com/proxy"
+url = "https://x-poost.onrender.com/proxy"
 prefix = "apps"
 subpath = "xpoost"
 
@@ -62,7 +62,12 @@ api_version = "2026-10"
   compliance_topics = [ "shop/redact" ]
 
 [auth]
-redirect_urls = [ "https://example.com/api/auth" ]
+redirect_urls = [
+  "https://x-poost.onrender.com/api/auth",
+  "https://x-poost.onrender.com/auth/callback",
+  "https://x-poost.onrender.com/auth/shopify/callback"
+]
 
 [build]
+include_config_on_deploy = true
 automatically_update_urls_on_dev = true
