@@ -9,6 +9,17 @@ import { PrismaSessionStorage } from "@shopify/shopify-app-session-storage-prism
 import prisma from "./db.server";
 import { MONTHLY_PLAN, LIFETIME_PLAN } from "./billing.constants";
 
+import { LogSeverity } from "@shopify/shopify-api";
+
+console.log("[SHOPIFY_BOOT_CONFIG]", {
+  hasApiKey: Boolean(process.env.SHOPIFY_API_KEY),
+  apiKey: (process.env.SHOPIFY_API_KEY || "872f7f6415d1c243c11ccdfe9426b07f"),
+  hasApiSecret: Boolean(process.env.SHOPIFY_API_SECRET),
+  apiSecretPrefix: process.env.SHOPIFY_API_SECRET ? process.env.SHOPIFY_API_SECRET.slice(0, 10) + "..." : "MISSING",
+  apiSecretLength: process.env.SHOPIFY_API_SECRET ? process.env.SHOPIFY_API_SECRET.length : 0,
+  appUrl: process.env.SHOPIFY_APP_URL || "https://x-poost.onrender.com",
+});
+
 const shopify = shopifyApp({
   apiKey: process.env.SHOPIFY_API_KEY || "872f7f6415d1c243c11ccdfe9426b07f",
   apiSecretKey: process.env.SHOPIFY_API_SECRET || "",
@@ -19,12 +30,12 @@ const shopify = shopifyApp({
     "write_metaobjects",
     "write_metaobject_definitions",
   ],
-  appUrl: process.env.SHOPIFY_APP_URL || "",
+  appUrl: process.env.SHOPIFY_APP_URL || "https://x-poost.onrender.com",
   authPathPrefix: "/auth",
   sessionStorage: new PrismaSessionStorage(prisma),
   distribution: AppDistribution.AppStore,
-  future: {
-    expiringOfflineAccessTokens: true,
+  logger: {
+    level: LogSeverity.Debug,
   },
   billing: {
     [MONTHLY_PLAN]: {
