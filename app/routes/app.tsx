@@ -7,9 +7,10 @@ import { NavMenu } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const currentApiKey = (process.env.SHOPIFY_API_KEY || "872f7f6415d1c243c11ccdfe9426b07f").trim();
   try {
     await authenticate.admin(request);
-    return { apiKey: process.env.SHOPIFY_API_KEY || "872f7f6415d1c243c11ccdfe9426b07f" };
+    return { apiKey: currentApiKey };
   } catch (error: any) {
     if (error instanceof Response) {
       const isXhr = Boolean(request.headers.get("authorization"));
@@ -25,7 +26,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       const shop = url.searchParams.get("shop");
       if (error.status === 401 && shop && !isXhr) {
         const cleanShop = shop.replace(".myshopify.com", "");
-        const installUrl = `https://admin.shopify.com/store/${cleanShop}/oauth/install?client_id=${process.env.SHOPIFY_API_KEY || "872f7f6415d1c243c11ccdfe9426b07f"}`;
+        const installUrl = `https://admin.shopify.com/store/${cleanShop}/oauth/install?client_id=${currentApiKey}`;
         console.log("[AUTH_RECOVERY] Breaking out of iframe to install URL:", installUrl);
         throw new Response(
           `<!DOCTYPE html><html><head><script>window.top.location.href = ${JSON.stringify(installUrl)};</script></head><body>Redirecting to Shopify authorization...</body></html>`,

@@ -20,17 +20,18 @@ console.log("[SHOPIFY_BOOT_CONFIG]", {
   appUrl: process.env.SHOPIFY_APP_URL || "https://x-poost.onrender.com",
 });
 
+const apiKey = (process.env.SHOPIFY_API_KEY || "872f7f6415d1c243c11ccdfe9426b07f").trim();
+const apiSecretKey = (process.env.SHOPIFY_API_SECRET || "").trim();
+const appUrl = (process.env.SHOPIFY_APP_URL || "https://x-poost.onrender.com").trim().replace(/\/$/, "");
+const rawScopes = (process.env.SCOPES || "write_products,write_discounts,write_metaobjects,write_metaobject_definitions").trim();
+const scopes = rawScopes.split(",").map((s) => s.trim()).filter(Boolean);
+
 const shopify = shopifyApp({
-  apiKey: process.env.SHOPIFY_API_KEY || "872f7f6415d1c243c11ccdfe9426b07f",
-  apiSecretKey: process.env.SHOPIFY_API_SECRET || "",
+  apiKey,
+  apiSecretKey,
   apiVersion: ApiVersion.July26,
-  scopes: process.env.SCOPES?.split(",") || [
-    "write_products",
-    "write_discounts",
-    "write_metaobjects",
-    "write_metaobject_definitions",
-  ],
-  appUrl: process.env.SHOPIFY_APP_URL || "https://x-poost.onrender.com",
+  scopes,
+  appUrl,
   authPathPrefix: "/auth",
   sessionStorage: new PrismaSessionStorage(prisma),
   distribution: AppDistribution.AppStore,
