@@ -2,8 +2,8 @@ import type { LoaderFunctionArgs } from "react-router";
 import prisma from "../db.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const secret = process.env.SHOPIFY_API_SECRET || "";
-  const apiKey = process.env.SHOPIFY_API_KEY || "";
+  const secret = (process.env.SHOPIFY_API_SECRET || "").trim();
+  const apiKey = (process.env.SHOPIFY_API_KEY || "").trim();
   let dbStatus = "ok";
   let sessionCount = 0;
   let sessions: any[] = [];
@@ -27,7 +27,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     status: "ok",
     apiKey,
     hasSecret: Boolean(secret),
-    secretPrefix: secret ? secret.slice(0, 8) : "none",
     secretLength: secret ? secret.length : 0,
     dbStatus,
     sessionCount,

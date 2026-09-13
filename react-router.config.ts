@@ -3,6 +3,7 @@ import type { Config } from "@react-router/dev/config";
 export default {
   // Allow Shopify Admin iframe origins to submit form actions to the embedded app
   allowedActionOrigins: [
+    "null",
     "admin.shopify.com",
     "*.admin.shopify.com",
     "*.myshopify.com",
@@ -15,5 +16,8 @@ export default {
     "**.spin.dev",
     "*.trycloudflare.com",
     "**.trycloudflare.com",
+    "x-poost.onrender.com",
+    "*.onrender.com",
+    "localhost",
   ],
 } satisfies Config;

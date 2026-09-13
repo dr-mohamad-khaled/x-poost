@@ -55,3 +55,16 @@ export default async function handleRequest(
     setTimeout(abort, streamTimeout + 1000);
   });
 }
+
+export function handleError(
+  error: unknown,
+  { request }: { request: Request }
+) {
+  console.error("[SERVER_HANDLE_ERROR]", {
+    url: request?.url,
+    method: request?.method,
+    headers: Object.fromEntries(request?.headers ? request.headers.entries() : []),
+    error: error instanceof Error ? error.stack || error.message : error,
+  });
+}
+
