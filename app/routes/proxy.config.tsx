@@ -300,9 +300,30 @@ function parseSocialPosition(rawPos: string | null | undefined) {
     };
   }
 
-  const storefrontLocale = (shop.translationConfig?.storefrontLocale === "en" ? "en" : "ar") as "ar" | "en";
+  const rawLocale = shop.translationConfig?.storefrontLocale || "ar";
+  const validLocales = ["ar", "en", "fr", "de", "es", "it", "pt"];
+  const storefrontLocale = validLocales.includes(rawLocale) ? rawLocale : "ar";
   const translations = getMergedTranslations(shop.translationConfig?.translationsJson, storefrontLocale);
   const isRtl = storefrontLocale === "ar";
+
+  if (productScarcity && translations?.productScarcity) {
+    if (translations.productScarcity.headlineText) productScarcity.headlineText = translations.productScarcity.headlineText;
+    if (translations.productScarcity.subText) productScarcity.subText = translations.productScarcity.subText;
+  }
+  if (exitIntent && translations?.exitIntent) {
+    if (translations.exitIntent.headline) exitIntent.headline = translations.exitIntent.headline;
+    if (translations.exitIntent.bodyText) exitIntent.bodyText = translations.exitIntent.bodyText;
+    if (translations.exitIntent.buttonText) exitIntent.buttonText = translations.exitIntent.buttonText;
+  }
+  if (shipping && translations?.shippingBar) {
+    if (translations.shippingBar.initialMessage) shipping.initialMessage = translations.shippingBar.initialMessage;
+    if (translations.shippingBar.allUnlockedMessage) shipping.allUnlockedMessage = translations.shippingBar.allUnlockedMessage;
+  }
+  if (social && translations?.socialBar) {
+    if (translations.socialBar.badgeText) social.badgeText = translations.socialBar.badgeText;
+    if (translations.socialBar.vipCommunityLabel) social.vipCommunityLabel = translations.socialBar.vipCommunityLabel;
+    if (translations.socialBar.whatsappMessage) social.whatsappMessage = translations.socialBar.whatsappMessage;
+  }
 
   return new Response(
     JSON.stringify({

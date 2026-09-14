@@ -1,5 +1,5 @@
 import type { ActionFunctionArgs, HeadersFunction, LoaderFunctionArgs } from "react-router";
-import { Outlet, useLoaderData, useRouteError } from "react-router";
+import { Outlet, useFetcher, useLoaderData, useRouteError } from "react-router";
 import { boundary } from "@shopify/shopify-app-react-router/server";
 import { AppProvider } from "@shopify/shopify-app-react-router/react";
 import { NavMenu } from "@shopify/app-bridge-react";
@@ -7,6 +7,11 @@ import { NavMenu } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 import prisma from "../db.server";
 import { getOrCreateShop } from "../shop.server";
+import {
+  SUPPORTED_LANGUAGES,
+  type SupportedLanguage,
+  DASHBOARD_I18N,
+} from "../utils/translations";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const currentApiKey = (process.env.SHOPIFY_API_KEY || "872f7f6415d1c243c11ccdfe9426b07f").trim();
@@ -16,8 +21,16 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const translationConfig = await prisma.translationConfig.findUnique({
       where: { shopId: shop.id },
     });
-    const dashboardLocale = translationConfig?.dashboardLocale === "ar" ? "ar" : "en";
-    return { apiKey: currentApiKey, dashboardLocale };
+
+    const rawLocale = translationConfig?.dashboardLocale || "en";
+    const validLocales: SupportedLanguage[] = ["ar", "en", "fr", "de", "es", "it", "pt"];
+    const dashboardLocale: SupportedLanguage = validLocales.includes(rawLocale as any)
+      ? (rawLocale as SupportedLanguage)
+      : "en";
+
+    const i18n = DASHBOARD_I18N[dashboardLocale] || DASHBOARD_I18N.en;
+
+    return { apiKey: currentApiKey, dashboardLocale, i18n };
   } catch (error: any) {
     if (error instanceof Response) {
       const isXhr = Boolean(request.headers.get("authorization"));
@@ -57,6 +70,27 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const { session } = await authenticate.admin(request);
     const shop = await getOrCreateShop(session.shop);
     const formData = await request.formData();
+    const actionType = String(formData.get("actionType") || "");
+
+    if (actionType === "setDashboardLocale") {
+      const locale = String(formData.get("locale") || "en");
+      const validLocales = ["ar", "en", "fr", "de", "es", "it", "pt"];
+      const targetLocale = validLocales.includes(locale) ? locale : "en";
+
+      await prisma.translationConfig.upsert({
+        where: { shopId: shop.id },
+        update: { dashboardLocale: targetLocale },
+        create: {
+          shopId: shop.id,
+          dashboardLocale: targetLocale,
+          storefrontLocale: "ar",
+          translationsJson: "{}",
+        },
+      });
+
+      return { ok: true, dashboardLocale: targetLocale };
+    }
+
     const featureKey = String(formData.get("featureKey") || "");
     const enable = formData.get("enable") === "true";
 
@@ -89,25 +123,99 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function App() {
-  const { apiKey, dashboardLocale } = useLoaderData<typeof loader>();
+  const { apiKey, dashboardLocale, i18n } = useLoaderData<typeof loader>();
+  const fetcher = useFetcher();
   const isAr = dashboardLocale === "ar";
+
+  const handleLanguageChange = (newLang: SupportedLanguage) => {
+    fetcher.submit(
+      { actionType: "setDashboardLocale", locale: newLang },
+      { method: "post" }
+    );
+  };
 
   return (
     <AppProvider embedded apiKey={apiKey}>
       <NavMenu>
-        <a href="/app" rel="home">{isAr ? "نظرة عامة" : "Overview"}</a>
-        <a href="/app/pricing">{isAr ? "الخطط والأسعار" : "Plans & Pricing"}</a>
-        <a href="/app/translations">{isAr ? "إدارة اللغات والترجمة" : "Translations & Languages"}</a>
-        <a href="/app/product-scarcity">{isAr ? "ندرة مخزون المنتج" : "Product Stock Scarcity"}</a>
-        <a href="/app/scarcity">{isAr ? "إشعارات الشراء المباشرة" : "Urgency Notifications"}</a>
-        <a href="/app/pre-purchase">{isAr ? "عروض ما قبل الدفع" : "Pre-Purchase Upsell"}</a>
-        <a href="/app/in-cart">{isAr ? "عروض سلة الشراء" : "Cart Drawer Upsell"}</a>
-        <a href="/app/social-bar">{isAr ? "شريط الدعم والتواصل" : "Support & Social Bar"}</a>
-        <a href="/app/shipping-bar">{isAr ? "شريط الشحن المجاني" : "Free Shipping Bar"}</a>
-        <a href="/app/exit-intent">{isAr ? "نافذة استعادة الزوار" : "Exit-Intent Recovery"}</a>
+        <a href="/app" rel="home">{i18n.navOverview || "Overview"}</a>
+        <a href="/app/pricing">{i18n.navPricing || "Plans & Pricing"}</a>
+        <a href="/app/translations">{i18n.navTranslations || "Translations & Languages"}</a>
+        <a href="/app/product-scarcity">{i18n.navProductScarcity || "Product Stock Scarcity"}</a>
+        <a href="/app/scarcity">{i18n.navUrgency || "Urgency Notifications"}</a>
+        <a href="/app/pre-purchase">{i18n.navPrePurchase || "Pre-Purchase Upsell"}</a>
+        <a href="/app/in-cart">{i18n.navInCart || "Cart Drawer Upsell"}</a>
+        <a href="/app/social-bar">{i18n.navSocialBar || "Support & Social Bar"}</a>
+        <a href="/app/shipping-bar">{i18n.navShippingBar || "Free Shipping Bar"}</a>
+        <a href="/app/exit-intent">{i18n.navExitIntent || "Exit-Intent Recovery"}</a>
       </NavMenu>
-      <div dir={isAr ? "rtl" : "ltr"} style={{ width: "100%", minHeight: "100vh" }}>
-        <Outlet />
+
+      <div dir={isAr ? "rtl" : "ltr"} style={{ width: "100%", minHeight: "100vh", background: "#0a0a0c" }}>
+        {/* Global Dashboard Top Bar with 7-Language Switcher */}
+        <header
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            gap: "12px",
+            padding: "10px 20px",
+            background: "#111114",
+            borderBottom: "1px solid #222226",
+            position: "sticky",
+            top: 0,
+            zIndex: 50,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <span
+              style={{
+                fontSize: "13px",
+                fontWeight: 700,
+                letterSpacing: "0.05em",
+                color: "#D4AF37",
+                textTransform: "uppercase",
+              }}
+            >
+              XPoost
+            </span>
+            <span style={{ fontSize: "12px", color: "#71717a" }}>|</span>
+            <span style={{ fontSize: "12px", color: "#a1a1aa", fontWeight: 500 }}>
+              {i18n.dashboardLangTitle || "Dashboard Language"}:
+            </span>
+          </div>
+
+          {/* Quick Language Switcher Dropdown / Pills */}
+          <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
+            {SUPPORTED_LANGUAGES.map((lang) => {
+              const active = lang.code === dashboardLocale;
+              return (
+                <button
+                  key={lang.code}
+                  type="button"
+                  onClick={() => handleLanguageChange(lang.code)}
+                  style={{
+                    background: active ? "rgba(212, 175, 55, 0.18)" : "#18181b",
+                    color: active ? "#F3E5AB" : "#a1a1aa",
+                    border: active ? "1px solid #D4AF37" : "1px solid #27272a",
+                    borderRadius: "6px",
+                    padding: "4px 10px",
+                    fontSize: "11px",
+                    fontWeight: active ? 600 : 400,
+                    cursor: "pointer",
+                    transition: "all 0.15s ease",
+                  }}
+                  title={lang.label}
+                >
+                  {lang.nativeName}
+                </button>
+              );
+            })}
+          </div>
+        </header>
+
+        <main style={{ padding: "0 4px" }}>
+          <Outlet context={{ dashboardLocale, isAr, i18n }} />
+        </main>
       </div>
     </AppProvider>
   );

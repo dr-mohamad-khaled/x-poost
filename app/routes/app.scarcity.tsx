@@ -4,6 +4,13 @@ import { Form, useActionData, useLoaderData, useNavigation } from "react-router"
 
 import { authenticate } from "../shopify.server";
 import prisma from "../db.server";
+import FeatureLanguageSwitcher from "../components/FeatureLanguageSwitcher";
+import {
+  DEFAULT_TRANSLATIONS_BY_LANG,
+  getAllTranslations,
+  sanitizeText,
+  type SupportedLanguage,
+} from "../utils/translations";
 
 // ── Icon library (kept in sync with the storefront runtime script) ──
 const ICON_OPTIONS = [
@@ -59,7 +66,17 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     messages = [];
   }
 
-  return { config: { ...config, messages } };
+  const translationConfig = await prisma.translationConfig.findUnique({
+    where: { shopId: shop.id },
+  });
+  const allTranslations = getAllTranslations(translationConfig?.translationsJson);
+  const dashboardLocale = (translationConfig?.dashboardLocale || "en") as SupportedLanguage;
+
+  return {
+    config: { ...config, messages },
+    allTranslations,
+    dashboardLocale,
+  };
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -75,6 +92,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   } catch {
     return { error: "Something went wrong reading the message list — try again." };
   }
+
+  const translationsJsonRaw = String(formData.get("translationsJson") || "");
 
   const data = {
     active: formData.get("active") === "on",
@@ -102,6 +121,24 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       create: { shopId: shop.id, ...data },
     });
 
+    if (translationsJsonRaw) {
+      try {
+        const parsedAll = getAllTranslations(translationsJsonRaw);
+        await prisma.translationConfig.upsert({
+          where: { shopId: shop.id },
+          update: { translationsJson: JSON.stringify(parsedAll) },
+          create: {
+            shopId: shop.id,
+            dashboardLocale: "en",
+            storefrontLocale: "ar",
+            translationsJson: JSON.stringify(parsedAll),
+          },
+        });
+      } catch (tErr) {
+        console.error("[Scarcity Action] Error saving translationConfig:", tErr);
+      }
+    }
+
     await prisma.shop.update({ where: { id: shop.id }, data: { scarcityEnabled: data.active } });
   } catch (error) {
     console.error("[XPoost] Failed to save scarcity widget config:", error);
@@ -116,10 +153,48 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function ScarcityToastSettings() {
-  const { config } = useLoaderData<typeof loader>();
+  const { config, allTranslations, dashboardLocale } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const navigation = useNavigation();
   const saving = navigation.state === "submitting";
+
+  const [selectedLang, setSelectedLang] = useState<SupportedLanguage>(dashboardLocale || "ar");
+  const [translationsMap, setTranslationsMap] = useState(allTranslations);
+
+  const currentCopy =
+    translationsMap[selectedLang]?.scarcityToast ||
+    DEFAULT_TRANSLATIONS_BY_LANG[selectedLang].scarcityToast;
+
+  const handleCopyChange = (field: keyof typeof currentCopy, val: string) => {
+    const clean = sanitizeText(val);
+    setTranslationsMap((prev) => ({
+      ...prev,
+      [selectedLang]: {
+        ...prev[selectedLang],
+        scarcityToast: {
+          ...prev[selectedLang].scarcityToast,
+          [field]: clean,
+        },
+      },
+    }));
+  };
+
+  const handleLoadPredefined = () => {
+    const def = DEFAULT_TRANSLATIONS_BY_LANG[selectedLang].scarcityToast;
+    setTranslationsMap((prev) => ({
+      ...prev,
+      [selectedLang]: {
+        ...prev[selectedLang],
+        scarcityToast: { ...def },
+      },
+    }));
+    setMessages([
+      { icon: "discount", badge: def.discountBadge, text: def.discountText, pill: "SAVE15" },
+      { icon: "scarcity", badge: def.stockBadge, text: def.stockText },
+      { icon: "visitors", badge: def.trendingBadge, text: def.trendingText },
+      { icon: "fast_shipping", badge: def.shippingBadge, text: def.shippingText },
+    ]);
+  };
 
   const [messages, setMessages] = useState<Message[]>(config.messages);
   const [previewIndex, setPreviewIndex] = useState(0);
@@ -132,7 +207,13 @@ export default function ScarcityToastSettings() {
   const preview = messages[previewIndex] ?? messages[0];
 
   function updateMessage(index: number, patch: Partial<Message>) {
-    setMessages((prev) => prev.map((m, i) => (i === index ? { ...m, ...patch } : m)));
+    const sanitizedPatch: Partial<Message> = {};
+    if (patch.badge !== undefined) sanitizedPatch.badge = sanitizeText(patch.badge);
+    if (patch.text !== undefined) sanitizedPatch.text = sanitizeText(patch.text);
+    if (patch.pill !== undefined) sanitizedPatch.pill = sanitizeText(patch.pill);
+    if (patch.url !== undefined) sanitizedPatch.url = patch.url;
+    if (patch.icon !== undefined) sanitizedPatch.icon = patch.icon;
+    setMessages((prev) => prev.map((m, i) => (i === index ? { ...m, ...sanitizedPatch } : m)));
   }
 
   function addMessage() {
@@ -165,6 +246,7 @@ export default function ScarcityToastSettings() {
 
       <Form method="post" className="xps-form">
         <input type="hidden" name="messagesJson" value={messagesJson} />
+        <input type="hidden" name="translationsJson" value={JSON.stringify(translationsMap)} />
 
         <s-section heading="General">
           <div className="xps-row">
@@ -276,6 +358,96 @@ export default function ScarcityToastSettings() {
           </div>
         </s-section>
 
+        {/* Multi-Language Copy & Toast Templates */}
+        <s-section heading="Multi-Language Toast Templates & Copy">
+          <FeatureLanguageSwitcher
+            selectedLang={selectedLang}
+            onSelectLang={setSelectedLang}
+            onLoadPredefined={handleLoadPredefined}
+            dashboardLocale={dashboardLocale}
+          />
+          <div className="xps-grid">
+            <div className="xps-field">
+              <label>Discount Badge ({selectedLang.toUpperCase()})</label>
+              <input
+                className="xps-input"
+                dir={selectedLang === "ar" ? "rtl" : "ltr"}
+                value={currentCopy.discountBadge}
+                onChange={(e) => handleCopyChange("discountBadge", e.target.value)}
+              />
+            </div>
+            <div className="xps-field">
+              <label>Discount Toast Message ({selectedLang.toUpperCase()})</label>
+              <input
+                className="xps-input"
+                dir={selectedLang === "ar" ? "rtl" : "ltr"}
+                value={currentCopy.discountText}
+                onChange={(e) => handleCopyChange("discountText", e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="xps-grid">
+            <div className="xps-field">
+              <label>Low Stock Badge ({selectedLang.toUpperCase()})</label>
+              <input
+                className="xps-input"
+                dir={selectedLang === "ar" ? "rtl" : "ltr"}
+                value={currentCopy.stockBadge}
+                onChange={(e) => handleCopyChange("stockBadge", e.target.value)}
+              />
+            </div>
+            <div className="xps-field">
+              <label>Low Stock Toast Message ({selectedLang.toUpperCase()})</label>
+              <input
+                className="xps-input"
+                dir={selectedLang === "ar" ? "rtl" : "ltr"}
+                value={currentCopy.stockText}
+                onChange={(e) => handleCopyChange("stockText", e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="xps-grid">
+            <div className="xps-field">
+              <label>Trending Badge ({selectedLang.toUpperCase()})</label>
+              <input
+                className="xps-input"
+                dir={selectedLang === "ar" ? "rtl" : "ltr"}
+                value={currentCopy.trendingBadge}
+                onChange={(e) => handleCopyChange("trendingBadge", e.target.value)}
+              />
+            </div>
+            <div className="xps-field">
+              <label>Trending Toast Message ({selectedLang.toUpperCase()})</label>
+              <input
+                className="xps-input"
+                dir={selectedLang === "ar" ? "rtl" : "ltr"}
+                value={currentCopy.trendingText}
+                onChange={(e) => handleCopyChange("trendingText", e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="xps-grid">
+            <div className="xps-field">
+              <label>Shipping Badge ({selectedLang.toUpperCase()})</label>
+              <input
+                className="xps-input"
+                dir={selectedLang === "ar" ? "rtl" : "ltr"}
+                value={currentCopy.shippingBadge}
+                onChange={(e) => handleCopyChange("shippingBadge", e.target.value)}
+              />
+            </div>
+            <div className="xps-field">
+              <label>Shipping Toast Message ({selectedLang.toUpperCase()})</label>
+              <input
+                className="xps-input"
+                dir={selectedLang === "ar" ? "rtl" : "ltr"}
+                value={currentCopy.shippingText}
+                onChange={(e) => handleCopyChange("shippingText", e.target.value)}
+              />
+            </div>
+          </div>
+        </s-section>
+
         <s-section heading="Messages">
           <div className="xps-messages">
             {messages.map((msg, i) => (
@@ -299,16 +471,16 @@ export default function ScarcityToastSettings() {
                   </div>
                   <div className="xps-field">
                     <label>Small label (optional)</label>
-                    <input className="xps-input" value={msg.badge ?? ""} onChange={(e) => updateMessage(i, { badge: e.target.value })} placeholder="e.g. Exclusive code:" />
+                    <input className="xps-input" dir={selectedLang === "ar" ? "rtl" : "ltr"} value={msg.badge ?? ""} onChange={(e) => updateMessage(i, { badge: e.target.value })} placeholder="e.g. Exclusive code:" />
                   </div>
                   <div className="xps-field">
                     <label>Highlight pill (optional)</label>
-                    <input className="xps-input" value={msg.pill ?? ""} onChange={(e) => updateMessage(i, { pill: e.target.value })} placeholder="e.g. SAVE15" />
+                    <input className="xps-input" dir={selectedLang === "ar" ? "rtl" : "ltr"} value={msg.pill ?? ""} onChange={(e) => updateMessage(i, { pill: e.target.value })} placeholder="e.g. SAVE15" />
                   </div>
                 </div>
                 <div className="xps-field">
                   <label>Message text</label>
-                  <input className="xps-input" value={msg.text} onChange={(e) => updateMessage(i, { text: e.target.value })} placeholder="What the customer sees" />
+                  <input className="xps-input" dir={selectedLang === "ar" ? "rtl" : "ltr"} value={msg.text} onChange={(e) => updateMessage(i, { text: e.target.value })} placeholder="What the customer sees" />
                 </div>
                 <div className="xps-field">
                   <label>Link on click (optional)</label>
@@ -335,6 +507,7 @@ export default function ScarcityToastSettings() {
           accentColor={accentColor}
           textColor={textColor}
           borderRadiusPx={borderRadiusPx}
+          dir={selectedLang === "ar" ? "rtl" : "ltr"}
         />
         <p className="xps-preview-hint">
           Actual on-site behavior (cycling, sheen animation, progress bar) plays out live once the
@@ -351,17 +524,20 @@ function TogglePreview({
   accentColor,
   textColor,
   borderRadiusPx,
+  dir = "ltr",
 }: {
   message?: Message;
   backgroundColor: string;
   accentColor: string;
   textColor: string;
   borderRadiusPx: number;
+  dir?: "rtl" | "ltr";
 }) {
   if (!message) return null;
   return (
     <div
       className="xps-toast-preview"
+      dir={dir}
       style={{
         background: `linear-gradient(145deg, ${backgroundColor} 0%, #050505 100%)`,
         border: `1px solid ${accentColor}73`,

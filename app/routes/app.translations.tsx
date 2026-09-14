@@ -1,17 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Form, useActionData, useLoaderData, useNavigation } from "react-router";
 import { authenticate } from "../shopify.server";
 import prisma from "../db.server";
 import { getOrCreateShop } from "../shop.server";
 import {
+  SUPPORTED_LANGUAGES,
+  DEFAULT_TRANSLATIONS_BY_LANG,
   DEFAULT_ARABIC_TRANSLATIONS,
-  DEFAULT_ENGLISH_TRANSLATIONS,
   DASHBOARD_I18N,
-  getMergedTranslations,
+  getAllTranslations,
   sanitizeText,
+  isRtlLang,
+  type SupportedLanguage,
   type FeatureTranslations,
-} from "../utils/translations.server";
+} from "../utils/translations";
+import { FeatureLanguageSwitcher } from "../components/FeatureLanguageSwitcher";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { session } = await authenticate.admin(request);
@@ -27,23 +31,34 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         shopId: shop.id,
         dashboardLocale: "en",
         storefrontLocale: "ar",
-        translationsJson: JSON.stringify(DEFAULT_ARABIC_TRANSLATIONS),
+        translationsJson: JSON.stringify(DEFAULT_TRANSLATIONS_BY_LANG),
       },
     });
   }
 
-  const activeDashboardLocale = (config.dashboardLocale === "ar" ? "ar" : "en") as "en" | "ar";
-  const activeStorefrontLocale = config.storefrontLocale || "ar";
-  const mergedTranslations = getMergedTranslations(config.translationsJson, "ar");
+  const validLangs: SupportedLanguage[] = ["ar", "en", "fr", "de", "es", "it", "pt"];
+  const activeDashboardLocale: SupportedLanguage = validLangs.includes(
+    config.dashboardLocale as SupportedLanguage
+  )
+    ? (config.dashboardLocale as SupportedLanguage)
+    : "en";
+
+  const activeStorefrontLocale: SupportedLanguage = validLangs.includes(
+    config.storefrontLocale as SupportedLanguage
+  )
+    ? (config.storefrontLocale as SupportedLanguage)
+    : "ar";
+
+  const allTranslations = getAllTranslations(config.translationsJson);
 
   return {
     shopDomain: session.shop,
     dashboardLocale: activeDashboardLocale,
     storefrontLocale: activeStorefrontLocale,
-    translations: mergedTranslations,
-    defaultsAr: DEFAULT_ARABIC_TRANSLATIONS,
-    defaultsEn: DEFAULT_ENGLISH_TRANSLATIONS,
-    i18n: DASHBOARD_I18N[activeDashboardLocale],
+    allTranslations,
+    defaultsByLang: DEFAULT_TRANSLATIONS_BY_LANG,
+    supportedLanguages: SUPPORTED_LANGUAGES,
+    i18n: DASHBOARD_I18N[activeDashboardLocale] || DASHBOARD_I18N.en,
   };
 };
 
@@ -53,18 +68,34 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const actionType = String(formData.get("actionType") || "save");
 
-  const dashboardLocale = String(formData.get("dashboardLocale") || "en");
-  const storefrontLocale = String(formData.get("storefrontLocale") || "ar");
+  const validLangs: SupportedLanguage[] = ["ar", "en", "fr", "de", "es", "it", "pt"];
+  const rawDash = String(formData.get("dashboardLocale") || "en");
+  const rawSf = String(formData.get("storefrontLocale") || "ar");
+  const rawEdit = String(formData.get("editLang") || "ar");
 
-  let updatedTranslations: FeatureTranslations = DEFAULT_ARABIC_TRANSLATIONS;
+  const dashboardLocale: SupportedLanguage = validLangs.includes(rawDash as SupportedLanguage)
+    ? (rawDash as SupportedLanguage)
+    : "en";
+  const storefrontLocale: SupportedLanguage = validLangs.includes(rawSf as SupportedLanguage)
+    ? (rawSf as SupportedLanguage)
+    : "ar";
+  const editLang: SupportedLanguage = validLangs.includes(rawEdit as SupportedLanguage)
+    ? (rawEdit as SupportedLanguage)
+    : "ar";
 
-  if (actionType === "apply_arabic") {
-    updatedTranslations = DEFAULT_ARABIC_TRANSLATIONS;
-  } else if (actionType === "reset_english") {
-    updatedTranslations = DEFAULT_ENGLISH_TRANSLATIONS;
+  let config = await prisma.translationConfig.findUnique({
+    where: { shopId: shop.id },
+  });
+
+  let allTranslations = getAllTranslations(config?.translationsJson);
+
+  if (actionType === "apply_predefined") {
+    allTranslations[editLang] = { ...DEFAULT_TRANSLATIONS_BY_LANG[editLang] };
+  } else if (actionType === "apply_all_defaults") {
+    allTranslations = { ...DEFAULT_TRANSLATIONS_BY_LANG };
   } else {
-    // Read granular inputs from form and sanitize
-    updatedTranslations = {
+    // Save granular inputs for the current editLang
+    allTranslations[editLang] = {
       productScarcity: {
         headlineText: sanitizeText(String(formData.get("ps_headline") || "")),
         subText: sanitizeText(String(formData.get("ps_subtext") || "")),
@@ -115,24 +146,30 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     };
   }
 
+  const updatedJson = JSON.stringify(allTranslations);
+
   await prisma.translationConfig.upsert({
     where: { shopId: shop.id },
     create: {
       shopId: shop.id,
       dashboardLocale,
       storefrontLocale,
-      translationsJson: JSON.stringify(updatedTranslations),
+      translationsJson: updatedJson,
     },
     update: {
       dashboardLocale,
       storefrontLocale,
-      translationsJson: JSON.stringify(updatedTranslations),
+      translationsJson: updatedJson,
     },
   });
 
+  const i18n = DASHBOARD_I18N[dashboardLocale] || DASHBOARD_I18N.en;
+
   return {
     ok: true,
-    message: dashboardLocale === "ar" ? "تم حفظ الترجمات بنجاح" : "Translations saved successfully.",
+    savedLang: editLang,
+    allTranslations,
+    message: i18n.savedSuccess || "Translations saved successfully.",
   };
 };
 
@@ -140,9 +177,9 @@ export default function TranslationsPage() {
   const {
     dashboardLocale: initialDashLocale,
     storefrontLocale: initialSfLocale,
-    translations: initialTranslations,
-    defaultsAr,
-    defaultsEn,
+    allTranslations: initialAllTranslations,
+    defaultsByLang,
+    supportedLanguages,
     i18n,
   } = useLoaderData<typeof loader>();
 
@@ -150,19 +187,66 @@ export default function TranslationsPage() {
   const navigation = useNavigation();
   const isSaving = navigation.state === "submitting";
 
-  const [dashboardLocale, setDashboardLocale] = useState<"en" | "ar">(initialDashLocale);
-  const [storefrontLocale, setStorefrontLocale] = useState(initialSfLocale);
-  const [trans, setTrans] = useState<FeatureTranslations>(initialTranslations);
+  const [dashboardLocale, setDashboardLocale] = useState<SupportedLanguage>(initialDashLocale);
+  const [storefrontLocale, setStorefrontLocale] = useState<SupportedLanguage>(initialSfLocale);
+  const [editLang, setEditLang] = useState<SupportedLanguage>(initialSfLocale || "ar");
+  const [allTranslations, setAllTranslations] = useState<Record<SupportedLanguage, FeatureTranslations>>(
+    initialAllTranslations
+  );
   const [activeTab, setActiveTab] = useState<string>("productScarcity");
+  const [feedbackNotice, setFeedbackNotice] = useState<string>("");
 
-  const isRtl = dashboardLocale === "ar";
+  useEffect(() => {
+    if (actionData?.allTranslations) {
+      setAllTranslations(actionData.allTranslations);
+    }
+  }, [actionData]);
 
-  const applyArabicDefaults = () => {
-    setTrans(defaultsAr);
+  const isRtl = isRtlLang(dashboardLocale);
+  const isEditRtl = isRtlLang(editLang);
+  const currentTrans = allTranslations[editLang] || defaultsByLang[editLang] || DEFAULT_ARABIC_TRANSLATIONS;
+
+  const handleLoadPredefined = () => {
+    const defaultCopy = defaultsByLang[editLang];
+    if (defaultCopy) {
+      setAllTranslations((prev) => ({
+        ...prev,
+        [editLang]: { ...defaultCopy },
+      }));
+      setFeedbackNotice(
+        isRtl
+          ? "تم تحميل النصوص النموذجية الجاهزة لهذه اللغة. انقر على حفظ التغييرات لتأكيدها."
+          : "Predefined copy loaded for this language. Click Save to persist."
+      );
+      setTimeout(() => setFeedbackNotice(""), 5000);
+    }
   };
 
-  const applyEnglishDefaults = () => {
-    setTrans(defaultsEn);
+  const handleResetAllLanguages = () => {
+    setAllTranslations({ ...defaultsByLang });
+    setFeedbackNotice(
+      isRtl
+        ? "تم تحميل النصوص النموذجية لكافة اللغات الـ 7. انقر على حفظ التغييرات لتأكيدها."
+        : "Predefined copy loaded for all 7 languages. Click Save to persist."
+    );
+    setTimeout(() => setFeedbackNotice(""), 5000);
+  };
+
+  const updateField = (
+    featureKey: keyof FeatureTranslations,
+    field: string,
+    val: string
+  ) => {
+    setAllTranslations((prev) => ({
+      ...prev,
+      [editLang]: {
+        ...prev[editLang],
+        [featureKey]: {
+          ...(prev[editLang]?.[featureKey] || {}),
+          [field]: val,
+        },
+      },
+    }));
   };
 
   return (
@@ -296,13 +380,59 @@ export default function TranslationsPage() {
           margin: 0 4px;
           user-select: none;
         }
+        .xpp-pill-btn {
+          padding: 6px 12px;
+          border-radius: 6px;
+          font-size: 12px;
+          font-weight: 600;
+          cursor: pointer;
+          border: 1px solid #383838;
+          background: #1e1e1e;
+          color: #d4d4d8;
+          transition: all 0.15s ease;
+        }
+        .xpp-pill-btn.active {
+          background: #D4AF37;
+          color: #000000;
+          border-color: #D4AF37;
+        }
       `}</style>
 
       <div className="xpp-trans-container" dir={isRtl ? "rtl" : "ltr"}>
         {actionData?.message && (
-          <div style={{ background: "#143d1a", borderLeft: isRtl ? "none" : "4px solid #4ade80", borderRight: isRtl ? "4px solid #4ade80" : "none", padding: "14px 18px", borderRadius: 8, marginBottom: 20 }}>
-            <div style={{ fontWeight: 800, color: "#4ade80" }}>{isRtl ? "تم التحديث" : "Success"}</div>
-            <p style={{ margin: "4px 0 0", color: "#ffffff", fontSize: 13 }}>{actionData.message}</p>
+          <div
+            style={{
+              background: "#143d1a",
+              borderLeft: isRtl ? "none" : "4px solid #4ade80",
+              borderRight: isRtl ? "4px solid #4ade80" : "none",
+              padding: "14px 18px",
+              borderRadius: 8,
+              marginBottom: 20,
+            }}
+          >
+            <div style={{ fontWeight: 800, color: "#4ade80" }}>
+              {isRtl ? "تم التحديث" : "Success"}
+            </div>
+            <p style={{ margin: "4px 0 0", color: "#ffffff", fontSize: 13 }}>
+              {actionData.message}
+            </p>
+          </div>
+        )}
+
+        {feedbackNotice && (
+          <div
+            style={{
+              background: "#262312",
+              borderLeft: isRtl ? "none" : "4px solid #D4AF37",
+              borderRight: isRtl ? "4px solid #D4AF37" : "none",
+              padding: "12px 16px",
+              borderRadius: 8,
+              marginBottom: 20,
+            }}
+          >
+            <p style={{ margin: 0, color: "#fef08a", fontSize: 13, fontWeight: 600 }}>
+              {feedbackNotice}
+            </p>
           </div>
         )}
 
@@ -310,104 +440,100 @@ export default function TranslationsPage() {
           <input type="hidden" name="actionType" value="save" />
           <input type="hidden" name="dashboardLocale" value={dashboardLocale} />
           <input type="hidden" name="storefrontLocale" value={storefrontLocale} />
+          <input type="hidden" name="editLang" value={editLang} />
 
-          {/* 1. Language & Direction Control Card */}
+          {/* 1. Global Language Settings Card */}
           <div className="xpp-card">
-            <h2 className="xpp-card-title">{isRtl ? "إعدادات اللغة والاتجاه" : "Language & Locale Settings"}</h2>
+            <h2 className="xpp-card-title">
+              {isRtl ? "إعدادات اللغة والاتجاه العامة" : "Global Language & Locale Settings"}
+            </h2>
             <p className="xpp-card-desc">
               {isRtl
-                ? "اختر لغة لوحة تحكم التاجر ولغة واجهة المتجر المعروضة للعملاء."
-                : "Choose your preferred merchant dashboard language and the active customer storefront language."}
+                ? "اختر لغة لوحة تحكم التاجر ولغة واجهة المتجر الافتراضية للعملاء من بين 7 لغات عالمية."
+                : "Choose your preferred merchant dashboard language and the default customer storefront language from 7 global e-commerce languages."}
             </p>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16 }}>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+                gap: 16,
+              }}
+            >
               {/* Dashboard Language */}
-              <div style={{ background: "#1a1a1a", border: "1px solid #333", borderRadius: 10, padding: 16 }}>
-                <label className="xpp-label">{isRtl ? "لغة لوحة التحكم" : "Dashboard Language"}</label>
-                <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
-                  <button
-                    type="button"
-                    className={`xpp-btn ${dashboardLocale === "ar" ? "xpp-btn--primary" : "xpp-btn--secondary"}`}
-                    onClick={() => setDashboardLocale("ar")}
-                    style={{ flex: 1 }}
-                  >
-                    العربية (RTL)
-                  </button>
-                  <button
-                    type="button"
-                    className={`xpp-btn ${dashboardLocale === "en" ? "xpp-btn--primary" : "xpp-btn--secondary"}`}
-                    onClick={() => setDashboardLocale("en")}
-                    style={{ flex: 1 }}
-                  >
-                    English (LTR)
-                  </button>
+              <div
+                style={{
+                  background: "#1a1a1a",
+                  border: "1px solid #333",
+                  borderRadius: 10,
+                  padding: 16,
+                }}
+              >
+                <label className="xpp-label">
+                  {isRtl ? "لغة لوحة التحكم" : "Dashboard Language"}
+                </label>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 10 }}>
+                  {supportedLanguages.map((lang) => (
+                    <button
+                      key={lang.code}
+                      type="button"
+                      className={`xpp-pill-btn ${dashboardLocale === lang.code ? "active" : ""}`}
+                      onClick={() => setDashboardLocale(lang.code)}
+                    >
+                      {lang.nativeName} ({lang.label})
+                    </button>
+                  ))}
                 </div>
               </div>
 
-              {/* Storefront Language */}
-              <div style={{ background: "#1a1a1a", border: "1px solid #333", borderRadius: 10, padding: 16 }}>
-                <label className="xpp-label">{isRtl ? "لغة واجهة المتجر للعملاء" : "Storefront Language"}</label>
-                <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
-                  <button
-                    type="button"
-                    className={`xpp-btn ${storefrontLocale === "ar" ? "xpp-btn--primary" : "xpp-btn--secondary"}`}
-                    onClick={() => setStorefrontLocale("ar")}
-                    style={{ flex: 1 }}
-                  >
-                    العربية
-                  </button>
-                  <button
-                    type="button"
-                    className={`xpp-btn ${storefrontLocale === "en" ? "xpp-btn--primary" : "xpp-btn--secondary"}`}
-                    onClick={() => setStorefrontLocale("en")}
-                    style={{ flex: 1 }}
-                  >
-                    English
-                  </button>
+              {/* Default Storefront Language */}
+              <div
+                style={{
+                  background: "#1a1a1a",
+                  border: "1px solid #333",
+                  borderRadius: 10,
+                  padding: 16,
+                }}
+              >
+                <label className="xpp-label">
+                  {isRtl ? "لغة واجهة المتجر الافتراضية للعملاء" : "Default Storefront Language"}
+                </label>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 10 }}>
+                  {supportedLanguages.map((lang) => (
+                    <button
+                      key={lang.code}
+                      type="button"
+                      className={`xpp-pill-btn ${storefrontLocale === lang.code ? "active" : ""}`}
+                      onClick={() => setStorefrontLocale(lang.code)}
+                    >
+                      {lang.nativeName} ({lang.label})
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
           </div>
 
-          {/* 2. Quick Automated Translations Card */}
-          <div className="xpp-card" style={{ background: "linear-gradient(135deg, #18150f 0%, #141414 100%)", border: "1px solid rgba(212, 175, 55, 0.4)" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
-              <div>
-                <h2 className="xpp-card-title">{isRtl ? "الترجمة التلقائية المباشرة" : "Automated Modern Translations"}</h2>
-                <p className="xpp-card-desc" style={{ margin: 0 }}>
-                  {isRtl
-                    ? "تطبيق نصوص عربية فصحى معاصرة ومباشرة على كافة الميزات بنقرة واحدة."
-                    : "Apply clean, direct Modern Standard Arabic copy across all conversion features with one click."}
-                </p>
-              </div>
-              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-                <button
-                  type="button"
-                  className="xpp-btn xpp-btn--primary"
-                  onClick={applyArabicDefaults}
-                >
-                  {isRtl ? "تطبيق الفصحى المعاصرة على الكل" : "Apply Modern Arabic to All"}
-                </button>
-                <button
-                  type="button"
-                  className="xpp-btn xpp-btn--secondary"
-                  onClick={applyEnglishDefaults}
-                >
-                  {isRtl ? "استعادة النصوص الإنجليزية" : "Reset All to English"}
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* 3. Granular Feature Tabs */}
+          {/* 2. Feature Translation Editor Card with 7-Language Switcher */}
           <div className="xpp-card">
-            <h2 className="xpp-card-title">{isRtl ? "تخصيص نصوص الميزات" : "Feature Translation Editor"}</h2>
+            <h2 className="xpp-card-title">
+              {isRtl ? "تخصيص نصوص ميزات المتجر" : "Feature Translation Editor"}
+            </h2>
             <p className="xpp-card-desc">
               {isRtl
-                ? "حدد الميزة التي ترغب بتعديل نصوصها. يمكنك تعديل أي عبارة وحفظها مباشرة."
-                : "Select a conversion feature below to customize its customer-facing messages and button labels."}
+                ? "حدد اللغة التي ترغب بتعديل نصوصها ثم اختر الميزة لتعديل رسائلها وشاراتها بحرية."
+                : "Select the language you want to edit, then switch between conversion features to customize labels, badges, and notices."}
             </p>
 
+            {/* In-Feature Language Switcher for all 7 languages */}
+            <FeatureLanguageSwitcher
+              selectedLang={editLang}
+              onSelectLang={(lang) => setEditLang(lang)}
+              onLoadPredefined={handleLoadPredefined}
+              dashboardLocale={dashboardLocale}
+            />
+
+            {/* Feature Tabs */}
             <div className="xpp-tabs-bar">
               <button
                 type="button"
@@ -460,35 +586,75 @@ export default function TranslationsPage() {
               </button>
             </div>
 
-            {/* Feature 1: Product Scarcity */}
+            {/* Tab 1: Product Scarcity */}
             {activeTab === "productScarcity" && (
-              <div>
+              <div dir={isEditRtl ? "rtl" : "ltr"}>
                 <div style={{ marginBottom: 12 }}>
-                  <span style={{ fontSize: 12, color: "#aaa" }}>{isRtl ? "المتغيرات المتاحة:" : "Available Placeholders:"}</span>
-                  <span className="xpp-chip" onClick={() => setTrans(p => ({ ...p, productScarcity: { ...p.productScarcity, headlineText: p.productScarcity.headlineText + " {stock}" } }))}>+ &#123;stock&#125;</span>
-                  <span className="xpp-chip" onClick={() => setTrans(p => ({ ...p, productScarcity: { ...p.productScarcity, headlineText: p.productScarcity.headlineText + " {viewers}" } }))}>+ &#123;viewers&#125;</span>
+                  <span style={{ fontSize: 12, color: "#aaa" }}>
+                    {isRtl ? "المتغيرات المتاحة:" : "Available Placeholders:"}
+                  </span>
+                  <span
+                    className="xpp-chip"
+                    onClick={() =>
+                      updateField(
+                        "productScarcity",
+                        "headlineText",
+                        (currentTrans.productScarcity?.headlineText || "") + " {stock}"
+                      )
+                    }
+                  >
+                    + &#123;stock&#125;
+                  </span>
+                  <span
+                    className="xpp-chip"
+                    onClick={() =>
+                      updateField(
+                        "productScarcity",
+                        "headlineText",
+                        (currentTrans.productScarcity?.headlineText || "") + " {viewers}"
+                      )
+                    }
+                  >
+                    + &#123;viewers&#125;
+                  </span>
                 </div>
                 <div className="xpp-field-group">
-                  <label className="xpp-label">{isRtl ? "عنوان ندرة المخزون" : "Headline Template"}</label>
+                  <label className="xpp-label">
+                    {isRtl ? "عنوان ندرة المخزون" : "Headline Template"}
+                  </label>
                   <input
                     type="text"
                     name="ps_headline"
                     className="xpp-input"
-                    value={trans.productScarcity.headlineText}
-                    onChange={(e) => setTrans(p => ({ ...p, productScarcity: { ...p.productScarcity, headlineText: e.target.value } }))}
+                    dir={isEditRtl ? "rtl" : "ltr"}
+                    value={currentTrans.productScarcity?.headlineText || ""}
+                    onChange={(e) =>
+                      updateField("productScarcity", "headlineText", e.target.value)
+                    }
                   />
-                  <div className="xpp-hint">{isRtl ? "مثال: كمية محدودة: متبقي {stock} قطع فقط في المخزون" : "Default: Hurry! Only {stock} items left in stock"}</div>
+                  <div className="xpp-hint">
+                    {isRtl
+                      ? "مثال: كمية محدودة: متبقي {stock} قطع فقط في المخزون"
+                      : "Default: Hurry! Only {stock} items left in stock"}
+                  </div>
                 </div>
                 <div className="xpp-field-group">
-                  <label className="xpp-label">{isRtl ? "النص الفرعي / إشعار الإقبال" : "Subtitle / Reassurance Note"}</label>
+                  <label className="xpp-label">
+                    {isRtl ? "النص الفرعي / إشعار الإقبال" : "Subtitle / Reassurance Note"}
+                  </label>
                   <input
                     type="text"
                     name="ps_subtext"
                     className="xpp-input"
-                    value={trans.productScarcity.subText}
-                    onChange={(e) => setTrans(p => ({ ...p, productScarcity: { ...p.productScarcity, subText: e.target.value } }))}
+                    dir={isEditRtl ? "rtl" : "ltr"}
+                    value={currentTrans.productScarcity?.subText || ""}
+                    onChange={(e) =>
+                      updateField("productScarcity", "subText", e.target.value)
+                    }
                   />
-                  <div className="xpp-hint">{isRtl ? "مثال: طلب مرتفع: ينفد سريعاً" : "Default: High demand: selling fast"}</div>
+                  <div className="xpp-hint">
+                    {isRtl ? "مثال: طلب مرتفع: ينفد سريعاً" : "Default: High demand: selling fast"}
+                  </div>
                 </div>
                 <div className="xpp-row">
                   <div className="xpp-field-group" style={{ flex: 1 }}>
@@ -497,357 +663,513 @@ export default function TranslationsPage() {
                       type="text"
                       name="ps_badge"
                       className="xpp-input"
-                      value={trans.productScarcity.badgeText}
-                      onChange={(e) => setTrans(p => ({ ...p, productScarcity: { ...p.productScarcity, badgeText: e.target.value } }))}
+                      dir={isEditRtl ? "rtl" : "ltr"}
+                      value={currentTrans.productScarcity?.badgeText || ""}
+                      onChange={(e) =>
+                        updateField("productScarcity", "badgeText", e.target.value)
+                      }
                     />
                   </div>
                   <div className="xpp-field-group" style={{ flex: 1 }}>
-                    <label className="xpp-label">{isRtl ? "نص المشاهدين المباشر" : "Live Viewers Suffix"}</label>
+                    <label className="xpp-label">
+                      {isRtl ? "نص المشاهدين المباشر" : "Live Viewers Suffix"}
+                    </label>
                     <input
                       type="text"
                       name="ps_suffix"
                       className="xpp-input"
-                      value={trans.productScarcity.viewingSuffix}
-                      onChange={(e) => setTrans(p => ({ ...p, productScarcity: { ...p.productScarcity, viewingSuffix: e.target.value } }))}
+                      dir={isEditRtl ? "rtl" : "ltr"}
+                      value={currentTrans.productScarcity?.viewingSuffix || ""}
+                      onChange={(e) =>
+                        updateField("productScarcity", "viewingSuffix", e.target.value)
+                      }
                     />
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Feature 2: Pre-Purchase */}
+            {/* Tab 2: Pre-Purchase */}
             {activeTab === "prePurchase" && (
-              <div>
+              <div dir={isEditRtl ? "rtl" : "ltr"}>
                 <div className="xpp-row">
                   <div className="xpp-field-group" style={{ flex: 1 }}>
-                    <label className="xpp-label">{isRtl ? "شارة العرض العلوية" : "Modal Top Tag"}</label>
+                    <label className="xpp-label">
+                      {isRtl ? "شارة العرض العلوية" : "Modal Top Tag"}
+                    </label>
                     <input
                       type="text"
                       name="pp_tag"
                       className="xpp-input"
-                      value={trans.prePurchase.offerTag}
-                      onChange={(e) => setTrans(p => ({ ...p, prePurchase: { ...p.prePurchase, offerTag: e.target.value } }))}
+                      dir={isEditRtl ? "rtl" : "ltr"}
+                      value={currentTrans.prePurchase?.offerTag || ""}
+                      onChange={(e) =>
+                        updateField("prePurchase", "offerTag", e.target.value)
+                      }
                     />
                   </div>
                   <div className="xpp-field-group" style={{ flex: 1 }}>
-                    <label className="xpp-label">{isRtl ? "عنوان نافذة العرض" : "Offer Headline"}</label>
+                    <label className="xpp-label">
+                      {isRtl ? "عنوان نافذة العرض" : "Offer Headline"}
+                    </label>
                     <input
                       type="text"
                       name="pp_headline"
                       className="xpp-input"
-                      value={trans.prePurchase.headline}
-                      onChange={(e) => setTrans(p => ({ ...p, prePurchase: { ...p.prePurchase, headline: e.target.value } }))}
+                      dir={isEditRtl ? "rtl" : "ltr"}
+                      value={currentTrans.prePurchase?.headline || ""}
+                      onChange={(e) =>
+                        updateField("prePurchase", "headline", e.target.value)
+                      }
                     />
                   </div>
                 </div>
                 <div className="xpp-field-group">
-                  <label className="xpp-label">{isRtl ? "وصف العرض" : "Offer Description"}</label>
+                  <label className="xpp-label">
+                    {isRtl ? "وصف العرض" : "Offer Description"}
+                  </label>
                   <input
                     type="text"
                     name="pp_desc"
                     className="xpp-input"
-                    value={trans.prePurchase.description}
-                    onChange={(e) => setTrans(p => ({ ...p, prePurchase: { ...p.prePurchase, description: e.target.value } }))}
+                    dir={isEditRtl ? "rtl" : "ltr"}
+                    value={currentTrans.prePurchase?.description || ""}
+                    onChange={(e) =>
+                      updateField("prePurchase", "description", e.target.value)
+                    }
                   />
                 </div>
                 <div className="xpp-row">
                   <div className="xpp-field-group" style={{ flex: 1 }}>
-                    <label className="xpp-label">{isRtl ? "زر قبول العرض والإضافة" : "Accept Button Label"}</label>
+                    <label className="xpp-label">
+                      {isRtl ? "زر قبول العرض والإضافة" : "Accept Button Label"}
+                    </label>
                     <input
                       type="text"
                       name="pp_accept"
                       className="xpp-input"
-                      value={trans.prePurchase.acceptButton}
-                      onChange={(e) => setTrans(p => ({ ...p, prePurchase: { ...p.prePurchase, acceptButton: e.target.value } }))}
+                      dir={isEditRtl ? "rtl" : "ltr"}
+                      value={currentTrans.prePurchase?.acceptButton || ""}
+                      onChange={(e) =>
+                        updateField("prePurchase", "acceptButton", e.target.value)
+                      }
                     />
                   </div>
                   <div className="xpp-field-group" style={{ flex: 1 }}>
-                    <label className="xpp-label">{isRtl ? "زر تخطي العرض" : "Decline Button Label"}</label>
+                    <label className="xpp-label">
+                      {isRtl ? "زر تخطي العرض" : "Decline Button Label"}
+                    </label>
                     <input
                       type="text"
                       name="pp_decline"
                       className="xpp-input"
-                      value={trans.prePurchase.declineButton}
-                      onChange={(e) => setTrans(p => ({ ...p, prePurchase: { ...p.prePurchase, declineButton: e.target.value } }))}
+                      dir={isEditRtl ? "rtl" : "ltr"}
+                      value={currentTrans.prePurchase?.declineButton || ""}
+                      onChange={(e) =>
+                        updateField("prePurchase", "declineButton", e.target.value)
+                      }
                     />
                   </div>
                 </div>
                 <div className="xpp-row">
                   <div className="xpp-field-group" style={{ flex: 1 }}>
-                    <label className="xpp-label">{isRtl ? "نص عداد الحجز الزمني" : "Urgency Timer Label"}</label>
+                    <label className="xpp-label">
+                      {isRtl ? "نص عداد الحجز الزمني" : "Urgency Timer Label"}
+                    </label>
                     <input
                       type="text"
                       name="pp_urgency"
                       className="xpp-input"
-                      value={trans.prePurchase.urgencyLabel}
-                      onChange={(e) => setTrans(p => ({ ...p, prePurchase: { ...p.prePurchase, urgencyLabel: e.target.value } }))}
+                      dir={isEditRtl ? "rtl" : "ltr"}
+                      value={currentTrans.prePurchase?.urgencyLabel || ""}
+                      onChange={(e) =>
+                        updateField("prePurchase", "urgencyLabel", e.target.value)
+                      }
                     />
                   </div>
                   <div className="xpp-field-group" style={{ flex: 1 }}>
-                    <label className="xpp-label">{isRtl ? "ملاحظة حجز الكمية" : "Scarcity Allocation Note"}</label>
+                    <label className="xpp-label">
+                      {isRtl ? "ملاحظة حجز الكمية" : "Scarcity Allocation Note"}
+                    </label>
                     <input
                       type="text"
                       name="pp_scarcity"
                       className="xpp-input"
-                      value={trans.prePurchase.scarcityNotice}
-                      onChange={(e) => setTrans(p => ({ ...p, prePurchase: { ...p.prePurchase, scarcityNotice: e.target.value } }))}
+                      dir={isEditRtl ? "rtl" : "ltr"}
+                      value={currentTrans.prePurchase?.scarcityNotice || ""}
+                      onChange={(e) =>
+                        updateField("prePurchase", "scarcityNotice", e.target.value)
+                      }
                     />
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Feature 3: In-Cart */}
+            {/* Tab 3: In-Cart */}
             {activeTab === "inCart" && (
-              <div>
+              <div dir={isEditRtl ? "rtl" : "ltr"}>
                 <div className="xpp-field-group">
-                  <label className="xpp-label">{isRtl ? "عنوان قسم المنتجات المقترحة" : "In-Cart Drawer Section Title"}</label>
+                  <label className="xpp-label">
+                    {isRtl ? "عنوان قسم المنتجات المقترحة" : "In-Cart Drawer Section Title"}
+                  </label>
                   <input
                     type="text"
                     name="ic_title"
                     className="xpp-input"
-                    value={trans.inCart.sectionTitle}
-                    onChange={(e) => setTrans(p => ({ ...p, inCart: { ...p.inCart, sectionTitle: e.target.value } }))}
+                    dir={isEditRtl ? "rtl" : "ltr"}
+                    value={currentTrans.inCart?.sectionTitle || ""}
+                    onChange={(e) =>
+                      updateField("inCart", "sectionTitle", e.target.value)
+                    }
                   />
-                  <div className="xpp-hint">{isRtl ? "مثال: منتجات يشتريها العملاء أيضاً" : "Default: Frequently Bought Together"}</div>
+                  <div className="xpp-hint">
+                    {isRtl ? "مثال: منتجات يشتريها العملاء أيضاً" : "Default: Frequently Bought Together"}
+                  </div>
                 </div>
                 <div className="xpp-row">
                   <div className="xpp-field-group" style={{ flex: 1 }}>
-                    <label className="xpp-label">{isRtl ? "نص زر الإضافة السريعة" : "Add to Cart Button Label"}</label>
+                    <label className="xpp-label">
+                      {isRtl ? "نص زر الإضافة السريعة" : "Add to Cart Button Label"}
+                    </label>
                     <input
                       type="text"
                       name="ic_btn"
                       className="xpp-input"
-                      value={trans.inCart.addButton}
-                      onChange={(e) => setTrans(p => ({ ...p, inCart: { ...p.inCart, addButton: e.target.value } }))}
+                      dir={isEditRtl ? "rtl" : "ltr"}
+                      value={currentTrans.inCart?.addButton || ""}
+                      onChange={(e) =>
+                        updateField("inCart", "addButton", e.target.value)
+                      }
                     />
                   </div>
                   <div className="xpp-field-group" style={{ flex: 1 }}>
-                    <label className="xpp-label">{isRtl ? "شارة التوفير / الخصم" : "Savings Badge Template"}</label>
+                    <label className="xpp-label">
+                      {isRtl ? "شارة التوفير / الخصم" : "Savings Badge Template"}
+                    </label>
                     <input
                       type="text"
                       name="ic_save"
                       className="xpp-input"
-                      value={trans.inCart.saveBadge}
-                      onChange={(e) => setTrans(p => ({ ...p, inCart: { ...p.inCart, saveBadge: e.target.value } }))}
+                      dir={isEditRtl ? "rtl" : "ltr"}
+                      value={currentTrans.inCart?.saveBadge || ""}
+                      onChange={(e) =>
+                        updateField("inCart", "saveBadge", e.target.value)
+                      }
                     />
-                    <div className="xpp-hint">{isRtl ? "استخدم {discount} لنسبة الخصم" : "Use {discount} for percentage"}</div>
+                    <div className="xpp-hint">
+                      {isRtl ? "استخدم {discount} لنسبة الخصم" : "Use {discount} for percentage"}
+                    </div>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Feature 4: Shipping Bar */}
+            {/* Tab 4: Shipping Bar */}
             {activeTab === "shippingBar" && (
-              <div>
+              <div dir={isEditRtl ? "rtl" : "ltr"}>
                 <div className="xpp-field-group">
-                  <label className="xpp-label">{isRtl ? "رسالة البداية (قبل إضافة منتجات كافية)" : "Initial Progress Message"}</label>
+                  <label className="xpp-label">
+                    {isRtl ? "رسالة البداية (قبل إضافة منتجات كافية)" : "Initial Progress Message"}
+                  </label>
                   <input
                     type="text"
                     name="sb_initial"
                     className="xpp-input"
-                    value={trans.shippingBar.initialMessage}
-                    onChange={(e) => setTrans(p => ({ ...p, shippingBar: { ...p.shippingBar, initialMessage: e.target.value } }))}
+                    dir={isEditRtl ? "rtl" : "ltr"}
+                    value={currentTrans.shippingBar?.initialMessage || ""}
+                    onChange={(e) =>
+                      updateField("shippingBar", "initialMessage", e.target.value)
+                    }
                   />
                 </div>
                 <div className="xpp-field-group">
-                  <label className="xpp-label">{isRtl ? "رسالة التقدم نحو المكافأة التالية" : "Progress Toward Reward Message"}</label>
+                  <label className="xpp-label">
+                    {isRtl ? "رسالة التقدم نحو المكافأة التالية" : "Progress Toward Reward Message"}
+                  </label>
                   <input
                     type="text"
                     name="sb_progress"
                     className="xpp-input"
-                    value={trans.shippingBar.progressMessage}
-                    onChange={(e) => setTrans(p => ({ ...p, shippingBar: { ...p.shippingBar, progressMessage: e.target.value } }))}
+                    dir={isEditRtl ? "rtl" : "ltr"}
+                    value={currentTrans.shippingBar?.progressMessage || ""}
+                    onChange={(e) =>
+                      updateField("shippingBar", "progressMessage", e.target.value)
+                    }
                   />
-                  <div className="xpp-hint">{isRtl ? "استخدم {amount} للمبلغ المتبقي، و {reward} لاسم المكافأة" : "Use {amount} and {reward} placeholders"}</div>
+                  <div className="xpp-hint">
+                    {isRtl
+                      ? "استخدم {amount} للمبلغ المتبقي، و {reward} لاسم المكافأة"
+                      : "Use {amount} and {reward} placeholders"}
+                  </div>
                 </div>
                 <div className="xpp-field-group">
-                  <label className="xpp-label">{isRtl ? "رسالة اكتمال كافة المكافآت" : "All Rewards Unlocked Message"}</label>
+                  <label className="xpp-label">
+                    {isRtl ? "رسالة اكتمال كافة المكافآت" : "All Rewards Unlocked Message"}
+                  </label>
                   <input
                     type="text"
                     name="sb_unlocked"
                     className="xpp-input"
-                    value={trans.shippingBar.allUnlockedMessage}
-                    onChange={(e) => setTrans(p => ({ ...p, shippingBar: { ...p.shippingBar, allUnlockedMessage: e.target.value } }))}
+                    dir={isEditRtl ? "rtl" : "ltr"}
+                    value={currentTrans.shippingBar?.allUnlockedMessage || ""}
+                    onChange={(e) =>
+                      updateField("shippingBar", "allUnlockedMessage", e.target.value)
+                    }
                   />
                 </div>
               </div>
             )}
 
-            {/* Feature 5: Exit Intent */}
+            {/* Tab 5: Exit Intent */}
             {activeTab === "exitIntent" && (
-              <div>
+              <div dir={isEditRtl ? "rtl" : "ltr"}>
                 <div className="xpp-field-group">
-                  <label className="xpp-label">{isRtl ? "عنوان نافذة الاستعادة" : "Modal Headline"}</label>
+                  <label className="xpp-label">
+                    {isRtl ? "عنوان نافذة الاستعادة" : "Modal Headline"}
+                  </label>
                   <input
                     type="text"
                     name="ei_headline"
                     className="xpp-input"
-                    value={trans.exitIntent.headline}
-                    onChange={(e) => setTrans(p => ({ ...p, exitIntent: { ...p.exitIntent, headline: e.target.value } }))}
+                    dir={isEditRtl ? "rtl" : "ltr"}
+                    value={currentTrans.exitIntent?.headline || ""}
+                    onChange={(e) =>
+                      updateField("exitIntent", "headline", e.target.value)
+                    }
                   />
                 </div>
                 <div className="xpp-field-group">
-                  <label className="xpp-label">{isRtl ? "نص الرسالة والخصم" : "Body Text"}</label>
+                  <label className="xpp-label">
+                    {isRtl ? "نص الرسالة والخصم" : "Body Text"}
+                  </label>
                   <input
                     type="text"
                     name="ei_body"
                     className="xpp-input"
-                    value={trans.exitIntent.bodyText}
-                    onChange={(e) => setTrans(p => ({ ...p, exitIntent: { ...p.exitIntent, bodyText: e.target.value } }))}
+                    dir={isEditRtl ? "rtl" : "ltr"}
+                    value={currentTrans.exitIntent?.bodyText || ""}
+                    onChange={(e) =>
+                      updateField("exitIntent", "bodyText", e.target.value)
+                    }
                   />
                 </div>
                 <div className="xpp-row">
                   <div className="xpp-field-group" style={{ flex: 1 }}>
-                    <label className="xpp-label">{isRtl ? "زر تفعيل الخصم وإتمام الطلب" : "Claim Discount Button Label"}</label>
+                    <label className="xpp-label">
+                      {isRtl ? "زر تفعيل الخصم وإتمام الطلب" : "Claim Discount Button Label"}
+                    </label>
                     <input
                       type="text"
                       name="ei_btn"
                       className="xpp-input"
-                      value={trans.exitIntent.buttonText}
-                      onChange={(e) => setTrans(p => ({ ...p, exitIntent: { ...p.exitIntent, buttonText: e.target.value } }))}
+                      dir={isEditRtl ? "rtl" : "ltr"}
+                      value={currentTrans.exitIntent?.buttonText || ""}
+                      onChange={(e) =>
+                        updateField("exitIntent", "buttonText", e.target.value)
+                      }
                     />
                   </div>
                   <div className="xpp-field-group" style={{ flex: 1 }}>
-                    <label className="xpp-label">{isRtl ? "رابط رفض الخصم والإغلاق" : "Dismiss / Decline Text"}</label>
+                    <label className="xpp-label">
+                      {isRtl ? "رابط رفض الخصم والإغلاق" : "Dismiss / Decline Text"}
+                    </label>
                     <input
                       type="text"
                       name="ei_dismiss"
                       className="xpp-input"
-                      value={trans.exitIntent.dismissText}
-                      onChange={(e) => setTrans(p => ({ ...p, exitIntent: { ...p.exitIntent, dismissText: e.target.value } }))}
+                      dir={isEditRtl ? "rtl" : "ltr"}
+                      value={currentTrans.exitIntent?.dismissText || ""}
+                      onChange={(e) =>
+                        updateField("exitIntent", "dismissText", e.target.value)
+                      }
                     />
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Feature 6: Social Bar */}
+            {/* Tab 6: Social Bar */}
             {activeTab === "socialBar" && (
-              <div>
+              <div dir={isEditRtl ? "rtl" : "ltr"}>
                 <div className="xpp-field-group">
-                  <label className="xpp-label">{isRtl ? "نص شارة المساعدة السريعة" : "Badge Help Text"}</label>
+                  <label className="xpp-label">
+                    {isRtl ? "نص شارة المساعدة السريعة" : "Badge Help Text"}
+                  </label>
                   <input
                     type="text"
                     name="sb_badge"
                     className="xpp-input"
-                    value={trans.socialBar.badgeText}
-                    onChange={(e) => setTrans(p => ({ ...p, socialBar: { ...p.socialBar, badgeText: e.target.value } }))}
+                    dir={isEditRtl ? "rtl" : "ltr"}
+                    value={currentTrans.socialBar?.badgeText || ""}
+                    onChange={(e) =>
+                      updateField("socialBar", "badgeText", e.target.value)
+                    }
                   />
                 </div>
                 <div className="xpp-row">
                   <div className="xpp-field-group" style={{ flex: 1 }}>
-                    <label className="xpp-label">{isRtl ? "اسم مجتمع الـ VIP" : "VIP Community Label"}</label>
+                    <label className="xpp-label">
+                      {isRtl ? "اسم مجتمع الـ VIP" : "VIP Community Label"}
+                    </label>
                     <input
                       type="text"
                       name="sb_vip"
                       className="xpp-input"
-                      value={trans.socialBar.vipCommunityLabel}
-                      onChange={(e) => setTrans(p => ({ ...p, socialBar: { ...p.socialBar, vipCommunityLabel: e.target.value } }))}
+                      dir={isEditRtl ? "rtl" : "ltr"}
+                      value={currentTrans.socialBar?.vipCommunityLabel || ""}
+                      onChange={(e) =>
+                        updateField("socialBar", "vipCommunityLabel", e.target.value)
+                      }
                     />
                   </div>
                   <div className="xpp-field-group" style={{ flex: 1 }}>
-                    <label className="xpp-label">{isRtl ? "رسالة الواتساب التلقائية" : "Default WhatsApp Message"}</label>
+                    <label className="xpp-label">
+                      {isRtl ? "رسالة الواتساب التلقائية" : "Default WhatsApp Message"}
+                    </label>
                     <input
                       type="text"
                       name="sb_wa"
                       className="xpp-input"
-                      value={trans.socialBar.whatsappMessage}
-                      onChange={(e) => setTrans(p => ({ ...p, socialBar: { ...p.socialBar, whatsappMessage: e.target.value } }))}
+                      dir={isEditRtl ? "rtl" : "ltr"}
+                      value={currentTrans.socialBar?.whatsappMessage || ""}
+                      onChange={(e) =>
+                        updateField("socialBar", "whatsappMessage", e.target.value)
+                      }
                     />
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Feature 7: Urgency Toast */}
+            {/* Tab 7: Urgency Toast */}
             {activeTab === "scarcityToast" && (
-              <div>
+              <div dir={isEditRtl ? "rtl" : "ltr"}>
                 <div className="xpp-row">
                   <div className="xpp-field-group" style={{ flex: 1 }}>
-                    <label className="xpp-label">{isRtl ? "شارة كود الخصم" : "Discount Badge"}</label>
+                    <label className="xpp-label">
+                      {isRtl ? "شارة كود الخصم" : "Discount Badge"}
+                    </label>
                     <input
                       type="text"
                       name="st_disc_b"
                       className="xpp-input"
-                      value={trans.scarcityToast.discountBadge}
-                      onChange={(e) => setTrans(p => ({ ...p, scarcityToast: { ...p.scarcityToast, discountBadge: e.target.value } }))}
+                      dir={isEditRtl ? "rtl" : "ltr"}
+                      value={currentTrans.scarcityToast?.discountBadge || ""}
+                      onChange={(e) =>
+                        updateField("scarcityToast", "discountBadge", e.target.value)
+                      }
                     />
                   </div>
                   <div className="xpp-field-group" style={{ flex: 2 }}>
-                    <label className="xpp-label">{isRtl ? "نص إشعار الخصم" : "Discount Toast Text"}</label>
+                    <label className="xpp-label">
+                      {isRtl ? "نص إشعار الخصم" : "Discount Toast Text"}
+                    </label>
                     <input
                       type="text"
                       name="st_disc_t"
                       className="xpp-input"
-                      value={trans.scarcityToast.discountText}
-                      onChange={(e) => setTrans(p => ({ ...p, scarcityToast: { ...p.scarcityToast, discountText: e.target.value } }))}
+                      dir={isEditRtl ? "rtl" : "ltr"}
+                      value={currentTrans.scarcityToast?.discountText || ""}
+                      onChange={(e) =>
+                        updateField("scarcityToast", "discountText", e.target.value)
+                      }
                     />
                   </div>
                 </div>
                 <div className="xpp-row">
                   <div className="xpp-field-group" style={{ flex: 1 }}>
-                    <label className="xpp-label">{isRtl ? "شارة كمية المخزون" : "Stock Badge"}</label>
+                    <label className="xpp-label">
+                      {isRtl ? "شارة كمية المخزون" : "Stock Badge"}
+                    </label>
                     <input
                       type="text"
                       name="st_stock_b"
                       className="xpp-input"
-                      value={trans.scarcityToast.stockBadge}
-                      onChange={(e) => setTrans(p => ({ ...p, scarcityToast: { ...p.scarcityToast, stockBadge: e.target.value } }))}
+                      dir={isEditRtl ? "rtl" : "ltr"}
+                      value={currentTrans.scarcityToast?.stockBadge || ""}
+                      onChange={(e) =>
+                        updateField("scarcityToast", "stockBadge", e.target.value)
+                      }
                     />
                   </div>
                   <div className="xpp-field-group" style={{ flex: 2 }}>
-                    <label className="xpp-label">{isRtl ? "نص إشعار ندرة المخزون" : "Stock Toast Text"}</label>
+                    <label className="xpp-label">
+                      {isRtl ? "نص إشعار ندرة المخزون" : "Stock Toast Text"}
+                    </label>
                     <input
                       type="text"
                       name="st_stock_t"
                       className="xpp-input"
-                      value={trans.scarcityToast.stockText}
-                      onChange={(e) => setTrans(p => ({ ...p, scarcityToast: { ...p.scarcityToast, stockText: e.target.value } }))}
+                      dir={isEditRtl ? "rtl" : "ltr"}
+                      value={currentTrans.scarcityToast?.stockText || ""}
+                      onChange={(e) =>
+                        updateField("scarcityToast", "stockText", e.target.value)
+                      }
                     />
                   </div>
                 </div>
                 <div className="xpp-row">
                   <div className="xpp-field-group" style={{ flex: 1 }}>
-                    <label className="xpp-label">{isRtl ? "شارة الشراء المباشر" : "Trending Badge"}</label>
+                    <label className="xpp-label">
+                      {isRtl ? "شارة الشراء المباشر" : "Trending Badge"}
+                    </label>
                     <input
                       type="text"
                       name="st_trend_b"
                       className="xpp-input"
-                      value={trans.scarcityToast.trendingBadge}
-                      onChange={(e) => setTrans(p => ({ ...p, scarcityToast: { ...p.scarcityToast, trendingBadge: e.target.value } }))}
+                      dir={isEditRtl ? "rtl" : "ltr"}
+                      value={currentTrans.scarcityToast?.trendingBadge || ""}
+                      onChange={(e) =>
+                        updateField("scarcityToast", "trendingBadge", e.target.value)
+                      }
                     />
                   </div>
                   <div className="xpp-field-group" style={{ flex: 2 }}>
-                    <label className="xpp-label">{isRtl ? "نص إشعار الشراء الحديث" : "Trending Toast Text"}</label>
+                    <label className="xpp-label">
+                      {isRtl ? "نص إشعار الشراء الحديث" : "Trending Toast Text"}
+                    </label>
                     <input
                       type="text"
                       name="st_trend_t"
                       className="xpp-input"
-                      value={trans.scarcityToast.trendingText}
-                      onChange={(e) => setTrans(p => ({ ...p, scarcityToast: { ...p.scarcityToast, trendingText: e.target.value } }))}
+                      dir={isEditRtl ? "rtl" : "ltr"}
+                      value={currentTrans.scarcityToast?.trendingText || ""}
+                      onChange={(e) =>
+                        updateField("scarcityToast", "trendingText", e.target.value)
+                      }
                     />
                   </div>
                 </div>
                 <div className="xpp-row">
                   <div className="xpp-field-group" style={{ flex: 1 }}>
-                    <label className="xpp-label">{isRtl ? "شارة الشحن السريع" : "Shipping Badge"}</label>
+                    <label className="xpp-label">
+                      {isRtl ? "شارة الشحن السريع" : "Shipping Badge"}
+                    </label>
                     <input
                       type="text"
                       name="st_ship_b"
                       className="xpp-input"
-                      value={trans.scarcityToast.shippingBadge}
-                      onChange={(e) => setTrans(p => ({ ...p, scarcityToast: { ...p.scarcityToast, shippingBadge: e.target.value } }))}
+                      dir={isEditRtl ? "rtl" : "ltr"}
+                      value={currentTrans.scarcityToast?.shippingBadge || ""}
+                      onChange={(e) =>
+                        updateField("scarcityToast", "shippingBadge", e.target.value)
+                      }
                     />
                   </div>
                   <div className="xpp-field-group" style={{ flex: 2 }}>
-                    <label className="xpp-label">{isRtl ? "نص إشعار الشحن المجاني" : "Shipping Toast Text"}</label>
+                    <label className="xpp-label">
+                      {isRtl ? "نص إشعار الشحن المجاني" : "Shipping Toast Text"}
+                    </label>
                     <input
                       type="text"
                       name="st_ship_t"
                       className="xpp-input"
-                      value={trans.scarcityToast.shippingText}
-                      onChange={(e) => setTrans(p => ({ ...p, scarcityToast: { ...p.scarcityToast, shippingText: e.target.value } }))}
+                      dir={isEditRtl ? "rtl" : "ltr"}
+                      value={currentTrans.scarcityToast?.shippingText || ""}
+                      onChange={(e) =>
+                        updateField("scarcityToast", "shippingText", e.target.value)
+                      }
                     />
                   </div>
                 </div>
@@ -855,17 +1177,65 @@ export default function TranslationsPage() {
             )}
           </div>
 
+          {/* 3. Bulk Quick Actions Card */}
+          <div
+            className="xpp-card"
+            style={{
+              background: "linear-gradient(135deg, #18150f 0%, #141414 100%)",
+              border: "1px solid rgba(212, 175, 55, 0.4)",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                flexWrap: "wrap",
+                gap: 16,
+              }}
+            >
+              <div>
+                <h2 className="xpp-card-title">
+                  {isRtl ? "إعادة تعيين النصوص النموذجية" : "Reset to Predefined Defaults"}
+                </h2>
+                <p className="xpp-card-desc" style={{ margin: 0 }}>
+                  {isRtl
+                    ? "تحميل النصوص النموذجية لكافة اللغات الـ 7 دفعة واحدة بنقرة واحدة."
+                    : "Load high-converting predefined copy across all 7 supported languages simultaneously."}
+                </p>
+              </div>
+              <div>
+                <button
+                  type="button"
+                  className="xpp-btn xpp-btn--secondary"
+                  onClick={handleResetAllLanguages}
+                >
+                  {isRtl
+                    ? "تحميل النصوص النموذجية للـ 7 لغات"
+                    : "Reset All 7 Languages to Predefined Copy"}
+                </button>
+              </div>
+            </div>
+          </div>
+
           {/* Sticky Bottom Save Action Bar */}
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: 12, marginTop: 24 }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: 12,
+              marginTop: 24,
+            }}
+          >
             <button
               type="submit"
               disabled={isSaving}
               className="xpp-btn xpp-btn--primary"
-              style={{ padding: "14px 32px", fontSize: 15 }}
+              style={{ padding: "14px 36px", fontSize: 15 }}
             >
               {isSaving
                 ? (isRtl ? "جارٍ الحفظ..." : "Saving...")
-                : (isRtl ? "حفظ التغييرات" : "Save Translations")}
+                : (isRtl ? "حفظ كافة التغييرات" : "Save All Translations")}
             </button>
           </div>
         </Form>

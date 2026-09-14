@@ -4,6 +4,13 @@ import { Form, useActionData, useLoaderData, useNavigation } from "react-router"
 import { authenticate } from "../shopify.server";
 import prisma from "../db.server";
 import { getOrCreateShop } from "../shop.server";
+import FeatureLanguageSwitcher from "../components/FeatureLanguageSwitcher";
+import {
+  DEFAULT_TRANSLATIONS_BY_LANG,
+  getAllTranslations,
+  sanitizeText,
+  type SupportedLanguage,
+} from "../utils/translations";
 
 type CatalogProduct = {
   id: string;
@@ -118,12 +125,20 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     };
   }
 
+  const translationConfig = await prisma.translationConfig.findUnique({
+    where: { shopId: shop.id },
+  });
+  const allTranslations = getAllTranslations(translationConfig?.translationsJson);
+  const dashboardLocale = (translationConfig?.dashboardLocale || "en") as SupportedLanguage;
+
   return {
     shop,
     enabled: shop.inCartUpsellEnabled,
     rules,
     products,
     styleConfig,
+    allTranslations,
+    dashboardLocale,
   };
 };
 
@@ -132,6 +147,29 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const shop = await getOrCreateShop(session.shop);
   const formData = await request.formData();
   const intent = String(formData.get("intent") || "save_rule");
+
+  if (intent === "save_translations") {
+    const translationsJsonRaw = String(formData.get("translationsJson") || "");
+    if (translationsJsonRaw) {
+      try {
+        const parsedAll = getAllTranslations(translationsJsonRaw);
+        await prisma.translationConfig.upsert({
+          where: { shopId: shop.id },
+          update: { translationsJson: JSON.stringify(parsedAll) },
+          create: {
+            shopId: shop.id,
+            dashboardLocale: "en",
+            storefrontLocale: "ar",
+            translationsJson: JSON.stringify(parsedAll),
+          },
+        });
+        return { ok: true, message: "Multi-language in-cart copy saved successfully." };
+      } catch (tErr) {
+        console.error("[InCart Action] Error saving translationConfig:", tErr);
+      }
+    }
+    return { ok: true };
+  }
 
   if (intent === "save_styles") {
     const inCartBg = String(formData.get("inCartBg") || "#0B0B0B");
@@ -365,10 +403,39 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function InCartUpsellSettings() {
-  const { enabled, rules, products, styleConfig } = useLoaderData<typeof loader>();
+  const { enabled, rules, products, styleConfig, allTranslations, dashboardLocale } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
+
+  const [selectedLang, setSelectedLang] = useState<SupportedLanguage>(dashboardLocale || "ar");
+  const [translationsMap, setTranslationsMap] = useState(allTranslations);
+  const currentCopy = translationsMap[selectedLang]?.inCart || DEFAULT_TRANSLATIONS_BY_LANG[selectedLang].inCart;
+
+  const handleCopyChange = (field: keyof typeof currentCopy, val: string) => {
+    const clean = sanitizeText(val);
+    setTranslationsMap((prev) => ({
+      ...prev,
+      [selectedLang]: {
+        ...prev[selectedLang],
+        inCart: {
+          ...prev[selectedLang].inCart,
+          [field]: clean,
+        },
+      },
+    }));
+  };
+
+  const handleLoadPredefined = () => {
+    const def = DEFAULT_TRANSLATIONS_BY_LANG[selectedLang].inCart;
+    setTranslationsMap((prev) => ({
+      ...prev,
+      [selectedLang]: {
+        ...prev[selectedLang],
+        inCart: { ...def },
+      },
+    }));
+  };
 
   const [inCartBg, setInCartBg] = useState(styleConfig?.inCartBg || "#0B0B0B");
   const [inCartAccent, setInCartAccent] = useState(styleConfig?.inCartAccent || "#D4AF37");
@@ -753,6 +820,78 @@ export default function InCartUpsellSettings() {
                   style={{ padding: "8px 18px", fontSize: "13px" }}
                 >
                   Save Colors
+                </button>
+              </div>
+            </Form>
+          </div>
+
+          {/* Multi-Language In-Cart Copy Card */}
+          <div className="xp-index-card" style={{ marginBottom: "20px" }}>
+            <div className="xp-index-header">
+              <div>
+                <h3 style={{ fontSize: "16px", fontWeight: "700", color: "#202223", margin: "0 0 4px 0" }}>
+                  Multi-Language In-Cart Copy &amp; Buttons
+                </h3>
+                <p className="xp-sub" style={{ margin: 0 }}>
+                  Customize the in-cart upsell block title, quick add button, and discount badge for each of the 7 supported languages.
+                </p>
+              </div>
+            </div>
+
+            <FeatureLanguageSwitcher
+              selectedLang={selectedLang}
+              onSelectLang={setSelectedLang}
+              onLoadPredefined={handleLoadPredefined}
+              dashboardLocale={dashboardLocale}
+            />
+
+            <Form method="post" style={{ marginTop: "16px" }}>
+              <input type="hidden" name="intent" value="save_translations" />
+              <input type="hidden" name="translationsJson" value={JSON.stringify(translationsMap)} />
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "12px" }}>
+                <div className="xp-field">
+                  <label style={{ fontSize: "12px", fontWeight: "600", color: "#333", marginBottom: "4px" }}>
+                    Block Header / Section Title ({selectedLang.toUpperCase()})
+                  </label>
+                  <input
+                    type="text"
+                    className="xp-input"
+                    dir={selectedLang === "ar" ? "rtl" : "ltr"}
+                    value={currentCopy.sectionTitle}
+                    onChange={(e) => handleCopyChange("sectionTitle", e.target.value)}
+                  />
+                </div>
+                <div className="xp-field">
+                  <label style={{ fontSize: "12px", fontWeight: "600", color: "#333", marginBottom: "4px" }}>
+                    Quick-Add Button Label ({selectedLang.toUpperCase()})
+                  </label>
+                  <input
+                    type="text"
+                    className="xp-input"
+                    dir={selectedLang === "ar" ? "rtl" : "ltr"}
+                    value={currentCopy.addButton}
+                    onChange={(e) => handleCopyChange("addButton", e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="xp-field" style={{ marginBottom: "16px" }}>
+                <label style={{ fontSize: "12px", fontWeight: "600", color: "#333", marginBottom: "4px" }}>
+                  Discount Badge Format ({selectedLang.toUpperCase()}) - Use {"{discount}"} for percentage
+                </label>
+                <input
+                  type="text"
+                  className="xp-input"
+                  dir={selectedLang === "ar" ? "rtl" : "ltr"}
+                  value={currentCopy.saveBadge}
+                  onChange={(e) => handleCopyChange("saveBadge", e.target.value)}
+                />
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                <button type="submit" disabled={isSubmitting} className="xp-btn-gold-primary" style={{ padding: "8px 18px", fontSize: "13px" }}>
+                  Save Multi-Language Copy
                 </button>
               </div>
             </Form>
@@ -1440,8 +1579,8 @@ export default function InCartUpsellSettings() {
                 <h3>Cart Drawer Preview</h3>
                 <p className="xp-sub">Embedded add-on card rendered inside cart drawers.</p>
 
-                <div className="xp-drawer-mock">
-                  <div className="xp-drawer-title">{headline}</div>
+                <div className="xp-drawer-mock" dir={selectedLang === "ar" ? "rtl" : "ltr"}>
+                  <div className="xp-drawer-title">{currentCopy.sectionTitle || headline}</div>
 
                   <div className="xp-addon-card">
                     {selectedProduct?.imageUrl ? (
@@ -1477,11 +1616,11 @@ export default function InCartUpsellSettings() {
                           <span className="xp-addon-orig">${originalPrice.toFixed(2)}</span>
                         )}
                         {isDiscounted && (
-                          <span className="xp-addon-badge">-{discountPercent}%</span>
+                          <span className="xp-addon-badge">{(currentCopy.saveBadge || "SAVE {discount}%").replace("{discount}", discountPercent)}</span>
                         )}
                       </div>
                       <button type="button" className="xp-addon-quickadd">
-                        + Add to Cart
+                        {currentCopy.addButton || "+ Add to Cart"}
                       </button>
                     </div>
                   </div>

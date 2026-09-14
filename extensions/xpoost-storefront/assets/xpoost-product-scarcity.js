@@ -51,7 +51,11 @@
                 var excluded = pList.some(function (id) {
                   return String(id).replace(/\D/g, "") === cleanPid;
                 });
-              // RTL & Translations Sync
+                if (excluded) {
+                  root.classList.add("xpp-ps-hidden");
+                  return;
+                }
+              }
               if (data && data.isRtl) {
                 root.setAttribute("dir", "rtl");
               }

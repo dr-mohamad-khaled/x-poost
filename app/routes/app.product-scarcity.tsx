@@ -4,6 +4,13 @@ import { Form, useActionData, useLoaderData, useNavigation } from "react-router"
 import { authenticate } from "../shopify.server";
 import prisma from "../db.server";
 import { getOrCreateShop } from "../shop.server";
+import { FeatureLanguageSwitcher } from "../components/FeatureLanguageSwitcher";
+import {
+  type SupportedLanguage,
+  DEFAULT_TRANSLATIONS_BY_LANG,
+  getAllTranslations,
+  sanitizeText,
+} from "../utils/translations";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { admin, session } = await authenticate.admin(request);
@@ -60,6 +67,23 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     console.error("[Product Scarcity Loader] Error fetching products:", err);
   }
 
+  let translationConfig = await prisma.translationConfig.findUnique({
+    where: { shopId: shop.id },
+  });
+  if (!translationConfig) {
+    translationConfig = await prisma.translationConfig.create({
+      data: {
+        shopId: shop.id,
+        dashboardLocale: "en",
+        storefrontLocale: "ar",
+        translationsJson: "{}",
+      },
+    });
+  }
+
+  const allTranslations = getAllTranslations(translationConfig?.translationsJson);
+  const dashboardLocale = (translationConfig?.dashboardLocale || "en") as SupportedLanguage;
+
   if (config) {
     config.headlineText = (config.headlineText || "").replace(/[\uD83C-\uDBFF\uDC00-\uDFFF]/g, "").trim();
     config.subText = (config.subText || "").replace(/[\uD83C-\uDBFF\uDC00-\uDFFF]/g, "").trim();
@@ -70,6 +94,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     config,
     products,
     productScarcityEnabled: shop.productScarcityEnabled,
+    allTranslations,
+    dashboardLocale,
   };
 };
 
@@ -96,6 +122,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const borderColor = String(formData.get("borderColor") || "#2d2d2d");
   const targetMode = String(formData.get("targetMode") || "ALL");
   const productIdsJson = String(formData.get("productIdsJson") || "[]");
+  const translationsJsonRaw = String(formData.get("translationsJson") || "");
 
   try {
     await prisma.productScarcityConfig.upsert({
@@ -135,6 +162,24 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       },
     });
 
+    if (translationsJsonRaw) {
+      try {
+        const parsedAll = getAllTranslations(translationsJsonRaw);
+        await prisma.translationConfig.upsert({
+          where: { shopId: shop.id },
+          update: { translationsJson: JSON.stringify(parsedAll) },
+          create: {
+            shopId: shop.id,
+            dashboardLocale: "en",
+            storefrontLocale: "ar",
+            translationsJson: JSON.stringify(parsedAll),
+          },
+        });
+      } catch (tErr) {
+        console.error("[Product Scarcity] Failed to save translations:", tErr);
+      }
+    }
+
     await prisma.shop.update({
       where: { id: shop.id },
       data: { productScarcityEnabled: active },
@@ -148,10 +193,40 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function ProductScarcityPage() {
-  const { shopDomain, config, products: initialProducts } = useLoaderData<typeof loader>();
+  const { shopDomain, config, products: initialProducts, allTranslations, dashboardLocale } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const nav = useNavigation();
   const isSubmitting = nav.state === "submitting";
+
+  const [selectedLang, setSelectedLang] = useState<SupportedLanguage>(dashboardLocale || "ar");
+  const [translationsMap, setTranslationsMap] = useState(allTranslations);
+
+  const currentCopy = translationsMap[selectedLang]?.productScarcity || DEFAULT_TRANSLATIONS_BY_LANG[selectedLang].productScarcity;
+
+  const handleTextChange = (field: "headlineText" | "subText" | "badgeText" | "viewersText" | "viewingSuffix", val: string) => {
+    const clean = sanitizeText(val);
+    setTranslationsMap((prev) => ({
+      ...prev,
+      [selectedLang]: {
+        ...prev[selectedLang],
+        productScarcity: {
+          ...prev[selectedLang].productScarcity,
+          [field]: clean,
+        },
+      },
+    }));
+  };
+
+  const handleLoadPredefined = () => {
+    const def = DEFAULT_TRANSLATIONS_BY_LANG[selectedLang].productScarcity;
+    setTranslationsMap((prev) => ({
+      ...prev,
+      [selectedLang]: {
+        ...prev[selectedLang],
+        productScarcity: { ...def },
+      },
+    }));
+  };
 
   // Form State
   const [active, setActive] = useState(config.active);
@@ -160,8 +235,6 @@ export default function ProductScarcityPage() {
   const [minStock, setMinStock] = useState(config.minStock);
   const [maxStock, setMaxStock] = useState(config.maxStock);
   const [lowStockThreshold, setLowStockThreshold] = useState(config.lowStockThreshold);
-  const [headlineText, setHeadlineText] = useState(config.headlineText);
-  const [subText, setSubText] = useState(config.subText || "");
   const [accentColor, setAccentColor] = useState(config.accentColor);
   const [backgroundColor, setBackgroundColor] = useState(config.backgroundColor);
   const [textColor, setTextColor] = useState(config.textColor);
@@ -258,12 +331,15 @@ export default function ProductScarcityPage() {
     return () => clearTimeout(timeoutId);
   }, []);
 
-  const previewHeadline = headlineText
+  const previewHeadline = (currentCopy.headlineText || "Only {stock} items left")
     .replace(/{stock}/g, String(previewStock))
     .replace(/{viewers}/g, String(previewViewers));
-  const previewSubtext = subText
+  const previewSubtext = (currentCopy.subText || "")
     .replace(/{stock}/g, String(previewStock))
     .replace(/{viewers}/g, String(previewViewers));
+  const previewBadge = currentCopy.badgeText || "HIGH DEMAND";
+  const previewViewingSuffix = currentCopy.viewingSuffix || "viewing";
+  const isPreviewRtl = selectedLang === "ar";
   const previewPercent = Math.min(100, Math.max(10, Math.round((previewStock / maxStock) * 100)));
 
   return (
@@ -464,10 +540,10 @@ export default function ProductScarcityPage() {
         )}
 
         {/* Live Preview Box */}
-        <div className="xpp-live-preview-box">
+        <div className="xpp-live-preview-box" dir={isPreviewRtl ? "rtl" : "ltr"}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
             <span style={{ fontSize: 12, fontWeight: 800, color: "#FFD700", textTransform: "uppercase", letterSpacing: 1 }}>
-              Real-Time Storefront Preview
+              Real-Time Storefront Preview ({selectedLang.toUpperCase()})
             </span>
             <span style={{ fontSize: 12, color: "#888888" }}>
               Preset: {designPreset}
@@ -543,7 +619,7 @@ export default function ProductScarcityPage() {
                     >
                       {previewViewers}
                     </span>{" "}
-                    viewing
+                    {previewViewingSuffix}
                   </span>
                 </div>
               </div>
@@ -562,7 +638,7 @@ export default function ProductScarcityPage() {
               >
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
                   <span style={{ background: accentColor, color: "#000", fontSize: 10, fontWeight: 900, padding: "2px 6px", borderRadius: 4 }}>
-                    HIGH DEMAND
+                    {previewBadge}
                   </span>
                   <span style={{ fontSize: 13, fontWeight: 700 }}>{previewHeadline}</span>
                 </div>
@@ -625,6 +701,9 @@ export default function ProductScarcityPage() {
           <input type="hidden" name="stockSource" value={stockSource} />
           <input type="hidden" name="targetMode" value={targetMode} />
           <input type="hidden" name="productIdsJson" value={JSON.stringify(selectedProductIds)} />
+          <input type="hidden" name="translationsJson" value={JSON.stringify(translationsMap)} />
+          <input type="hidden" name="headlineText" value={currentCopy.headlineText} />
+          <input type="hidden" name="subText" value={currentCopy.subText} />
 
           {/* Master Enable Card */}
           <div className="xpp-card">
@@ -788,47 +867,77 @@ export default function ProductScarcityPage() {
 
           {/* 3. Text & Copy */}
           <div className="xpp-card">
-            <h2 className="xpp-card-title">3. Copy & Translations</h2>
+            <h2 className="xpp-card-title">3. Copy & Multi-Language Settings</h2>
             <p className="xpp-card-desc">
-              Customize the message shown to visitors. Click any variable chip to insert dynamic placeholders.
+              Customize the scarcity block message for each of the 7 supported languages. Select a language to edit or click &quot;Load Predefined Values&quot; for instant high-converting copy.
             </p>
+
+            <FeatureLanguageSwitcher
+              selectedLang={selectedLang}
+              onSelectLang={setSelectedLang}
+              onLoadPredefined={handleLoadPredefined}
+              dashboardLocale={dashboardLocale}
+            />
 
             <div style={{ marginBottom: 14 }}>
               <span style={{ fontSize: 12, color: "#888888", marginRight: 8 }}>Available Variables:</span>
               <span
                 className="xpp-var-chip"
-                onClick={() => setHeadlineText((prev) => `${prev} {stock}`)}
+                onClick={() => handleTextChange("headlineText", `${currentCopy.headlineText} {stock}`)}
               >
                 + &#123;stock&#125;
               </span>
               <span
                 className="xpp-var-chip"
-                onClick={() => setHeadlineText((prev) => `${prev} {viewers}`)}
+                onClick={() => handleTextChange("headlineText", `${currentCopy.headlineText} {viewers}`)}
               >
                 + &#123;viewers&#125;
               </span>
             </div>
 
             <div className="xpp-field-group">
-              <label className="xpp-label">Headline Template</label>
+              <label className="xpp-label">Headline Template ({selectedLang.toUpperCase()})</label>
               <input
                 type="text"
-                name="headlineText"
                 className="xpp-input"
-                value={headlineText}
-                onChange={(e) => setHeadlineText(e.target.value)}
+                dir={selectedLang === "ar" ? "rtl" : "ltr"}
+                value={currentCopy.headlineText}
+                onChange={(e) => handleTextChange("headlineText", e.target.value)}
               />
             </div>
 
             <div className="xpp-field-group">
-              <label className="xpp-label">Subtitle / Reassurance Note</label>
+              <label className="xpp-label">Subtitle / Reassurance Note ({selectedLang.toUpperCase()})</label>
               <input
                 type="text"
-                name="subText"
                 className="xpp-input"
-                value={subText}
-                onChange={(e) => setSubText(e.target.value)}
+                dir={selectedLang === "ar" ? "rtl" : "ltr"}
+                value={currentCopy.subText}
+                onChange={(e) => handleTextChange("subText", e.target.value)}
               />
+            </div>
+
+            <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
+              <div className="xpp-field-group" style={{ flex: "1 1 220px" }}>
+                <label className="xpp-label">Badge Tag Text ({selectedLang.toUpperCase()})</label>
+                <input
+                  type="text"
+                  className="xpp-input"
+                  dir={selectedLang === "ar" ? "rtl" : "ltr"}
+                  value={currentCopy.badgeText}
+                  onChange={(e) => handleTextChange("badgeText", e.target.value)}
+                />
+              </div>
+              <div className="xpp-field-group" style={{ flex: "1 1 220px" }}>
+                <label className="xpp-label">Viewing Counter Suffix ({selectedLang.toUpperCase()})</label>
+                <input
+                  type="text"
+                  className="xpp-input"
+                  dir={selectedLang === "ar" ? "rtl" : "ltr"}
+                  value={currentCopy.viewingSuffix}
+                  onChange={(e) => handleTextChange("viewingSuffix", e.target.value)}
+                />
+              </div>
             </div>
           </div>
 

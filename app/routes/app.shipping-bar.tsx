@@ -4,6 +4,13 @@ import { Form, useActionData, useLoaderData, useNavigation } from "react-router"
 import { authenticate } from "../shopify.server";
 import prisma from "../db.server";
 import { getOrCreateShop } from "../shop.server";
+import { FeatureLanguageSwitcher } from "../components/FeatureLanguageSwitcher";
+import {
+  type SupportedLanguage,
+  DEFAULT_TRANSLATIONS_BY_LANG,
+  getAllTranslations,
+  sanitizeText,
+} from "../utils/translations";
 
 type Tier = {
   targetAmount: number;
@@ -70,6 +77,23 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     });
   }
 
+  let translationConfig = await prisma.translationConfig.findUnique({
+    where: { shopId: shop.id },
+  });
+  if (!translationConfig) {
+    translationConfig = await prisma.translationConfig.create({
+      data: {
+        shopId: shop.id,
+        dashboardLocale: "en",
+        storefrontLocale: "ar",
+        translationsJson: "{}",
+      },
+    });
+  }
+
+  const allTranslations = getAllTranslations(translationConfig?.translationsJson);
+  const dashboardLocale = (translationConfig?.dashboardLocale || "en") as SupportedLanguage;
+
   let tiers: Tier[] = [];
   let layoutStyle = "milestone_stepper";
   try {
@@ -89,6 +113,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     shop,
     enabled: shop.shippingBarEnabled,
     config: { ...config, tiers, layoutStyle },
+    allTranslations,
+    dashboardLocale,
   };
 };
 
@@ -107,6 +133,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const initialMessage = String(formData.get("initialMessage") || "Add items to unlock Free Shipping!");
   const allUnlockedMessage = String(formData.get("allUnlockedMessage") || "Congratulations! You unlocked all rewards!");
   const layoutStyle = String(formData.get("layoutStyle") || "milestone_stepper");
+  const translationsJsonRaw = String(formData.get("translationsJson") || "");
 
   const tiersRaw = String(formData.get("tiersJson") || "[]");
   let tiers: Tier[];
@@ -154,6 +181,24 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     },
   });
 
+  if (translationsJsonRaw) {
+    try {
+      const parsedAll = getAllTranslations(translationsJsonRaw);
+      await prisma.translationConfig.upsert({
+        where: { shopId: shop.id },
+        update: { translationsJson: JSON.stringify(parsedAll) },
+        create: {
+          shopId: shop.id,
+          dashboardLocale: "en",
+          storefrontLocale: "ar",
+          translationsJson: JSON.stringify(parsedAll),
+        },
+      });
+    } catch (e) {
+      console.error("[Shipping Bar Action] Error saving translationConfig:", e);
+    }
+  }
+
   await prisma.shop.update({
     where: { id: shop.id },
     data: { shippingBarEnabled: active },
@@ -163,15 +208,43 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function ShippingBarSettings() {
-  const { config } = useLoaderData<typeof loader>();
+  const { config, allTranslations, dashboardLocale } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
 
+  const [selectedLang, setSelectedLang] = useState<SupportedLanguage>(dashboardLocale || "ar");
+  const [translationsMap, setTranslationsMap] = useState(allTranslations);
+
+  const currentCopy = translationsMap[selectedLang]?.shippingBar || DEFAULT_TRANSLATIONS_BY_LANG[selectedLang].shippingBar;
+
+  const handleTextChange = (field: "initialMessage" | "progressMessage" | "allUnlockedMessage", val: string) => {
+    const clean = sanitizeText(val);
+    setTranslationsMap((prev) => ({
+      ...prev,
+      [selectedLang]: {
+        ...prev[selectedLang],
+        shippingBar: {
+          ...prev[selectedLang].shippingBar,
+          [field]: clean,
+        },
+      },
+    }));
+  };
+
+  const handleLoadPredefined = () => {
+    const def = DEFAULT_TRANSLATIONS_BY_LANG[selectedLang].shippingBar;
+    setTranslationsMap((prev) => ({
+      ...prev,
+      [selectedLang]: {
+        ...prev[selectedLang],
+        shippingBar: { ...def },
+      },
+    }));
+  };
+
   const [selectedLayout, setSelectedLayout] = useState<string>(config.layoutStyle || "milestone_stepper");
   const [currencySymbol, setCurrencySymbol] = useState(config.currencySymbol || "$");
-  const [initialMessage, setInitialMessage] = useState(config.initialMessage || "Add items to unlock Free Shipping!");
-  const [allUnlockedMessage, setAllUnlockedMessage] = useState(config.allUnlockedMessage || "Congratulations! You unlocked all rewards!");
   const [progressColor, setProgressColor] = useState(config.progressColor || "#D4AF37");
   const [bgColor, setBgColor] = useState(config.backgroundColor || "#0B0B0B");
   const [tiers, setTiers] = useState<Tier[]>(config.tiers || DEFAULT_TIERS);
@@ -217,6 +290,9 @@ export default function ShippingBarSettings() {
           <Form method="post" className="xp-form">
             <input type="hidden" name="tiersJson" value={JSON.stringify(tiers)} />
             <input type="hidden" name="layoutStyle" value={selectedLayout} />
+            <input type="hidden" name="translationsJson" value={JSON.stringify(translationsMap)} />
+            <input type="hidden" name="initialMessage" value={currentCopy.initialMessage} />
+            <input type="hidden" name="allUnlockedMessage" value={currentCopy.allUnlockedMessage} />
 
             {/* Layout Architecture Selection */}
             <s-section heading="1. Choose Progress Bar Layout">
@@ -235,10 +311,9 @@ export default function ShippingBarSettings() {
                       tabIndex={0}
                     >
                       <div className="xp-layout-header">
+                        <span className="xp-layout-name">{layout.name}</span>
                         <span className="xp-layout-badge">{layout.badge}</span>
-                        {isSelected && <span className="xp-theme-check">Selected</span>}
                       </div>
-                      <h4 className="xp-layout-title">{layout.name}</h4>
                       <p className="xp-layout-desc">{layout.description}</p>
                     </div>
                   );
@@ -247,7 +322,7 @@ export default function ShippingBarSettings() {
             </s-section>
 
             {/* General Settings */}
-            <s-section heading="2. General & Currency">
+            <s-section heading="2. General & Multi-Language Messages">
               <div className="xp-row">
                 <label className="xp-toggle">
                   <input type="checkbox" name="active" defaultChecked={config.active} />
@@ -277,25 +352,44 @@ export default function ShippingBarSettings() {
                 </div>
               </div>
 
+              <FeatureLanguageSwitcher
+                selectedLang={selectedLang}
+                onSelectLang={setSelectedLang}
+                onLoadPredefined={handleLoadPredefined}
+                dashboardLocale={dashboardLocale}
+              />
+
               <div className="xp-field">
-                <label>Initial Message (Empty Cart)</label>
+                <label>Initial Message / Empty Cart ({selectedLang.toUpperCase()})</label>
                 <input
                   type="text"
-                  name="initialMessage"
                   className="xp-input"
-                  value={initialMessage}
-                  onChange={(e) => setInitialMessage(e.target.value)}
+                  dir={selectedLang === "ar" ? "rtl" : "ltr"}
+                  value={currentCopy.initialMessage}
+                  onChange={(e) => handleTextChange("initialMessage", e.target.value)}
                 />
               </div>
 
               <div className="xp-field">
-                <label>All Tiers Unlocked Message</label>
+                <label>Progress Toward Next Reward Message ({selectedLang.toUpperCase()})</label>
                 <input
                   type="text"
-                  name="allUnlockedMessage"
                   className="xp-input"
-                  value={allUnlockedMessage}
-                  onChange={(e) => setAllUnlockedMessage(e.target.value)}
+                  dir={selectedLang === "ar" ? "rtl" : "ltr"}
+                  value={currentCopy.progressMessage}
+                  onChange={(e) => handleTextChange("progressMessage", e.target.value)}
+                />
+                <small>Use &#123;amount&#125; variable for remaining distance to reward.</small>
+              </div>
+
+              <div className="xp-field">
+                <label>All Tiers Unlocked Message ({selectedLang.toUpperCase()})</label>
+                <input
+                  type="text"
+                  className="xp-input"
+                  dir={selectedLang === "ar" ? "rtl" : "ltr"}
+                  value={currentCopy.allUnlockedMessage}
+                  onChange={(e) => handleTextChange("allUnlockedMessage", e.target.value)}
                 />
               </div>
             </s-section>
@@ -421,12 +515,13 @@ export default function ShippingBarSettings() {
             {selectedLayout === "milestone_stepper" && (
               <div
                 className="xp-bar-preview-box"
+                dir={selectedLang === "ar" ? "rtl" : "ltr"}
                 style={{ background: bgColor, borderColor: `${progressColor}55` }}
               >
                 <div className="xp-bar-status-text">
                   {nextTier
-                    ? `Add ${currencySymbol}${remaining} more to unlock ${nextTier.rewardTitle}`
-                    : allUnlockedMessage}
+                    ? currentCopy.progressMessage.replace("{amount}", `${currencySymbol}${remaining}`)
+                    : currentCopy.allUnlockedMessage}
                 </div>
 
                 <div className="xp-stepper-track-wrap">
@@ -469,12 +564,13 @@ export default function ShippingBarSettings() {
             {selectedLayout === "gamified_cards" && (
               <div
                 className="xp-bar-preview-box"
+                dir={selectedLang === "ar" ? "rtl" : "ltr"}
                 style={{ background: bgColor, borderColor: `${progressColor}55` }}
               >
                 <div className="xp-bar-status-text">
                   {nextTier
-                    ? `Add ${currencySymbol}${remaining} to unlock your next reward`
-                    : allUnlockedMessage}
+                    ? currentCopy.progressMessage.replace("{amount}", `${currencySymbol}${remaining}`)
+                    : currentCopy.allUnlockedMessage}
                 </div>
 
                 <div className="xp-cards-progress-bar">
@@ -520,15 +616,16 @@ export default function ShippingBarSettings() {
             {selectedLayout === "luxury_gradient" && (
               <div
                 className="xp-bar-preview-box"
+                dir={selectedLang === "ar" ? "rtl" : "ltr"}
                 style={{ background: bgColor, borderColor: `${progressColor}55` }}
               >
                 <div className="xp-luxury-headline">
                   {nextTier ? (
                     <span>
-                      You are only <strong style={{ color: progressColor }}>{currencySymbol}{remaining}</strong> away from {nextTier.rewardTitle}
+                      {currentCopy.progressMessage.replace("{amount}", `${currencySymbol}${remaining}`)}
                     </span>
                   ) : (
-                    <span>{allUnlockedMessage}</span>
+                    <span>{currentCopy.allUnlockedMessage}</span>
                   )}
                 </div>
 
@@ -549,6 +646,7 @@ export default function ShippingBarSettings() {
             {selectedLayout === "split_ribbon" && (
               <div
                 className="xp-bar-preview-box"
+                dir={selectedLang === "ar" ? "rtl" : "ltr"}
                 style={{ background: bgColor, borderColor: `${progressColor}55` }}
               >
                 <div className="xp-split-ribbon-top">

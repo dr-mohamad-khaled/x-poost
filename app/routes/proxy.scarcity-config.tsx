@@ -43,9 +43,17 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     messages = [];
   }
 
+  const translationConfig = await prisma.translationConfig.findUnique({ where: { shopId: shop.id } });
+  const rawLocale = (url.searchParams.get("locale") || request.headers.get("x-storefront-locale") || translationConfig?.storefrontLocale || "ar").split("-")[0].toLowerCase();
+  const validLocales = ["ar", "en", "fr", "de", "es", "it", "pt"];
+  const storefrontLocale = validLocales.includes(rawLocale) ? rawLocale : "ar";
+  const isRtl = storefrontLocale === "ar";
+
   return new Response(
     JSON.stringify({
       active: true,
+      locale: storefrontLocale,
+      isRtl,
       showOn: config.showOn,
       position: config.position,
       onsetDelayMs: config.onsetDelayMs,

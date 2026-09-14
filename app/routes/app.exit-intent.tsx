@@ -4,6 +4,13 @@ import { Form, useActionData, useLoaderData, useNavigation } from "react-router"
 import { authenticate } from "../shopify.server";
 import prisma from "../db.server";
 import { getOrCreateShop } from "../shop.server";
+import { FeatureLanguageSwitcher } from "../components/FeatureLanguageSwitcher";
+import {
+  type SupportedLanguage,
+  DEFAULT_TRANSLATIONS_BY_LANG,
+  getAllTranslations,
+  sanitizeText,
+} from "../utils/translations";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { session } = await authenticate.admin(request);
@@ -31,10 +38,29 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     });
   }
 
+  let translationConfig = await prisma.translationConfig.findUnique({
+    where: { shopId: shop.id },
+  });
+  if (!translationConfig) {
+    translationConfig = await prisma.translationConfig.create({
+      data: {
+        shopId: shop.id,
+        dashboardLocale: "en",
+        storefrontLocale: "ar",
+        translationsJson: "{}",
+      },
+    });
+  }
+
+  const allTranslations = getAllTranslations(translationConfig?.translationsJson);
+  const dashboardLocale = (translationConfig?.dashboardLocale || "en") as SupportedLanguage;
+
   return {
     shop,
     enabled: shop.exitIntentEnabled,
     config,
+    allTranslations,
+    dashboardLocale,
   };
 };
 
@@ -53,6 +79,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const backgroundColor = String(formData.get("backgroundColor") || "#0B0B0B");
   const accentColor = String(formData.get("accentColor") || "#D4AF37");
   const textColor = String(formData.get("textColor") || "#FFFFFF");
+  const translationsJsonRaw = String(formData.get("translationsJson") || "");
 
   await prisma.exitIntentConfig.upsert({
     where: { shopId: shop.id },
@@ -83,6 +110,24 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     },
   });
 
+  if (translationsJsonRaw) {
+    try {
+      const parsedAll = getAllTranslations(translationsJsonRaw);
+      await prisma.translationConfig.upsert({
+        where: { shopId: shop.id },
+        update: { translationsJson: JSON.stringify(parsedAll) },
+        create: {
+          shopId: shop.id,
+          dashboardLocale: "en",
+          storefrontLocale: "ar",
+          translationsJson: JSON.stringify(parsedAll),
+        },
+      });
+    } catch (e) {
+      console.error("[Exit Intent Action] Error updating translationConfig:", e);
+    }
+  }
+
   await prisma.shop.update({
     where: { id: shop.id },
     data: { exitIntentEnabled: active },
@@ -92,15 +137,42 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function ExitIntentSettings() {
-  const { config } = useLoaderData<typeof loader>();
+  const { config, allTranslations, dashboardLocale } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
 
-  const [headline, setHeadline] = useState(config.headline || "Wait! Don't leave empty handed");
-  const [bodyText, setBodyText] = useState(config.bodyText || "Take an extra 10% off your order right now.");
+  const [selectedLang, setSelectedLang] = useState<SupportedLanguage>(dashboardLocale || "ar");
+  const [translationsMap, setTranslationsMap] = useState(allTranslations);
+
+  const currentCopy = translationsMap[selectedLang]?.exitIntent || DEFAULT_TRANSLATIONS_BY_LANG[selectedLang].exitIntent;
+
+  const handleTextChange = (field: "headline" | "bodyText" | "buttonText" | "dismissText", val: string) => {
+    const clean = sanitizeText(val);
+    setTranslationsMap((prev) => ({
+      ...prev,
+      [selectedLang]: {
+        ...prev[selectedLang],
+        exitIntent: {
+          ...prev[selectedLang].exitIntent,
+          [field]: clean,
+        },
+      },
+    }));
+  };
+
+  const handleLoadPredefined = () => {
+    const def = DEFAULT_TRANSLATIONS_BY_LANG[selectedLang].exitIntent;
+    setTranslationsMap((prev) => ({
+      ...prev,
+      [selectedLang]: {
+        ...prev[selectedLang],
+        exitIntent: { ...def },
+      },
+    }));
+  };
+
   const [code, setCode] = useState(config.discountCode || "SAVE10");
-  const [btnText, setBtnText] = useState(config.buttonText || "Claim 10% Off & Checkout");
   const [accentColor, setAccentColor] = useState(config.accentColor || "#D4AF37");
   const [bgColor, setBgColor] = useState(config.backgroundColor || "#0B0B0B");
   const [copied, setCopied] = useState(false);
@@ -134,6 +206,11 @@ export default function ExitIntentSettings() {
       <div className="xp-exit-layout">
         <div className="xp-exit-config">
           <Form method="post" className="xp-form">
+            <input type="hidden" name="translationsJson" value={JSON.stringify(translationsMap)} />
+            <input type="hidden" name="headline" value={currentCopy.headline} />
+            <input type="hidden" name="bodyText" value={currentCopy.bodyText} />
+            <input type="hidden" name="buttonText" value={currentCopy.buttonText} />
+
             <s-section heading="General & Trigger Logic">
               <div className="xp-row">
                 <label className="xp-toggle">
@@ -169,7 +246,14 @@ export default function ExitIntentSettings() {
               </div>
             </s-section>
 
-            <s-section heading="Offer & Copy">
+            <s-section heading="Offer & Multi-Language Copy">
+              <FeatureLanguageSwitcher
+                selectedLang={selectedLang}
+                onSelectLang={setSelectedLang}
+                onLoadPredefined={handleLoadPredefined}
+                dashboardLocale={dashboardLocale}
+              />
+
               <div className="xp-grid-2">
                 <div className="xp-field">
                   <label>Discount Coupon Code</label>
@@ -182,36 +266,47 @@ export default function ExitIntentSettings() {
                   />
                 </div>
                 <div className="xp-field">
-                  <label>Call to Action Button</label>
+                  <label>Call to Action Button ({selectedLang.toUpperCase()})</label>
                   <input
                     type="text"
-                    name="buttonText"
                     className="xp-input"
-                    value={btnText}
-                    onChange={(e) => setBtnText(e.target.value)}
+                    dir={selectedLang === "ar" ? "rtl" : "ltr"}
+                    value={currentCopy.buttonText}
+                    onChange={(e) => handleTextChange("buttonText", e.target.value)}
                   />
                 </div>
               </div>
 
               <div className="xp-field">
-                <label>Headline</label>
+                <label>Headline ({selectedLang.toUpperCase()})</label>
                 <input
                   type="text"
-                  name="headline"
                   className="xp-input"
-                  value={headline}
-                  onChange={(e) => setHeadline(e.target.value)}
+                  dir={selectedLang === "ar" ? "rtl" : "ltr"}
+                  value={currentCopy.headline}
+                  onChange={(e) => handleTextChange("headline", e.target.value)}
                 />
               </div>
 
               <div className="xp-field">
-                <label>Body Text</label>
+                <label>Body Text ({selectedLang.toUpperCase()})</label>
                 <textarea
-                  name="bodyText"
                   className="xp-input"
                   rows={3}
-                  value={bodyText}
-                  onChange={(e) => setBodyText(e.target.value)}
+                  dir={selectedLang === "ar" ? "rtl" : "ltr"}
+                  value={currentCopy.bodyText}
+                  onChange={(e) => handleTextChange("bodyText", e.target.value)}
+                />
+              </div>
+
+              <div className="xp-field">
+                <label>Dismiss Button / Text ({selectedLang.toUpperCase()})</label>
+                <input
+                  type="text"
+                  className="xp-input"
+                  dir={selectedLang === "ar" ? "rtl" : "ltr"}
+                  value={currentCopy.dismissText}
+                  onChange={(e) => handleTextChange("dismissText", e.target.value)}
                 />
               </div>
             </s-section>
@@ -264,11 +359,12 @@ export default function ExitIntentSettings() {
 
         <div className="xp-exit-preview-wrap">
           <div className="xp-preview-sticky">
-            <h3>Live Exit-Intent Modal Preview</h3>
+            <h3>Live Exit-Intent Modal Preview ({selectedLang.toUpperCase()})</h3>
             <p className="xp-sub">Triggers on top-viewport cursor breach or rapid upward mobile scroll.</p>
 
             <div
               className="xp-exit-modal-box"
+              dir={selectedLang === "ar" ? "rtl" : "ltr"}
               style={{ background: bgColor, borderColor: `${accentColor}55` }}
             >
               <div className="xp-exit-close">&times;</div>
@@ -278,8 +374,8 @@ export default function ExitIntentSettings() {
                 <span className="xp-timer-label">EXPIRES</span>
               </div>
 
-              <h4 className="xp-exit-title">{headline}</h4>
-              <p className="xp-exit-desc">{bodyText}</p>
+              <h4 className="xp-exit-title">{currentCopy.headline}</h4>
+              <p className="xp-exit-desc">{currentCopy.bodyText}</p>
 
               <div className="xp-exit-coupon-box" onClick={handleCopy} style={{ borderColor: accentColor }}>
                 <span className="xp-coupon-code">{code}</span>
@@ -293,8 +389,11 @@ export default function ExitIntentSettings() {
                 className="xp-exit-cta-btn"
                 style={{ background: accentColor, color: "#0B0B0B" }}
               >
-                {btnText} &rarr;
+                {currentCopy.buttonText} &rarr;
               </button>
+              <div style={{ marginTop: 8, fontSize: 11, color: "#71717a", textAlign: "center", cursor: "pointer" }}>
+                {currentCopy.dismissText}
+              </div>
             </div>
           </div>
         </div>
