@@ -19,6 +19,12 @@
   {% endif %}
 {% endif %}
 
+{% comment %} Out of stock check: if current variant or product is sold out, hide completely {% endcomment %}
+{% assign is_sold_out = false %}
+{% if current_variant.available == false or product.available == false %}
+  {% assign is_sold_out = true %}
+{% endif %}
+
 {% if show_block %}
   {% comment %} Calculate remaining stock {% endcomment %}
   {% assign stock_qty = 5 %}
@@ -31,7 +37,9 @@
 
     {% assign threshold = block.settings.threshold | default: 0 | plus: 0 %}
     {% assign is_initially_hidden = false %}
-    {% if threshold > 0 and stock_qty > threshold %}
+    {% if is_sold_out %}
+      {% assign is_initially_hidden = true %}
+    {% elsif block.settings.stock_source == 'shopify' and threshold > 0 and stock_qty > threshold %}
       {% assign is_initially_hidden = true %}
     {% endif %}
   {% else %}
@@ -73,6 +81,8 @@
       class="xpp-ps-root{% if is_initially_hidden %} xpp-ps-hidden{% endif %}"
       data-product-id="{{ product.id }}"
       data-variant-id="{{ current_variant.id }}"
+      data-available="{% if current_variant.available %}true{% else %}false{% endif %}"
+      data-product-available="{% if product.available %}true{% else %}false{% endif %}"
       data-stock-source="{{ block.settings.stock_source }}"
       data-min-stock="{{ block.settings.min_stock | default: 3 }}"
       data-max-stock="{{ block.settings.max_stock | default: 12 }}"

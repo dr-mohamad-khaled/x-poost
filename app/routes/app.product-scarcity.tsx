@@ -109,7 +109,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const stockSource = String(formData.get("stockSource") || "shopify");
   const minStock = Number(formData.get("minStock") || 3);
   const maxStock = Number(formData.get("maxStock") || 12);
-  const lowStockThreshold = Number(formData.get("lowStockThreshold") || 20);
+  const rawThreshold = formData.get("lowStockThreshold");
+  const lowStockThreshold = rawThreshold !== null && rawThreshold !== "" ? Number(rawThreshold) : 0;
   const headlineText = String(formData.get("headlineText") || "Hurry! Only {stock} items left in stock")
     .replace(/[\uD83C-\uDBFF\uDC00-\uDFFF]/g, "")
     .trim();
@@ -844,6 +845,7 @@ export default function ProductScarcityPage() {
             ) : (
               <div className="xpp-row">
                 <div className="xpp-field-group" style={{ flex: 1 }}>
+                  <input type="hidden" name="lowStockThreshold" value={lowStockThreshold || 0} />
                   <label className="xpp-label">Minimum Stock (Min)</label>
                   <input
                     type="number"
