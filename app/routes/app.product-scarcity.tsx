@@ -24,7 +24,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         maxStock: 12,
         lowStockThreshold: 20,
         headlineText: "Hurry! Only {stock} items left in stock",
-        subText: "🔥 High demand: selling fast",
+        subText: "High demand: selling fast",
         accentColor: "#D4AF37",
         backgroundColor: "#141414",
         textColor: "#FFFFFF",
@@ -516,7 +516,11 @@ export default function ProductScarcityPage() {
                 }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                  <span style={{ color: accentColor, fontSize: 18 }}>🔥</span>
+                  <span style={{ color: accentColor, display: "inline-flex", alignItems: "center" }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 23c6.075 0 11-4.925 11-11 0-4.043-2.18-7.575-5.438-9.457-.696-.402-1.562.067-1.562.875v2.582c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-.808-.866-1.277-1.562-.875C3.18 6.002 1 9.534 1 13.577 1 19.652 5.925 24.577 12 24.577v-1.577z"/>
+                    </svg>
+                  </span>
                   <span style={{ fontSize: 14, fontWeight: 700 }}>{previewHeadline}</span>
                 </div>
                 <div style={{ width: "100%", height: 8, background: "rgba(255,255,255,0.1)", borderRadius: 4, overflow: "hidden", marginBottom: 6 }}>
@@ -588,7 +592,7 @@ export default function ProductScarcityPage() {
                 className={`xpp-preset-card ${designPreset === "pulse_meter" ? "xpp-preset-card--active" : ""}`}
                 onClick={() => setDesignPreset("pulse_meter")}
               >
-                <div className="xpp-preset-name">🔥 Fire Pulse & Meter</div>
+                <div className="xpp-preset-name">Fire Pulse & Meter</div>
                 <p className="xpp-preset-desc">Animated gradient progress bar with flickering flame icon.</p>
               </div>
 
@@ -596,7 +600,7 @@ export default function ProductScarcityPage() {
                 className={`xpp-preset-card ${designPreset === "urgency_badge" ? "xpp-preset-card--active" : ""}`}
                 onClick={() => setDesignPreset("urgency_badge")}
               >
-                <div className="xpp-preset-name">📡 Live Radar Pill</div>
+                <div className="xpp-preset-name">Live Radar Pill</div>
                 <p className="xpp-preset-desc">Compact badge with a pulsing radar beacon dot.</p>
               </div>
 
@@ -604,7 +608,7 @@ export default function ProductScarcityPage() {
                 className={`xpp-preset-card ${designPreset === "luxury_card" ? "xpp-preset-card--active" : ""}`}
                 onClick={() => setDesignPreset("luxury_card")}
               >
-                <div className="xpp-preset-name">💎 Luxury Minimalist Box</div>
+                <div className="xpp-preset-name">Luxury Minimalist Box</div>
                 <p className="xpp-preset-desc">Framed gold accent card showing stock and live viewers.</p>
               </div>
 
@@ -612,7 +616,7 @@ export default function ProductScarcityPage() {
                 className={`xpp-preset-card ${designPreset === "flash_demand" ? "xpp-preset-card--active" : ""}`}
                 onClick={() => setDesignPreset("flash_demand")}
               >
-                <div className="xpp-preset-name">⚡ Flash Warehouse Banner</div>
+                <div className="xpp-preset-name">Flash Warehouse Banner</div>
                 <p className="xpp-preset-desc">High-urgency warehouse stock level bar with demand tag.</p>
               </div>
             </div>

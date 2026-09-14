@@ -7,12 +7,12 @@ import prisma from "../db.server";
 
 // ── Icon library (kept in sync with the storefront runtime script) ──
 const ICON_OPTIONS = [
-  { value: "discount", label: "🏷️ Discount / Promo code" },
-  { value: "scarcity", label: "🔥 Low stock / urgency" },
-  { value: "visitors", label: "👁️ Live viewers / purchase proof" },
-  { value: "fast_shipping", label: "⚡ Fast / free shipping" },
-  { value: "rare", label: "💎 Rare / premium" },
-  { value: "guarantee", label: "⭐ Guarantee" },
+  { value: "discount", label: "Discount / Promo code" },
+  { value: "scarcity", label: "Low stock / Urgency" },
+  { value: "visitors", label: "Live viewers / Purchase proof" },
+  { value: "fast_shipping", label: "Fast / Free shipping" },
+  { value: "rare", label: "Rare / Premium" },
+  { value: "guarantee", label: "Guarantee" },
   { value: "none", label: "No icon" },
 ] as const;
 
@@ -392,12 +392,12 @@ function TogglePreview({
 }
 
 const ICON_GLYPH: Record<string, string> = {
-  discount: "🏷️",
-  scarcity: "🔥",
-  visitors: "👁️",
-  fast_shipping: "⚡",
-  rare: "💎",
-  guarantee: "⭐",
+  discount: "%",
+  scarcity: "!",
+  visitors: "*",
+  fast_shipping: ">",
+  rare: "#",
+  guarantee: "+",
   none: "",
 };
 

@@ -49,7 +49,7 @@
 
   {% comment %} Replace template variables {% endcomment %}
   {% assign headline = block.settings.headline | default: 'Hurry! Only {stock} items left in stock' | replace: '{stock}', stock_qty | replace: '{viewers}', viewers_count %}
-  {% assign subtext = block.settings.subtext | default: '🔥 High demand: selling fast' | replace: '{stock}', stock_qty | replace: '{viewers}', viewers_count %}
+  {% assign subtext = block.settings.subtext | default: 'High demand: selling fast' | replace: '{stock}', stock_qty | replace: '{viewers}', viewers_count %}
 
   {% comment %} Progress bar percentage {% endcomment %}
   {% assign max_meter = block.settings.max_stock | default: 15 | plus: 0 %}
@@ -232,7 +232,7 @@
       "type": "text",
       "id": "subtext",
       "label": "Subtitle / Reassurance Note",
-      "default": "🔥 High demand: selling fast"
+      "default": "High demand: selling fast"
     },
     {
       "type": "select",
