@@ -63,6 +63,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         }`
       );
       const json = await response.json();
+      if (json.errors) {
+        console.error("[XPoost] GraphQL errors querying products for pre-purchase:", json.errors);
+      }
       products = (json.data?.products?.edges || []).map((e: any) => ({
         id: e.node.id,
         title: e.node.title,
@@ -71,7 +74,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         price: e.node.variants?.edges[0]?.node?.price || "29.99",
         variantId: e.node.variants?.edges[0]?.node?.id,
       }));
-      catalogCache = { shop: session.shop, timestamp: Date.now(), products };
+      if (products.length > 0) {
+        catalogCache = { shop: session.shop, timestamp: Date.now(), products };
+      }
     } catch (err) {
       console.error("[XPoost] Failed to query products:", err);
       if (catalogCache?.shop === session.shop) products = catalogCache.products;
