@@ -47,9 +47,13 @@
   {% comment %} Deterministic live viewers counter {% endcomment %}
   {% assign viewers_count = product.id | modulo: 24 | plus: 9 %}
 
+  {% comment %} Dynamic variable spans for live continuous updating {% endcomment %}
+  {% capture stock_span %}<span class="xpp-ps-stock-num">{{ stock_qty }}</span>{% endcapture %}
+  {% capture viewers_span %}<span class="xpp-ps-viewers-num">{{ viewers_count }}</span>{% endcapture %}
+
   {% comment %} Replace template variables {% endcomment %}
-  {% assign headline = block.settings.headline | default: 'Hurry! Only {stock} items left in stock' | replace: '{stock}', stock_qty | replace: '{viewers}', viewers_count %}
-  {% assign subtext = block.settings.subtext | default: 'High demand: selling fast' | replace: '{stock}', stock_qty | replace: '{viewers}', viewers_count %}
+  {% assign headline = block.settings.headline | default: 'Hurry! Only {stock} items left in stock' | replace: '{stock}', stock_span | replace: '{viewers}', viewers_span %}
+  {% assign subtext = block.settings.subtext | default: 'High demand: selling fast' | replace: '{stock}', stock_span | replace: '{viewers}', viewers_span %}
 
   {% comment %} Progress bar percentage {% endcomment %}
   {% assign max_meter = block.settings.max_stock | default: 15 | plus: 0 %}
@@ -72,6 +76,7 @@
       data-min-stock="{{ block.settings.min_stock | default: 3 }}"
       data-max-stock="{{ block.settings.max_stock | default: 12 }}"
       data-threshold="{{ block.settings.threshold | default: 0 }}"
+      data-initial-viewers="{{ viewers_count }}"
       data-headline="{{ block.settings.headline | escape }}"
       data-subtext="{{ block.settings.subtext | escape }}"
       data-proxy-path="/apps/xpoost/config"
@@ -112,11 +117,12 @@
               </div>
             </div>
             <div class="xpp-ps-luxury-right">
+              <span class="xpp-ps-live-dot" aria-hidden="true"></span>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                 <circle cx="12" cy="12" r="3"></circle>
               </svg>
-              <span>{{ viewers_count }} viewing</span>
+              <span><span class="xpp-ps-viewers-num">{{ viewers_count }}</span> viewing</span>
             </div>
           </div>
 

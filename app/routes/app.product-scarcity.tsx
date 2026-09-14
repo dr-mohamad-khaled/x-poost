@@ -227,9 +227,37 @@ export default function ProductScarcityPage() {
     );
   };
 
-  // Preview Calculations
+  // Preview Calculations & Continuous Live Viewers Simulation
   const previewStock = 6;
-  const previewViewers = 18;
+  const [previewViewers, setPreviewViewers] = useState(18);
+  const [viewerPulse, setViewerPulse] = useState(false);
+
+  useEffect(() => {
+    let timeoutId: any;
+    const tick = () => {
+      const delay = Math.floor(Math.random() * 2400) + 3200;
+      timeoutId = setTimeout(() => {
+        setPreviewViewers((prev) => {
+          const rand = Math.random();
+          let delta = 1;
+          if (prev <= 12) {
+            delta = Math.floor(Math.random() * 2) + 1;
+          } else if (prev >= 32) {
+            delta = -(Math.floor(Math.random() * 2) + 1);
+          } else {
+            delta = rand > 0.45 ? (rand > 0.78 ? 2 : 1) : (rand < 0.22 ? -2 : -1);
+          }
+          return Math.max(10, Math.min(36, prev + delta));
+        });
+        setViewerPulse(true);
+        setTimeout(() => setViewerPulse(false), 450);
+        tick();
+      }, delay);
+    };
+    tick();
+    return () => clearTimeout(timeoutId);
+  }, []);
+
   const previewHeadline = headlineText
     .replace(/{stock}/g, String(previewStock))
     .replace(/{viewers}/g, String(previewViewers));
@@ -410,6 +438,14 @@ export default function ProductScarcityPage() {
           padding: 0;
           margin-left: 4px;
         }
+        .xpp-preview-num-pulse {
+          animation: xpp-preview-pop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes xpp-preview-pop {
+          0% { transform: scale(1); }
+          40% { transform: scale(1.3); color: #FFD700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6); }
+          100% { transform: scale(1); }
+        }
       `}</style>
 
       <div className="xpp-ps-admin">
@@ -484,8 +520,31 @@ export default function ProductScarcityPage() {
                   <div style={{ fontSize: 14, fontWeight: 800 }}>{previewHeadline}</div>
                   {previewSubtext && <div style={{ fontSize: 12, opacity: 0.85, marginTop: 4 }}>{previewSubtext}</div>}
                 </div>
-                <div style={{ background: "rgba(255,255,255,0.08)", padding: "4px 10px", borderRadius: 16, fontSize: 12, fontWeight: 700, color: accentColor }}>
-                  {previewViewers} viewing
+                <div style={{ display: "flex", alignItems: "center", gap: 6, background: "rgba(255,255,255,0.08)", padding: "4px 12px", borderRadius: 16, fontSize: 12, fontWeight: 700, color: accentColor }}>
+                  <span
+                    style={{
+                      width: 6,
+                      height: 6,
+                      borderRadius: "50%",
+                      background: "#22c55e",
+                      display: "inline-block",
+                      boxShadow: "0 0 6px #22c55e",
+                      flexShrink: 0,
+                    }}
+                  />
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                  <span>
+                    <span
+                      className={viewerPulse ? "xpp-preview-num-pulse" : ""}
+                      style={{ display: "inline-block", fontVariantNumeric: "tabular-nums", transition: "transform 0.2s ease" }}
+                    >
+                      {previewViewers}
+                    </span>{" "}
+                    viewing
+                  </span>
                 </div>
               </div>
             )}

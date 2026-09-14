@@ -106,6 +106,62 @@
           }, 50);
         });
       }
+
+      // Continuous Live Viewers Counter
+      var initialViewers = parseInt(root.dataset.initialViewers || "18", 10);
+      if (isNaN(initialViewers) || initialViewers < 5) {
+        var firstViewerEl = root.querySelector(".xpp-ps-viewers-num");
+        if (firstViewerEl) {
+          var parsed = parseInt(firstViewerEl.textContent.trim(), 10);
+          if (!isNaN(parsed) && parsed > 0) initialViewers = parsed;
+        }
+      }
+      if (isNaN(initialViewers) || initialViewers < 5) initialViewers = 18;
+
+      var currentViewers = initialViewers;
+      var minViewers = Math.max(6, initialViewers - 7);
+      var maxViewers = initialViewers + 13;
+
+      function updateViewersDisplay(count) {
+        var viewerEls = root.querySelectorAll(".xpp-ps-viewers-num");
+        if (!viewerEls.length) return;
+        viewerEls.forEach(function (el) {
+          el.textContent = String(count);
+          el.classList.remove("xpp-ps-num-tick");
+          void el.offsetWidth;
+          el.classList.add("xpp-ps-num-tick");
+        });
+      }
+
+      function scheduleNextViewerTick() {
+        var delay = Math.floor(Math.random() * 2600) + 3200;
+        setTimeout(function () {
+          if (!document.hidden) {
+            var rand = Math.random();
+            var delta = 0;
+            if (currentViewers <= minViewers) {
+              delta = Math.floor(Math.random() * 2) + 1;
+            } else if (currentViewers >= maxViewers) {
+              delta = -(Math.floor(Math.random() * 2) + 1);
+            } else {
+              if (rand < 0.28) delta = -1;
+              else if (rand < 0.58) delta = 1;
+              else if (rand < 0.76) delta = 2;
+              else if (rand < 0.90) delta = -2;
+              else if (rand < 0.95) delta = 3;
+              else delta = -3;
+            }
+            var nextCount = Math.max(minViewers, Math.min(maxViewers, currentViewers + delta));
+            if (nextCount !== currentViewers) {
+              currentViewers = nextCount;
+              updateViewersDisplay(currentViewers);
+            }
+          }
+          scheduleNextViewerTick();
+        }, delay);
+      }
+
+      scheduleNextViewerTick();
     });
   }
 
