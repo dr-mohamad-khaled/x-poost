@@ -1890,7 +1890,7 @@ export default function PrePurchaseSettings() {
                                 {p.imageUrl ? (
                                   <img src={p.imageUrl} alt="" className="xp-trigger-chip-thumb" />
                                 ) : (
-                                  <span style={{ width: "20px", height: "20px", display: "inline-flex", alignItems: "center", justifyContent: "center", background: "#e1e3e5", borderRadius: "50%", fontSize: "10px" }}>
+                                  <span style={{ width: "20px", height: "20px", display: "inline-flex", alignItems: "center", justifyContent: "center", background: "#222222", color: "#888888", borderRadius: "50%", fontSize: "10px" }}>
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="18" height="18" x="3" y="3" rx="2"/></svg>
                                   </span>
                                 )}
@@ -1915,7 +1915,7 @@ export default function PrePurchaseSettings() {
                       )}
 
                       {/* Catalog Checklist */}
-                      <div className="xp-picker-list" style={{ maxHeight: "240px", overflowY: "auto", border: "1px solid #e1e3e5", borderRadius: "6px" }}>
+                      <div className="xp-picker-list" style={{ maxHeight: "240px", overflowY: "auto", border: "1px solid #282828", borderRadius: "6px" }}>
                         {filteredTriggerProducts.length === 0 ? (
                           <div style={{ padding: "20px", textAlign: "center", color: "#8c9196", fontSize: "12px" }}>
                             {isSearchingTrigger ? "Searching store catalog..." : `No products found matching "${triggerSearch}"`}
@@ -2003,12 +2003,12 @@ export default function PrePurchaseSettings() {
                   <input type="hidden" name="layoutStyle" value={modalLayout} />
 
                   {modalLayout === "spotlight_hero" ? (
-                    <div style={{ marginTop: "16px", padding: "16px", background: "#F9FAFB", border: "1px solid #E5E7EB", borderRadius: "8px" }}>
+                    <div style={{ marginTop: "16px", padding: "16px", background: "#181818", border: "1px solid #282828", borderRadius: "8px" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "6px" }}>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                           <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                         </svg>
-                        <strong style={{ fontSize: "13px", color: "#111827" }}>Spotlight Hero Value Highlights (3 Bullets)</strong>
+                        <strong style={{ fontSize: "13px", color: "#ffffff" }}>Spotlight Hero Value Highlights (3 Bullets)</strong>
                       </div>
                       <p className="xp-sub" style={{ marginBottom: "12px", fontSize: "12px" }}>
                         Customize the 3 feature highlight bullet points shown inside the primary spotlight hero card.
@@ -2715,8 +2715,8 @@ export default function PrePurchaseSettings() {
 const PRE_PURCHASE_STYLES = `
   /* Global Bar */
   .xp-global-bar {
-    background: #ffffff;
-    border: 1px solid #e1e3e5;
+    background: #141414;
+    border: 1px solid #282828;
     border-radius: 10px;
     padding: 16px 20px;
     display: flex;
@@ -2724,7 +2724,7 @@ const PRE_PURCHASE_STYLES = `
     align-items: center;
     gap: 16px;
     margin-bottom: 20px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    box-shadow: none;
   }
   @media (max-width: 768px) {
     .xp-global-bar {
@@ -2740,7 +2740,7 @@ const PRE_PURCHASE_STYLES = `
     align-items: center;
     gap: 8px;
     font-size: 14px;
-    color: #202223;
+    color: #ffffff;
   }
   .xp-status-dot {
     width: 10px;
@@ -2767,9 +2767,9 @@ const PRE_PURCHASE_STYLES = `
     padding: 8px 14px;
     border-radius: 6px;
     cursor: pointer;
-    border: 1px solid #c9cccf;
-    background: #fff;
-    color: #202223;
+    border: 1px solid #333333;
+    background: #141414;
+    color: #ffffff;
     transition: all 0.15s ease;
   }
   .xp-btn-status-toggle.is-disabled {
@@ -2799,10 +2799,10 @@ const PRE_PURCHASE_STYLES = `
 
   /* Index Table View */
   .xp-index-card {
-    background: #ffffff;
-    border: 1px solid #e1e3e5;
+    background: #141414;
+    border: 1px solid #282828;
     border-radius: 10px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    box-shadow: none;
     overflow: hidden;
   }
   .xp-index-header {
@@ -2811,7 +2811,7 @@ const PRE_PURCHASE_STYLES = `
     justify-content: space-between;
     align-items: center;
     gap: 16px;
-    border-bottom: 1px solid #f1f2f3;
+    border-bottom: 1px solid #222222;
     flex-wrap: wrap;
   }
   .xp-search-box {
@@ -2826,15 +2826,15 @@ const PRE_PURCHASE_STYLES = `
     position: absolute;
     left: 10px;
     font-size: 13px;
-    color: #8c9196;
+    color: #888888;
   }
   .xp-search-input {
     width: 100%;
     padding: 8px 30px 8px 32px;
-    border: 1px solid #c9cccf;
+    border: 1px solid #333333;
     border-radius: 6px;
     font-size: 13px;
-    background: #fff;
+    background: #141414;
     outline: none;
   }
   .xp-search-input:focus {
@@ -2847,7 +2847,7 @@ const PRE_PURCHASE_STYLES = `
     background: none;
     border: none;
     font-size: 16px;
-    color: #8c9196;
+    color: #888888;
     cursor: pointer;
   }
   .xp-filter-tabs {
@@ -2860,8 +2860,8 @@ const PRE_PURCHASE_STYLES = `
     font-weight: 600;
     border-radius: 20px;
     border: 1px solid transparent;
-    background: #f1f2f3;
-    color: #6d7175;
+    background: #1c1c1c;
+    color: #888888;
     cursor: pointer;
     transition: all 0.15s ease;
   }
@@ -2880,24 +2880,24 @@ const PRE_PURCHASE_STYLES = `
     text-align: left;
   }
   .xp-table th {
-    background: #fafbfb;
+    background: #181818;
     padding: 12px 16px;
-    color: #5c5f62;
+    color: #b0b0b0;
     font-weight: 600;
     font-size: 12px;
-    border-bottom: 1px solid #e1e3e5;
+    border-bottom: 1px solid #282828;
   }
   .xp-table td {
     padding: 12px 16px;
-    border-bottom: 1px solid #f1f2f3;
-    color: #202223;
+    border-bottom: 1px solid #222222;
+    color: #ffffff;
     vertical-align: middle;
   }
   .xp-table-row:hover {
-    background: #fafbfb;
+    background: #181818;
   }
   .xp-table-row.is-row-selected {
-    background: #fefaf0;
+    background: #1f1d14;
   }
   .xp-table-checkbox {
     width: 16px;
@@ -2915,14 +2915,14 @@ const PRE_PURCHASE_STYLES = `
     height: 36px;
     border-radius: 6px;
     object-fit: cover;
-    border: 1px solid #e1e3e5;
+    border: 1px solid #282828;
     flex-shrink: 0;
   }
   .xp-table-thumb-placeholder {
     width: 36px;
     height: 36px;
     border-radius: 6px;
-    background: #f1f2f3;
+    background: #1c1c1c;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2937,18 +2937,18 @@ const PRE_PURCHASE_STYLES = `
     cursor: pointer;
     display: flex;
     flex-direction: column;
-    color: #202223;
+    color: #ffffff;
   }
   .xp-table-title-link strong {
     font-size: 13px;
-    color: #008060;
+    color: #D4AF37;
   }
   .xp-table-title-link:hover strong {
     text-decoration: underline;
   }
   .xp-table-sub {
     font-size: 11px;
-    color: #6d7175;
+    color: #888888;
   }
   .xp-badge-status {
     display: inline-block;
@@ -2958,16 +2958,16 @@ const PRE_PURCHASE_STYLES = `
     font-weight: 700;
   }
   .xp-badge-active {
-    background: #e3f1df;
-    color: #108043;
+    background: rgba(37, 211, 102, 0.15);
+    color: #25D366;
   }
   .xp-badge-paused {
-    background: #f6f6f7;
-    color: #6d7175;
+    background: #222222;
+    color: #888888;
   }
   .xp-trigger-badge {
-    background: #f1f2f3;
-    color: #202223;
+    background: #1c1c1c;
+    color: #ffffff;
     padding: 3px 8px;
     border-radius: 6px;
     font-size: 11px;
@@ -2986,11 +2986,11 @@ const PRE_PURCHASE_STYLES = `
   .xp-promoted-count {
     font-size: 12px;
     font-weight: 600;
-    color: #202223;
+    color: #ffffff;
   }
   .xp-promoted-names {
     font-size: 11px;
-    color: #6d7175;
+    color: #888888;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -3006,7 +3006,7 @@ const PRE_PURCHASE_STYLES = `
   }
   .xp-text-muted {
     font-size: 12px;
-    color: #8c9196;
+    color: #888888;
   }
   .xp-actions-cell {
     display: inline-flex;
@@ -3018,36 +3018,36 @@ const PRE_PURCHASE_STYLES = `
     font-size: 11px;
     font-weight: 600;
     border-radius: 4px;
-    border: 1px solid #c9cccf;
-    background: #fff;
+    border: 1px solid #333333;
+    background: #141414;
     cursor: pointer;
     transition: all 0.12s ease;
   }
   .xp-action-btn:hover {
-    background: #f1f2f3;
+    background: #1c1c1c;
   }
   .xp-action-edit {
-    color: #008060;
-    border-color: #008060;
+    color: #D4AF37;
+    border-color: #D4AF37;
   }
   .xp-action-toggle {
-    color: #202223;
+    color: #ffffff;
   }
   .xp-action-delete {
-    color: #d72c0d;
-    border-color: #fed3d1;
+    color: #ff5555;
+    border-color: rgba(255, 85, 85, 0.3);
   }
   .xp-action-delete:hover {
-    background: #fff4f4;
+    background: rgba(255, 85, 85, 0.15);
   }
   .xp-pagination-bar {
     padding: 12px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-top: 1px solid #f1f2f3;
+    border-top: 1px solid #282828;
     font-size: 12px;
-    color: #6d7175;
+    color: #888888;
   }
   .xp-pagination-controls {
     display: flex;
@@ -3058,8 +3058,8 @@ const PRE_PURCHASE_STYLES = `
     width: 28px;
     height: 28px;
     border-radius: 4px;
-    border: 1px solid #c9cccf;
-    background: #fff;
+    border: 1px solid #333333;
+    background: #141414;
     cursor: pointer;
     font-size: 16px;
     line-height: 1;
@@ -3074,7 +3074,7 @@ const PRE_PURCHASE_STYLES = `
   .xp-page-indicator {
     font-size: 12px;
     font-weight: 600;
-    color: #202223;
+    color: #ffffff;
   }
 
   /* Empty State */
@@ -3092,21 +3092,21 @@ const PRE_PURCHASE_STYLES = `
 
   /* Editor View */
   .xp-editor-card {
-    background: #ffffff;
-    border: 1px solid #e1e3e5;
+    background: #141414;
+    border: 1px solid #282828;
     border-radius: 10px;
     padding: 24px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    box-shadow: none;
   }
   .xp-editor-breadcrumb {
     margin-bottom: 20px;
-    border-bottom: 1px solid #f1f2f3;
+    border-bottom: 1px solid #222222;
     padding-bottom: 12px;
   }
   .xp-btn-back {
     background: none;
     border: none;
-    color: #008060;
+    color: #D4AF37;
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
@@ -3120,11 +3120,11 @@ const PRE_PURCHASE_STYLES = `
   .xp-editor-breadcrumb h2 {
     margin: 0;
     font-size: 18px;
-    color: #202223;
+    color: #ffffff;
   }
   .xp-editor-section {
-    background: #f9fafb;
-    border: 1px solid #e1e3e5;
+    background: #181818;
+    border: 1px solid #282828;
     border-radius: 8px;
     padding: 16px;
     margin-bottom: 16px;
@@ -3133,7 +3133,7 @@ const PRE_PURCHASE_STYLES = `
     margin: 0 0 8px;
     font-size: 14px;
     font-weight: 700;
-    color: #202223;
+    color: #ffffff;
   }
   .xp-pre-layout {
     display: grid;
@@ -3148,7 +3148,7 @@ const PRE_PURCHASE_STYLES = `
   }
   .xp-sub {
     font-size: 12px;
-    color: #6d7175;
+    color: #888888;
     margin: 4px 0 0;
   }
   .xp-form {
@@ -3164,19 +3164,19 @@ const PRE_PURCHASE_STYLES = `
   .xp-field label {
     font-size: 13px;
     font-weight: 600;
-    color: #202223;
+    color: #ffffff;
   }
   .xp-field small {
     font-size: 11px;
-    color: #6d7175;
+    color: #888888;
   }
   .xp-input {
     padding: 8px 12px;
-    border: 1px solid #c9cccf;
+    border: 1px solid #333333;
     border-radius: 6px;
     font-size: 13px;
-    background: #fff;
-    color: #202223;
+    background: #141414;
+    color: #ffffff;
   }
   .xp-grid-2 {
     display: grid;
@@ -3198,9 +3198,9 @@ const PRE_PURCHASE_STYLES = `
     background: #1c1c1c;
   }
   .xp-btn-cancel {
-    background: #fff;
-    border: 1px solid #c9cccf;
-    color: #5c5f62;
+    background: #141414;
+    border: 1px solid #333333;
+    color: #b0b0b0;
     padding: 10px 18px;
     border-radius: 6px;
     font-weight: 600;
@@ -3220,8 +3220,8 @@ const PRE_PURCHASE_STYLES = `
   .xp-trigger-picker-wrap {
     margin-top: 10px;
     padding: 10px;
-    background: #fff;
-    border: 1px solid #e1e3e5;
+    background: #141414;
+    border: 1px solid #282828;
     border-radius: 6px;
   }
   .xp-selected-trigger-card {
@@ -3232,12 +3232,12 @@ const PRE_PURCHASE_STYLES = `
   }
   .xp-trigger-card-info strong {
     font-size: 13px;
-    color: #202223;
+    color: #ffffff;
     display: block;
   }
   .xp-trigger-search-dropdown {
     margin-top: 8px;
-    border-top: 1px solid #f1f2f3;
+    border-top: 1px solid #282828;
     padding-top: 8px;
   }
   .xp-trigger-dropdown-list {
@@ -3263,7 +3263,7 @@ const PRE_PURCHASE_STYLES = `
   .xp-btn-text {
     background: none;
     border: none;
-    color: #008060;
+    color: #D4AF37;
     font-size: 12px;
     cursor: pointer;
     font-weight: 600;
@@ -3278,9 +3278,9 @@ const PRE_PURCHASE_STYLES = `
   .xp-picker-list {
     max-height: 240px;
     overflow-y: auto;
-    border: 1px solid #c9cccf;
+    border: 1px solid #333333;
     border-radius: 6px;
-    background: #fff;
+    background: #141414;
   }
   .xp-picker-list::-webkit-scrollbar {
     width: 5px;
@@ -3294,7 +3294,7 @@ const PRE_PURCHASE_STYLES = `
     align-items: center;
     gap: 10px;
     padding: 8px 12px;
-    border-bottom: 1px solid #f1f2f3;
+    border-bottom: 1px solid #222222;
     cursor: pointer;
     transition: background 0.12s ease;
   }
@@ -3302,10 +3302,10 @@ const PRE_PURCHASE_STYLES = `
     border-bottom: none;
   }
   .xp-picker-item:hover {
-    background: #f9fafb;
+    background: #181818;
   }
   .xp-picker-item.is-selected {
-    background: #fefaf0;
+    background: #1f1d14;
   }
   .xp-picker-checkbox {
     width: 16px;
@@ -3318,13 +3318,13 @@ const PRE_PURCHASE_STYLES = `
     height: 36px;
     object-fit: cover;
     border-radius: 4px;
-    border: 1px solid #e1e3e5;
+    border: 1px solid #282828;
     flex-shrink: 0;
   }
   .xp-picker-thumb-placeholder {
     width: 36px;
     height: 36px;
-    background: #eee;
+    background: #222222;
     border-radius: 4px;
     display: flex;
     align-items: center;
@@ -3339,19 +3339,19 @@ const PRE_PURCHASE_STYLES = `
   .xp-picker-item-title {
     font-size: 13px;
     font-weight: 500;
-    color: #202223;
+    color: #ffffff;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
   .xp-picker-item-price {
     font-size: 12px;
-    color: #6d7175;
+    color: #888888;
   }
   .xp-picker-empty {
     padding: 16px;
     font-size: 13px;
-    color: #6d7175;
+    color: #888888;
     text-align: center;
     font-style: italic;
   }
@@ -3361,7 +3361,7 @@ const PRE_PURCHASE_STYLES = `
     gap: 8px;
     font-size: 13px;
     font-weight: 600;
-    color: #202223;
+    color: #ffffff;
     cursor: pointer;
   }
   .xp-check-label input[type="checkbox"] {
@@ -3381,15 +3381,15 @@ const PRE_PURCHASE_STYLES = `
     align-items: flex-start;
     gap: 12px;
     padding: 10px 14px;
-    border: 1px solid #c9cccf;
+    border: 1px solid #333333;
     border-radius: 8px;
     cursor: pointer;
-    background: #fff;
+    background: #141414;
     transition: all 0.15s ease;
   }
   .xp-radio-card.is-selected {
     border-color: #D4AF37;
-    background: #fefaf0;
+    background: #1f1d14;
   }
   .xp-radio-card input[type="radio"] {
     margin-top: 3px;
@@ -3398,7 +3398,7 @@ const PRE_PURCHASE_STYLES = `
   }
   .xp-radio-card-content strong {
     font-size: 13px;
-    color: #202223;
+    color: #ffffff;
     display: block;
   }
 
@@ -3406,8 +3406,8 @@ const PRE_PURCHASE_STYLES = `
   .xp-trigger-picker-wrap {
     margin-top: 12px;
     padding: 14px;
-    background: #f8f9fa;
-    border: 1px solid #e1e3e5;
+    background: #181818;
+    border: 1px solid #282828;
     border-radius: 8px;
     display: flex;
     flex-direction: column;
@@ -3425,8 +3425,8 @@ const PRE_PURCHASE_STYLES = `
     align-items: center;
   }
   .xp-trigger-selected-wrap {
-    background: #fff;
-    border: 1px solid #d2d5d8;
+    background: #141414;
+    border: 1px solid #333333;
     border-radius: 8px;
     padding: 10px 12px;
   }
@@ -3436,7 +3436,7 @@ const PRE_PURCHASE_STYLES = `
     align-items: center;
     font-size: 12px;
     font-weight: 600;
-    color: #202223;
+    color: #ffffff;
     margin-bottom: 8px;
   }
   .xp-trigger-chips-list {
@@ -3450,13 +3450,13 @@ const PRE_PURCHASE_STYLES = `
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: #f1f2f3;
-    border: 1px solid #c9cccf;
+    background: #1c1c1c;
+    border: 1px solid #333333;
     border-radius: 16px;
     padding: 3px 8px 3px 4px;
     font-size: 11px;
     font-weight: 500;
-    color: #202223;
+    color: #ffffff;
   }
   .xp-trigger-chip-thumb {
     width: 20px;
@@ -3470,28 +3470,28 @@ const PRE_PURCHASE_STYLES = `
     cursor: pointer;
     font-size: 14px;
     line-height: 1;
-    color: #6d7175;
+    color: #888888;
     padding: 0 2px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
   }
   .xp-trigger-chip-remove:hover {
-    color: #d72c0d;
+    color: #ff5555;
   }
   .xp-trigger-empty-notice {
     font-size: 12px;
-    color: #b91c1c;
-    background: #fef2f2;
-    border: 1px solid #fecaca;
+    color: #ff6b6b;
+    background: rgba(255, 85, 85, 0.1);
+    border: 1px solid rgba(255, 85, 85, 0.3);
     border-radius: 6px;
     padding: 10px 14px;
   }
 
   /* Discount Box */
   .xp-discount-box {
-    background: #fff;
-    border: 1px solid #e1e3e5;
+    background: #141414;
+    border: 1px solid #282828;
     border-radius: 8px;
     padding: 12px;
     margin-top: 8px;
@@ -3499,9 +3499,9 @@ const PRE_PURCHASE_STYLES = `
   .xp-discount-hint {
     margin-top: 8px;
     font-size: 11px;
-    color: #108043;
+    color: #25D366;
     font-weight: 500;
-    background: #e3f1df;
+    background: rgba(37, 211, 102, 0.15);
     padding: 6px 10px;
     border-radius: 4px;
   }
@@ -3717,10 +3717,10 @@ const PRE_PURCHASE_STYLES = `
     gap: 12px;
   }
   .xp-layout-card {
-    border: 1px solid #c9cccf;
+    border: 1px solid #333333;
     border-radius: 8px;
     padding: 14px;
-    background: #fff;
+    background: #141414;
     cursor: pointer;
     transition: all 0.15s ease;
     display: flex;
@@ -3733,7 +3733,7 @@ const PRE_PURCHASE_STYLES = `
   }
   .xp-layout-card.is-selected {
     border-color: #D4AF37;
-    background: #fefaf0;
+    background: #1f1d14;
     box-shadow: 0 0 0 1px #D4AF37;
   }
   .xp-layout-card-top {
@@ -3757,14 +3757,14 @@ const PRE_PURCHASE_STYLES = `
   }
   .xp-layout-card-title {
     font-size: 13px;
-    color: #202223;
+    color: #ffffff;
     display: block;
     margin-bottom: 4px;
   }
   .xp-layout-card-desc {
     font-size: 11px;
     line-height: 1.35;
-    color: #6d7175;
+    color: #888888;
     margin-bottom: 12px;
     flex: 1;
   }
@@ -3776,9 +3776,9 @@ const PRE_PURCHASE_STYLES = `
     font-size: 11px;
     font-weight: 600;
     border-radius: 12px;
-    border: 1px solid #c9cccf;
-    color: #6d7175;
-    background: #fff;
+    border: 1px solid #333333;
+    color: #888888;
+    background: #141414;
     transition: all 0.12s ease;
   }
   .xp-layout-radio.is-checked {

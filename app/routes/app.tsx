@@ -150,6 +150,34 @@ export default function App() {
       </NavMenu>
 
       <div dir={isAr ? "rtl" : "ltr"} style={{ width: "100%", minHeight: "100vh", background: "#0a0a0c" }}>
+        <style>{`
+          /* GLOBAL DARK THEME RESETS */
+          :root {
+            --p-color-bg-surface: #141414;
+            --p-color-bg-surface-secondary: #1a1a1a;
+            --p-color-text: #ffffff;
+            --p-color-text-secondary: #a1a1aa;
+            --p-color-border: #282828;
+            color-scheme: dark;
+          }
+          body, html {
+            background-color: #0a0a0c !important;
+            color: #ffffff !important;
+          }
+          s-page, s-section, s-card {
+            --p-color-bg-surface: #141414 !important;
+            --p-color-bg-surface-secondary: #1a1a1a !important;
+            --p-color-text: #ffffff !important;
+            --p-color-text-secondary: #a1a1aa !important;
+            --p-color-border: #282828 !important;
+            color: #ffffff !important;
+          }
+          s-section, s-card {
+            background: #141414 !important;
+            border: 1px solid #282828 !important;
+            border-radius: 12px !important;
+          }
+        `}</style>
         {/* Global Dashboard Top Bar with 7-Language Switcher */}
         <header
           style={{

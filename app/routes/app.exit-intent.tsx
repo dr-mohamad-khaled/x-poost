@@ -416,7 +416,7 @@ const EXIT_INTENT_STYLES = `
   }
   .xp-sub {
     font-size: 12px;
-    color: #6d7175;
+    color: #888888;
     margin: 4px 0 12px;
   }
   .xp-row {
@@ -443,18 +443,18 @@ const EXIT_INTENT_STYLES = `
   .xp-field label {
     font-size: 13px;
     font-weight: 600;
-    color: #202223;
+    color: #ffffff;
   }
   .xp-field small {
     font-size: 11px;
-    color: #6d7175;
+    color: #888888;
   }
   .xp-input {
     padding: 8px 12px;
-    border: 1px solid #c9cccf;
+    border: 1px solid #333333;
     border-radius: 6px;
     font-size: 13px;
-    background: #fff;
+    background: #141414;
   }
   .xp-grid-2 {
     display: grid;
@@ -474,7 +474,7 @@ const EXIT_INTENT_STYLES = `
   .xp-color-wrap input[type="color"] {
     width: 38px;
     height: 34px;
-    border: 1px solid #c9cccf;
+    border: 1px solid #333333;
     border-radius: 4px;
     cursor: pointer;
     padding: 0;

@@ -684,13 +684,13 @@ const SHIPPING_BAR_STYLES = `
   }
   .xp-section-intro {
     font-size: 13px;
-    color: #5c5f62;
+    color: #b0b0b0;
     margin: 0 0 16px;
     line-height: 1.4;
   }
   .xp-sub {
     font-size: 12px;
-    color: #6d7175;
+    color: #888888;
     margin: 4px 0 12px;
   }
   .xp-row {
@@ -717,14 +717,14 @@ const SHIPPING_BAR_STYLES = `
   .xp-field label {
     font-size: 13px;
     font-weight: 600;
-    color: #202223;
+    color: #ffffff;
   }
   .xp-input {
     padding: 8px 12px;
-    border: 1px solid #c9cccf;
+    border: 1px solid #333333;
     border-radius: 6px;
     font-size: 13px;
-    background: #fff;
+    background: #141414;
   }
   .xp-grid-2 {
     display: grid;
@@ -759,10 +759,10 @@ const SHIPPING_BAR_STYLES = `
     }
   }
   .xp-layout-card {
-    border: 2px solid #e1e3e5;
+    border: 1px solid #282828;
     border-radius: 10px;
     padding: 14px;
-    background: #fff;
+    background: #141414;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
@@ -770,13 +770,13 @@ const SHIPPING_BAR_STYLES = `
     gap: 6px;
   }
   .xp-layout-card:hover {
-    border-color: #a4e8f2;
+    border-color: #D4AF37;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   }
   .xp-layout-card.is-selected {
-    border-color: #008060;
-    background: #fbfdfc;
+    border-color: #D4AF37;
+    background: #1f1d14;
     box-shadow: 0 0 0 1px #008060, 0 4px 14px rgba(0, 128, 96, 0.15);
   }
   .xp-layout-header {
@@ -789,7 +789,7 @@ const SHIPPING_BAR_STYLES = `
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    background: #f0f2f5;
+    background: #222222;
     color: #444;
     padding: 2px 6px;
     border-radius: 4px;
@@ -797,18 +797,18 @@ const SHIPPING_BAR_STYLES = `
   .xp-theme-check {
     font-size: 11px;
     font-weight: 700;
-    color: #008060;
+    color: #D4AF37;
   }
   .xp-layout-title {
     margin: 2px 0 0;
     font-size: 13px;
     font-weight: 700;
-    color: #202223;
+    color: #ffffff;
   }
   .xp-layout-desc {
     margin: 0;
     font-size: 11px;
-    color: #6d7175;
+    color: #888888;
     line-height: 1.35;
   }
 
@@ -819,10 +819,10 @@ const SHIPPING_BAR_STYLES = `
     gap: 12px;
   }
   .xp-tier-card {
-    border: 1px solid #e1e3e5;
+    border: 1px solid #282828;
     border-radius: 8px;
     padding: 12px 14px;
-    background: #fbfbfb;
+    background: #181818;
   }
   .xp-tier-header {
     display: flex;
@@ -833,22 +833,22 @@ const SHIPPING_BAR_STYLES = `
   .xp-tier-badge {
     font-size: 11px;
     font-weight: 700;
-    color: #202223;
-    background: #eef1f3;
+    color: #ffffff;
+    background: #222222;
     padding: 2px 8px;
     border-radius: 4px;
   }
   .xp-tier-del {
     background: none;
     border: none;
-    color: #bf0711;
+    color: #ff5555;
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
   }
   .xp-btn-secondary {
-    background: #fff;
-    border: 1px solid #c9cccf;
+    background: #141414;
+    border: 1px solid #333333;
     padding: 8px 14px;
     border-radius: 6px;
     font-size: 12px;
@@ -864,15 +864,15 @@ const SHIPPING_BAR_STYLES = `
   .xp-color-wrap input[type="color"] {
     width: 38px;
     height: 34px;
-    border: 1px solid #c9cccf;
+    border: 1px solid #333333;
     border-radius: 4px;
     cursor: pointer;
     padding: 0;
   }
   .xp-btn-submit {
-    background: #008060;
-    color: #ffffff;
-    border: none;
+    background: #0B0B0B;
+    color: #D4AF37;
+    border: 1px solid #D4AF37;
     padding: 12px 24px;
     border-radius: 6px;
     font-weight: 700;
@@ -882,7 +882,7 @@ const SHIPPING_BAR_STYLES = `
     transition: background 0.2s;
   }
   .xp-btn-submit:hover {
-    background: #006e52;
+    background: #1c1c1c;
   }
 
   /* Simulator & Preview */
@@ -908,7 +908,7 @@ const SHIPPING_BAR_STYLES = `
     font-weight: 700;
   }
   .xp-slider-control {
-    background: #f4f6f8;
+    background: #181818;
     padding: 12px;
     border-radius: 8px;
     margin: 12px 0 16px;
@@ -918,12 +918,12 @@ const SHIPPING_BAR_STYLES = `
   }
   .xp-slider-control label {
     font-size: 12px;
-    color: #202223;
+    color: #ffffff;
   }
   .xp-range-slider {
     width: 100%;
     cursor: pointer;
-    accent-color: #008060;
+    accent-color: #D4AF37;
   }
 
   .xp-bar-preview-box {
