@@ -69,6 +69,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         enabled: shopData?.exitIntentEnabled ?? false,
         badge: shopData?.exitIntentConfig?.active ? "Active" : "Disabled",
       },
+      productScarcity: {
+        id: "productScarcity",
+        title: "Product Stock Scarcity Block",
+        description: "Display live low-stock meters, flash demand bars, and urgency badges directly on your product pages with 4 high-converting designs.",
+        route: "/app/product-scarcity",
+        enabled: shopData?.productScarcityEnabled ?? false,
+        badge: shopData?.productScarcityConfig?.active ? "Active" : "Disabled",
+      },
     },
   };
 };
@@ -88,6 +96,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       socialBar: "socialBarEnabled",
       shippingBar: "shippingBarEnabled",
       exitIntent: "exitIntentEnabled",
+      productScarcity: "productScarcityEnabled",
     };
 
     const field = featureFieldMap[featureKey];

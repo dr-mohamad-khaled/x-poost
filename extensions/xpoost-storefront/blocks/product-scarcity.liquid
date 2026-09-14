@@ -1,0 +1,283 @@
+{% comment %}
+  XPoost — Product Information Scarcity & Urgency Block
+  Target: section (Add directly inside Product Information section in Theme Editor)
+  Zero speed impact — 100% server-rendered in Liquid.
+{% endcomment %}
+
+{% assign current_variant = product.selected_or_first_available_variant %}
+{% assign show_block = true %}
+
+{% comment %} Product targeting: all / specific / exclude {% endcomment %}
+{% if block.settings.target_mode == 'specific' %}
+  {% assign show_block = false %}
+  {% if block.settings.target_products contains product %}
+    {% assign show_block = true %}
+  {% endif %}
+{% elsif block.settings.target_mode == 'exclude' %}
+  {% if block.settings.target_products contains product %}
+    {% assign show_block = false %}
+  {% endif %}
+{% endif %}
+
+{% if show_block %}
+  {% comment %} Calculate remaining stock {% endcomment %}
+  {% assign stock_qty = 5 %}
+  {% if block.settings.stock_source == 'shopify' %}
+    {% if current_variant.inventory_quantity > 0 %}
+      {% assign stock_qty = current_variant.inventory_quantity %}
+    {% else %}
+      {% assign stock_qty = block.settings.min_stock | default: 3 %}
+    {% endif %}
+
+    {% assign threshold = block.settings.threshold | default: 0 | plus: 0 %}
+    {% if threshold > 0 and stock_qty > threshold %}
+      {% assign show_block = false %}
+    {% endif %}
+  {% else %}
+    {% comment %} Simulated deterministic range based on product ID {% endcomment %}
+    {% assign min_s = block.settings.min_stock | default: 3 | plus: 0 %}
+    {% assign max_s = block.settings.max_stock | default: 12 | plus: 0 %}
+    {% if max_s <= min_s %}
+      {% assign max_s = min_s | plus: 5 %}
+    {% endif %}
+    {% assign range_diff = max_s | minus: min_s | plus: 1 %}
+    {% assign stock_qty = product.id | modulo: range_diff | plus: min_s %}
+  {% endif %}
+
+  {% comment %} Deterministic live viewers counter {% endcomment %}
+  {% assign viewers_count = product.id | modulo: 24 | plus: 9 %}
+
+  {% comment %} Replace template variables {% endcomment %}
+  {% assign headline = block.settings.headline | default: 'Hurry! Only {stock} items left in stock' | replace: '{stock}', stock_qty | replace: '{viewers}', viewers_count %}
+  {% assign subtext = block.settings.subtext | default: '🔥 High demand: selling fast' | replace: '{stock}', stock_qty | replace: '{viewers}', viewers_count %}
+
+  {% comment %} Progress bar percentage {% endcomment %}
+  {% assign max_meter = block.settings.max_stock | default: 15 | plus: 0 %}
+  {% if max_meter < stock_qty %}
+    {% assign max_meter = stock_qty | plus: 5 %}
+  {% endif %}
+  {% assign bar_percent = stock_qty | times: 100 | divided_by: max_meter %}
+  {% if bar_percent < 8 %}
+    {% assign bar_percent = 8 %}
+  {% elsif bar_percent > 100 %}
+    {% assign bar_percent = 100 %}
+  {% endif %}
+
+  {% if show_block %}
+    <div
+      class="xpp-ps-root"
+      data-product-id="{{ product.id }}"
+      data-variant-id="{{ current_variant.id }}"
+      data-stock-source="{{ block.settings.stock_source }}"
+      data-min-stock="{{ block.settings.min_stock | default: 3 }}"
+      data-max-stock="{{ block.settings.max_stock | default: 12 }}"
+      data-threshold="{{ block.settings.threshold | default: 0 }}"
+      data-headline="{{ block.settings.headline | escape }}"
+      data-subtext="{{ block.settings.subtext | escape }}"
+      data-proxy-path="/apps/xpoost/config"
+      style="
+        --xpp-ps-accent: {{ block.settings.accent_color | default: '#D4AF37' }};
+        --xpp-ps-bg: {{ block.settings.bg_color | default: '#141414' }};
+        --xpp-ps-text: {{ block.settings.text_color | default: '#FFFFFF' }};
+        --xpp-ps-border: {{ block.settings.border_color | default: '#2d2d2d' }};
+      "
+    >
+      {% case block.settings.design_preset %}
+        {% when 'urgency_badge' %}
+          {% comment %} Design 2: Urgency Radar & Stock Pill {% endcomment %}
+          <div class="xpp-ps-urgency-badge">
+            <div class="xpp-ps-radar" aria-hidden="true">
+              <div class="xpp-ps-radar-dot"></div>
+              <div class="xpp-ps-radar-wave"></div>
+            </div>
+            <p class="xpp-ps-headline">
+              {{ headline }}
+            </p>
+          </div>
+
+        {% when 'luxury_card' %}
+          {% comment %} Design 3: Luxury Minimalist Box {% endcomment %}
+          <div class="xpp-ps-luxury-card">
+            <div class="xpp-ps-luxury-left">
+              <span class="xpp-ps-icon-flame" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 23c6.075 0 11-4.925 11-11 0-4.043-2.18-7.575-5.438-9.457-.696-.402-1.562.067-1.562.875v2.582c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-.808-.866-1.277-1.562-.875C3.18 6.002 1 9.534 1 13.577 1 19.652 5.925 24.577 12 24.577v-1.577z"/>
+                </svg>
+              </span>
+              <div>
+                <p class="xpp-ps-headline">{{ headline }}</p>
+                {% if subtext != blank %}
+                  <div class="xpp-ps-subtext">{{ subtext }}</div>
+                {% endif %}
+              </div>
+            </div>
+            <div class="xpp-ps-luxury-right">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              <span>{{ viewers_count }} viewing</span>
+            </div>
+          </div>
+
+        {% when 'flash_demand' %}
+          {% comment %} Design 4: Flash Warehouse Scarcity Banner {% endcomment %}
+          <div class="xpp-ps-flash-demand">
+            <div class="xpp-ps-flash-header">
+              <span class="xpp-ps-badge-tag">High Demand</span>
+              <p class="xpp-ps-headline" style="margin: 0;">{{ headline }}</p>
+            </div>
+            {% if subtext != blank %}
+              <div class="xpp-ps-subtext" style="margin-bottom: 8px;">{{ subtext }}</div>
+            {% endif %}
+            <div class="xpp-ps-track">
+              <div class="xpp-ps-bar" style="width: {{ bar_percent }}%;"></div>
+            </div>
+          </div>
+
+        {% else %}
+          {% comment %} Design 1 (Default): Fire Pulse & Progress Meter {% endcomment %}
+          <div class="xpp-ps-pulse-meter">
+            <div class="xpp-ps-header">
+              <span class="xpp-ps-icon-flame" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 23c6.075 0 11-4.925 11-11 0-4.043-2.18-7.575-5.438-9.457-.696-.402-1.562.067-1.562.875v2.582c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-.808-.866-1.277-1.562-.875C3.18 6.002 1 9.534 1 13.577 1 19.652 5.925 24.577 12 24.577v-1.577z"/>
+                </svg>
+              </span>
+              <p class="xpp-ps-headline">
+                {{ headline }}
+              </p>
+            </div>
+            <div class="xpp-ps-track">
+              <div class="xpp-ps-bar" style="width: {{ bar_percent }}%;"></div>
+            </div>
+            {% if subtext != blank %}
+              <div class="xpp-ps-subtext">
+                {{ subtext }}
+              </div>
+            {% endif %}
+          </div>
+      {% endcase %}
+    </div>
+
+    {{ 'xpoost-product-scarcity.css' | asset_url | stylesheet_tag }}
+    <script src="{{ 'xpoost-product-scarcity.js' | asset_url }}" defer></script>
+  {% endif %}
+{% endif %}
+
+{% schema %}
+{
+  "name": "XPoost: Product Scarcity",
+  "target": "section",
+  "templates": ["product"],
+  "settings": [
+    {
+      "type": "select",
+      "id": "design_preset",
+      "label": "Design Layout",
+      "options": [
+        { "value": "pulse_meter", "label": "Fire Pulse & Progress Meter" },
+        { "value": "urgency_badge", "label": "Live Radar Badge & Pill" },
+        { "value": "luxury_card", "label": "Luxury Minimalist Card" },
+        { "value": "flash_demand", "label": "Flash Warehouse Banner" }
+      ],
+      "default": "pulse_meter"
+    },
+    {
+      "type": "select",
+      "id": "stock_source",
+      "label": "Inventory Calculation Source",
+      "options": [
+        { "value": "shopify", "label": "Real Shopify Inventory" },
+        { "value": "manual_range", "label": "Simulated Range (Custom Min / Max)" }
+      ],
+      "default": "shopify"
+    },
+    {
+      "type": "range",
+      "id": "min_stock",
+      "label": "Minimum Stock Quantity",
+      "min": 1,
+      "max": 20,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "max_stock",
+      "label": "Maximum Stock Quantity",
+      "min": 5,
+      "max": 50,
+      "step": 1,
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "threshold",
+      "label": "Low Stock Cutoff (0 = Always Show)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 20,
+      "info": "If using Shopify inventory, only show this block when stock is below this number."
+    },
+    {
+      "type": "text",
+      "id": "headline",
+      "label": "Headline Template",
+      "default": "Hurry! Only {stock} items left in stock",
+      "info": "Use {stock} for quantity, and {viewers} for live viewer count."
+    },
+    {
+      "type": "text",
+      "id": "subtext",
+      "label": "Subtitle / Reassurance Note",
+      "default": "🔥 High demand: selling fast"
+    },
+    {
+      "type": "select",
+      "id": "target_mode",
+      "label": "Product Targeting",
+      "options": [
+        { "value": "all", "label": "All Products" },
+        { "value": "specific", "label": "Specific Products Only" },
+        { "value": "exclude", "label": "Exclude Specific Products" }
+      ],
+      "default": "all"
+    },
+    {
+      "type": "product_list",
+      "id": "target_products",
+      "label": "Targeted / Excluded Products"
+    },
+    {
+      "type": "header",
+      "content": "Appearance & Colors"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent / Highlight Color",
+      "default": "#D4AF37"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Card Background Color",
+      "default": "#141414"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border Color",
+      "default": "#2d2d2d"
+    }
+  ]
+}
+{% endschema %}

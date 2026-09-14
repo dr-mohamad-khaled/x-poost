@@ -47,6 +47,7 @@ model Shop {
   shippingBarEnabled  Boolean @default(false)
   exitIntentEnabled   Boolean @default(false)
   stickyBarEnabled    Boolean @default(false)
+  productScarcityEnabled Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -58,6 +59,7 @@ model Shop {
   exitIntentConfig  ExitIntentConfig?
   stickyBarConfig   StickyBarConfig?
   upsellStyleConfig UpsellStyleConfig?
+  productScarcityConfig ProductScarcityConfig?
 
   @@index([shopDomain])
 }
@@ -221,3 +223,33 @@ model UpsellStyleConfig {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 }
+
+/// Feature 8: Product Information Scarcity & Urgency Block (Theme Section Block)
+model ProductScarcityConfig {
+  id                 String   @id @default(cuid())
+  shopId             String   @unique
+  shop               Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  active             Boolean  @default(true)
+  designPreset       String   @default("pulse_meter") // pulse_meter | urgency_badge | luxury_card | flash_demand
+  stockSource        String   @default("shopify")     // shopify | manual_range
+  minStock           Int      @default(3)
+  maxStock           Int      @default(12)
+  lowStockThreshold  Int      @default(20)
+
+  headlineText       String   @default("Hurry! Only {stock} items left in stock")
+  subText            String?  @default("High demand: selling fast")
+
+  accentColor        String   @default("#D4AF37")
+  backgroundColor    String   @default("#141414")
+  textColor          String   @default("#FFFFFF")
+  borderColor        String   @default("#2d2d2d")
+
+  // Product Targeting: ALL | SPECIFIC | EXCLUDE
+  targetMode         String   @default("ALL")
+  productIdsJson     String   @default("[]")
+
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+

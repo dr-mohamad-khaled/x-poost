@@ -31,6 +31,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     shippingConfig: true,
     exitIntentConfig: true,
     upsellStyleConfig: true,
+    productScarcityConfig: true,
   };
 
   if (shopDomain) {
@@ -270,6 +271,33 @@ function parseSocialPosition(rawPos: string | null | undefined) {
     };
   }
 
+  // Product Information Scarcity Block
+  let productScarcity = null;
+  if (shop.productScarcityEnabled && shop.productScarcityConfig?.active) {
+    let productIds: string[] = [];
+    try {
+      productIds = JSON.parse(shop.productScarcityConfig.productIdsJson || "[]");
+    } catch {
+      productIds = [];
+    }
+    productScarcity = {
+      active: true,
+      designPreset: shop.productScarcityConfig.designPreset,
+      stockSource: shop.productScarcityConfig.stockSource,
+      minStock: shop.productScarcityConfig.minStock,
+      maxStock: shop.productScarcityConfig.maxStock,
+      lowStockThreshold: shop.productScarcityConfig.lowStockThreshold,
+      headlineText: shop.productScarcityConfig.headlineText,
+      subText: shop.productScarcityConfig.subText,
+      accentColor: shop.productScarcityConfig.accentColor,
+      backgroundColor: shop.productScarcityConfig.backgroundColor,
+      textColor: shop.productScarcityConfig.textColor,
+      borderColor: shop.productScarcityConfig.borderColor,
+      targetMode: shop.productScarcityConfig.targetMode,
+      productIds,
+    };
+  }
+
   return new Response(
     JSON.stringify({
       active: true,
@@ -281,6 +309,7 @@ function parseSocialPosition(rawPos: string | null | undefined) {
         social,
         shipping,
         exitIntent,
+        productScarcity,
       },
     }),
     {
