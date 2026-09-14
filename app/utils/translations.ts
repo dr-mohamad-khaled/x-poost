@@ -704,7 +704,7 @@ export const DASHBOARD_I18N: Record<SupportedLanguage, Record<string, string>> =
  */
 export function sanitizeText(input: string): string {
   if (!input) return "";
-  return input.replace(/[\uD83C-\uDBFF\uDC00-\uDFFF]/g, "").trim();
+  return input.replace(/[\uD83C-\uDBFF\uDC00-\uDFFF]|\p{Extended_Pictographic}/gu, "");
 }
 
 /**

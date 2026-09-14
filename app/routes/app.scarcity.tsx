@@ -165,6 +165,21 @@ export default function ScarcityToastSettings() {
     translationsMap[selectedLang]?.scarcityToast ||
     DEFAULT_TRANSLATIONS_BY_LANG[selectedLang].scarcityToast;
 
+  const handleSelectLang = (lang: SupportedLanguage) => {
+    setSelectedLang(lang);
+    const langToast =
+      translationsMap[lang]?.scarcityToast ||
+      DEFAULT_TRANSLATIONS_BY_LANG[lang]?.scarcityToast;
+    if (langToast) {
+      setMessages([
+        { icon: "discount", badge: langToast.discountBadge, text: langToast.discountText, pill: "SAVE15" },
+        { icon: "scarcity", badge: langToast.stockBadge, text: langToast.stockText },
+        { icon: "visitors", badge: langToast.trendingBadge, text: langToast.trendingText },
+        { icon: "fast_shipping", badge: langToast.shippingBadge, text: langToast.shippingText },
+      ]);
+    }
+  };
+
   const handleCopyChange = (field: keyof typeof currentCopy, val: string) => {
     const clean = sanitizeText(val);
     setTranslationsMap((prev) => ({
@@ -177,6 +192,18 @@ export default function ScarcityToastSettings() {
         },
       },
     }));
+    setMessages((prev) => {
+      const next = [...prev];
+      if (field === "discountBadge" && next[0]) next[0] = { ...next[0], badge: clean };
+      if (field === "discountText" && next[0]) next[0] = { ...next[0], text: clean };
+      if (field === "stockBadge" && next[1]) next[1] = { ...next[1], badge: clean };
+      if (field === "stockText" && next[1]) next[1] = { ...next[1], text: clean };
+      if (field === "trendingBadge" && next[2]) next[2] = { ...next[2], badge: clean };
+      if (field === "trendingText" && next[2]) next[2] = { ...next[2], text: clean };
+      if (field === "shippingBadge" && next[3]) next[3] = { ...next[3], badge: clean };
+      if (field === "shippingText" && next[3]) next[3] = { ...next[3], text: clean };
+      return next;
+    });
   };
 
   const handleLoadPredefined = () => {
@@ -195,6 +222,7 @@ export default function ScarcityToastSettings() {
       { icon: "fast_shipping", badge: def.shippingBadge, text: def.shippingText },
     ]);
   };
+
 
   const [messages, setMessages] = useState<Message[]>(config.messages);
   const [previewIndex, setPreviewIndex] = useState(0);
@@ -362,10 +390,11 @@ export default function ScarcityToastSettings() {
         <s-section heading="Multi-Language Toast Templates & Copy">
           <FeatureLanguageSwitcher
             selectedLang={selectedLang}
-            onSelectLang={setSelectedLang}
+            onSelectLang={handleSelectLang}
             onLoadPredefined={handleLoadPredefined}
             dashboardLocale={dashboardLocale}
           />
+
           <div className="xps-grid">
             <div className="xps-field">
               <label>Discount Badge ({selectedLang.toUpperCase()})</label>
@@ -632,12 +661,12 @@ const ADMIN_STYLES = `
   flex: 0 0 30px; width: 30px; height: 30px; border-radius: 8px; border: 1px solid;
   display: flex; align-items: center; justify-content: center; font-size: 15px;
 }
-.xps-toast-preview__body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.xps-toast-preview__badge { font-size: 11px; font-weight: 700; }
+.xps-toast-preview__body { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.xps-toast-preview__badge { font-size: 11px; font-weight: 700; word-break: break-word; white-space: normal; }
 .xps-toast-preview__pill {
   display: inline-block; align-self: flex-start; padding: 1px 7px; border-radius: 999px;
-  color: #0b0b0b; font-size: 9.5px; font-weight: 800;
+  color: #0b0b0b; font-size: 9.5px; font-weight: 800; margin-bottom: 2px;
 }
-.xps-toast-preview__text { font-size: 12.5px; line-height: 1.35; }
+.xps-toast-preview__text { font-size: 12.5px; line-height: 1.45; word-break: break-word; white-space: normal; }
 .xps-preview-hint { font-size: 12px; color: #6d7175; margin-top: 10px; }
 `;

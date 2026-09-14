@@ -184,33 +184,37 @@ export default function App() {
             </span>
           </div>
 
-          {/* Quick Language Switcher Dropdown / Pills */}
-          <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
-            {SUPPORTED_LANGUAGES.map((lang) => {
-              const active = lang.code === dashboardLocale;
-              return (
-                <button
+          {/* Quick Language Switcher Dropdown */}
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <select
+              id="top-dashboard-lang-select"
+              value={dashboardLocale}
+              onChange={(e) => handleLanguageChange(e.target.value as SupportedLanguage)}
+              style={{
+                background: "#18181b",
+                color: "#F3E5AB",
+                border: "1px solid #3f3f46",
+                borderRadius: "6px",
+                padding: "6px 14px",
+                fontSize: "12px",
+                fontWeight: 600,
+                cursor: "pointer",
+                outline: "none",
+                appearance: "auto",
+              }}
+            >
+              {SUPPORTED_LANGUAGES.map((lang) => (
+                <option
                   key={lang.code}
-                  type="button"
-                  onClick={() => handleLanguageChange(lang.code)}
-                  style={{
-                    background: active ? "rgba(212, 175, 55, 0.18)" : "#18181b",
-                    color: active ? "#F3E5AB" : "#a1a1aa",
-                    border: active ? "1px solid #D4AF37" : "1px solid #27272a",
-                    borderRadius: "6px",
-                    padding: "4px 10px",
-                    fontSize: "11px",
-                    fontWeight: active ? 600 : 400,
-                    cursor: "pointer",
-                    transition: "all 0.15s ease",
-                  }}
-                  title={lang.label}
+                  value={lang.code}
+                  style={{ background: "#18181b", color: "#f4f4f5" }}
                 >
-                  {lang.nativeName}
-                </button>
-              );
-            })}
+                  {lang.nativeName} ({lang.label}) {lang.dir === "rtl" ? "[RTL]" : ""}
+                </option>
+              ))}
+            </select>
           </div>
+
         </header>
 
         <main style={{ padding: "0 4px" }}>

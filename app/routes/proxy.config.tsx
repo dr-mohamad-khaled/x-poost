@@ -48,6 +48,17 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   if (!shop) return emptyResponse();
 
+  const rawLocale = (
+    url.searchParams.get("locale") ||
+    request.headers.get("x-storefront-locale") ||
+    shop.translationConfig?.storefrontLocale ||
+    "ar"
+  ).split("-")[0].toLowerCase();
+  const validLocales = ["ar", "en", "fr", "de", "es", "it", "pt"];
+  const storefrontLocale = validLocales.includes(rawLocale) ? rawLocale : "ar";
+  const translations = getMergedTranslations(shop.translationConfig?.translationsJson, storefrontLocale);
+  const isRtl = storefrontLocale === "ar";
+
   // Scarcity Config
   let scarcity = null;
   if (shop.scarcityEnabled && shop.scarcityConfig?.active) {
@@ -95,12 +106,21 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           const f1Match = (r.offerDescription || "").match(/<!--xp:f1:([^>]+)-->/);
           const f2Match = (r.offerDescription || "").match(/<!--xp:f2:([^>]+)-->/);
           const f3Match = (r.offerDescription || "").match(/<!--xp:f3:([^>]+)-->/);
-          const f1 = f1Match ? decodeURIComponent(f1Match[1].trim()) : "Recommended addition to your selection";
-          const f2 = f2Match ? decodeURIComponent(f2Match[1].trim()) : "Premium dermatologically evaluated formula";
-          const f3 = f3Match ? decodeURIComponent(f3Match[1].trim()) : "Exclusive single-order promotion price";
+          const rawF1 = f1Match ? decodeURIComponent(f1Match[1].trim()) : "Recommended addition to your selection";
+          const rawF2 = f2Match ? decodeURIComponent(f2Match[1].trim()) : "Premium dermatologically evaluated formula";
+          const rawF3 = f3Match ? decodeURIComponent(f3Match[1].trim()) : "Exclusive single-order promotion price";
 
           const hMatch = (r.offerDescription || "").match(/<!--xp:h:([^>]+)-->/);
           const targetProductHandle = hMatch ? decodeURIComponent(hMatch[1].trim()) : "";
+
+          const i18nMatch = (r.offerDescription || "").match(/<!--xp:i18n:([^>]+)-->/);
+          let ruleI18n: any = null;
+          if (i18nMatch) {
+            try {
+              ruleI18n = JSON.parse(decodeURIComponent(i18nMatch[1].trim()));
+            } catch (e) {}
+          }
+          const localized = ruleI18n && ruleI18n[storefrontLocale] ? ruleI18n[storefrontLocale] : null;
 
           const cleanDesc = (r.offerDescription || "")
             .replace(/<!--xp:layout:[a-z_]+-->/g, "")
@@ -109,7 +129,15 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
             .replace(/<!--xp:f2:[^>]+-->/g, "")
             .replace(/<!--xp:f3:[^>]+-->/g, "")
             .replace(/<!--xp:h:[^>]+-->/g, "")
+            .replace(/<!--xp:i18n:[^>]+-->/g, "")
             .trim();
+
+          const offerHeadline = localized?.headline || r.offerHeadline;
+          const offerDescription = localized?.description || cleanDesc;
+          const f1 = localized?.feature1 || rawF1;
+          const f2 = localized?.feature2 || rawF2;
+          const f3 = localized?.feature3 || rawF3;
+
           return {
             id: r.id,
             triggerProductId: r.triggerProductId,
@@ -119,18 +147,24 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
             targetVariantId: r.targetVariantId,
             targetProductPrice: r.targetProductPrice,
             targetProductImage: r.targetProductImage,
-            offerHeadline: r.offerHeadline,
-            offerDescription: cleanDesc,
+            offerHeadline: offerHeadline,
+            offerDescription: offerDescription,
             discountPercent: r.discountPercent,
             discountCode: r.discountCode,
             preselected: preselected,
             layoutStyle: layoutStyle,
             features: [f1, f2, f3],
+            offerTag: localized?.offerTag,
+            acceptButton: localized?.acceptButton,
+            declineButton: localized?.declineButton,
+            urgencyLabel: localized?.urgencyLabel,
+            scarcityNotice: localized?.scarcityNotice,
           };
         }),
       };
     }
   }
+
 
   // In-Cart Drawer Rules
   let inCart = null;
@@ -300,11 +334,6 @@ function parseSocialPosition(rawPos: string | null | undefined) {
     };
   }
 
-  const rawLocale = shop.translationConfig?.storefrontLocale || "ar";
-  const validLocales = ["ar", "en", "fr", "de", "es", "it", "pt"];
-  const storefrontLocale = validLocales.includes(rawLocale) ? rawLocale : "ar";
-  const translations = getMergedTranslations(shop.translationConfig?.translationsJson, storefrontLocale);
-  const isRtl = storefrontLocale === "ar";
 
   if (productScarcity && translations?.productScarcity) {
     if (translations.productScarcity.headlineText) productScarcity.headlineText = translations.productScarcity.headlineText;

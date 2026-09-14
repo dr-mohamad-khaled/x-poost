@@ -12,6 +12,41 @@ import {
   type SupportedLanguage,
 } from "../utils/translations";
 
+
+export type OfferI18nCopy = {
+  headline: string;
+  description: string;
+  offerTag: string;
+  acceptButton: string;
+  declineButton: string;
+  urgencyLabel: string;
+  scarcityNotice: string;
+  feature1: string;
+  feature2: string;
+  feature3: string;
+};
+
+export function getDefaultOfferI18n(): Record<SupportedLanguage, OfferI18nCopy> {
+  const langs: SupportedLanguage[] = ["ar", "en", "fr", "de", "es", "it", "pt"];
+  const res = {} as Record<SupportedLanguage, OfferI18nCopy>;
+  for (const l of langs) {
+    const d = DEFAULT_TRANSLATIONS_BY_LANG[l]?.prePurchase || DEFAULT_TRANSLATIONS_BY_LANG.en.prePurchase;
+    res[l] = {
+      headline: d.headline,
+      description: d.description,
+      offerTag: d.offerTag,
+      acceptButton: d.acceptButton,
+      declineButton: d.declineButton,
+      urgencyLabel: d.urgencyLabel,
+      scarcityNotice: d.scarcityNotice,
+      feature1: l === "ar" ? "إضافة مميزة وموصى بها لطلبك" : "Recommended addition to your selection",
+      feature2: l === "ar" ? "تركيبة أصلية معتمدة ومضمونة" : "Premium dermatologically evaluated formula",
+      feature3: l === "ar" ? "سعر ترويجي حصري لهذا الطلب فقط" : "Exclusive single-order promotion price",
+    };
+  }
+  return res;
+}
+
 type CatalogProduct = {
   id: string;
   title: string;
@@ -252,13 +287,31 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       return { error: "Please select at least one trigger product." };
     }
 
-    const offerHeadline = String(formData.get("offerHeadline") || "Exclusive Add-On Deal").trim();
-    const rawDescription = String(formData.get("offerDescription") || "Add these complementary items to your order!").trim();
+    const offerI18nJsonRaw = String(formData.get("offerI18nJson") || "");
+    let offerI18n: any = null;
+    if (offerI18nJsonRaw) {
+      try {
+        offerI18n = JSON.parse(offerI18nJsonRaw);
+      } catch (e) {}
+    }
+
+    const offerHeadline = (
+      offerI18n?.en?.headline ||
+      offerI18n?.ar?.headline ||
+      String(formData.get("offerHeadline") || "Exclusive Add-On Deal")
+    ).trim();
+
+    const rawDescription = (
+      offerI18n?.en?.description ||
+      offerI18n?.ar?.description ||
+      String(formData.get("offerDescription") || "Add these complementary items to your order!")
+    ).trim();
+
     const layoutStyle = String(formData.get("layoutStyle") || "spotlight_hero").trim();
     const preselectItems = formData.get("preselectItems") !== "false";
-    const feature1 = String(formData.get("feature1") || "").trim();
-    const feature2 = String(formData.get("feature2") || "").trim();
-    const feature3 = String(formData.get("feature3") || "").trim();
+    const feature1 = (offerI18n?.en?.feature1 || String(formData.get("feature1") || "")).trim();
+    const feature2 = (offerI18n?.en?.feature2 || String(formData.get("feature2") || "")).trim();
+    const feature3 = (offerI18n?.en?.feature3 || String(formData.get("feature3") || "")).trim();
 
     let offerDescription = rawDescription;
     if (!preselectItems) offerDescription += " <!--xp:preselect:false-->";
@@ -266,6 +319,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     if (feature1) offerDescription += ` <!--xp:f1:${encodeURIComponent(feature1)}-->`;
     if (feature2) offerDescription += ` <!--xp:f2:${encodeURIComponent(feature2)}-->`;
     if (feature3) offerDescription += ` <!--xp:f3:${encodeURIComponent(feature3)}-->`;
+    if (offerI18n) {
+      offerDescription += ` <!--xp:i18n:${encodeURIComponent(JSON.stringify(offerI18n))}-->`;
+    }
 
     const hasDiscount = formData.get("hasDiscount") === "true";
     const discountPercent = hasDiscount
@@ -456,6 +512,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 type OfferGroup = {
   id: string;
+  i18n?: Record<SupportedLanguage, OfferI18nCopy> | null;
   ruleIds: string[];
   headline: string;
   description: string;
@@ -568,7 +625,62 @@ export default function PrePurchaseSettings() {
     }));
   };
 
-  const [modalBg, setModalBg] = useState(styleConfig?.prePurchaseBg || "#0B0B0B");
+  const [offerLang, setOfferLang] = useState<SupportedLanguage>(dashboardLocale || "ar");
+  const [offerI18n, setOfferI18n] = useState<Record<SupportedLanguage, OfferI18nCopy>>(getDefaultOfferI18n);
+  const activeOfferCopy = offerI18n[offerLang] || offerI18n.en || getDefaultOfferI18n().en;
+
+  const handleSelectOfferLang = (lang: SupportedLanguage) => {
+    setOfferLang(lang);
+    const copy = offerI18n[lang] || getDefaultOfferI18n()[lang];
+    setHeadline(copy.headline);
+    setDescription(copy.description);
+    setFeature1(copy.feature1);
+    setFeature2(copy.feature2);
+    setFeature3(copy.feature3);
+  };
+
+  const updateOfferCopy = (field: keyof OfferI18nCopy, val: string) => {
+    const clean = sanitizeText(val);
+    setOfferI18n((prev) => ({
+      ...prev,
+      [offerLang]: {
+        ...(prev[offerLang] || getDefaultOfferI18n()[offerLang]),
+        [field]: clean,
+      },
+    }));
+    if (field === "headline") setHeadline(clean);
+    if (field === "description") setDescription(clean);
+    if (field === "feature1") setFeature1(clean);
+    if (field === "feature2") setFeature2(clean);
+    if (field === "feature3") setFeature3(clean);
+  };
+
+  const handleLoadPredefinedForOffer = (lang: SupportedLanguage) => {
+    const def = DEFAULT_TRANSLATIONS_BY_LANG[lang].prePurchase;
+    const newCopy: OfferI18nCopy = {
+      headline: def.headline,
+      description: def.description,
+      offerTag: def.offerTag,
+      acceptButton: def.acceptButton,
+      declineButton: def.declineButton,
+      urgencyLabel: def.urgencyLabel,
+      scarcityNotice: def.scarcityNotice,
+      feature1: lang === "ar" ? "إضافة مميزة وموصى بها لطلبك" : "Recommended addition to your selection",
+      feature2: lang === "ar" ? "تركيبة أصلية معتمدة ومضمونة" : "Premium dermatologically evaluated formula",
+      feature3: lang === "ar" ? "سعر ترويجي حصري لهذا الطلب فقط" : "Exclusive single-order promotion price",
+    };
+    setOfferI18n((prev) => ({
+      ...prev,
+      [lang]: newCopy,
+    }));
+    setHeadline(newCopy.headline);
+    setDescription(newCopy.description);
+    setFeature1(newCopy.feature1);
+    setFeature2(newCopy.feature2);
+    setFeature3(newCopy.feature3);
+  };
+
+    const [modalBg, setModalBg] = useState(styleConfig?.prePurchaseBg || "#0B0B0B");
   const [modalAccent, setModalAccent] = useState(styleConfig?.prePurchaseAccent || "#D4AF37");
   const [modalText, setModalText] = useState(styleConfig?.prePurchaseText || "#FFFFFF");
 
@@ -598,6 +710,14 @@ export default function PrePurchaseSettings() {
       const hMatch = (r.offerDescription || "").match(/<!--xp:h:([^>]+)-->/);
       const prodHandle = hMatch ? decodeURIComponent(hMatch[1].trim()) : undefined;
 
+      const i18nMatch = (r.offerDescription || "").match(/<!--xp:i18n:([^>]+)-->/);
+      let parsedOfferI18n: Record<SupportedLanguage, OfferI18nCopy> | null = null;
+      if (i18nMatch) {
+        try {
+          parsedOfferI18n = JSON.parse(decodeURIComponent(i18nMatch[1].trim()));
+        } catch (e) {}
+      }
+
       const cleanDesc = (r.offerDescription || "")
         .replace(/<!--xp:layout:[a-z_]+-->/g, "")
         .replace(/<!--xp:preselect:false-->/g, "")
@@ -605,6 +725,7 @@ export default function PrePurchaseSettings() {
         .replace(/<!--xp:f2:[^>]+-->/g, "")
         .replace(/<!--xp:f3:[^>]+-->/g, "")
         .replace(/<!--xp:h:[^>]+-->/g, "")
+        .replace(/<!--xp:i18n:[^>]+-->/g, "")
         .trim();
 
       if (!map.has(key)) {
@@ -617,6 +738,7 @@ export default function PrePurchaseSettings() {
           feature1,
           feature2,
           feature3,
+          i18n: parsedOfferI18n,
           triggerProductId: r.triggerProductId,
           triggerProductTitle: r.triggerProductTitle || (r.triggerProductId === "ALL" ? "All Products" : "Specific Product"),
           products: [
@@ -801,12 +923,16 @@ export default function PrePurchaseSettings() {
   // Open Create Mode
   const openCreateMode = () => {
     setEditingOffer(null);
-    setHeadline("Exclusive Add-On Deal");
-    setDescription("Add these complementary items to your order right now!");
+    const lang = dashboardLocale || "ar";
+    setOfferLang(lang);
+    const freshI18n = getDefaultOfferI18n();
+    setOfferI18n(freshI18n);
+    setHeadline(freshI18n[lang].headline);
+    setDescription(freshI18n[lang].description);
     setModalLayout("spotlight_hero");
-    setFeature1("Recommended addition to your selection");
-    setFeature2("Premium dermatologically evaluated formula");
-    setFeature3("Exclusive single-order promotion price");
+    setFeature1(freshI18n[lang].feature1);
+    setFeature2(freshI18n[lang].feature2);
+    setFeature3(freshI18n[lang].feature3);
     setTriggerType("ALL");
     setSelectedTriggerProductIds([]);
     setTriggerSearch("");
@@ -823,12 +949,30 @@ export default function PrePurchaseSettings() {
   // Open Edit Mode with populated offer data
   const openEditMode = (offer: OfferGroup) => {
     setEditingOffer(offer);
-    setHeadline(offer.headline);
-    setDescription(offer.description);
+    const lang = dashboardLocale || "ar";
+    setOfferLang(lang);
+    let mergedI18n = getDefaultOfferI18n();
+    if (offer.i18n) {
+      const langs: SupportedLanguage[] = ["ar", "en", "fr", "de", "es", "it", "pt"];
+      for (const l of langs) {
+        if (offer.i18n[l]) {
+          mergedI18n[l] = { ...mergedI18n[l], ...offer.i18n[l] };
+        }
+      }
+    } else {
+      mergedI18n.en.headline = offer.headline;
+      mergedI18n.en.description = offer.description;
+      mergedI18n.en.feature1 = offer.feature1;
+      mergedI18n.en.feature2 = offer.feature2;
+      mergedI18n.en.feature3 = offer.feature3;
+    }
+    setOfferI18n(mergedI18n);
+    setHeadline(mergedI18n[lang]?.headline || offer.headline);
+    setDescription(mergedI18n[lang]?.description || offer.description);
+    setFeature1(mergedI18n[lang]?.feature1 || offer.feature1);
+    setFeature2(mergedI18n[lang]?.feature2 || offer.feature2);
+    setFeature3(mergedI18n[lang]?.feature3 || offer.feature3);
     setModalLayout(offer.layoutStyle || "spotlight_hero");
-    setFeature1(offer.feature1 || "Recommended addition to your selection");
-    setFeature2(offer.feature2 || "Premium dermatologically evaluated formula");
-    setFeature3(offer.feature3 || "Exclusive single-order promotion price");
     if (offer.triggerProductId && offer.triggerProductId !== "ALL") {
       setTriggerType("SPECIFIC");
       const ids = offer.triggerProductId.split(",").map((s) => s.trim()).filter(Boolean);
@@ -1104,133 +1248,7 @@ export default function PrePurchaseSettings() {
             </Form>
           </div>
 
-          {/* Multi-Language Modal Copy Card */}
-          <div className="xp-index-card" style={{ marginBottom: "20px" }}>
-            <div className="xp-index-header">
-              <div>
-                <h3 style={{ fontSize: "16px", fontWeight: "700", color: "#202223", margin: "0 0 4px 0" }}>
-                  Multi-Language Modal Copy &amp; Buttons
-                </h3>
-                <p className="xp-sub" style={{ margin: 0 }}>
-                  Customize pre-purchase modal titles, buttons, and badges for each of the 7 supported languages.
-                </p>
-              </div>
-            </div>
-
-            <FeatureLanguageSwitcher
-              selectedLang={selectedLang}
-              onSelectLang={setSelectedLang}
-              onLoadPredefined={handleLoadPredefined}
-              dashboardLocale={dashboardLocale}
-            />
-
-            <Form method="post" style={{ marginTop: "16px" }}>
-              <input type="hidden" name="intent" value="save_translations" />
-              <input type="hidden" name="translationsJson" value={JSON.stringify(translationsMap)} />
-
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "12px" }}>
-                <div className="xp-field">
-                  <label style={{ fontSize: "12px", fontWeight: "600", color: "#333", marginBottom: "4px" }}>
-                    Special Offer Tag ({selectedLang.toUpperCase()})
-                  </label>
-                  <input
-                    type="text"
-                    className="xp-input"
-                    dir={selectedLang === "ar" ? "rtl" : "ltr"}
-                    value={currentCopy.offerTag}
-                    onChange={(e) => handleCopyChange("offerTag", e.target.value)}
-                  />
-                </div>
-                <div className="xp-field">
-                  <label style={{ fontSize: "12px", fontWeight: "600", color: "#333", marginBottom: "4px" }}>
-                    Modal Headline ({selectedLang.toUpperCase()})
-                  </label>
-                  <input
-                    type="text"
-                    className="xp-input"
-                    dir={selectedLang === "ar" ? "rtl" : "ltr"}
-                    value={currentCopy.headline}
-                    onChange={(e) => handleCopyChange("headline", e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div className="xp-field" style={{ marginBottom: "12px" }}>
-                <label style={{ fontSize: "12px", fontWeight: "600", color: "#333", marginBottom: "4px" }}>
-                  Modal Subtitle / Description ({selectedLang.toUpperCase()})
-                </label>
-                <input
-                  type="text"
-                  className="xp-input"
-                  dir={selectedLang === "ar" ? "rtl" : "ltr"}
-                  value={currentCopy.description}
-                  onChange={(e) => handleCopyChange("description", e.target.value)}
-                />
-              </div>
-
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "12px" }}>
-                <div className="xp-field">
-                  <label style={{ fontSize: "12px", fontWeight: "600", color: "#333", marginBottom: "4px" }}>
-                    Accept &amp; Add Button ({selectedLang.toUpperCase()})
-                  </label>
-                  <input
-                    type="text"
-                    className="xp-input"
-                    dir={selectedLang === "ar" ? "rtl" : "ltr"}
-                    value={currentCopy.acceptButton}
-                    onChange={(e) => handleCopyChange("acceptButton", e.target.value)}
-                  />
-                </div>
-                <div className="xp-field">
-                  <label style={{ fontSize: "12px", fontWeight: "600", color: "#333", marginBottom: "4px" }}>
-                    Decline / Skip Button ({selectedLang.toUpperCase()})
-                  </label>
-                  <input
-                    type="text"
-                    className="xp-input"
-                    dir={selectedLang === "ar" ? "rtl" : "ltr"}
-                    value={currentCopy.declineButton}
-                    onChange={(e) => handleCopyChange("declineButton", e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
-                <div className="xp-field">
-                  <label style={{ fontSize: "12px", fontWeight: "600", color: "#333", marginBottom: "4px" }}>
-                    Urgency Countdown Label ({selectedLang.toUpperCase()})
-                  </label>
-                  <input
-                    type="text"
-                    className="xp-input"
-                    dir={selectedLang === "ar" ? "rtl" : "ltr"}
-                    value={currentCopy.urgencyLabel}
-                    onChange={(e) => handleCopyChange("urgencyLabel", e.target.value)}
-                  />
-                </div>
-                <div className="xp-field">
-                  <label style={{ fontSize: "12px", fontWeight: "600", color: "#333", marginBottom: "4px" }}>
-                    Scarcity Notice ({selectedLang.toUpperCase()})
-                  </label>
-                  <input
-                    type="text"
-                    className="xp-input"
-                    dir={selectedLang === "ar" ? "rtl" : "ltr"}
-                    value={currentCopy.scarcityNotice}
-                    onChange={(e) => handleCopyChange("scarcityNotice", e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <button type="submit" disabled={isSubmitting} className="xp-btn-gold-primary" style={{ padding: "8px 18px", fontSize: "13px" }}>
-                  Save Multi-Language Copy
-                </button>
-              </div>
-            </Form>
-          </div>
-
-          <div className="xp-index-card">
+                    <div className="xp-index-card">
           {/* Search & Filter Header */}
           <div className="xp-index-header">
             <div className="xp-search-box">
@@ -1561,33 +1579,113 @@ export default function PrePurchaseSettings() {
                   />
                 )}
 
-                {/* Offer Details */}
+                {/* Offer Details & In-Offer Multi-Language Switcher */}
                 <div className="xp-editor-section">
-                  <h3>1. Offer Information</h3>
-                  <div className="xp-field">
-                    <label>Offer Name / Headline</label>
-                    <input
-                      type="text"
-                      name="offerHeadline"
-                      className="xp-input"
-                      value={headline}
-                      placeholder="e.g. Exclusive Add-On Deal or MEDICUBE Glow Bundle"
-                      onChange={(e) => setHeadline(e.target.value)}
-                      required
-                    />
-                    <small>Displayed prominently in the header of the pre-purchase modal.</small>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px", marginBottom: "12px" }}>
+                    <div>
+                      <h3 style={{ margin: "0 0 4px 0" }}>1. Offer Details &amp; Multi-Language Copy</h3>
+                      <p className="xp-sub" style={{ margin: 0 }}>
+                        Configure this offer's title, subtitle, buttons, badges, and features for each language.
+                      </p>
+                    </div>
                   </div>
 
-                  <div className="xp-field" style={{ marginTop: "12px" }}>
-                    <label>Offer Subtitle / Description</label>
+                  <FeatureLanguageSwitcher
+                    selectedLang={offerLang}
+                    onSelectLang={handleSelectOfferLang}
+                    onLoadPredefined={() => handleLoadPredefinedForOffer(offerLang)}
+                    dashboardLocale={dashboardLocale}
+                  />
+
+                  <input type="hidden" name="offerI18nJson" value={JSON.stringify(offerI18n)} />
+                  <input type="hidden" name="activeOfferLang" value={offerLang} />
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "12px" }}>
+                    <div className="xp-field">
+                      <label>Offer Headline ({offerLang.toUpperCase()})</label>
+                      <input
+                        type="text"
+                        name="offerHeadline"
+                        className="xp-input"
+                        dir={offerLang === "ar" ? "rtl" : "ltr"}
+                        value={activeOfferCopy.headline}
+                        onChange={(e) => updateOfferCopy("headline", e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="xp-field">
+                      <label>Special Offer Tag ({offerLang.toUpperCase()})</label>
+                      <input
+                        type="text"
+                        name="offerTag"
+                        className="xp-input"
+                        dir={offerLang === "ar" ? "rtl" : "ltr"}
+                        value={activeOfferCopy.offerTag}
+                        onChange={(e) => updateOfferCopy("offerTag", e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="xp-field" style={{ marginBottom: "12px" }}>
+                    <label>Offer Subtitle / Description ({offerLang.toUpperCase()})</label>
                     <textarea
                       name="offerDescription"
                       className="xp-input"
+                      dir={offerLang === "ar" ? "rtl" : "ltr"}
                       rows={2}
-                      value={description}
-                      placeholder="Add these complementary items to your order!"
-                      onChange={(e) => setDescription(e.target.value)}
+                      value={activeOfferCopy.description}
+                      onChange={(e) => updateOfferCopy("description", e.target.value)}
                     />
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "12px" }}>
+                    <div className="xp-field">
+                      <label>Accept Button Label ({offerLang.toUpperCase()})</label>
+                      <input
+                        type="text"
+                        name="acceptButton"
+                        className="xp-input"
+                        dir={offerLang === "ar" ? "rtl" : "ltr"}
+                        value={activeOfferCopy.acceptButton}
+                        onChange={(e) => updateOfferCopy("acceptButton", e.target.value)}
+                      />
+                    </div>
+                    <div className="xp-field">
+                      <label>Decline Button Label ({offerLang.toUpperCase()})</label>
+                      <input
+                        type="text"
+                        name="declineButton"
+                        className="xp-input"
+                        dir={offerLang === "ar" ? "rtl" : "ltr"}
+                        value={activeOfferCopy.declineButton}
+                        onChange={(e) => updateOfferCopy("declineButton", e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "12px" }}>
+                    <div className="xp-field">
+                      <label>Urgency Countdown Label ({offerLang.toUpperCase()})</label>
+                      <input
+                        type="text"
+                        name="urgencyLabel"
+                        className="xp-input"
+                        dir={offerLang === "ar" ? "rtl" : "ltr"}
+                        value={activeOfferCopy.urgencyLabel}
+                        onChange={(e) => updateOfferCopy("urgencyLabel", e.target.value)}
+                      />
+                    </div>
+                    <div className="xp-field">
+                      <label>Scarcity Notice ({offerLang.toUpperCase()})</label>
+                      <input
+                        type="text"
+                        name="scarcityNotice"
+                        className="xp-input"
+                        dir={offerLang === "ar" ? "rtl" : "ltr"}
+                        value={activeOfferCopy.scarcityNotice}
+                        onChange={(e) => updateOfferCopy("scarcityNotice", e.target.value)}
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -1810,35 +1908,44 @@ export default function PrePurchaseSettings() {
                       </p>
                       <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                         <div>
-                          <label className="xp-label" style={{ fontSize: "12px", marginBottom: "4px" }}>Highlight 1</label>
+                          <label className="xp-label" style={{ fontSize: "12px", marginBottom: "4px" }}>
+                            Highlight 1 ({offerLang.toUpperCase()})
+                          </label>
                           <input
                             type="text"
                             name="feature1"
                             className="xp-input"
-                            value={feature1}
-                            onChange={(e) => setFeature1(e.target.value)}
+                            dir={offerLang === "ar" ? "rtl" : "ltr"}
+                            value={activeOfferCopy.feature1}
+                            onChange={(e) => updateOfferCopy("feature1", e.target.value)}
                             placeholder="Recommended addition to your selection"
                           />
                         </div>
                         <div>
-                          <label className="xp-label" style={{ fontSize: "12px", marginBottom: "4px" }}>Highlight 2</label>
+                          <label className="xp-label" style={{ fontSize: "12px", marginBottom: "4px" }}>
+                            Highlight 2 ({offerLang.toUpperCase()})
+                          </label>
                           <input
                             type="text"
                             name="feature2"
                             className="xp-input"
-                            value={feature2}
-                            onChange={(e) => setFeature2(e.target.value)}
+                            dir={offerLang === "ar" ? "rtl" : "ltr"}
+                            value={activeOfferCopy.feature2}
+                            onChange={(e) => updateOfferCopy("feature2", e.target.value)}
                             placeholder="Premium dermatologically evaluated formula"
                           />
                         </div>
                         <div>
-                          <label className="xp-label" style={{ fontSize: "12px", marginBottom: "4px" }}>Highlight 3</label>
+                          <label className="xp-label" style={{ fontSize: "12px", marginBottom: "4px" }}>
+                            Highlight 3 ({offerLang.toUpperCase()})
+                          </label>
                           <input
                             type="text"
                             name="feature3"
                             className="xp-input"
-                            value={feature3}
-                            onChange={(e) => setFeature3(e.target.value)}
+                            dir={offerLang === "ar" ? "rtl" : "ltr"}
+                            value={activeOfferCopy.feature3}
+                            onChange={(e) => updateOfferCopy("feature3", e.target.value)}
                             placeholder="Exclusive single-order promotion price"
                           />
                         </div>
@@ -2067,7 +2174,7 @@ export default function PrePurchaseSettings() {
                   </span>
                 </div>
 
-                <div className={`xp-modal-mock xp-modal-mock--${modalLayout}`} dir={selectedLang === "ar" ? "rtl" : "ltr"}>
+                <div className={`xp-modal-mock xp-modal-mock--${modalLayout}`} dir={offerLang === "ar" ? "rtl" : "ltr"}>
                   {/* Layout 3: Bottom Sheet handle bar */}
                   {modalLayout === "bottom_sheet" && <div className="xp-sheet-handle-bar" />}
 
@@ -2079,7 +2186,7 @@ export default function PrePurchaseSettings() {
                           <circle cx="12" cy="12" r="10"/>
                           <polyline points="12 6 12 12 16 14"/>
                         </svg>
-                        <span>{currentCopy.urgencyLabel || "LIMITED TIME ADD-ON DEAL"}</span>
+                        <span>{activeOfferCopy.urgencyLabel || "LIMITED TIME ADD-ON DEAL"}</span>
                       </div>
                       <span className="xp-urgency-timer-text">04:59</span>
                     </div>
@@ -2087,7 +2194,7 @@ export default function PrePurchaseSettings() {
 
                   <div className="xp-modal-header">
                     <span className="xp-gold-badge">
-                      {currentCopy.offerTag || (modalLayout === "spotlight_hero" ? "SPOTLIGHT SHOWCASE" : modalLayout === "bundle_grid" ? "BUNDLE & SAVE DECK" : modalLayout === "bottom_sheet" ? "ADD-ON DRAWER" : "FLASH UPSELL DEAL")}
+                      {activeOfferCopy.offerTag || (modalLayout === "spotlight_hero" ? "SPOTLIGHT SHOWCASE" : modalLayout === "bundle_grid" ? "BUNDLE & SAVE DECK" : modalLayout === "bottom_sheet" ? "ADD-ON DRAWER" : "FLASH UPSELL DEAL")}
                     </span>
                     <span className="xp-modal-close">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -2096,8 +2203,8 @@ export default function PrePurchaseSettings() {
                       </svg>
                     </span>
                   </div>
-                  <h4 className="xp-modal-headline">{headline}</h4>
-                  <p className="xp-modal-desc">{description}</p>
+                  <h4 className="xp-modal-headline">{activeOfferCopy.headline}</h4>
+                  <p className="xp-modal-desc">{activeOfferCopy.description}</p>
 
                   {/* Empty state */}
                   {selectedProductsList.length === 0 ? (
@@ -2178,7 +2285,7 @@ export default function PrePurchaseSettings() {
                                         <polyline points="20 6 9 17 4 12"/>
                                       </svg>
                                     </span>
-                                    {feature1 || "Recommended addition to your selection"}
+                                    {activeOfferCopy.feature1 || "Recommended addition to your selection"}
                                   </li>
                                   <li>
                                     <span className="xp-check-bullet">
@@ -2186,7 +2293,7 @@ export default function PrePurchaseSettings() {
                                         <polyline points="20 6 9 17 4 12"/>
                                       </svg>
                                     </span>
-                                    {feature2 || "Premium dermatologically evaluated formula"}
+                                    {activeOfferCopy.feature2 || "Premium dermatologically evaluated formula"}
                                   </li>
                                   <li>
                                     <span className="xp-check-bullet">
@@ -2194,7 +2301,7 @@ export default function PrePurchaseSettings() {
                                         <polyline points="20 6 9 17 4 12"/>
                                       </svg>
                                     </span>
-                                    {feature3 || "Exclusive single-order promotion price"}
+                                    {activeOfferCopy.feature3 || "Exclusive single-order promotion price"}
                                   </li>
                                 </ul>
                               </div>
@@ -2482,10 +2589,10 @@ export default function PrePurchaseSettings() {
 
                   <div className="xp-modal-actions">
                     <button type="button" className={`xp-btn-add-both ${modalLayout === "flash_urgency" ? "xp-btn-urgency-glow" : ""}`}>
-                      {currentCopy.acceptButton || buttonText}
+                      {activeOfferCopy.acceptButton || "Add to Order & Continue"}
                     </button>
                     <button type="button" className="xp-btn-skip">
-                      {currentCopy.declineButton || "No thanks, continue to cart"}
+                      {activeOfferCopy.declineButton || "No thanks, continue to cart"}
                     </button>
                   </div>
                 </div>

@@ -469,20 +469,23 @@ export default function TranslationsPage() {
                   padding: 16,
                 }}
               >
-                <label className="xpp-label">
+                <label className="xpp-label" htmlFor="dash-locale-select">
                   {isRtl ? "لغة لوحة التحكم" : "Dashboard Language"}
                 </label>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 10 }}>
-                  {supportedLanguages.map((lang) => (
-                    <button
-                      key={lang.code}
-                      type="button"
-                      className={`xpp-pill-btn ${dashboardLocale === lang.code ? "active" : ""}`}
-                      onClick={() => setDashboardLocale(lang.code)}
-                    >
-                      {lang.nativeName} ({lang.label})
-                    </button>
-                  ))}
+                <div style={{ marginTop: 10 }}>
+                  <select
+                    id="dash-locale-select"
+                    className="xpp-input"
+                    value={dashboardLocale}
+                    onChange={(e) => setDashboardLocale(e.target.value as SupportedLanguage)}
+                    style={{ cursor: "pointer", fontWeight: 600, color: "#F3E5AB" }}
+                  >
+                    {supportedLanguages.map((lang) => (
+                      <option key={lang.code} value={lang.code} style={{ background: "#1a1a1a", color: "#f4f4f5" }}>
+                        {lang.nativeName} ({lang.label}) {lang.dir === "rtl" ? "[RTL]" : "[LTR]"}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
@@ -495,24 +498,28 @@ export default function TranslationsPage() {
                   padding: 16,
                 }}
               >
-                <label className="xpp-label">
+                <label className="xpp-label" htmlFor="sf-locale-select">
                   {isRtl ? "لغة واجهة المتجر الافتراضية للعملاء" : "Default Storefront Language"}
                 </label>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 10 }}>
-                  {supportedLanguages.map((lang) => (
-                    <button
-                      key={lang.code}
-                      type="button"
-                      className={`xpp-pill-btn ${storefrontLocale === lang.code ? "active" : ""}`}
-                      onClick={() => setStorefrontLocale(lang.code)}
-                    >
-                      {lang.nativeName} ({lang.label})
-                    </button>
-                  ))}
+                <div style={{ marginTop: 10 }}>
+                  <select
+                    id="sf-locale-select"
+                    className="xpp-input"
+                    value={storefrontLocale}
+                    onChange={(e) => setStorefrontLocale(e.target.value as SupportedLanguage)}
+                    style={{ cursor: "pointer", fontWeight: 600, color: "#F3E5AB" }}
+                  >
+                    {supportedLanguages.map((lang) => (
+                      <option key={lang.code} value={lang.code} style={{ background: "#1a1a1a", color: "#f4f4f5" }}>
+                        {lang.nativeName} ({lang.label}) {lang.dir === "rtl" ? "[RTL]" : "[LTR]"}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
             </div>
           </div>
+
 
           {/* 2. Feature Translation Editor Card with 7-Language Switcher */}
           <div className="xpp-card">

@@ -671,12 +671,13 @@
     var tPre = (configStore.translations && configStore.translations.prePurchase) || {};
     var headline = rules[0].offerHeadline || tPre.headline || "Special Upgrade Offer";
     var description = rules[0].offerDescription || tPre.description || "Add these complementary items to your order!";
-    var offerTag = tPre.offerTag || "SPECIAL UPGRADE OFFER";
-    var acceptBtnText = tPre.acceptButton || "Add Selected & Continue \u2192";
-    var declineBtnText = tPre.declineButton || "No thanks, continue to cart";
-    var urgencyLabelText = tPre.urgencyLabel || "Special Offer Reserved For:";
-    var scarcityNoticeText = tPre.scarcityNotice || "Limited Allocation: Reserved exclusively for your cart session";
+    var offerTag = rules[0].offerTag || tPre.offerTag || "SPECIAL UPGRADE OFFER";
+    var acceptBtnText = rules[0].acceptButton || tPre.acceptButton || "Add Selected & Continue \u2192";
+    var declineBtnText = rules[0].declineButton || tPre.declineButton || "No thanks, continue to cart";
+    var urgencyLabelText = rules[0].urgencyLabel || tPre.urgencyLabel || "Special Offer Reserved For:";
+    var scarcityNoticeText = rules[0].scarcityNotice || tPre.scarcityNotice || "Limited Allocation: Reserved exclusively for your cart session";
     var layoutStyle = rules[0].layoutStyle || "spotlight_hero";
+
 
     var symbol = (cartState.currency === "EGP" || cartState.currency === "LE" ? "LE " : "$");
 
