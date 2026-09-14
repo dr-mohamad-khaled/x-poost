@@ -813,7 +813,7 @@ export default function InCartUpsellSettings() {
           <div className="xp-index-card" style={{ marginBottom: "20px", padding: "18px 22px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
               <div>
-                <h3 style={{ fontSize: "16px", fontWeight: "700", color: "#FFFFFF", margin: "0 0 4px 0" }}>
+                <h3 style={{ fontSize: "16px", fontWeight: "700", color: "#D4AF37", margin: "0 0 4px 0", borderBottom: "1px solid #282828", paddingBottom: "8px" }}>
                   In-Cart Drawer Appearance & Colors
                 </h3>
                 <p style={{ fontSize: "12px", color: "#8C9196", margin: 0 }}>
@@ -1681,6 +1681,17 @@ export default function InCartUpsellSettings() {
 }
 
 const IN_CART_STYLES = `
+
+  /* High-Contrast Section Headers */
+  .xp-editor-section h3 {
+    color: #D4AF37 !important;
+    font-size: 15px !important;
+    font-weight: 800 !important;
+    border-bottom: 1px solid #282828 !important;
+    padding-bottom: 8px !important;
+    margin-bottom: 12px !important;
+  }
+
 
   /* High-Contrast Promoted Product Typography */
   .xp-promoted-cell strong,

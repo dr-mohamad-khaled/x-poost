@@ -152,6 +152,21 @@ export default function App() {
       <div dir={isAr ? "rtl" : "ltr"} style={{ width: "100%", minHeight: "100vh", background: "#0a0a0c" }}>
         <style>{`
           /* GLOBAL DARK THEME RESETS */
+          
+          /* High-Contrast Gold Section Titles with Dividers */
+          .xp-section-title {
+            font-size: 16px !important;
+            font-weight: 800 !important;
+            color: #D4AF37 !important;
+            margin: 0 0 16px 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+            letter-spacing: 0.2px !important;
+            border-bottom: 1px solid #282828 !important;
+            padding-bottom: 12px !important;
+          }
+
           :root {
             --p-color-bg-surface: #141414;
             --p-color-bg-surface-secondary: #1a1a1a;

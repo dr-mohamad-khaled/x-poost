@@ -362,8 +362,10 @@ export default function ProductScarcityPage() {
         .xpp-card-title {
           font-size: 18px;
           font-weight: 800;
-          color: #ffffff;
-          margin: 0 0 6px;
+          color: #D4AF37;
+          margin: 0 0 12px;
+          border-bottom: 1px solid #282828;
+          padding-bottom: 10px;
         }
         .xpp-card-desc {
           font-size: 13px;

@@ -1003,6 +1003,86 @@ export default function SocialBarSettings() {
 
 const SOCIAL_BAR_STYLES = `
 
+  /* High-Contrast Layout & Theme Badges */
+  .xp-layouts-grid, .xp-themes-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  @media (max-width: 600px) {
+    .xp-layouts-grid, .xp-themes-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .xp-layout-card, .xp-theme-card {
+    border: 1px solid #333333 !important;
+    border-radius: 10px !important;
+    padding: 16px !important;
+    background: #181818 !important;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+  }
+  .xp-layout-card:hover, .xp-theme-card:hover {
+    border-color: rgba(212, 175, 55, 0.6) !important;
+    background: #1f1f1f !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4) !important;
+  }
+  .xp-layout-card.is-selected, .xp-theme-card.is-selected {
+    border-color: #D4AF37 !important;
+    background: #1e1b12 !important;
+    box-shadow: 0 0 0 1px #D4AF37, 0 4px 18px rgba(212, 175, 55, 0.25) !important;
+  }
+  .xp-layout-header, .xp-theme-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+  .xp-layout-name, .xp-layout-title, .xp-theme-title, .xp-theme-name {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    margin: 0 !important;
+  }
+  .xp-layout-card.is-selected .xp-layout-name,
+  .xp-layout-card.is-selected .xp-layout-title,
+  .xp-theme-card.is-selected .xp-theme-title,
+  .xp-theme-card.is-selected .xp-theme-name {
+    color: #F5D77F !important;
+  }
+  .xp-layout-badge, .xp-theme-badge {
+    font-size: 10px !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.6px !important;
+    background: rgba(212, 175, 55, 0.15) !important;
+    color: #D4AF37 !important;
+    border: 1px solid rgba(212, 175, 55, 0.4) !important;
+    padding: 3px 8px !important;
+    border-radius: 4px !important;
+    display: inline-block !important;
+    white-space: nowrap !important;
+  }
+  .xp-layout-card.is-selected .xp-layout-badge,
+  .xp-theme-card.is-selected .xp-theme-badge {
+    background: #D4AF37 !important;
+    color: #0B0B0B !important;
+    border-color: #D4AF37 !important;
+    font-weight: 900 !important;
+  }
+  .xp-layout-desc, .xp-theme-desc {
+    margin: 0 !important;
+    font-size: 12px !important;
+    color: #c4c4c4 !important;
+    line-height: 1.45 !important;
+  }
+
+
   /* Native Luxury Dark Section Cards */
   .xp-section-card {
     background: #141414 !important;
@@ -1016,8 +1096,7 @@ const SOCIAL_BAR_STYLES = `
   .xp-section-title {
     font-size: 16px !important;
     font-weight: 700 !important;
-    color: #ffffff !important;
-    margin: 0 0 16px 0 !important;
+    color: #D4AF37 !important; margin: 0 0 16px 0 !important; border-bottom: 1px solid #282828 !important; padding-bottom: 12px !important;
     display: flex !important;
     align-items: center !important;
     gap: 8px !important;

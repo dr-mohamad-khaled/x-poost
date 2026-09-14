@@ -417,8 +417,7 @@ const EXIT_INTENT_STYLES = `
   .xp-section-title {
     font-size: 16px !important;
     font-weight: 700 !important;
-    color: #ffffff !important;
-    margin: 0 0 16px 0 !important;
+    color: #D4AF37 !important; margin: 0 0 16px 0 !important; border-bottom: 1px solid #282828 !important; padding-bottom: 12px !important;
     display: flex !important;
     align-items: center !important;
     gap: 8px !important;
