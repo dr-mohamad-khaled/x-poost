@@ -40,7 +40,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       const response = await admin.graphql(
         `#graphql
         query getProductsForUpsell {
-          products(first: 80) {
+          products(first: 250) {
             edges {
               node {
                 id
@@ -634,6 +634,83 @@ export default function PrePurchaseSettings() {
   const [discountCode, setDiscountCode] = useState("SAVE15");
   const [preselectItems, setPreselectItems] = useState(true);
 
+  // Dynamic catalog state combining initial products and live search results
+  const [catalog, setCatalog] = useState<CatalogProduct[]>(products);
+  const [isSearchingTrigger, setIsSearchingTrigger] = useState(false);
+  const [isSearchingPromoted, setIsSearchingPromoted] = useState(false);
+
+  useEffect(() => {
+    setCatalog((prev) => {
+      const map = new Map(prev.map((p) => [p.id, p]));
+      for (const p of products) {
+        if (!map.has(p.id)) map.set(p.id, p);
+      }
+      return Array.from(map.values());
+    });
+  }, [products]);
+
+  // Live search for trigger products across entire store catalog
+  useEffect(() => {
+    const q = triggerSearch.trim();
+    if (q.length < 2) return;
+
+    const timer = setTimeout(async () => {
+      setIsSearchingTrigger(true);
+      try {
+        const res = await fetch(`/api/products/search?q=${encodeURIComponent(q)}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.products && Array.isArray(data.products)) {
+            setCatalog((prev) => {
+              const map = new Map(prev.map((p) => [p.id, p]));
+              for (const item of data.products) {
+                map.set(item.id, item);
+              }
+              return Array.from(map.values());
+            });
+          }
+        }
+      } catch (err) {
+        console.warn("[PrePurchase] Trigger product search error:", err);
+      } finally {
+        setIsSearchingTrigger(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [triggerSearch]);
+
+  // Live search for promoted upsell products across entire store catalog
+  useEffect(() => {
+    const q = promotedSearch.trim();
+    if (q.length < 2) return;
+
+    const timer = setTimeout(async () => {
+      setIsSearchingPromoted(true);
+      try {
+        const res = await fetch(`/api/products/search?q=${encodeURIComponent(q)}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.products && Array.isArray(data.products)) {
+            setCatalog((prev) => {
+              const map = new Map(prev.map((p) => [p.id, p]));
+              for (const item of data.products) {
+                map.set(item.id, item);
+              }
+              return Array.from(map.values());
+            });
+          }
+        }
+      } catch (err) {
+        console.warn("[PrePurchase] Promoted product search error:", err);
+      } finally {
+        setIsSearchingPromoted(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [promotedSearch]);
+
   // Live preview checkbox state
   const [previewCheckedIds, setPreviewCheckedIds] = useState<string[]>([]);
 
@@ -666,7 +743,8 @@ export default function PrePurchaseSettings() {
     setTriggerType("ALL");
     setSelectedTriggerProductIds([]);
     setTriggerSearch("");
-    setSelectedProductIds(products.slice(0, 2).map((p) => p.id));
+    const sourceList = catalog.length > 0 ? catalog : products;
+    setSelectedProductIds(sourceList.slice(0, 2).map((p) => p.id));
     setHasDiscount(true);
     setDiscountPercent("15");
     setDiscountCode("SAVE15");
@@ -692,6 +770,24 @@ export default function PrePurchaseSettings() {
       setTriggerType("ALL");
       setSelectedTriggerProductIds([]);
     }
+    if (offer.products && offer.products.length > 0) {
+      setCatalog((prev) => {
+        const map = new Map(prev.map((p) => [p.id, p]));
+        for (const p of offer.products) {
+          if (!map.has(p.id)) {
+            map.set(p.id, {
+              id: p.id,
+              title: p.title,
+              handle: p.handle,
+              imageUrl: p.imageUrl,
+              price: p.price,
+              variantId: p.variantId,
+            });
+          }
+        }
+        return Array.from(map.values());
+      });
+    }
     setTriggerSearch("");
     setSelectedProductIds(offer.products.map((p) => p.id));
     setHasDiscount(offer.discountPercent !== null && offer.discountPercent > 0);
@@ -704,21 +800,27 @@ export default function PrePurchaseSettings() {
 
   // Filter products for promoted product picker
   const filteredCatalogProducts = useMemo(() => {
-    if (!promotedSearch.trim()) return products;
-    const q = promotedSearch.toLowerCase();
-    return products.filter((p) => p.title.toLowerCase().includes(q));
-  }, [products, promotedSearch]);
+    if (!promotedSearch.trim()) return catalog;
+    const terms = promotedSearch.toLowerCase().split(/\s+/).filter(Boolean);
+    return catalog.filter((p) => {
+      const target = `${p.title} ${p.handle || ""}`.toLowerCase();
+      return terms.every((term) => target.includes(term));
+    });
+  }, [catalog, promotedSearch]);
 
   // Filter products for trigger product picker
   const filteredTriggerProducts = useMemo(() => {
-    if (!triggerSearch.trim()) return products;
-    const q = triggerSearch.toLowerCase();
-    return products.filter((p) => p.title.toLowerCase().includes(q));
-  }, [products, triggerSearch]);
+    if (!triggerSearch.trim()) return catalog;
+    const terms = triggerSearch.toLowerCase().split(/\s+/).filter(Boolean);
+    return catalog.filter((p) => {
+      const target = `${p.title} ${p.handle || ""}`.toLowerCase();
+      return terms.every((term) => target.includes(term));
+    });
+  }, [catalog, triggerSearch]);
 
   const selectedTriggerProductsList = useMemo(() => {
-    return products.filter((p) => selectedTriggerProductIds.includes(p.id));
-  }, [products, selectedTriggerProductIds]);
+    return catalog.filter((p) => selectedTriggerProductIds.includes(p.id));
+  }, [catalog, selectedTriggerProductIds]);
 
   const toggleTriggerProduct = (id: string) => {
     setSelectedTriggerProductIds((prev) =>
@@ -750,8 +852,8 @@ export default function PrePurchaseSettings() {
       : "No Products Selected";
 
   const selectedProductsList = useMemo(() => {
-    return products.filter((p) => selectedProductIds.includes(p.id));
-  }, [products, selectedProductIds]);
+    return catalog.filter((p) => selectedProductIds.includes(p.id));
+  }, [catalog, selectedProductIds]);
 
   const toggleProduct = (id: string) => {
     setSelectedProductIds((prev) =>
@@ -1338,14 +1440,21 @@ export default function PrePurchaseSettings() {
                   {triggerType === "SPECIFIC" && (
                     <div className="xp-trigger-picker-wrap">
                       <div className="xp-trigger-toolbar">
-                        <input
-                          type="text"
-                          className="xp-input xp-picker-search"
-                          style={{ flex: 1 }}
-                          placeholder="Search trigger products by title..."
-                          value={triggerSearch}
-                          onChange={(e) => setTriggerSearch(e.target.value)}
-                        />
+                        <div style={{ position: "relative", flex: 1 }}>
+                          <input
+                            type="text"
+                            className="xp-input xp-picker-search"
+                            style={{ width: "100%" }}
+                            placeholder="Search all 900+ products by title (e.g. Anua)..."
+                            value={triggerSearch}
+                            onChange={(e) => setTriggerSearch(e.target.value)}
+                          />
+                          {isSearchingTrigger && (
+                            <span style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", fontSize: "11px", color: "#8c9196" }}>
+                              Searching store...
+                            </span>
+                          )}
+                        </div>
                         <div className="xp-trigger-actions">
                           <button
                             type="button"
@@ -1409,7 +1518,12 @@ export default function PrePurchaseSettings() {
 
                       {/* Catalog Checklist */}
                       <div className="xp-picker-list" style={{ maxHeight: "240px", overflowY: "auto", border: "1px solid #e1e3e5", borderRadius: "6px" }}>
-                        {filteredTriggerProducts.map((p) => {
+                        {filteredTriggerProducts.length === 0 ? (
+                          <div style={{ padding: "20px", textAlign: "center", color: "#8c9196", fontSize: "12px" }}>
+                            {isSearchingTrigger ? "Searching store catalog..." : `No products found matching "${triggerSearch}"`}
+                          </div>
+                        ) : (
+                          filteredTriggerProducts.map((p) => {
                           const isSelected = selectedTriggerProductIds.includes(p.id);
                           return (
                             <div
@@ -1448,7 +1562,7 @@ export default function PrePurchaseSettings() {
                               )}
                             </div>
                           );
-                        })}
+                        }))}
                       </div>
                     </div>
                   )}
@@ -1571,17 +1685,26 @@ export default function PrePurchaseSettings() {
                     Select the products you want to offer in this bundle. Customers can check or uncheck individual items.
                   </p>
 
-                  <input
-                    type="text"
-                    className="xp-input xp-picker-search"
-                    placeholder="Search catalog products to promote..."
-                    value={promotedSearch}
-                    onChange={(e) => setPromotedSearch(e.target.value)}
-                  />
+                  <div style={{ position: "relative" }}>
+                    <input
+                      type="text"
+                      className="xp-input xp-picker-search"
+                      placeholder="Search all 900+ products to promote (e.g. Anua)..."
+                      value={promotedSearch}
+                      onChange={(e) => setPromotedSearch(e.target.value)}
+                    />
+                    {isSearchingPromoted && (
+                      <span style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", fontSize: "11px", color: "#8c9196" }}>
+                        Searching store...
+                      </span>
+                    )}
+                  </div>
 
                   <div className="xp-picker-list">
                     {filteredCatalogProducts.length === 0 ? (
-                      <div className="xp-picker-empty">No catalog products found.</div>
+                      <div style={{ padding: "20px", textAlign: "center", color: "#8c9196", fontSize: "12px" }}>
+                        {isSearchingPromoted ? "Searching store catalog..." : `No products found matching "${promotedSearch}"`}
+                      </div>
                     ) : (
                       filteredCatalogProducts.map((p) => {
                         const isSelected = selectedProductIds.includes(p.id);
