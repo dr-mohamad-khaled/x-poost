@@ -590,6 +590,112 @@ const PRE_PURCHASE_LAYOUTS = [
   },
 ];
 
+const PREVIEW_I18N: Record<SupportedLanguage, {
+  stepPrimary: string;
+  stepComp: string;
+  savePill: string;
+  added: string;
+  selected: string;
+  add: string;
+  bundleTotal: string;
+  bundleTotal1: string;
+  bundleSavings: string;
+  rating: string;
+  additionalUpgrades: string;
+}> = {
+  ar: {
+    stepPrimary: "المنتج الأساسي",
+    stepComp: "الخطوة التكميلية {n}",
+    savePill: "وفر {discount}%",
+    added: "تمت الإضافة",
+    selected: "محدد",
+    add: "+ إضافة",
+    bundleTotal: "إجمالي المجموعة ({count} منتجات):",
+    bundleTotal1: "إجمالي المجموعة (منتج واحد):",
+    bundleSavings: "أنت توفر {amount} (تم تطبيق خصم المجموعة {discount}%)",
+    rating: "تقييم 4.9 / 5.0",
+    additionalUpgrades: "ترقيات إضافية:",
+  },
+  en: {
+    stepPrimary: "PRIMARY ESSENTIAL",
+    stepComp: "COMPLEMENTARY STEP {n}",
+    savePill: "SAVE {discount}%",
+    added: "Added",
+    selected: "Selected",
+    add: "+ Add",
+    bundleTotal: "Bundle Routine Total ({count} items):",
+    bundleTotal1: "Bundle Routine Total (1 item):",
+    bundleSavings: "You save {amount} ({discount}% Bundle Discount Applied)",
+    rating: "4.9 / 5.0 Rating",
+    additionalUpgrades: "Additional Upgrades:",
+  },
+  fr: {
+    stepPrimary: "PRODUIT PRINCIPAL",
+    stepComp: "ÉTAPE COMPLÉMENTAIRE {n}",
+    savePill: "ÉCONOMISEZ {discount}%",
+    added: "Ajouté",
+    selected: "Sélectionné",
+    add: "+ Ajouter",
+    bundleTotal: "Total du lot ({count} articles) :",
+    bundleTotal1: "Total du lot (1 article) :",
+    bundleSavings: "Vous économisez {amount} (remise de lot de {discount}% appliquée)",
+    rating: "Évaluation 4,9 / 5,0",
+    additionalUpgrades: "Améliorations supplémentaires :",
+  },
+  de: {
+    stepPrimary: "HAUPTPRODUKT",
+    stepComp: "ERGÄNZENDE STUFE {n}",
+    savePill: "SPAREN SIE {discount}%",
+    added: "Hinzugefügt",
+    selected: "Ausgewählt",
+    add: "+ Hinzufügen",
+    bundleTotal: "Set-Gesamtbetrag ({count} Artikel):",
+    bundleTotal1: "Set-Gesamtbetrag (1 Artikel):",
+    bundleSavings: "Sie sparen {amount} ({discount}% Paket-Rabatt angewendet)",
+    rating: "4.9 / 5.0 Bewertung",
+    additionalUpgrades: "Zusätzliche Upgrades:",
+  },
+  es: {
+    stepPrimary: "PRODUCTO PRINCIPAL",
+    stepComp: "PASO COMPLEMENTARIO {n}",
+    savePill: "AHORRA {discount}%",
+    added: "Añadido",
+    selected: "Seleccionado",
+    add: "+ Añadir",
+    bundleTotal: "Total del paquete ({count} artículos):",
+    bundleTotal1: "Total del paquete (1 artículo):",
+    bundleSavings: "Ahorras {amount} ({discount}% de descuento aplicado)",
+    rating: "Calificación 4.9 / 5.0",
+    additionalUpgrades: "Mejoras adicionales:",
+  },
+  it: {
+    stepPrimary: "PRODOTTO PRINCIPALE",
+    stepComp: "PASSO COMPLEMENTARE {n}",
+    savePill: "RISPARMIA {discount}%",
+    added: "Aggiunto",
+    selected: "Selezionato",
+    add: "+ Aggiungi",
+    bundleTotal: "Totale pacchetto ({count} articoli):",
+    bundleTotal1: "Totale pacchetto (1 articolo):",
+    bundleSavings: "Risparmi {amount} ({discount}% di sconto applicato)",
+    rating: "Valutazione 4.9 / 5.0",
+    additionalUpgrades: "Aggiornamenti aggiuntivi:",
+  },
+  pt: {
+    stepPrimary: "PRODUTO PRINCIPAL",
+    stepComp: "ETAPA COMPLEMENTAR {n}",
+    savePill: "ECONOMIZE {discount}%",
+    added: "Adicionado",
+    selected: "Selecionado",
+    add: "+ Adicionar",
+    bundleTotal: "Total do pacote ({count} itens):",
+    bundleTotal1: "Total do pacote (1 item):",
+    bundleSavings: "Você economiza {amount} ({discount}% de desconto aplicado)",
+    rating: "Avaliação 4.9 / 5.0",
+    additionalUpgrades: "Upgrades adicionais:",
+  },
+};
+
 export default function PrePurchaseSettings() {
   const { enabled, rules, products, styleConfig, allTranslations, dashboardLocale } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
@@ -628,6 +734,7 @@ export default function PrePurchaseSettings() {
   const [offerLang, setOfferLang] = useState<SupportedLanguage>(dashboardLocale || "ar");
   const [offerI18n, setOfferI18n] = useState<Record<SupportedLanguage, OfferI18nCopy>>(getDefaultOfferI18n);
   const activeOfferCopy = offerI18n[offerLang] || offerI18n.en || getDefaultOfferI18n().en;
+  const pI18n = PREVIEW_I18N[offerLang] || PREVIEW_I18N.en;
 
   const handleSelectOfferLang = (lang: SupportedLanguage) => {
     setOfferLang(lang);
