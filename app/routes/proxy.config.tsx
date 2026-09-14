@@ -14,7 +14,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       }),
       {
         status: 200,
-        headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=30" },
+        headers: { "Content-Type": "application/json", "Cache-Control": "no-cache, no-store, must-revalidate" },
       }
     );
 
@@ -392,7 +392,7 @@ function parseSocialPosition(rawPos: string | null | undefined) {
     }),
     {
       status: 200,
-      headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=30" },
+      headers: { "Content-Type": "application/json", "Cache-Control": "no-cache, no-store, must-revalidate" },
     }
   );
 };

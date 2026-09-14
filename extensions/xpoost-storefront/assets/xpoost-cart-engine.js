@@ -314,16 +314,19 @@
     }
     window.__xpoost_config_locale = detectedLoc;
 
-    try {
-      var cached = sessionStorage.getItem(cacheKey);
-      if (cached) {
-        var parsed = JSON.parse(cached);
-        if (parsed && parsed.ts && (Date.now() - parsed.ts < 60000)) {
-          window.__xpoost_config_promise = Promise.resolve(parsed.data);
-          return window.__xpoost_config_promise;
+    var isDesignMode = (window.Shopify && window.Shopify.designMode) || window.location.search.indexOf("xpoost_test") !== -1;
+    if (!isDesignMode) {
+      try {
+        var cached = sessionStorage.getItem(cacheKey);
+        if (cached) {
+          var parsed = JSON.parse(cached);
+          if (parsed && parsed.ts && (Date.now() - parsed.ts < 5000)) {
+            window.__xpoost_config_promise = Promise.resolve(parsed.data);
+            return window.__xpoost_config_promise;
+          }
         }
-      }
-    } catch (e) {}
+      } catch (e) {}
+    }
 
     var basePath = proxyPath || "/apps/xpoost/config";
     var sep = basePath.indexOf("?") === -1 ? "?" : "&";

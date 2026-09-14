@@ -83,6 +83,7 @@
       data-variant-id="{{ current_variant.id }}"
       data-available="{% if current_variant.available %}true{% else %}false{% endif %}"
       data-product-available="{% if product.available %}true{% else %}false{% endif %}"
+      data-design-preset="{{ block.settings.design_preset | default: 'pulse_meter' }}"
       data-stock-source="{{ block.settings.stock_source }}"
       data-min-stock="{{ block.settings.min_stock | default: 3 }}"
       data-max-stock="{{ block.settings.max_stock | default: 12 }}"
@@ -91,7 +92,7 @@
       data-headline="{{ block.settings.headline | escape }}"
       data-subtext="{{ block.settings.subtext | escape }}"
       data-proxy-path="/apps/xpoost/config"
-    data-locale="{{ request.locale.iso_code }}"
+      data-locale="{{ request.locale.iso_code }}"
       style="
         --xpp-ps-accent: {{ block.settings.accent_color | default: '#D4AF37' }};
         --xpp-ps-bg: {{ block.settings.bg_color | default: '#141414' }};
