@@ -60,6 +60,7 @@ model Shop {
   stickyBarConfig   StickyBarConfig?
   upsellStyleConfig UpsellStyleConfig?
   productScarcityConfig ProductScarcityConfig?
+  translationConfig TranslationConfig?
 
   @@index([shopDomain])
 }
@@ -251,5 +252,19 @@ model ProductScarcityConfig {
 
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
+}
+
+/// Feature 9: Multi-Language Translation Management
+model TranslationConfig {
+  id                String   @id @default(cuid())
+  shopId            String   @unique
+  shop              Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  dashboardLocale   String   @default("en") // "en" | "ar"
+  storefrontLocale  String   @default("ar") // "ar" | "en" | "auto"
+  translationsJson  String   @default("{}")
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
 

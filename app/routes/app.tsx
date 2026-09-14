@@ -11,8 +11,13 @@ import { getOrCreateShop } from "../shop.server";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const currentApiKey = (process.env.SHOPIFY_API_KEY || "872f7f6415d1c243c11ccdfe9426b07f").trim();
   try {
-    await authenticate.admin(request);
-    return { apiKey: currentApiKey };
+    const { session } = await authenticate.admin(request);
+    const shop = await getOrCreateShop(session.shop);
+    const translationConfig = await prisma.translationConfig.findUnique({
+      where: { shopId: shop.id },
+    });
+    const dashboardLocale = translationConfig?.dashboardLocale === "ar" ? "ar" : "en";
+    return { apiKey: currentApiKey, dashboardLocale };
   } catch (error: any) {
     if (error instanceof Response) {
       const isXhr = Boolean(request.headers.get("authorization"));
@@ -84,22 +89,26 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function App() {
-  const { apiKey } = useLoaderData<typeof loader>();
+  const { apiKey, dashboardLocale } = useLoaderData<typeof loader>();
+  const isAr = dashboardLocale === "ar";
 
   return (
     <AppProvider embedded apiKey={apiKey}>
       <NavMenu>
-        <a href="/app" rel="home">Overview</a>
-        <a href="/app/pricing">Plans & Pricing</a>
-        <a href="/app/product-scarcity">Product Stock Scarcity</a>
-        <a href="/app/scarcity">Urgency Notifications</a>
-        <a href="/app/pre-purchase">Pre-Purchase Upsell</a>
-        <a href="/app/in-cart">Cart Drawer Upsell</a>
-        <a href="/app/social-bar">Support & Social Bar</a>
-        <a href="/app/shipping-bar">Free Shipping Bar</a>
-        <a href="/app/exit-intent">Exit-Intent Recovery</a>
+        <a href="/app" rel="home">{isAr ? "نظرة عامة" : "Overview"}</a>
+        <a href="/app/pricing">{isAr ? "الخطط والأسعار" : "Plans & Pricing"}</a>
+        <a href="/app/translations">{isAr ? "إدارة اللغات والترجمة" : "Translations & Languages"}</a>
+        <a href="/app/product-scarcity">{isAr ? "ندرة مخزون المنتج" : "Product Stock Scarcity"}</a>
+        <a href="/app/scarcity">{isAr ? "إشعارات الشراء المباشرة" : "Urgency Notifications"}</a>
+        <a href="/app/pre-purchase">{isAr ? "عروض ما قبل الدفع" : "Pre-Purchase Upsell"}</a>
+        <a href="/app/in-cart">{isAr ? "عروض سلة الشراء" : "Cart Drawer Upsell"}</a>
+        <a href="/app/social-bar">{isAr ? "شريط الدعم والتواصل" : "Support & Social Bar"}</a>
+        <a href="/app/shipping-bar">{isAr ? "شريط الشحن المجاني" : "Free Shipping Bar"}</a>
+        <a href="/app/exit-intent">{isAr ? "نافذة استعادة الزوار" : "Exit-Intent Recovery"}</a>
       </NavMenu>
-      <Outlet />
+      <div dir={isAr ? "rtl" : "ltr"} style={{ width: "100%", minHeight: "100vh" }}>
+        <Outlet />
+      </div>
     </AppProvider>
   );
 }

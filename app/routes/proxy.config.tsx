@@ -1,6 +1,7 @@
 import type { LoaderFunctionArgs } from "react-router";
 import { authenticate } from "../shopify.server";
 import prisma from "../db.server";
+import { getMergedTranslations } from "../utils/translations.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { session } = await authenticate.public.appProxy(request);
@@ -32,6 +33,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     exitIntentConfig: true,
     upsellStyleConfig: true,
     productScarcityConfig: true,
+    translationConfig: true,
   };
 
   if (shopDomain) {
@@ -298,10 +300,17 @@ function parseSocialPosition(rawPos: string | null | undefined) {
     };
   }
 
+  const storefrontLocale = (shop.translationConfig?.storefrontLocale === "en" ? "en" : "ar") as "ar" | "en";
+  const translations = getMergedTranslations(shop.translationConfig?.translationsJson, storefrontLocale);
+  const isRtl = storefrontLocale === "ar";
+
   return new Response(
     JSON.stringify({
       active: true,
       shop: session?.shop || shop.shopDomain,
+      locale: storefrontLocale,
+      isRtl: isRtl,
+      translations: translations,
       features: {
         scarcity,
         prePurchase,

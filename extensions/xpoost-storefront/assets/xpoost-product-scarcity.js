@@ -51,9 +51,39 @@
                 var excluded = pList.some(function (id) {
                   return String(id).replace(/\D/g, "") === cleanPid;
                 });
-                if (excluded) {
-                  root.classList.add("xpp-ps-hidden");
-                  return;
+              // RTL & Translations Sync
+              if (data && data.isRtl) {
+                root.setAttribute("dir", "rtl");
+              }
+              if (data && data.translations && data.translations.productScarcity) {
+                var tPs = data.translations.productScarcity;
+                var stockNum = root.querySelector(".xpp-ps-stock-num");
+                var curStock = stockNum ? stockNum.textContent : "5";
+                var viewNum = root.querySelector(".xpp-ps-viewers-num");
+                var curView = viewNum ? viewNum.textContent : "18";
+
+                var hEl = root.querySelector(".xpp-ps-headline");
+                if (hEl && tPs.headlineText) {
+                  hEl.innerHTML = tPs.headlineText
+                    .replace(/{stock}/g, '<span class="xpp-ps-stock-num">' + curStock + '</span>')
+                    .replace(/{viewers}/g, '<span class="xpp-ps-viewers-num">' + curView + '</span>');
+                }
+                var sEl = root.querySelector(".xpp-ps-subtext");
+                if (sEl && tPs.subText) {
+                  sEl.innerHTML = tPs.subText
+                    .replace(/{stock}/g, '<span class="xpp-ps-stock-num">' + curStock + '</span>')
+                    .replace(/{viewers}/g, '<span class="xpp-ps-viewers-num">' + curView + '</span>');
+                }
+                var bEl = root.querySelector(".xpp-ps-badge-tag");
+                if (bEl && tPs.badgeText) {
+                  bEl.textContent = tPs.badgeText;
+                }
+                var luxRight = root.querySelector(".xpp-ps-luxury-right");
+                if (luxRight && tPs.viewingSuffix) {
+                  var spanWrapper = luxRight.querySelector("span:not(.xpp-ps-live-dot)");
+                  if (spanWrapper) {
+                    spanWrapper.innerHTML = '<span class="xpp-ps-viewers-num">' + curView + '</span> ' + tPs.viewingSuffix;
+                  }
                 }
               }
             })

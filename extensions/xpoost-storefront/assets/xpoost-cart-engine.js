@@ -132,6 +132,8 @@
         configStore.inCart = data.features?.inCart;
         configStore.shipping = data.features?.shipping;
         configStore.scarcity = data.features?.scarcity;
+        configStore.translations = data.translations;
+        configStore.isRtl = data.isRtl;
 
         setupAjaxInterceptor();
         setupDrawerObserver();
@@ -666,8 +668,14 @@
     var existing = container.querySelector(".xpc-modal-backdrop");
     if (existing) existing.remove();
 
-    var headline = rules[0].offerHeadline || "Special Upgrade Offer";
-    var description = rules[0].offerDescription || "Add these complementary items to your order!";
+    var tPre = (configStore.translations && configStore.translations.prePurchase) || {};
+    var headline = rules[0].offerHeadline || tPre.headline || "Special Upgrade Offer";
+    var description = rules[0].offerDescription || tPre.description || "Add these complementary items to your order!";
+    var offerTag = tPre.offerTag || "SPECIAL UPGRADE OFFER";
+    var acceptBtnText = tPre.acceptButton || "Add Selected & Continue \u2192";
+    var declineBtnText = tPre.declineButton || "No thanks, continue to cart";
+    var urgencyLabelText = tPre.urgencyLabel || "Special Offer Reserved For:";
+    var scarcityNoticeText = tPre.scarcityNotice || "Limited Allocation: Reserved exclusively for your cart session";
     var layoutStyle = rules[0].layoutStyle || "spotlight_hero";
 
     var symbol = (cartState.currency === "EGP" || cartState.currency === "LE" ? "LE " : "$");
@@ -891,24 +899,24 @@
       modalInnerHtml =
         '<div class="xpc-urgency-banner">' +
         '<span class="xpc-urgency-icon">' + VECTOR_ICONS.clock + '</span>' +
-        '<span class="xpc-urgency-label">Special Offer Reserved For:</span>' +
+        '<span class="xpc-urgency-label">' + escapeHtml(urgencyLabelText) + '</span>' +
         '<strong class="xpc-urgency-timer" id="xpc-urgency-timer">04:59</strong>' +
         '</div>' +
-        '<div class="xpc-urgency-scarcity">Limited Allocation: Reserved exclusively for your cart session</div>' +
+        '<div class="xpc-urgency-scarcity">' + escapeHtml(scarcityNoticeText) + '</div>' +
         '<div class="xpc-modal-products-list">' + flashItemsHtml + '</div>';
     }
 
     var html =
-      '<div class="xpc-modal-backdrop xpc-modal-layout--' + layoutStyle + '" id="xpc-pre-modal">' +
+      '<div class="xpc-modal-backdrop xpc-modal-layout--' + layoutStyle + '" id="xpc-pre-modal"' + (configStore.isRtl ? ' dir="rtl"' : '') + '>' +
       '<div class="xpc-modal">' +
       '<button type="button" class="xpc-modal-close" id="xpc-modal-close" aria-label="Close"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>' +
-      '<span class="xpc-modal-tag">SPECIAL UPGRADE OFFER</span>' +
+      '<span class="xpc-modal-tag">' + escapeHtml(offerTag) + '</span>' +
       '<h3 class="xpc-modal-title">' + escapeHtml(headline) + '</h3>' +
       '<p class="xpc-modal-desc">' + escapeHtml(description) + '</p>' +
       modalInnerHtml +
       '<div class="xpc-modal-actions">' +
-      '<button type="button" class="xpc-btn-primary" id="xpc-btn-accept">Add Selected & Continue \u2192</button>' +
-      '<button type="button" class="xpc-btn-skip" id="xpc-btn-decline">No thanks, continue to cart</button>' +
+      '<button type="button" class="xpc-btn-primary" id="xpc-btn-accept">' + escapeHtml(acceptBtnText) + '</button>' +
+      '<button type="button" class="xpc-btn-skip" id="xpc-btn-decline">' + escapeHtml(declineBtnText) + '</button>' +
       '</div>' +
       '</div>' +
       '</div>';
@@ -1430,11 +1438,13 @@
     var inCartConf = configStore.inCart || {};
     var inCartBg = inCartConf.backgroundColor || "#0B0B0B";
     var inCartAccent = inCartConf.accentColor || "#D4AF37";
-    var inCartText = inCartConf.textColor || "#FFFFFF";
+    var tInCart = (configStore.translations && configStore.translations.inCart) || {};
+    var inCartTitle = activeRule.offerHeadline || tInCart.sectionTitle || "Frequently Bought Together";
+    var inCartBtnText = tInCart.addButton || "+ Add";
 
     var cardInnerHtml =
-      '<div class="xpc-in-cart-upsell xpc-animate-in" style="--xpc-bg:' + inCartBg + ';--xpc-gold:' + inCartAccent + ';--xpc-text:' + inCartText + ';display:block!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;margin:0 auto!important;min-width:0!important;overflow:hidden!important;">' +
-      '<div class="xpc-in-cart-title">' + escapeHtml(activeRule.offerHeadline || "Frequently Bought Together") + '</div>' +
+      '<div class="xpc-in-cart-upsell xpc-animate-in"' + (configStore.isRtl ? ' dir="rtl"' : '') + ' style="--xpc-bg:' + inCartBg + ';--xpc-gold:' + inCartAccent + ';--xpc-text:' + inCartText + ';display:block!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;margin:0 auto!important;min-width:0!important;overflow:hidden!important;">' +
+      '<div class="xpc-in-cart-title">' + escapeHtml(inCartTitle) + '</div>' +
       '<div class="xpc-in-cart-item">' +
       '<a href="' + productUrl + '" target="_blank" class="xpc-in-cart-thumb-link">' +
       (activeRule.targetProductImage
@@ -1448,7 +1458,7 @@
       (hasDiscount ? '<span class="xpc-in-cart-orig">' + symbol + origPrice.toFixed(2) + '</span>' : "") +
       '</div>' +
       '</div>' +
-      '<button type="button" class="xpc-in-cart-btn" data-variant-id="' + targetVariant + '">+ Add</button>' +
+      '<button type="button" class="xpc-in-cart-btn" data-variant-id="' + targetVariant + '">' + escapeHtml(inCartBtnText) + '</button>' +
       '</div>' +
       '</div>';
 
