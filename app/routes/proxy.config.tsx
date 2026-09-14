@@ -179,9 +179,25 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         rules: inCartRules.map((r) => {
           const hMatch = (r.offerDescription || "").match(/<!--xp:h:([^>]+)-->/);
           const targetProductHandle = hMatch ? decodeURIComponent(hMatch[1].trim()) : "";
+
+          const i18nMatch = (r.offerDescription || "").match(/<!--xp:i18n:([^>]+)-->/);
+          let ruleI18n: any = null;
+          if (i18nMatch) {
+            try {
+              ruleI18n = JSON.parse(decodeURIComponent(i18nMatch[1].trim()));
+            } catch (e) {}
+          }
+          const localized = ruleI18n && ruleI18n[storefrontLocale] ? ruleI18n[storefrontLocale] : null;
+
           const cleanDesc = (r.offerDescription || "")
             .replace(/<!--xp:h:[^>]+-->/g, "")
+            .replace(/<!--xp:i18n:[^>]+-->/g, "")
             .trim();
+
+          const offerHeadline = localized?.headline || r.offerHeadline;
+          const addButton = localized?.addButton;
+          const saveBadge = localized?.saveBadge;
+
           return {
             id: r.id,
             triggerProductId: r.triggerProductId,
@@ -191,10 +207,12 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
             targetVariantId: r.targetVariantId,
             targetProductPrice: r.targetProductPrice,
             targetProductImage: r.targetProductImage,
-            offerHeadline: r.offerHeadline,
+            offerHeadline: offerHeadline,
             offerDescription: cleanDesc,
             discountPercent: r.discountPercent,
             discountCode: r.discountCode,
+            addButton: addButton,
+            saveBadge: saveBadge,
           };
         }),
       };
@@ -359,6 +377,7 @@ function parseSocialPosition(rawPos: string | null | undefined) {
       active: true,
       shop: session?.shop || shop.shopDomain,
       locale: storefrontLocale,
+      storefrontLocale: storefrontLocale,
       isRtl: isRtl,
       translations: translations,
       features: {

@@ -12,6 +12,28 @@ import {
   type SupportedLanguage,
 } from "../utils/translations";
 
+
+export type InCartOfferLangCopy = {
+  headline: string;
+  addButton: string;
+  saveBadge: string;
+};
+
+export type InCartOfferI18n = Record<SupportedLanguage, InCartOfferLangCopy>;
+
+export function getDefaultInCartI18n(): InCartOfferI18n {
+  const res: any = {};
+  (Object.keys(DEFAULT_TRANSLATIONS_BY_LANG) as SupportedLanguage[]).forEach((lang) => {
+    const def = DEFAULT_TRANSLATIONS_BY_LANG[lang].inCart;
+    res[lang] = {
+      headline: def.sectionTitle || "Frequently Bought Together",
+      addButton: def.addButton || "+ Add",
+      saveBadge: def.saveBadge || "SAVE {discount}%",
+    };
+  });
+  return res;
+}
+
 type CatalogProduct = {
   id: string;
   title: string;
@@ -246,7 +268,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const targetVariantId = String(formData.get("targetVariantId") || "");
     const targetProductPrice = String(formData.get("targetProductPrice") || "19.99");
     const targetProductImage = String(formData.get("targetProductImage") || "");
-    const offerHeadline = String(formData.get("offerHeadline") || "Frequently Bought Together");
+    const offerI18nJsonRaw = String(formData.get("offerI18nJson") || "");
+    let offerI18n: any = null;
+    if (offerI18nJsonRaw) {
+      try {
+        offerI18n = JSON.parse(offerI18nJsonRaw);
+      } catch (e) {}
+    }
+
+    const offerHeadline = offerI18n?.ar?.headline || offerI18n?.en?.headline || String(formData.get("offerHeadline") || "Frequently Bought Together");
     const hasDiscount = formData.get("hasDiscount") === "true";
     const discountPercent = hasDiscount
       ? parseFloat(String(formData.get("discountPercent") || "0")) || null
@@ -259,7 +289,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       return { error: "Please select an add-on product." };
     }
 
-    const offerDescription = targetProductHandle ? `<!--xp:h:${encodeURIComponent(targetProductHandle)}-->` : "";
+    let offerDescription = targetProductHandle ? `<!--xp:h:${encodeURIComponent(targetProductHandle)}-->` : "";
+    if (offerI18n) {
+      offerDescription += `<!--xp:i18n:${encodeURIComponent(JSON.stringify(offerI18n))}-->`;
+    }
 
     // Register Shopify Automatic Discount and Code Discount if discount percentage is configured
     if (hasDiscount && discountPercent && discountPercent > 0) {
@@ -409,30 +442,33 @@ export default function InCartUpsellSettings() {
   const isSubmitting = navigation.state === "submitting";
 
   const [selectedLang, setSelectedLang] = useState<SupportedLanguage>(dashboardLocale || "ar");
-  const [translationsMap, setTranslationsMap] = useState(allTranslations);
-  const currentCopy = translationsMap[selectedLang]?.inCart || DEFAULT_TRANSLATIONS_BY_LANG[selectedLang].inCart;
+  const [offerI18n, setOfferI18n] = useState<InCartOfferI18n>(getDefaultInCartI18n);
 
-  const handleCopyChange = (field: keyof typeof currentCopy, val: string) => {
+  const activeOfferCopy = offerI18n[selectedLang] || offerI18n.en || {
+    headline: "Frequently Bought Together",
+    addButton: "+ Add",
+    saveBadge: "SAVE {discount}%",
+  };
+
+  const updateOfferCopy = (field: keyof InCartOfferLangCopy, val: string) => {
     const clean = sanitizeText(val);
-    setTranslationsMap((prev) => ({
+    setOfferI18n((prev) => ({
       ...prev,
       [selectedLang]: {
         ...prev[selectedLang],
-        inCart: {
-          ...prev[selectedLang].inCart,
-          [field]: clean,
-        },
+        [field]: clean,
       },
     }));
   };
 
   const handleLoadPredefined = () => {
     const def = DEFAULT_TRANSLATIONS_BY_LANG[selectedLang].inCart;
-    setTranslationsMap((prev) => ({
+    setOfferI18n((prev) => ({
       ...prev,
       [selectedLang]: {
-        ...prev[selectedLang],
-        inCart: { ...def },
+        headline: def.sectionTitle || "Frequently Bought Together",
+        addButton: def.addButton || "+ Add",
+        saveBadge: def.saveBadge || "SAVE {discount}%",
       },
     }));
   };
@@ -579,6 +615,8 @@ export default function InCartUpsellSettings() {
   const openCreateMode = () => {
     setEditingRule(null);
     setHeadline("Frequently Bought Together");
+    setOfferI18n(getDefaultInCartI18n());
+    setSelectedLang(dashboardLocale || "ar");
     setTriggerType("ALL");
     setSelectedTriggerProductIds([]);
     setTriggerSearch("");
@@ -595,6 +633,29 @@ export default function InCartUpsellSettings() {
   const openEditMode = (rule: any) => {
     setEditingRule(rule);
     setHeadline(rule.offerHeadline || "Frequently Bought Together");
+
+    // Decode in-offer translations
+    const i18nMatch = (rule.offerDescription || "").match(/<!--xp:i18n:([^>]+)-->/);
+    let parsedI18n: any = null;
+    if (i18nMatch) {
+      try {
+        parsedI18n = JSON.parse(decodeURIComponent(i18nMatch[1].trim()));
+      } catch (e) {}
+    }
+    const base = getDefaultInCartI18n();
+    if (parsedI18n) {
+      (Object.keys(base) as SupportedLanguage[]).forEach((lang) => {
+        if (parsedI18n[lang]) {
+          base[lang] = { ...base[lang], ...parsedI18n[lang] };
+        }
+      });
+    }
+    if (rule.offerHeadline) {
+      base[selectedLang].headline = rule.offerHeadline;
+    }
+    setOfferI18n(base);
+    setSelectedLang(dashboardLocale || "ar");
+
     if (rule.triggerProductId && rule.triggerProductId !== "ALL") {
       setTriggerType("SPECIFIC");
       const ids = rule.triggerProductId.split(",").map((s: string) => s.trim()).filter(Boolean);
@@ -825,77 +886,7 @@ export default function InCartUpsellSettings() {
             </Form>
           </div>
 
-          {/* Multi-Language In-Cart Copy Card */}
-          <div className="xp-index-card" style={{ marginBottom: "20px" }}>
-            <div className="xp-index-header">
-              <div>
-                <h3 style={{ fontSize: "16px", fontWeight: "700", color: "#202223", margin: "0 0 4px 0" }}>
-                  Multi-Language In-Cart Copy &amp; Buttons
-                </h3>
-                <p className="xp-sub" style={{ margin: 0 }}>
-                  Customize the in-cart upsell block title, quick add button, and discount badge for each of the 7 supported languages.
-                </p>
-              </div>
-            </div>
 
-            <FeatureLanguageSwitcher
-              selectedLang={selectedLang}
-              onSelectLang={setSelectedLang}
-              onLoadPredefined={handleLoadPredefined}
-              dashboardLocale={dashboardLocale}
-            />
-
-            <Form method="post" style={{ marginTop: "16px" }}>
-              <input type="hidden" name="intent" value="save_translations" />
-              <input type="hidden" name="translationsJson" value={JSON.stringify(translationsMap)} />
-
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "12px" }}>
-                <div className="xp-field">
-                  <label style={{ fontSize: "12px", fontWeight: "600", color: "#333", marginBottom: "4px" }}>
-                    Block Header / Section Title ({selectedLang.toUpperCase()})
-                  </label>
-                  <input
-                    type="text"
-                    className="xp-input"
-                    dir={selectedLang === "ar" ? "rtl" : "ltr"}
-                    value={currentCopy.sectionTitle}
-                    onChange={(e) => handleCopyChange("sectionTitle", e.target.value)}
-                  />
-                </div>
-                <div className="xp-field">
-                  <label style={{ fontSize: "12px", fontWeight: "600", color: "#333", marginBottom: "4px" }}>
-                    Quick-Add Button Label ({selectedLang.toUpperCase()})
-                  </label>
-                  <input
-                    type="text"
-                    className="xp-input"
-                    dir={selectedLang === "ar" ? "rtl" : "ltr"}
-                    value={currentCopy.addButton}
-                    onChange={(e) => handleCopyChange("addButton", e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div className="xp-field" style={{ marginBottom: "16px" }}>
-                <label style={{ fontSize: "12px", fontWeight: "600", color: "#333", marginBottom: "4px" }}>
-                  Discount Badge Format ({selectedLang.toUpperCase()}) - Use {"{discount}"} for percentage
-                </label>
-                <input
-                  type="text"
-                  className="xp-input"
-                  dir={selectedLang === "ar" ? "rtl" : "ltr"}
-                  value={currentCopy.saveBadge}
-                  onChange={(e) => handleCopyChange("saveBadge", e.target.value)}
-                />
-              </div>
-
-              <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <button type="submit" disabled={isSubmitting} className="xp-btn-gold-primary" style={{ padding: "8px 18px", fontSize: "13px" }}>
-                  Save Multi-Language Copy
-                </button>
-              </div>
-            </Form>
-          </div>
 
           <div className="xp-index-card">
           <div className="xp-index-header">
@@ -1201,22 +1192,77 @@ export default function InCartUpsellSettings() {
                   <input type="hidden" name="ruleId" value={editingRule.id} />
                 )}
 
-                {/* Offer Details */}
+                {/* Multi-Language In-Offer Configuration */}
+                <div className="xp-editor-section" style={{ borderLeft: "3px solid #D4AF37", paddingLeft: "16px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+                    <div>
+                      <h3 style={{ margin: 0, fontSize: "14px", fontWeight: "700" }}>
+                        Offer Language &amp; Localized Content
+                      </h3>
+                      <p className="xp-sub" style={{ margin: 0, fontSize: "12px" }}>
+                        Select a language to customize this specific offer's headline, button, and badge for international buyers.
+                      </p>
+                    </div>
+                  </div>
+
+                  <FeatureLanguageSwitcher
+                    selectedLang={selectedLang}
+                    onSelectLang={setSelectedLang}
+                    onLoadPredefined={handleLoadPredefined}
+                    dashboardLocale={dashboardLocale}
+                  />
+                </div>
+
+                {/* Section 1: Localized Headline & Text */}
                 <div className="xp-editor-section">
-                  <h3>1. Section Headline</h3>
-                  <div className="xp-field">
-                    <label>Header Title</label>
+                  <h3>1. Offer Headline &amp; Button Copy ({selectedLang.toUpperCase()})</h3>
+                  
+                  <div className="xp-field" style={{ marginBottom: "14px" }}>
+                    <label>Header / Section Title ({selectedLang.toUpperCase()})</label>
                     <input
                       type="text"
-                      name="offerHeadline"
                       className="xp-input"
-                      value={headline}
+                      dir={selectedLang === "ar" ? "rtl" : "ltr"}
+                      value={activeOfferCopy.headline}
                       placeholder="e.g. Frequently Bought Together or Complete Your Routine"
-                      onChange={(e) => setHeadline(e.target.value)}
+                      onChange={(e) => {
+                        updateOfferCopy("headline", e.target.value);
+                        setHeadline(e.target.value);
+                      }}
                       required
                     />
                     <small>Appears above the add-on card inside the cart drawer.</small>
                   </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
+                    <div className="xp-field">
+                      <label>Quick-Add Button Label ({selectedLang.toUpperCase()})</label>
+                      <input
+                        type="text"
+                        className="xp-input"
+                        dir={selectedLang === "ar" ? "rtl" : "ltr"}
+                        value={activeOfferCopy.addButton}
+                        placeholder="e.g. + Add to Cart"
+                        onChange={(e) => updateOfferCopy("addButton", e.target.value)}
+                      />
+                    </div>
+
+                    <div className="xp-field">
+                      <label>Discount Badge Format ({selectedLang.toUpperCase()})</label>
+                      <input
+                        type="text"
+                        className="xp-input"
+                        dir={selectedLang === "ar" ? "rtl" : "ltr"}
+                        value={activeOfferCopy.saveBadge}
+                        placeholder="e.g. SAVE {discount}%"
+                        onChange={(e) => updateOfferCopy("saveBadge", e.target.value)}
+                      />
+                      <small>Use {"{discount}"} as placeholder for percentage</small>
+                    </div>
+                  </div>
+
+                  <input type="hidden" name="offerHeadline" value={activeOfferCopy.headline || headline} />
+                  <input type="hidden" name="offerI18nJson" value={JSON.stringify(offerI18n)} />
                 </div>
 
                 {/* Trigger Condition */}
@@ -1580,7 +1626,7 @@ export default function InCartUpsellSettings() {
                 <p className="xp-sub">Embedded add-on card rendered inside cart drawers.</p>
 
                 <div className="xp-drawer-mock" dir={selectedLang === "ar" ? "rtl" : "ltr"}>
-                  <div className="xp-drawer-title">{currentCopy.sectionTitle || headline}</div>
+                  <div className="xp-drawer-title">{activeOfferCopy.headline || headline || "Frequently Bought Together"}</div>
 
                   <div className="xp-addon-card">
                     {selectedProduct?.imageUrl ? (
@@ -1607,7 +1653,7 @@ export default function InCartUpsellSettings() {
                           style={{ color: "inherit", textDecoration: "none" }}
                           onClick={(e) => e.stopPropagation()}
                         >
-                          {selectedProduct?.title || "Exclusive Add-on"}
+                          {selectedProduct?.title || (selectedLang === "ar" ? "منتج مميز إضافي" : "Exclusive Add-on")}
                         </a>
                       </div>
                       <div className="xp-addon-pricing">
@@ -1616,11 +1662,11 @@ export default function InCartUpsellSettings() {
                           <span className="xp-addon-orig">${originalPrice.toFixed(2)}</span>
                         )}
                         {isDiscounted && (
-                          <span className="xp-addon-badge">{(currentCopy.saveBadge || "SAVE {discount}%").replace("{discount}", discountPercent)}</span>
+                          <span className="xp-addon-badge">{(activeOfferCopy.saveBadge || (selectedLang === "ar" ? "وفر {discount}%" : "SAVE {discount}%")).replace("{discount}", discountPercent)}</span>
                         )}
                       </div>
                       <button type="button" className="xp-addon-quickadd">
-                        {currentCopy.addButton || "+ Add to Cart"}
+                        {activeOfferCopy.addButton || (selectedLang === "ar" ? "+ أضف للسلة" : "+ Add to Cart")}
                       </button>
                     </div>
                   </div>

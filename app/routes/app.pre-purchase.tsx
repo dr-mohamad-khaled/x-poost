@@ -2225,10 +2225,10 @@ export default function PrePurchaseSettings() {
                                     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                                       <polyline points="20 6 9 17 4 12"/>
                                     </svg>
-                                    <span>Selected</span>
+                                    <span>{pI18n.selected}</span>
                                   </>
                                 ) : (
-                                  <span>+ Add</span>
+                                  <span>{pI18n.add}</span>
                                 )}
                               </div>
 
@@ -2245,7 +2245,7 @@ export default function PrePurchaseSettings() {
                                   </div>
                                 )}
                                 {isDiscounted && (
-                                  <span className="xp-spotlight-save-badge">SAVE {discountPercent}%</span>
+                                  <span className="xp-spotlight-save-badge">{pI18n.savePill.replace("{discount}", discountPercent)}</span>
                                 )}
                               </div>
 
@@ -2256,7 +2256,7 @@ export default function PrePurchaseSettings() {
                                       <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                                     </svg>
                                   ))}
-                                  <span className="xp-spotlight-rating-text">4.9 / 5.0 Rating</span>
+                                  <span className="xp-spotlight-rating-text">{pI18n.rating}</span>
                                 </div>
                                 <h4 className="xp-spotlight-title">
                                   <a
@@ -2373,7 +2373,7 @@ export default function PrePurchaseSettings() {
                               const isChecked = previewCheckedIds.includes(p.id);
                               const orig = parseFloat(p.price || "30.00");
                               const sale = (orig * (1 - discRate)).toFixed(2);
-                              const stepLabel = idx === 0 ? "PRIMARY ESSENTIAL" : `COMPLEMENTARY STEP ${idx + 1}`;
+                              const stepLabel = idx === 0 ? pI18n.stepPrimary : pI18n.stepComp.replace("{n}", String(idx + 1));
                               return (
                                 <Fragment key={p.id}>
                                   {idx > 0 && (
@@ -2419,7 +2419,7 @@ export default function PrePurchaseSettings() {
                                       <div className="xp-modal-pricing">
                                         <span className="xp-price-sale">${isDiscounted ? sale : orig.toFixed(2)}</span>
                                         {isDiscounted && <span className="xp-price-orig">${orig.toFixed(2)}</span>}
-                                        {isDiscounted && <span className="xp-discount-pill">SAVE {discountPercent}%</span>}
+                                        {isDiscounted && <span className="xp-discount-pill">{pI18n.savePill.replace("{discount}", discountPercent)}</span>}
                                       </div>
                                     </div>
                                     <div className="xp-bundle-action-cell">
@@ -2432,7 +2432,7 @@ export default function PrePurchaseSettings() {
                                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                                               <polyline points="20 6 9 17 4 12"/>
                                             </svg>
-                                            <span>Added</span>
+                                            <span>{pI18n.added}</span>
                                           </>
                                         ) : (
                                           <span>+ Add</span>
@@ -2449,7 +2449,7 @@ export default function PrePurchaseSettings() {
                           <div className="xp-bundle-summary-card">
                             <div className="xp-bundle-summary-row">
                               <span className="xp-bundle-summary-label">
-                                Bundle Routine Total ({checkedCount} {checkedCount === 1 ? "item" : "items"}):
+                                {checkedCount === 1 ? pI18n.bundleTotal1 : pI18n.bundleTotal.replace("{count}", String(checkedCount))}
                               </span>
                               <div className="xp-bundle-summary-prices">
                                 {isDiscounted && checkedOrig > 0 && (
@@ -2463,7 +2463,7 @@ export default function PrePurchaseSettings() {
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#25D366" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                                   <polyline points="20 6 9 17 4 12"/>
                                 </svg>
-                                <span>You save ${(checkedOrig - checkedDisc).toFixed(2)} ({discountPercent}% Bundle Discount Applied)</span>
+                                <span>{pI18n.bundleSavings.replace("{amount}", `${(checkedOrig - checkedDisc).toFixed(2)}`).replace("{discount}", discountPercent)}</span>
                               </div>
                             )}
                           </div>
@@ -2516,7 +2516,7 @@ export default function PrePurchaseSettings() {
                                     <div className="xp-modal-pricing">
                                       <span className="xp-price-sale">${isDiscounted ? sale : orig.toFixed(2)}</span>
                                       {isDiscounted && <span className="xp-price-orig">${orig.toFixed(2)}</span>}
-                                      {isDiscounted && <span className="xp-discount-pill">SAVE {discountPercent}%</span>}
+                                      {isDiscounted && <span className="xp-discount-pill">{pI18n.savePill.replace("{discount}", discountPercent)}</span>}
                                     </div>
                                   </div>
                                 </div>
@@ -2575,7 +2575,7 @@ export default function PrePurchaseSettings() {
                                     <div className="xp-modal-pricing">
                                       <span className="xp-price-sale">${isDiscounted ? sale : orig.toFixed(2)}</span>
                                       {isDiscounted && <span className="xp-price-orig">${orig.toFixed(2)}</span>}
-                                      {isDiscounted && <span className="xp-discount-pill">SAVE {discountPercent}%</span>}
+                                      {isDiscounted && <span className="xp-discount-pill">{pI18n.savePill.replace("{discount}", discountPercent)}</span>}
                                     </div>
                                   </div>
                                 </div>

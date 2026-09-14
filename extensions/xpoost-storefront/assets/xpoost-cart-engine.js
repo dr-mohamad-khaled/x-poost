@@ -31,6 +31,204 @@
     return div.innerHTML;
   }
 
+
+  var UI_STRINGS = {
+    ar: {
+      stepPrimary: "المنتج الأساسي",
+      stepComplementary: "الخطوة التكميلية {n}",
+      added: "تمت الإضافة",
+      selected: "محدد",
+      add: "+ إضافة",
+      saveBadge: "وفر {discount}%",
+      bundleTotal: "إجمالي المجموعة ({count} منتجات):",
+      bundleTotalSingle: "إجمالي المجموعة (منتج واحد):",
+      bundleSavings: "أنت توفر {amount} (تم تطبيق خصم المجموعة {discount}%)",
+      bundleSavingsApplied: "أنت توفر {amount} (تم تطبيق خصم المجموعة)",
+      adding: "جاري الإضافة...",
+      continueToCart: "المتابعة إلى السلة \u2190",
+      addSingleItemSave: "إضافة منتج واحد ({price}) وتوفير الخصم \u2190",
+      addSingleItem: "إضافة منتج واحد ({price}) \u2190",
+      addAllItemsSave: "إضافة جميع المنتجات ({count}) ({price}) وتوفير الخصم \u2190",
+      addAllItems: "إضافة جميع المنتجات ({count}) ({price}) \u2190",
+      additionalUpgrades: "ترقيات إضافية:",
+      ratingText: "تقييم 4.9 / 5.0",
+      exclusivePrice: "سعر ترويجي حصري لهذا الطلب",
+      flashDealItem: "منتج عرض سريع",
+      upgradeItem: "منتج ترقية",
+      recommendedAddOn: "منتج مقترح إضافي",
+      bundleItem: "منتج المجموعة",
+      featuredUpgrade: "ترقية مميزة"
+    },
+    en: {
+      stepPrimary: "PRIMARY ESSENTIAL",
+      stepComplementary: "COMPLEMENTARY STEP {n}",
+      added: "Added",
+      selected: "Selected",
+      add: "+ Add",
+      saveBadge: "SAVE {discount}%",
+      bundleTotal: "Bundle Routine Total ({count} items):",
+      bundleTotalSingle: "Bundle Routine Total (1 item):",
+      bundleSavings: "You save {amount} ({discount}% Bundle Discount Applied)",
+      bundleSavingsApplied: "You save {amount} (Bundle Discount Applied)",
+      adding: "Adding...",
+      continueToCart: "Continue to Cart \u2192",
+      addSingleItemSave: "Add 1 Item ({price}) & Save \u2192",
+      addSingleItem: "Add 1 Item ({price}) \u2192",
+      addAllItemsSave: "Add All {count} Items ({price}) & Save \u2192",
+      addAllItems: "Add All {count} Items ({price}) \u2192",
+      additionalUpgrades: "Additional Upgrades:",
+      ratingText: "4.9 / 5.0 Rating",
+      exclusivePrice: "Exclusive single-order promotion price",
+      flashDealItem: "Flash Deal Item",
+      upgradeItem: "Upgrade Item",
+      recommendedAddOn: "Recommended Add-On",
+      bundleItem: "Bundle Item",
+      featuredUpgrade: "Featured Upgrade"
+    },
+    fr: {
+      stepPrimary: "PRODUIT PRINCIPAL",
+      stepComplementary: "ÉTAPE COMPLÉMENTAIRE {n}",
+      added: "Ajouté",
+      selected: "Sélectionné",
+      add: "+ Ajouter",
+      saveBadge: "ÉCONOMISEZ {discount}%",
+      bundleTotal: "Total du lot ({count} articles) :",
+      bundleTotalSingle: "Total du lot (1 article) :",
+      bundleSavings: "Vous économisez {amount} (remise de lot de {discount}% appliquée)",
+      bundleSavingsApplied: "Vous économisez {amount} (remise de lot appliquée)",
+      adding: "Ajout en cours...",
+      continueToCart: "Continuer vers le panier \u2192",
+      addSingleItemSave: "Ajouter 1 article ({price}) et économiser \u2192",
+      addSingleItem: "Ajouter 1 article ({price}) \u2192",
+      addAllItemsSave: "Ajouter les {count} articles ({price}) et économiser \u2192",
+      addAllItems: "Ajouter les {count} articles ({price}) \u2192",
+      additionalUpgrades: "Améliorations supplémentaires :",
+      ratingText: "Évaluation 4,9 / 5,0",
+      exclusivePrice: "Prix promotionnel exclusif pour cette commande",
+      flashDealItem: "Article offre éclair",
+      upgradeItem: "Article de mise à niveau",
+      recommendedAddOn: "Article complémentaire recommandé",
+      bundleItem: "Article du lot",
+      featuredUpgrade: "Amélioration vedette"
+    },
+    de: {
+      stepPrimary: "HAUPTPRODUKT",
+      stepComplementary: "ERGÄNZENDE STUFE {n}",
+      added: "Hinzugefügt",
+      selected: "Ausgewählt",
+      add: "+ Hinzufügen",
+      saveBadge: "SPAREN SIE {discount}%",
+      bundleTotal: "Set-Gesamtbetrag ({count} Artikel):",
+      bundleTotalSingle: "Set-Gesamtbetrag (1 Artikel):",
+      bundleSavings: "Sie sparen {amount} ({discount}% Paket-Rabatt angewendet)",
+      bundleSavingsApplied: "Sie sparen {amount} (Paket-Rabatt angewendet)",
+      adding: "Wird hinzugefügt...",
+      continueToCart: "Weiter zum Warenkorb \u2192",
+      addSingleItemSave: "1 Artikel hinzufügen ({price}) & sparen \u2192",
+      addSingleItem: "1 Artikel hinzufügen ({price}) \u2192",
+      addAllItemsSave: "Alle {count} Artikel hinzufügen ({price}) & sparen \u2192",
+      addAllItems: "Alle {count} Artikel hinzufügen ({price}) \u2192",
+      additionalUpgrades: "Zusätzliche Upgrades:",
+      ratingText: "4.9 / 5.0 Bewertung",
+      exclusivePrice: "Exklusiver Aktionspreis für diese Bestellung",
+      flashDealItem: "Blitzangebot-Artikel",
+      upgradeItem: "Upgrade-Artikel",
+      recommendedAddOn: "Empfohlener Zusatzartikel",
+      bundleItem: "Paket-Artikel",
+      featuredUpgrade: "Ausgewähltes Upgrade"
+    },
+    es: {
+      stepPrimary: "PRODUCTO PRINCIPAL",
+      stepComplementary: "PASO COMPLEMENTARIO {n}",
+      added: "Añadido",
+      selected: "Seleccionado",
+      add: "+ Añadir",
+      saveBadge: "AHORRA {discount}%",
+      bundleTotal: "Total del paquete ({count} artículos):",
+      bundleTotalSingle: "Total del paquete (1 artículo):",
+      bundleSavings: "Ahorras {amount} ({discount}% de descuento aplicado)",
+      bundleSavingsApplied: "Ahorras {amount} (descuento de paquete aplicado)",
+      adding: "Añadiendo...",
+      continueToCart: "Continuar al carrito \u2192",
+      addSingleItemSave: "Añadir 1 artículo ({price}) y ahorrar \u2192",
+      addSingleItem: "Añadir 1 artículo ({price}) \u2192",
+      addAllItemsSave: "Añadir los {count} artículos ({price}) y ahorrar \u2192",
+      addAllItems: "Añadir los {count} artículos ({price}) \u2192",
+      additionalUpgrades: "Mejoras adicionales:",
+      ratingText: "Calificación 4.9 / 5.0",
+      exclusivePrice: "Precio promocional exclusivo para este pedido",
+      flashDealItem: "Artículo oferta flash",
+      upgradeItem: "Artículo de mejora",
+      recommendedAddOn: "Complemento recomendado",
+      bundleItem: "Artículo del paquete",
+      featuredUpgrade: "Mejora destacada"
+    },
+    it: {
+      stepPrimary: "PRODOTTO PRINCIPALE",
+      stepComplementary: "PASSO COMPLEMENTARE {n}",
+      added: "Aggiunto",
+      selected: "Selezionato",
+      add: "+ Aggiungi",
+      saveBadge: "RISPARMIA {discount}%",
+      bundleTotal: "Totale pacchetto ({count} articoli):",
+      bundleTotalSingle: "Totale pacchetto (1 articolo):",
+      bundleSavings: "Risparmi {amount} ({discount}% di sconto applicato)",
+      bundleSavingsApplied: "Risparmi {amount} (sconto pacchetto applicato)",
+      adding: "Aggiunta in corso...",
+      continueToCart: "Continua al carrello \u2192",
+      addSingleItemSave: "Aggiungi 1 articolo ({price}) e risparmia \u2192",
+      addSingleItem: "Aggiungi 1 articolo ({price}) \u2192",
+      addAllItemsSave: "Aggiungi tutti i {count} articoli ({price}) e risparmia \u2192",
+      addAllItems: "Aggiungi tutti i {count} articoli ({price}) \u2192",
+      additionalUpgrades: "Aggiornamenti aggiuntivi:",
+      ratingText: "Valutazione 4.9 / 5.0",
+      exclusivePrice: "Prezzo promozionale esclusivo per questo ordine",
+      flashDealItem: "Articolo offerta lampo",
+      upgradeItem: "Articolo di aggiornamento",
+      recommendedAddOn: "Aggiunta consigliata",
+      bundleItem: "Articolo del pacchetto",
+      featuredUpgrade: "Aggiornamento in evidenza"
+    },
+    pt: {
+      stepPrimary: "PRODUTO PRINCIPAL",
+      stepComplementary: "ETAPA COMPLEMENTAR {n}",
+      added: "Adicionado",
+      selected: "Selecionado",
+      add: "+ Adicionar",
+      saveBadge: "ECONOMIZE {discount}%",
+      bundleTotal: "Total do pacote ({count} itens):",
+      bundleTotalSingle: "Total do pacote (1 item):",
+      bundleSavings: "Você economiza {amount} ({discount}% de desconto aplicado)",
+      bundleSavingsApplied: "Você economiza {amount} (desconto de pacote aplicado)",
+      adding: "Adicionando...",
+      continueToCart: "Continuar para o carrinho \u2192",
+      addSingleItemSave: "Adicionar 1 item ({price}) e economizar \u2192",
+      addSingleItem: "Adicionar 1 item ({price}) \u2192",
+      addAllItemsSave: "Adicionar todos os {count} itens ({price}) e economizar \u2192",
+      addAllItems: "Adicionar todos os {count} itens ({price}) \u2192",
+      additionalUpgrades: "Upgrades adicionais:",
+      ratingText: "Avaliação 4.9 / 5.0",
+      exclusivePrice: "Preço promocional exclusivo para este pedido",
+      flashDealItem: "Item oferta relâmpago",
+      upgradeItem: "Item de upgrade",
+      recommendedAddOn: "Complemento recomendado",
+      bundleItem: "Item do pacote",
+      featuredUpgrade: "Upgrade em destaque"
+    }
+  };
+
+  function getUiString(key, replacements) {
+    var loc = configStore.storefrontLocale || (configStore.isRtl ? "ar" : "en");
+    var dict = UI_STRINGS[loc] || UI_STRINGS.en;
+    var text = dict[key] || UI_STRINGS.en[key] || "";
+    if (replacements) {
+      for (var k in replacements) {
+        text = text.replace(new RegExp("\\{" + k + "\\}", "g"), String(replacements[k]));
+      }
+    }
+    return text;
+  }
+
   var cartState = {
     totalPrice: 0,
     items: [],
@@ -41,6 +239,9 @@
     prePurchase: null,
     inCart: null,
     shipping: null,
+    storefrontLocale: 'en',
+    isRtl: false,
+    translations: null,
   };
 
   var productHandleMap = {};
@@ -134,6 +335,7 @@
         configStore.scarcity = data.features?.scarcity;
         configStore.translations = data.translations;
         configStore.isRtl = data.isRtl;
+        configStore.storefrontLocale = data.storefrontLocale || data.locale || (data.isRtl ? 'ar' : 'en');
 
         setupAjaxInterceptor();
         setupDrawerObserver();
@@ -696,14 +898,14 @@
       var heroFeatures = (heroRule.features && heroRule.features.length >= 3)
         ? heroRule.features
         : [
-            "Recommended addition to your selection",
-            "Premium dermatologically evaluated formula",
-            "Exclusive single-order promotion price"
+            getUiString("recommendedAddOn"),
+            (configStore.isRtl ? "تركيبة متطورة وفعالة ومضمونة" : "Premium dermatologically evaluated formula"),
+            getUiString("exclusivePrice")
           ];
 
       var extraProductsHtml = "";
       if (rules.length > 1) {
-        extraProductsHtml = '<div class="xpc-spotlight-sub-title">Additional Upgrades:</div><div class="xpc-modal-products-list">' +
+        extraProductsHtml = '<div class="xpc-spotlight-sub-title">' + escapeHtml(getUiString('additionalUpgrades')) + '</div><div class="xpc-modal-products-list">' +
           rules.slice(1).map(function (rule, idx) {
             var oPrice = parseFloat(rule.targetProductPrice || "29.99");
             var d = rule.discountPercent ? parseFloat(rule.discountPercent) : 0;
@@ -719,7 +921,7 @@
               '</a>' +
               '<div class="xpc-modal-pinfo">' +
               '<div class="xpc-modal-pname"><a href="' + pUrl + '" target="_blank" class="xpc-product-link">' + escapeHtml(rule.targetProductTitle || "Complementary Item") + '</a></div>' +
-              '<div class="xpc-modal-pricing"><span class="xpc-modal-sale">' + symbol + sPrice + '</span>' + (d > 0 ? '<span class="xpc-modal-orig">' + symbol + oPrice.toFixed(2) + '</span><span class="xpc-modal-save-pill">SAVE ' + d + '%</span>' : "") + '</div>' +
+              '<div class="xpc-modal-pricing"><span class="xpc-modal-sale">' + symbol + sPrice + '</span>' + (d > 0 ? '<span class="xpc-modal-orig">' + symbol + oPrice.toFixed(2) + '</span><span class="xpc-modal-save-pill">' + escapeHtml(getUiString('saveBadge', { discount: d })) + '</span>' : "") + '</div>' +
               '</div>' +
               '</div>'
             );
@@ -730,18 +932,18 @@
         '<div class="xpc-spotlight-hero-card' + (heroPreselected ? ' is-selected' : '') + '" data-index="0">' +
         '<input type="checkbox" class="xpc-product-check xpc-hero-check" data-index="0" data-variant-id="' + heroVariant + '" data-orig-price="' + heroOrigPrice.toFixed(2) + '" data-price="' + heroSalePrice + '" data-has-discount="' + (heroDisc > 0 ? '1' : '0') + '"' + (heroPreselected ? ' checked' : '') + ' style="display:none;" />' +
         '<div class="xpc-spotlight-check-pill ' + (heroPreselected ? 'is-checked' : '') + '">' +
-        (heroPreselected ? VECTOR_ICONS.check + '<span>Selected</span>' : '<span>+ Add</span>') +
+        (heroPreselected ? VECTOR_ICONS.check + '<span>' + escapeHtml(getUiString('selected')) + '</span>' : '<span>' + escapeHtml(getUiString('add')) + '</span>') +
         '</div>' +
         '<div class="xpc-spotlight-img-wrap">' +
         '<a href="' + heroProdUrl + '" target="_blank" class="xpc-product-link">' +
         (heroRule.targetProductImage ? '<img src="' + escapeHtml(heroRule.targetProductImage) + '" alt="" class="xpc-spotlight-hero-img" />' : '<div class="xpc-spotlight-hero-img"></div>') +
         '</a>' +
-        (heroDisc > 0 ? '<span class="xpc-spotlight-save-badge">SAVE ' + heroDisc + '%</span>' : '') +
+        (heroDisc > 0 ? '<span class="xpc-spotlight-save-badge">' + escapeHtml(getUiString('saveBadge', { discount: heroDisc })) + '</span>' : '') +
         '</div>' +
         '<div class="xpc-spotlight-content">' +
         '<div class="xpc-spotlight-stars">' +
         VECTOR_ICONS.star + VECTOR_ICONS.star + VECTOR_ICONS.star + VECTOR_ICONS.star + VECTOR_ICONS.star +
-        '<span class="xpc-spotlight-rating-text">4.9 / 5.0 Rating</span>' +
+        '<span class="xpc-spotlight-rating-text">' + escapeHtml(getUiString('ratingText')) + '</span>' +
         '</div>' +
         '<h4 class="xpc-spotlight-title">' +
         '<a href="' + heroProdUrl + '" target="_blank" class="xpc-product-link">' + escapeHtml(heroRule.targetProductTitle || "Featured Upgrade") + '</a>' +
@@ -772,7 +974,7 @@
         var salePrice = (hasDiscount ? origPrice * (1 - discount / 100) : origPrice).toFixed(2);
         var targetVariant = rule.targetVariantId ? rule.targetVariantId.replace(/[^0-9]/g, "") : "";
         var isPreselected = rule.preselected !== false;
-        var stepLabel = idx === 0 ? "PRIMARY ESSENTIAL" : "COMPLEMENTARY STEP " + (idx + 1);
+        var stepLabel = idx === 0 ? getUiString("stepPrimary") : getUiString("stepComplementary", { n: idx + 1 });
         var pUrl = getProductUrl(rule);
 
         if (isPreselected) {
@@ -806,13 +1008,13 @@
           '<div class="xpc-modal-pricing">' +
           '<span class="xpc-modal-sale">' + symbol + salePrice + '</span>' +
           (hasDiscount ? '<span class="xpc-modal-orig">' + symbol + origPrice.toFixed(2) + '</span>' : '') +
-          (hasDiscount ? '<span class="xpc-modal-save-pill">SAVE ' + discount + '%</span>' : '') +
+          (hasDiscount ? '<span class="xpc-modal-save-pill">' + escapeHtml(getUiString('saveBadge', { discount: discount })) + '</span>' : '') +
           '</div>' +
           '</div>' +
           '<div class="xpc-bundle-action-cell">' +
           '<input type="checkbox" class="xpc-product-check" style="display:none;" data-index="' + idx + '" data-variant-id="' + targetVariant + '" data-orig-price="' + origPrice.toFixed(2) + '" data-price="' + salePrice + '" data-has-discount="' + (hasDiscount ? '1' : '0') + '"' + (isPreselected ? ' checked' : '') + ' />' +
           '<div class="xpc-bundle-toggle-pill ' + (isPreselected ? 'is-checked' : '') + '">' +
-          (isPreselected ? VECTOR_ICONS.check + '<span>Added</span>' : '<span>+ Add</span>') +
+          (isPreselected ? VECTOR_ICONS.check + '<span>' + escapeHtml(getUiString('added')) + '</span>' : '<span>' + escapeHtml(getUiString('add')) + '</span>') +
           '</div>' +
           '</div>' +
           '</div>'
@@ -827,7 +1029,7 @@
         '<div class="xpc-bundle-routine-deck">' + gridItemsHtml + '</div>' +
         '<div class="xpc-bundle-summary-card" id="xpc-bundle-summary">' +
         '<div class="xpc-bundle-summary-row">' +
-        '<span class="xpc-bundle-summary-label">Bundle Routine Total (<span id="xpc-bundle-count">' + (rules.filter(function(r){return r.preselected !== false;}).length) + '</span> items):</span>' +
+        '<span class="xpc-bundle-summary-label">' + ((rules.filter(function(r){return r.preselected !== false;}).length === 1) ? getUiString('bundleTotalSingle') : getUiString('bundleTotal', { count: '<span id="xpc-bundle-count">' + (rules.filter(function(r){return r.preselected !== false;}).length) + '</span>' })) + '</span>' +
         '<div class="xpc-bundle-summary-prices">' +
         '<span class="xpc-bundle-sum-orig" id="xpc-bundle-orig" style="' + (hasAnyDiscount ? '' : 'display:none;') + '">' + symbol + totalBundleOrig.toFixed(2) + '</span>' +
         '<span class="xpc-bundle-sum-sale" id="xpc-bundle-sale">' + symbol + totalBundleSale.toFixed(2) + '</span>' +
@@ -835,7 +1037,7 @@
         '</div>' +
         '<div class="xpc-bundle-savings-highlight" id="xpc-bundle-savings" style="' + (savings > 0 ? '' : 'display:none;') + '">' +
         VECTOR_ICONS.check +
-        '<span>You save ' + symbol + savings.toFixed(2) + ' (' + bundleDiscountPercent + '% Bundle Discount Applied)</span>' +
+        '<span>' + escapeHtml(getUiString('bundleSavings', { amount: symbol + savings.toFixed(2), discount: bundleDiscountPercent })) + '</span>' +
         '</div>' +
         '</div>' +
         '</div>';
@@ -858,7 +1060,7 @@
           (rule.targetProductImage ? '<img class="xpc-sheet-thumb" src="' + escapeHtml(rule.targetProductImage) + '" alt="" />' : '<div class="xpc-sheet-thumb"></div>') +
           '</a>' +
           '<div class="xpc-sheet-meta">' +
-          '<div class="xpc-sheet-name"><a href="' + pUrl + '" target="_blank" class="xpc-product-link">' + escapeHtml(rule.targetProductTitle || "Upgrade Item") + '</a></div>' +
+          '<div class="xpc-sheet-name"><a href="' + pUrl + '" target="_blank" class="xpc-product-link">' + escapeHtml(rule.targetProductTitle || getUiString("upgradeItem")) + '</a></div>' +
           '<div class="xpc-sheet-pricing"><span class="xpc-modal-sale">' + symbol + salePrice + '</span>' + (hasDiscount ? '<span class="xpc-modal-orig">' + symbol + origPrice.toFixed(2) + '</span>' : '') + '</div>' +
           '</div>' +
           '</div>'
@@ -887,10 +1089,10 @@
           (rule.targetProductImage ? '<img class="xpc-modal-thumb" src="' + escapeHtml(rule.targetProductImage) + '" alt="" />' : '<div class="xpc-modal-thumb"></div>') +
           '</a>' +
           '<div class="xpc-modal-pinfo">' +
-          '<div class="xpc-modal-pname"><a href="' + pUrl + '" target="_blank" class="xpc-product-link">' + escapeHtml(rule.targetProductTitle || "Flash Deal Item") + '</a></div>' +
+          '<div class="xpc-modal-pname"><a href="' + pUrl + '" target="_blank" class="xpc-product-link">' + escapeHtml(rule.targetProductTitle || getUiString("flashDealItem")) + '</a></div>' +
           '<div class="xpc-modal-pricing">' +
           '<span class="xpc-modal-sale">' + symbol + salePrice + '</span>' +
-          (hasDiscount ? '<span class="xpc-modal-orig">' + symbol + origPrice.toFixed(2) + '</span><span class="xpc-modal-save-pill">SAVE ' + discount + '%</span>' : "") +
+          (hasDiscount ? '<span class="xpc-modal-orig">' + symbol + origPrice.toFixed(2) + '</span><span class="xpc-modal-save-pill">' + escapeHtml(getUiString('saveBadge', { discount: discount })) + '</span>' : "") +
           '</div>' +
           '</div>' +
           '</div>'
@@ -990,7 +1192,7 @@
             bundleSavingsEl.style.display = "flex";
             var saveTextSpan = bundleSavingsEl.querySelector("span");
             if (saveTextSpan) {
-              saveTextSpan.textContent = "You save " + symbol + saved.toFixed(2) + " (Bundle Discount Applied)";
+              saveTextSpan.textContent = getUiString("bundleSavingsApplied", { amount: symbol + saved.toFixed(2) });
             }
           } else {
             bundleSavingsEl.style.display = "none";
@@ -1006,10 +1208,10 @@
           if (pill) {
             if (cb.checked) {
               pill.classList.add("is-checked");
-              pill.innerHTML = VECTOR_ICONS.check + '<span>Added</span>';
+              pill.innerHTML = VECTOR_ICONS.check + '<span>' + escapeHtml(getUiString("added")) + '</span>';
             } else {
               pill.classList.remove("is-checked");
-              pill.innerHTML = '<span>+ Add</span>';
+              pill.innerHTML = '<span>' + escapeHtml(getUiString("add")) + '</span>';
             }
           }
         }
@@ -1023,21 +1225,26 @@
         if (heroCb && heroPill) {
           if (heroCb.checked) {
             heroPill.classList.add("is-checked");
-            heroPill.innerHTML = VECTOR_ICONS.check + '<span>Selected</span>';
+            heroPill.innerHTML = VECTOR_ICONS.check + '<span>' + escapeHtml(getUiString("selected")) + '</span>';
           } else {
             heroPill.classList.remove("is-checked");
-            heroPill.innerHTML = '<span>+ Add</span>';
+            heroPill.innerHTML = '<span>' + escapeHtml(getUiString("add")) + '</span>';
           }
         }
       }
 
-      var saveSuffix = hasDiscountInSelection ? " & Save \u2192" : " \u2192";
       if (selectedCount === 0) {
-        acceptBtn.textContent = "Continue to Cart \u2192";
+        acceptBtn.textContent = getUiString("continueToCart");
+      } else if (rules[0].acceptButton && selectedCount === rules.length) {
+        acceptBtn.textContent = rules[0].acceptButton;
       } else if (selectedCount === 1) {
-        acceptBtn.textContent = "Add 1 Item (" + symbol + total.toFixed(2) + ")" + saveSuffix;
+        acceptBtn.textContent = hasDiscountInSelection
+          ? getUiString("addSingleItemSave", { price: symbol + total.toFixed(2) })
+          : getUiString("addSingleItem", { price: symbol + total.toFixed(2) });
       } else {
-        acceptBtn.textContent = "Add All " + selectedCount + " Items (" + symbol + total.toFixed(2) + ")" + saveSuffix;
+        acceptBtn.textContent = hasDiscountInSelection
+          ? getUiString("addAllItemsSave", { count: selectedCount, price: symbol + total.toFixed(2) })
+          : getUiString("addAllItems", { count: selectedCount, price: symbol + total.toFixed(2) });
       }
     }
 
@@ -1096,7 +1303,7 @@
     acceptBtn.addEventListener("click", function () {
       acceptBtn.disabled = true;
       acceptBtn.classList.add("is-loading");
-      acceptBtn.innerHTML = '<span class="xpc-spinner"></span> Adding...';
+      acceptBtn.innerHTML = '<span class="xpc-spinner"></span> ' + escapeHtml(getUiString('adding'));
 
       var rawItems = [];
       var discountCodes = [];
@@ -1440,8 +1647,10 @@
     var inCartBg = inCartConf.backgroundColor || "#0B0B0B";
     var inCartAccent = inCartConf.accentColor || "#D4AF37";
     var tInCart = (configStore.translations && configStore.translations.inCart) || {};
-    var inCartTitle = activeRule.offerHeadline || tInCart.sectionTitle || "Frequently Bought Together";
-    var inCartBtnText = tInCart.addButton || "+ Add";
+    var inCartTitle = activeRule.offerHeadline || tInCart.sectionTitle || getUiString('recommendedAddOn');
+    var inCartBtnText = activeRule.addButton || tInCart.addButton || getUiString('add');
+    var inCartSaveBadgeFormat = activeRule.saveBadge || tInCart.saveBadge || getUiString('saveBadge');
+    var inCartBadgeText = inCartSaveBadgeFormat.replace('{discount}', String(discount));
 
     var cardInnerHtml =
       '<div class="xpc-in-cart-upsell xpc-animate-in"' + (configStore.isRtl ? ' dir="rtl"' : '') + ' style="--xpc-bg:' + inCartBg + ';--xpc-gold:' + inCartAccent + ';--xpc-text:' + inCartText + ';display:block!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;margin:0 auto!important;min-width:0!important;overflow:hidden!important;">' +
@@ -1456,7 +1665,7 @@
       '<div class="xpc-in-cart-name"><a href="' + productUrl + '" target="_blank" class="xpc-product-link">' + escapeHtml(activeRule.targetProductTitle || "Recommended Add-On") + '</a></div>' +
       '<div class="xpc-in-cart-pricing">' +
       '<span class="xpc-in-cart-price">' + symbol + salePrice + '</span>' +
-      (hasDiscount ? '<span class="xpc-in-cart-orig">' + symbol + origPrice.toFixed(2) + '</span>' : "") +
+      (hasDiscount ? '<span class="xpc-in-cart-orig">' + symbol + origPrice.toFixed(2) + '</span><span class="xpc-modal-save-pill" style="margin-inline-start:6px;font-size:10px;padding:2px 6px;">' + escapeHtml(inCartBadgeText) + '</span>' : "") +
       '</div>' +
       '</div>' +
       '<button type="button" class="xpc-in-cart-btn" data-variant-id="' + targetVariant + '">' + escapeHtml(inCartBtnText) + '</button>' +
@@ -1562,7 +1771,7 @@
       btn.addEventListener("click", function () {
         btn.disabled = true;
         btn.classList.add("is-loading");
-        btn.innerHTML = '<span class="xpc-spinner"></span>';
+        btn.innerHTML = '<span class="xpc-spinner"></span> ' + escapeHtml(getUiString('adding'));
 
         var disc = (discountPercent && parseFloat(discountPercent) > 0) ? String(discountPercent) : "";
         var itemToAdd = {
@@ -1575,7 +1784,7 @@
           .then(function () {
             btn.classList.remove("is-loading");
             btn.classList.add("is-added");
-            btn.innerHTML = '<span>Added <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-left:2px"><polyline points="20 6 9 17 4 12"/></svg></span>';
+            btn.innerHTML = '<span>' + escapeHtml(getUiString('added')) + ' <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-left:2px"><polyline points="20 6 9 17 4 12"/></svg></span>';
 
             var card = container.querySelector(".xpc-in-cart-upsell");
             if (card) {
@@ -1586,7 +1795,7 @@
           .catch(function () {
             btn.disabled = false;
             btn.classList.remove("is-loading");
-            btn.textContent = "+ Add";
+            btn.textContent = inCartBtnText || getUiString("add");
           });
       });
     }
