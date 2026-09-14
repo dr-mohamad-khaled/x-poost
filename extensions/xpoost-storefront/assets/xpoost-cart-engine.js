@@ -218,7 +218,7 @@
   };
 
   function getUiString(key, replacements) {
-    var loc = configStore.storefrontLocale || (configStore.isRtl ? "ar" : "en");
+    var loc = configStore.storefrontLocale || detectStorefrontLocale();
     var dict = UI_STRINGS[loc] || UI_STRINGS.en;
     var text = dict[key] || UI_STRINGS.en[key] || "";
     if (replacements) {
@@ -288,12 +288,34 @@
       .catch(function () {});
   } catch (e) {}
 
-  window.__xpoost_load_config = window.__xpoost_load_config || function(proxyPath) {
-    if (window.__xpoost_config_promise) {
+  
+  function detectStorefrontLocale(mountEl) {
+    var l = "";
+    if (mountEl && mountEl.getAttribute && mountEl.getAttribute("data-locale")) {
+      l = mountEl.getAttribute("data-locale");
+    } else if (window.Shopify && window.Shopify.locale) {
+      l = window.Shopify.locale;
+    } else if (document.documentElement && document.documentElement.lang) {
+      l = document.documentElement.lang;
+    } else if (navigator.language) {
+      l = navigator.language;
+    }
+    var code = (l || "en").split("-")[0].toLowerCase();
+    var valid = ["ar", "en", "fr", "de", "es", "it", "pt"];
+    return valid.indexOf(code) !== -1 ? code : "en";
+  }
+
+  window.__xpoost_load_config = window.__xpoost_load_config || function(proxyPath, mountEl) {
+    var detectedLoc = detectStorefrontLocale(mountEl);
+    var cacheKey = "__xpoost_cfg_" + detectedLoc;
+
+    if (window.__xpoost_config_promise && window.__xpoost_config_locale === detectedLoc) {
       return window.__xpoost_config_promise;
     }
+    window.__xpoost_config_locale = detectedLoc;
+
     try {
-      var cached = sessionStorage.getItem("__xpoost_cfg");
+      var cached = sessionStorage.getItem(cacheKey);
       if (cached) {
         var parsed = JSON.parse(cached);
         if (parsed && parsed.ts && (Date.now() - parsed.ts < 60000)) {
@@ -303,14 +325,18 @@
       }
     } catch (e) {}
 
-    window.__xpoost_config_promise = fetch(proxyPath || "/apps/xpoost/config", { credentials: "same-origin" })
+    var basePath = proxyPath || "/apps/xpoost/config";
+    var sep = basePath.indexOf("?") === -1 ? "?" : "&";
+    var urlWithLocale = basePath + sep + "locale=" + encodeURIComponent(detectedLoc);
+
+    window.__xpoost_config_promise = fetch(urlWithLocale, { credentials: "same-origin" })
       .then(function (res) {
         if (!res.ok) throw new Error("HTTP " + res.status);
         return res.json();
       })
       .then(function (data) {
         try {
-          sessionStorage.setItem("__xpoost_cfg", JSON.stringify({ data: data, ts: Date.now() }));
+          sessionStorage.setItem(cacheKey, JSON.stringify({ data: data, ts: Date.now() }));
         } catch (e) {}
         return data;
       })

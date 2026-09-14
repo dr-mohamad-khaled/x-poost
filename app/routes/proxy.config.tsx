@@ -52,10 +52,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     url.searchParams.get("locale") ||
     request.headers.get("x-storefront-locale") ||
     shop.translationConfig?.storefrontLocale ||
-    "ar"
+    "en"
   ).split("-")[0].toLowerCase();
   const validLocales = ["ar", "en", "fr", "de", "es", "it", "pt"];
-  const storefrontLocale = validLocales.includes(rawLocale) ? rawLocale : "ar";
+  const storefrontLocale = validLocales.includes(rawLocale) ? rawLocale : "en";
   const translations = getMergedTranslations(shop.translationConfig?.translationsJson, storefrontLocale);
   const isRtl = storefrontLocale === "ar";
 

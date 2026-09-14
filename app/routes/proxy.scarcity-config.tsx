@@ -44,9 +44,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   }
 
   const translationConfig = await prisma.translationConfig.findUnique({ where: { shopId: shop.id } });
-  const rawLocale = (url.searchParams.get("locale") || request.headers.get("x-storefront-locale") || translationConfig?.storefrontLocale || "ar").split("-")[0].toLowerCase();
+  const rawLocale = (url.searchParams.get("locale") || request.headers.get("x-storefront-locale") || translationConfig?.storefrontLocale || "en").split("-")[0].toLowerCase();
   const validLocales = ["ar", "en", "fr", "de", "es", "it", "pt"];
-  const storefrontLocale = validLocales.includes(rawLocale) ? rawLocale : "ar";
+  const storefrontLocale = validLocales.includes(rawLocale) ? rawLocale : "en";
   const isRtl = storefrontLocale === "ar";
 
   return new Response(

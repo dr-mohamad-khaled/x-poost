@@ -80,6 +80,7 @@
       data-headline="{{ block.settings.headline | escape }}"
       data-subtext="{{ block.settings.subtext | escape }}"
       data-proxy-path="/apps/xpoost/config"
+    data-locale="{{ request.locale.iso_code }}"
       style="
         --xpp-ps-accent: {{ block.settings.accent_color | default: '#D4AF37' }};
         --xpp-ps-bg: {{ block.settings.bg_color | default: '#141414' }};

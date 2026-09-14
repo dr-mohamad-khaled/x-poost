@@ -22,10 +22,27 @@
       var subTextTpl = root.dataset.subtext || "";
 
       // Optional sync with XPoost global App Proxy config
+      
+  function detectStorefrontLocale(mountEl) {
+    var l = "";
+    if (mountEl && mountEl.getAttribute && mountEl.getAttribute("data-locale")) {
+      l = mountEl.getAttribute("data-locale");
+    } else if (window.Shopify && window.Shopify.locale) {
+      l = window.Shopify.locale;
+    } else if (document.documentElement && document.documentElement.lang) {
+      l = document.documentElement.lang;
+    } else if (navigator.language) {
+      l = navigator.language;
+    }
+    var code = (l || "en").split("-")[0].toLowerCase();
+    var valid = ["ar", "en", "fr", "de", "es", "it", "pt"];
+    return valid.indexOf(code) !== -1 ? code : "en";
+  }
+
       var proxyPath = root.dataset.proxyPath || "/apps/xpoost/config";
       if (proxyPath && window.fetch) {
         try {
-          fetch(proxyPath)
+          var loc = detectStorefrontLocale(root); var sep = proxyPath.indexOf("?") === -1 ? "?" : "&"; fetch(proxyPath + sep + "locale=" + encodeURIComponent(loc))
             .then(function (res) { return res.json(); })
             .then(function (data) {
               if (!data || !data.active || !data.features || !data.features.productScarcity) return;

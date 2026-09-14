@@ -1,6 +1,23 @@
 (function () {
   "use strict";
 
+  
+  function detectStorefrontLocale(mountEl) {
+    var l = "";
+    if (mountEl && mountEl.getAttribute && mountEl.getAttribute("data-locale")) {
+      l = mountEl.getAttribute("data-locale");
+    } else if (window.Shopify && window.Shopify.locale) {
+      l = window.Shopify.locale;
+    } else if (document.documentElement && document.documentElement.lang) {
+      l = document.documentElement.lang;
+    } else if (navigator.language) {
+      l = navigator.language;
+    }
+    var code = (l || "en").split("-")[0].toLowerCase();
+    var valid = ["ar", "en", "fr", "de", "es", "it", "pt"];
+    return valid.indexOf(code) !== -1 ? code : "en";
+  }
+
   function ready(fn) {
     if ("requestIdleCallback" in window) {
       window.requestIdleCallback(fn, { timeout: 2000 });
@@ -39,7 +56,7 @@
       });
     };
 
-    loadConfig(proxyPath)
+    var loc = detectStorefrontLocale(mount); loadConfig(proxyPath + (proxyPath.indexOf("?") === -1 ? "?" : "&") + "locale=" + encodeURIComponent(loc), mount)
       .then(function (data) {
         var config = data?.features?.social;
         if (!config || !config.active) return;

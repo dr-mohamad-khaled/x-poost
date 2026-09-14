@@ -16,6 +16,23 @@
       '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   };
 
+  
+  function detectStorefrontLocale(mountEl) {
+    var l = "";
+    if (mountEl && mountEl.getAttribute && mountEl.getAttribute("data-locale")) {
+      l = mountEl.getAttribute("data-locale");
+    } else if (window.Shopify && window.Shopify.locale) {
+      l = window.Shopify.locale;
+    } else if (document.documentElement && document.documentElement.lang) {
+      l = document.documentElement.lang;
+    } else if (navigator.language) {
+      l = navigator.language;
+    }
+    var code = (l || "en").split("-")[0].toLowerCase();
+    var valid = ["ar", "en", "fr", "de", "es", "it", "pt"];
+    return valid.indexOf(code) !== -1 ? code : "en";
+  }
+
   function ready(fn) {
     if ("requestIdleCallback" in window) {
       window.requestIdleCallback(fn, { timeout: 2000 });
@@ -218,7 +235,7 @@
       });
     };
 
-    loadConfig(proxyPath)
+    var loc = detectStorefrontLocale(root); loadConfig(proxyPath + (proxyPath.indexOf("?") === -1 ? "?" : "&") + "locale=" + encodeURIComponent(loc), root)
       .then(function (data) {
         var ok = handleData(data);
         if (!ok && altProxyPath && altProxyPath !== proxyPath) {
