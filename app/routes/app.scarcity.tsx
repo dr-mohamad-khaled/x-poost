@@ -276,7 +276,7 @@ export default function ScarcityToastSettings() {
         <input type="hidden" name="messagesJson" value={messagesJson} />
         <input type="hidden" name="translationsJson" value={JSON.stringify(translationsMap)} />
 
-        <s-section heading="General">
+        <div className="xp-section-card"><h3 className="xp-section-title">General</h3>
           <div className="xps-row">
             <label className="xps-toggle">
               <input type="checkbox" name="active" defaultChecked={config.active} />
@@ -291,9 +291,9 @@ export default function ScarcityToastSettings() {
               <option value="product_only">Product pages only</option>
             </select>
           </div>
-        </s-section>
+        </div>
 
-        <s-section heading="Timing">
+        <div className="xp-section-card"><h3 className="xp-section-title">Timing</h3>
           <div className="xps-grid">
             <div className="xps-field">
               <label htmlFor="onsetDelayMs">First appearance delay (ms)</label>
@@ -308,9 +308,9 @@ export default function ScarcityToastSettings() {
               <input id="intervalDelayMs" className="xps-input" type="number" name="intervalDelayMs" defaultValue={config.intervalDelayMs} min={0} step={500} />
             </div>
           </div>
-        </s-section>
+        </div>
 
-        <s-section heading="Position">
+        <div className="xp-section-card"><h3 className="xp-section-title">Position</h3>
           <div className="xps-grid">
             <div className="xps-field">
               <label htmlFor="position">Corner</label>
@@ -329,9 +329,9 @@ export default function ScarcityToastSettings() {
               <small>Raise this if it overlaps a sticky mobile nav or the social bar.</small>
             </div>
           </div>
-        </s-section>
+        </div>
 
-        <s-section heading="Appearance">
+        <div className="xp-section-card"><h3 className="xp-section-title">Appearance</h3>
           <div className="xps-grid">
             <div className="xps-field">
               <label htmlFor="backgroundColor">Background</label>
@@ -384,10 +384,10 @@ export default function ScarcityToastSettings() {
               <span>Pause on hover (desktop)</span>
             </label>
           </div>
-        </s-section>
+        </div>
 
         {/* Multi-Language Copy & Toast Templates */}
-        <s-section heading="Multi-Language Toast Templates & Copy">
+        <div className="xp-section-card"><h3 className="xp-section-title">Multi-Language Toast Templates & Copy</h3>
           <FeatureLanguageSwitcher
             selectedLang={selectedLang}
             onSelectLang={handleSelectLang}
@@ -475,9 +475,9 @@ export default function ScarcityToastSettings() {
               />
             </div>
           </div>
-        </s-section>
+        </div>
 
-        <s-section heading="Messages">
+        <div className="xp-section-card"><h3 className="xp-section-title">Messages</h3>
           <div className="xps-messages">
             {messages.map((msg, i) => (
               <div className="xps-message-card" key={i}>
@@ -520,7 +520,7 @@ export default function ScarcityToastSettings() {
             ))}
           </div>
           <button type="button" className="xps-secondary-btn" onClick={addMessage}>+ Add message</button>
-        </s-section>
+        </div>
 
         <div className="xps-save-bar">
           <button type="submit" className="xps-primary-btn" disabled={saving}>
@@ -529,7 +529,8 @@ export default function ScarcityToastSettings() {
         </div>
       </Form>
 
-      <s-section slot="aside" heading="Live preview">
+      <div slot="aside" className="xp-section-card">
+        <h3 className="xp-section-title">Live preview</h3>
         <TogglePreview
           message={preview}
           backgroundColor={backgroundColor}
@@ -542,7 +543,7 @@ export default function ScarcityToastSettings() {
           Actual on-site behavior (cycling, sheen animation, progress bar) plays out live once the
           XPoost app embed is enabled in the theme editor — this is a static look at the styling.
         </p>
-      </s-section>
+      </div>
     </s-page>
   );
 }
@@ -607,6 +608,27 @@ const ICON_GLYPH: Record<string, string> = {
 };
 
 const ADMIN_STYLES = `
+
+  /* Native Luxury Dark Section Cards */
+  .xp-section-card {
+    background: #141414 !important;
+    border: 1px solid #282828 !important;
+    border-radius: 12px !important;
+    padding: 24px !important;
+    margin-bottom: 20px !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
+  }
+  .xp-section-title {
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    margin: 0 0 16px 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
 .xps-form { display: flex; flex-direction: column; gap: 16px; color: #ffffff; max-width: 1060px; margin: 0 auto; padding: 20px 0 80px; }
 s-section {
   display: block;

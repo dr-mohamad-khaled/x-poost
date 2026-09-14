@@ -366,7 +366,7 @@ export default function SocialBarSettings() {
             <input type="hidden" name="whatsappMessage" value={currentCopy.whatsappMessage} />
 
             {/* Layout Architecture Selection */}
-            <s-section heading="1. Choose Layout Architecture">
+            <div className="xp-section-card"><h3 className="xp-section-title">1. Choose Layout Architecture</h3>
               <p className="xp-section-intro">
                 Select the structural arrangement for your action bar. Each layout provides a completely different layout flow, button structure, and customer experience.
               </p>
@@ -391,10 +391,10 @@ export default function SocialBarSettings() {
                   );
                 })}
               </div>
-            </s-section>
+            </div>
 
             {/* Design Theme Selection */}
-            <s-section heading="2. Choose Color Theme">
+            <div className="xp-section-card"><h3 className="xp-section-title">2. Choose Color Theme</h3>
               <p className="xp-section-intro">
                 Choose the visual surface material and color palette to match your store branding.
               </p>
@@ -424,10 +424,10 @@ export default function SocialBarSettings() {
                   );
                 })}
               </div>
-            </s-section>
+            </div>
 
             {/* Multi-Language Copy Section */}
-            <s-section heading="3. Multi-Language Copy & Action Labels">
+            <div className="xp-section-card"><h3 className="xp-section-title">3. Multi-Language Copy & Action Labels</h3>
               <FeatureLanguageSwitcher
                 selectedLang={selectedLang}
                 onSelectLang={setSelectedLang}
@@ -466,10 +466,10 @@ export default function SocialBarSettings() {
                   onChange={(e) => handleTextChange("whatsappMessage", e.target.value)}
                 />
               </div>
-            </s-section>
+            </div>
 
             {/* Placement & Vertical Offset Controls */}
-            <s-section heading="4. Position & Vertical Offset Adjustments">
+            <div className="xp-section-card"><h3 className="xp-section-title">4. Position & Vertical Offset Adjustments</h3>
               <p className="xp-section-intro">
                 Set exact vertical clearance on Desktop and Mobile to avoid overlapping sticky bottom bars, cart buttons, or navigation docks.
               </p>
@@ -560,20 +560,20 @@ export default function SocialBarSettings() {
                   <button type="button" className="xp-preset-btn" onClick={() => setMobileOffset(130)}>High Float (130px)</button>
                 </div>
               </div>
-            </s-section>
+            </div>
 
             {/* General Status */}
-            <s-section heading="4. Widget Status">
+            <div className="xp-section-card"><h3 className="xp-section-title">4. Widget Status</h3>
               <div className="xp-row">
                 <label className="xp-toggle">
                   <input type="checkbox" name="active" defaultChecked={config.active} />
                   <span>Enabled on storefront</span>
                 </label>
               </div>
-            </s-section>
+            </div>
 
             {/* WhatsApp Chat */}
-            <s-section heading="5. WhatsApp Direct Chat">
+            <div className="xp-section-card"><h3 className="xp-section-title">5. WhatsApp Direct Chat</h3>
               <div className="xp-grid-2">
                 <div className="xp-field">
                   <label>WhatsApp Number (with country code)</label>
@@ -601,10 +601,10 @@ export default function SocialBarSettings() {
               <div className="xp-wa-preview">
                 <strong>Generated Link:</strong> <code>{waUrl}</code>
               </div>
-            </s-section>
+            </div>
 
             {/* VIP Community */}
-            <s-section heading="6. VIP Community Funnel">
+            <div className="xp-section-card"><h3 className="xp-section-title">6. VIP Community Funnel</h3>
               <div className="xp-grid-2">
                 <div className="xp-field">
                   <label>VIP Button Label</label>
@@ -627,10 +627,10 @@ export default function SocialBarSettings() {
                   />
                 </div>
               </div>
-            </s-section>
+            </div>
 
             {/* Social Profiles */}
-            <s-section heading="7. Social Profiles">
+            <div className="xp-section-card"><h3 className="xp-section-title">7. Social Profiles</h3>
               <div className="xp-field">
                 <label>Instagram URL</label>
                 <input
@@ -661,10 +661,10 @@ export default function SocialBarSettings() {
                   placeholder="https://tiktok.com/@yourstore"
                 />
               </div>
-            </s-section>
+            </div>
 
             {/* Appearance Overrides */}
-            <s-section heading="8. Color Customization (Optional Overrides)">
+            <div className="xp-section-card"><h3 className="xp-section-title">8. Color Customization (Optional Overrides)</h3>
               <div className="xp-grid-3">
                 <div className="xp-field">
                   <label>Background Color</label>
@@ -703,7 +703,7 @@ export default function SocialBarSettings() {
                   </div>
                 </div>
               </div>
-            </s-section>
+            </div>
 
             <button type="submit" className="xp-btn-submit" disabled={isSubmitting}>
               {isSubmitting ? "Saving Configuration..." : "Save Configuration"}
@@ -1002,6 +1002,27 @@ export default function SocialBarSettings() {
 }
 
 const SOCIAL_BAR_STYLES = `
+
+  /* Native Luxury Dark Section Cards */
+  .xp-section-card {
+    background: #141414 !important;
+    border: 1px solid #282828 !important;
+    border-radius: 12px !important;
+    padding: 24px !important;
+    margin-bottom: 20px !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
+  }
+  .xp-section-title {
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    margin: 0 0 16px 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
   .xp-social-layout {
     display: grid;
     grid-template-columns: 1fr 380px;

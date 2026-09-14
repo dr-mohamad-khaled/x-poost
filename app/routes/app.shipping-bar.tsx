@@ -295,7 +295,7 @@ export default function ShippingBarSettings() {
             <input type="hidden" name="allUnlockedMessage" value={currentCopy.allUnlockedMessage} />
 
             {/* Layout Architecture Selection */}
-            <s-section heading="1. Choose Progress Bar Layout">
+            <div className="xp-section-card"><h3 className="xp-section-title">1. Choose Progress Bar Layout</h3>
               <p className="xp-section-intro">
                 Select the visual structure and reward format that appears in the cart drawer and cart page.
               </p>
@@ -319,10 +319,10 @@ export default function ShippingBarSettings() {
                   );
                 })}
               </div>
-            </s-section>
+            </div>
 
             {/* General Settings */}
-            <s-section heading="2. General & Multi-Language Messages">
+            <div className="xp-section-card"><h3 className="xp-section-title">2. General & Multi-Language Messages</h3>
               <div className="xp-row">
                 <label className="xp-toggle">
                   <input type="checkbox" name="active" defaultChecked={config.active} />
@@ -392,10 +392,10 @@ export default function ShippingBarSettings() {
                   onChange={(e) => handleTextChange("allUnlockedMessage", e.target.value)}
                 />
               </div>
-            </s-section>
+            </div>
 
             {/* Milestone Tiers */}
-            <s-section heading="3. Milestone Tiers">
+            <div className="xp-section-card"><h3 className="xp-section-title">3. Milestone Tiers</h3>
               <p className="xp-sub">Set sequential order thresholds and unlockable incentives.</p>
 
               <div className="xp-tiers-list">
@@ -436,10 +436,10 @@ export default function ShippingBarSettings() {
               <button type="button" onClick={addTier} className="xp-btn-secondary">
                 + Add Another Milestone
               </button>
-            </s-section>
+            </div>
 
             {/* Appearance */}
-            <s-section heading="4. Palette Customization">
+            <div className="xp-section-card"><h3 className="xp-section-title">4. Palette Customization</h3>
               <div className="xp-grid-3">
                 <div className="xp-field">
                   <label>Progress Accent</label>
@@ -477,7 +477,7 @@ export default function ShippingBarSettings() {
                   </div>
                 </div>
               </div>
-            </s-section>
+            </div>
 
             <button type="submit" className="xp-btn-submit" disabled={isSubmitting}>
               {isSubmitting ? "Saving..." : "Save Shipping Bar"}
@@ -671,6 +671,27 @@ export default function ShippingBarSettings() {
 }
 
 const SHIPPING_BAR_STYLES = `
+
+  /* Native Luxury Dark Section Cards */
+  .xp-section-card {
+    background: #141414 !important;
+    border: 1px solid #282828 !important;
+    border-radius: 12px !important;
+    padding: 24px !important;
+    margin-bottom: 20px !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
+  }
+  .xp-section-title {
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    margin: 0 0 16px 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
   .xp-shipping-layout {
     display: grid;
     grid-template-columns: 1fr 400px;

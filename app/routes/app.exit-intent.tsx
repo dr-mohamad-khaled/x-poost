@@ -211,7 +211,7 @@ export default function ExitIntentSettings() {
             <input type="hidden" name="bodyText" value={currentCopy.bodyText} />
             <input type="hidden" name="buttonText" value={currentCopy.buttonText} />
 
-            <s-section heading="General & Trigger Logic">
+            <div className="xp-section-card"><h3 className="xp-section-title">General & Trigger Logic</h3>
               <div className="xp-row">
                 <label className="xp-toggle">
                   <input type="checkbox" name="active" defaultChecked={config.active} />
@@ -244,9 +244,9 @@ export default function ExitIntentSettings() {
                   <small>Days before a dismissed modal shows again to the same visitor.</small>
                 </div>
               </div>
-            </s-section>
+            </div>
 
-            <s-section heading="Offer & Multi-Language Copy">
+            <div className="xp-section-card"><h3 className="xp-section-title">Offer & Multi-Language Copy</h3>
               <FeatureLanguageSwitcher
                 selectedLang={selectedLang}
                 onSelectLang={setSelectedLang}
@@ -309,9 +309,9 @@ export default function ExitIntentSettings() {
                   onChange={(e) => handleTextChange("dismissText", e.target.value)}
                 />
               </div>
-            </s-section>
+            </div>
 
-            <s-section heading="Appearance">
+            <div className="xp-section-card"><h3 className="xp-section-title">Appearance</h3>
               <div className="xp-grid-3">
                 <div className="xp-field">
                   <label>Background</label>
@@ -349,7 +349,7 @@ export default function ExitIntentSettings() {
                   </div>
                 </div>
               </div>
-            </s-section>
+            </div>
 
             <button type="submit" className="xp-btn-gold" disabled={isSubmitting}>
               {isSubmitting ? "Saving..." : "Save Exit Saver"}
@@ -403,6 +403,27 @@ export default function ExitIntentSettings() {
 }
 
 const EXIT_INTENT_STYLES = `
+
+  /* Native Luxury Dark Section Cards */
+  .xp-section-card {
+    background: #141414 !important;
+    border: 1px solid #282828 !important;
+    border-radius: 12px !important;
+    padding: 24px !important;
+    margin-bottom: 20px !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
+  }
+  .xp-section-title {
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    margin: 0 0 16px 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
   .xp-exit-layout {
     display: grid;
     grid-template-columns: 1fr 380px;

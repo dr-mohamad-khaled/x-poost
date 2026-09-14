@@ -1460,8 +1460,8 @@ export default function InCartUpsellSettings() {
                         </div>
                       )}
                       <div>
-                        <strong>{selectedProduct?.title}</strong>
-                        <div className="xp-sub">${selectedProduct?.price}</div>
+                        <strong style={{ color: "#ffffff", fontSize: "14px", fontWeight: "700" }}>{selectedProduct?.title}</strong>
+                        <div className="xp-sub" style={{ color: "#D4AF37", fontWeight: "600" }}>${selectedProduct?.price}</div>
                       </div>
                     </div>
                     <button
@@ -1645,12 +1645,12 @@ export default function InCartUpsellSettings() {
                       </div>
                     )}
                     <div className="xp-addon-body">
-                      <div className="xp-addon-name">
+                      <div className="xp-addon-name" style={{ color: "#ffffff" }}>
                         <a
                           href={selectedProduct?.handle ? `/products/${selectedProduct.handle}` : "#"}
                           target="_blank"
                           rel="noreferrer"
-                          style={{ color: "inherit", textDecoration: "none" }}
+                          style={{ color: "#ffffff", textDecoration: "none", fontWeight: "600" }}
                           onClick={(e) => e.stopPropagation()}
                         >
                           {selectedProduct?.title || (selectedLang === "ar" ? "منتج مميز إضافي" : "Exclusive Add-on")}
@@ -1681,6 +1681,55 @@ export default function InCartUpsellSettings() {
 }
 
 const IN_CART_STYLES = `
+
+  /* High-Contrast Promoted Product Typography */
+  .xp-promoted-cell strong,
+  .xp-promoted-cell span,
+  .xp-promoted-count {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+  }
+  .xp-promoted-names {
+    color: #D4AF37 !important;
+    font-weight: 600 !important;
+  }
+  .xp-selected-trigger-card strong {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    font-size: 14px !important;
+  }
+  .xp-selected-trigger-card span,
+  .xp-selected-trigger-card div {
+    color: #ffffff !important;
+  }
+  .xp-picker-item-title {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+  }
+  .xp-picker-item-price {
+    color: #D4AF37 !important;
+    font-weight: 600 !important;
+  }
+  .xp-picker-item strong,
+  .xp-picker-item span {
+    color: #ffffff !important;
+  }
+  .xp-addon-name,
+  .xp-addon-name a {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+  }
+  .xp-addon-name a:hover {
+    color: #D4AF37 !important;
+  }
+  .xp-addon-sale {
+    color: #D4AF37 !important;
+    font-weight: 800 !important;
+  }
+  .xp-addon-orig {
+    color: #888888 !important;
+  }
+
   /* Global Bar */
   .xp-global-bar {
     background: #141414;
