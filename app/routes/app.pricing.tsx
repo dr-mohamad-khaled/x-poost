@@ -30,9 +30,11 @@ export default function Pricing() {
         .xpp-container {
           max-width: 1080px;
           margin: 0 auto;
-          padding: 20px 0 80px;
+          padding: 20px 16px 80px;
           color: #ffffff;
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          background: #0a0a0a;
+          border-radius: 16px;
         }
 
         /* ── Hero ── */
@@ -117,8 +119,8 @@ export default function Pricing() {
 
         /* ── Unlimited Banner ── */
         .xpp-unlimited-banner {
-          background: linear-gradient(90deg, rgba(212, 175, 55, 0.08) 0%, rgba(212, 175, 55, 0.03) 100%);
-          border: 1px solid rgba(212, 175, 55, 0.2);
+          background: #161310;
+          border: 1px solid rgba(212, 175, 55, 0.25);
           border-radius: 12px;
           padding: 24px 28px;
           margin-bottom: 24px;
