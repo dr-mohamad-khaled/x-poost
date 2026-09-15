@@ -34,6 +34,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     upsellStyleConfig: true,
     productScarcityConfig: true,
     translationConfig: true,
+    quantityBreaksOffers: { where: { status: "ACTIVE" } },
   };
 
   if (shopDomain) {
@@ -372,6 +373,68 @@ function parseSocialPosition(rawPos: string | null | undefined) {
     if (translations.socialBar.whatsappMessage) social.whatsappMessage = translations.socialBar.whatsappMessage;
   }
 
+  // Quantity Breaks Offers
+  let quantityBreaks = null;
+  if (shop.quantityBreaksEnabled && shop.quantityBreaksOffers && shop.quantityBreaksOffers.length > 0) {
+    const globalQbTranslations = translations?.quantityBreaks || {};
+    const offers = shop.quantityBreaksOffers.map((offer: any) => {
+      let productIds: string[] = [];
+      let tiers: any[] = [];
+      let customTranslations: any = {};
+      try {
+        productIds = JSON.parse(offer.productIdsJson || "[]");
+      } catch {
+        productIds = [];
+      }
+      try {
+        tiers = JSON.parse(offer.tiersJson || "[]");
+      } catch {
+        tiers = [];
+      }
+      try {
+        customTranslations = JSON.parse(offer.translationsJson || "{}");
+      } catch {
+        customTranslations = {};
+      }
+
+      const offerLangTranslations = customTranslations[storefrontLocale] || customTranslations["en"] || {};
+
+      return {
+        id: offer.id,
+        title: offer.title,
+        status: offer.status,
+        targetMode: offer.targetMode,
+        productIds: productIds,
+        discountType: offer.discountType,
+        designPreset: offer.designPreset,
+        animationStyle: offer.animationStyle,
+        accentColor: offer.accentColor,
+        backgroundColor: offer.backgroundColor,
+        borderColor: offer.borderColor,
+        textColor: offer.textColor,
+        badgeBgColor: offer.badgeBgColor,
+        badgeTextColor: offer.badgeTextColor,
+        tiers: tiers,
+        translations: {
+          offerTitle: offerLangTranslations.offerTitle || globalQbTranslations.offerTitle || "Select Quantity & Save",
+          buyPrefix: offerLangTranslations.buyPrefix || globalQbTranslations.buyPrefix || "Buy",
+          itemsSuffix: offerLangTranslations.itemsSuffix || globalQbTranslations.itemsSuffix || "items",
+          eachSuffix: offerLangTranslations.eachSuffix || globalQbTranslations.eachSuffix || "each",
+          savePrefix: offerLangTranslations.savePrefix || globalQbTranslations.savePrefix || "Save",
+          mostPopularBadge: offerLangTranslations.mostPopularBadge || globalQbTranslations.mostPopularBadge || "Most Popular",
+          bestValueBadge: offerLangTranslations.bestValueBadge || globalQbTranslations.bestValueBadge || "Best Value",
+          totalLabel: offerLangTranslations.totalLabel || globalQbTranslations.totalLabel || "Total",
+          youSaveLabel: offerLangTranslations.youSaveLabel || globalQbTranslations.youSaveLabel || "You Save",
+        },
+      };
+    });
+
+    quantityBreaks = {
+      active: true,
+      offers,
+    };
+  }
+
   return new Response(
     JSON.stringify({
       active: true,
@@ -388,6 +451,7 @@ function parseSocialPosition(rawPos: string | null | undefined) {
         shipping,
         exitIntent,
         productScarcity,
+        quantityBreaks,
       },
     }),
     {

@@ -77,6 +77,16 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         enabled: shopData?.productScarcityEnabled ?? false,
         badge: shopData?.productScarcityConfig?.active ? "Active" : "Disabled",
       },
+      quantityBreaks: {
+        id: "quantityBreaks",
+        title: "Quantity Breaks & Tiered Pricing",
+        description: "Incentivize larger orders by offering volume discounts with custom animated tier cards on product pages.",
+        route: "/app/quantity-breaks",
+        enabled: shopData?.quantityBreaksEnabled ?? false,
+        badge: (shopData?.quantityBreaksOffers?.filter((o: any) => o.status === "ACTIVE").length ?? 0) > 0
+          ? `${shopData?.quantityBreaksOffers?.filter((o: any) => o.status === "ACTIVE").length} Active`
+          : "No active offers",
+      },
     },
   };
 };
@@ -97,6 +107,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       shippingBar: "shippingBarEnabled",
       exitIntent: "exitIntentEnabled",
       productScarcity: "productScarcityEnabled",
+      quantityBreaks: "quantityBreaksEnabled",
     };
 
     const field = featureFieldMap[featureKey];

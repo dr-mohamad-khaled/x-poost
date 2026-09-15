@@ -1,0 +1,39 @@
+{% comment %}
+  XPoost - Quantity Breaks and Volume Discounts Block
+  Target: section (Product Information)
+  Dynamically matches active volume discount offers and synchronizes with the product form.
+{% endcomment %}
+
+{% assign current_variant = product.selected_or_first_available_variant %}
+
+<div
+  id="xpoost-quantity-breaks-root"
+  class="xpp-qb-root"
+  data-product-id="{{ product.id }}"
+  data-variant-id="{{ current_variant.id }}"
+  data-variant-price="{{ current_variant.price }}"
+  data-currency-symbol="{{ cart.currency.symbol | default: '$' }}"
+  data-currency-code="{{ cart.currency.iso_code | default: 'USD' }}"
+  data-locale="{{ request.locale.iso_code }}"
+  data-proxy-path="/apps/xpoost/config"
+  style="display: none;"
+>
+  <div class="xpp-qb-container"></div>
+</div>
+
+{{ 'xpoost-quantity-breaks.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'xpoost-quantity-breaks.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "XPoost: Quantity Breaks",
+  "target": "section",
+  "templates": ["product"],
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Configure your offers and volume discount tiers in the ConvBoost / XPoost app dashboard. This block automatically displays the active offer matching this product."
+    }
+  ]
+}
+{% endschema %}

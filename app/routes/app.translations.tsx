@@ -143,6 +143,22 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         shippingBadge: sanitizeText(String(formData.get("st_ship_b") || "")),
         shippingText: sanitizeText(String(formData.get("st_ship_t") || "")),
       },
+      quantityBreaks: {
+        sectionTitle: sanitizeText(String(formData.get("qb_section_title") || allTranslations[editLang]?.quantityBreaks?.sectionTitle || "")),
+        subtitle: sanitizeText(String(formData.get("qb_subtitle") || allTranslations[editLang]?.quantityBreaks?.subtitle || "")),
+        tier1Title: sanitizeText(String(formData.get("qb_tier1_title") || allTranslations[editLang]?.quantityBreaks?.tier1Title || "")),
+        tier1Subtitle: sanitizeText(String(formData.get("qb_tier1_sub") || allTranslations[editLang]?.quantityBreaks?.tier1Subtitle || "")),
+        tier1Badge: sanitizeText(String(formData.get("qb_tier1_badge") || allTranslations[editLang]?.quantityBreaks?.tier1Badge || "")),
+        tier2Title: sanitizeText(String(formData.get("qb_tier2_title") || allTranslations[editLang]?.quantityBreaks?.tier2Title || "")),
+        tier2Subtitle: sanitizeText(String(formData.get("qb_tier2_sub") || allTranslations[editLang]?.quantityBreaks?.tier2Subtitle || "")),
+        tier2Badge: sanitizeText(String(formData.get("qb_tier2_badge") || allTranslations[editLang]?.quantityBreaks?.tier2Badge || "")),
+        tier3Title: sanitizeText(String(formData.get("qb_tier3_title") || allTranslations[editLang]?.quantityBreaks?.tier3Title || "")),
+        tier3Subtitle: sanitizeText(String(formData.get("qb_tier3_sub") || allTranslations[editLang]?.quantityBreaks?.tier3Subtitle || "")),
+        tier3Badge: sanitizeText(String(formData.get("qb_tier3_badge") || allTranslations[editLang]?.quantityBreaks?.tier3Badge || "")),
+        eachLabel: sanitizeText(String(formData.get("qb_each") || allTranslations[editLang]?.quantityBreaks?.eachLabel || "")),
+        totalLabel: sanitizeText(String(formData.get("qb_total") || allTranslations[editLang]?.quantityBreaks?.totalLabel || "")),
+        saveLabel: sanitizeText(String(formData.get("qb_save") || allTranslations[editLang]?.quantityBreaks?.saveLabel || "")),
+      },
     };
   }
 

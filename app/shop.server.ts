@@ -20,6 +20,7 @@ export async function getShopWithConfigs(shopDomain: string) {
       exitIntentConfig: true,
       stickyBarConfig: true,
       productScarcityConfig: true,
+      quantityBreaksOffers: true,
     },
   });
 }

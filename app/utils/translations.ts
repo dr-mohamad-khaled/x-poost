@@ -75,6 +75,22 @@ export interface FeatureTranslations {
     shippingBadge: string;
     shippingText: string;
   };
+  quantityBreaks: {
+    sectionTitle: string;
+    subtitle: string;
+    tier1Title: string;
+    tier1Subtitle: string;
+    tier1Badge: string;
+    tier2Title: string;
+    tier2Subtitle: string;
+    tier2Badge: string;
+    tier3Title: string;
+    tier3Subtitle: string;
+    tier3Badge: string;
+    eachLabel: string;
+    totalLabel: string;
+    saveLabel: string;
+  };
 }
 
 export const DEFAULT_ENGLISH_TRANSLATIONS: FeatureTranslations = {
@@ -124,6 +140,22 @@ export const DEFAULT_ENGLISH_TRANSLATIONS: FeatureTranslations = {
     trendingText: "Someone just ordered this product",
     shippingBadge: "Free delivery:",
     shippingText: "Spend $50 more to unlock free priority shipping",
+  },
+  quantityBreaks: {
+    sectionTitle: "Buy More, Save More",
+    subtitle: "Select your bundle below to unlock exclusive discounts",
+    tier1Title: "Buy 1 Item",
+    tier1Subtitle: "Standard pack",
+    tier1Badge: "",
+    tier2Title: "Buy 2 Items",
+    tier2Subtitle: "Save on your daily routine",
+    tier2Badge: "Most Popular",
+    tier3Title: "Buy 3+ Items",
+    tier3Subtitle: "Maximum value bundle",
+    tier3Badge: "Best Value",
+    eachLabel: "each",
+    totalLabel: "Total",
+    saveLabel: "Save",
   },
 };
 
@@ -175,6 +207,22 @@ export const DEFAULT_ARABIC_TRANSLATIONS: FeatureTranslations = {
     shippingBadge: "شحن مجاني:",
     shippingText: "أضف المزيد لتفعيل الشحن السريع المجاني",
   },
+  quantityBreaks: {
+    sectionTitle: "اشتري أكثر ووفر أكثر",
+    subtitle: "اختر باقتك المفضلة أدناه للحصول على خصومات حصرية",
+    tier1Title: "قطعة واحدة",
+    tier1Subtitle: "السعر الأساسي",
+    tier1Badge: "",
+    tier2Title: "قطعتين",
+    tier2Subtitle: "وفر في طلبك اليوم",
+    tier2Badge: "الأكثر طلباً",
+    tier3Title: "3 قطع أو أكثر",
+    tier3Subtitle: "أعلى توفير للمجموعة",
+    tier3Badge: "أفضل قيمة",
+    eachLabel: "للقطعة",
+    totalLabel: "الإجمالي",
+    saveLabel: "وفر",
+  },
 };
 
 export const DEFAULT_FRENCH_TRANSLATIONS: FeatureTranslations = {
@@ -224,6 +272,22 @@ export const DEFAULT_FRENCH_TRANSLATIONS: FeatureTranslations = {
     trendingText: "Un client vient de commander cet article",
     shippingBadge: "Livraison gratuite :",
     shippingText: "Ajoutez des articles pour débloquer la livraison rapide",
+  },
+  quantityBreaks: {
+    sectionTitle: "Achetez plus, économisez plus",
+    subtitle: "Sélectionnez votre pack ci-dessous pour débloquer des réductions",
+    tier1Title: "Achetez 1 article",
+    tier1Subtitle: "Pack standard",
+    tier1Badge: "",
+    tier2Title: "Achetez 2 articles",
+    tier2Subtitle: "Économisez sur votre routine",
+    tier2Badge: "Le plus populaire",
+    tier3Title: "Achetez 3 articles ou plus",
+    tier3Subtitle: "Pack au meilleur tarif",
+    tier3Badge: "Meilleure valeur",
+    eachLabel: "l'unité",
+    totalLabel: "Total",
+    saveLabel: "Économisez",
   },
 };
 
@@ -275,6 +339,22 @@ export const DEFAULT_GERMAN_TRANSLATIONS: FeatureTranslations = {
     shippingBadge: "Kostenlose Lieferung:",
     shippingText: "Bestellwert erhöhen für kostenlosen Expressversand",
   },
+  quantityBreaks: {
+    sectionTitle: "Mehr kaufen, mehr sparen",
+    subtitle: "Wählen Sie Ihr Paket unten aus und sichern Sie sich Rabatte",
+    tier1Title: "1 Stück kaufen",
+    tier1Subtitle: "Standard-Paket",
+    tier1Badge: "",
+    tier2Title: "2 Stück kaufen",
+    tier2Subtitle: "Sparen Sie bei Ihrer Bestellung",
+    tier2Badge: "Beliebteste",
+    tier3Title: "3+ Stück kaufen",
+    tier3Subtitle: "Maximaler Sparvorteil",
+    tier3Badge: "Bester Wert",
+    eachLabel: "pro Stück",
+    totalLabel: "Gesamt",
+    saveLabel: "Sparen Sie",
+  },
 };
 
 export const DEFAULT_SPANISH_TRANSLATIONS: FeatureTranslations = {
@@ -324,6 +404,22 @@ export const DEFAULT_SPANISH_TRANSLATIONS: FeatureTranslations = {
     trendingText: "Alguien acaba de comprar este producto",
     shippingBadge: "Envío gratis:",
     shippingText: "Añade más para desbloquear envío prioritario gratis",
+  },
+  quantityBreaks: {
+    sectionTitle: "Compre más, ahorre más",
+    subtitle: "Seleccione su paquete a continuación para desbloquear descuentos",
+    tier1Title: "Compre 1 unidad",
+    tier1Subtitle: "Paquete estándar",
+    tier1Badge: "",
+    tier2Title: "Compre 2 unidades",
+    tier2Subtitle: "Ahorre en su rutina diaria",
+    tier2Badge: "Más popular",
+    tier3Title: "Compre 3 o más unidades",
+    tier3Subtitle: "Paquete de máximo ahorro",
+    tier3Badge: "Mejor valor",
+    eachLabel: "cada uno",
+    totalLabel: "Total",
+    saveLabel: "Ahorre",
   },
 };
 
@@ -375,6 +471,22 @@ export const DEFAULT_ITALIAN_TRANSLATIONS: FeatureTranslations = {
     shippingBadge: "Spedizione gratuita:",
     shippingText: "Aggiungi altri articoli per sbloccare la spedizione gratuita",
   },
+  quantityBreaks: {
+    sectionTitle: "Acquista di più, risparmia di più",
+    subtitle: "Seleziona il tuo pacchetto qui sotto per sbloccare sconti esclusivi",
+    tier1Title: "Acquista 1 articolo",
+    tier1Subtitle: "Confezione standard",
+    tier1Badge: "",
+    tier2Title: "Acquista 2 articoli",
+    tier2Subtitle: "Risparmia sulla tua routine quotidiana",
+    tier2Badge: "Più popolare",
+    tier3Title: "Acquista 3 o più articoli",
+    tier3Subtitle: "Pacchetto di massimo valore",
+    tier3Badge: "Miglior valore",
+    eachLabel: "ciascuno",
+    totalLabel: "Totale",
+    saveLabel: "Risparmia",
+  },
 };
 
 export const DEFAULT_PORTUGUESE_TRANSLATIONS: FeatureTranslations = {
@@ -425,6 +537,22 @@ export const DEFAULT_PORTUGUESE_TRANSLATIONS: FeatureTranslations = {
     shippingBadge: "Frete grátis:",
     shippingText: "Adicione mais itens para desbloquear frete grátis prioritário",
   },
+  quantityBreaks: {
+    sectionTitle: "Compre mais, economize mais",
+    subtitle: "Selecione seu pacote abaixo para desbloquear descontos exclusivos",
+    tier1Title: "Compre 1 unidade",
+    tier1Subtitle: "Pacote padrão",
+    tier1Badge: "",
+    tier2Title: "Compre 2 unidades",
+    tier2Subtitle: "Economize no seu pedido",
+    tier2Badge: "Mais popular",
+    tier3Title: "Compre 3 ou mais unidades",
+    tier3Subtitle: "Pacote de máxima economia",
+    tier3Badge: "Melhor valor",
+    eachLabel: "cada",
+    totalLabel: "Total",
+    saveLabel: "Economize",
+  },
 };
 
 export const DEFAULT_TRANSLATIONS_BY_LANG: Record<SupportedLanguage, FeatureTranslations> = {
@@ -442,6 +570,7 @@ export const DASHBOARD_I18N: Record<SupportedLanguage, Record<string, string>> =
     navOverview: "نظرة عامة",
     navPricing: "الخطط والأسعار",
     navProductScarcity: "ندرة مخزون المنتج",
+    navQuantityBreaks: "خصومات الكميات",
     navUrgency: "إشعارات الشراء المباشرة",
     navPrePurchase: "عروض ما قبل الدفع",
     navInCart: "عروض سلة الشراء",
@@ -464,6 +593,7 @@ export const DASHBOARD_I18N: Record<SupportedLanguage, Record<string, string>> =
     btnSave: "حفظ التغييرات",
     savedSuccess: "تم حفظ الترجمات بنجاح.",
     featureProductScarcity: "بلوك ندرة مخزون المنتج",
+    featureQuantityBreaks: "عروض خصومات الكميات (Quantity Breaks)",
     featurePrePurchase: "نافذة عروض ما قبل الدفع",
     featureInCart: "عروض داخل سلة الشراء",
     featureShippingBar: "شريط تقدم الشحن المجاني",
@@ -479,6 +609,7 @@ export const DASHBOARD_I18N: Record<SupportedLanguage, Record<string, string>> =
     navOverview: "Overview",
     navPricing: "Plans & Pricing",
     navProductScarcity: "Product Stock Scarcity",
+    navQuantityBreaks: "Quantity Breaks",
     navUrgency: "Urgency Notifications",
     navPrePurchase: "Pre-Purchase Upsell",
     navInCart: "Cart Drawer Upsell",
@@ -501,6 +632,7 @@ export const DASHBOARD_I18N: Record<SupportedLanguage, Record<string, string>> =
     btnSave: "Save Translations",
     savedSuccess: "Translations saved successfully.",
     featureProductScarcity: "Product Stock Scarcity Block",
+    featureQuantityBreaks: "Quantity Breaks & Volume Discounts",
     featurePrePurchase: "Pre-Purchase Upsell Modal",
     featureInCart: "Cart Drawer Upsells",
     featureShippingBar: "Free Shipping Progress Bar",
@@ -516,6 +648,7 @@ export const DASHBOARD_I18N: Record<SupportedLanguage, Record<string, string>> =
     navOverview: "Vue d'ensemble",
     navPricing: "Forfaits et Tarifs",
     navProductScarcity: "Rareté du stock produit",
+    navQuantityBreaks: "Remises sur quantité",
     navUrgency: "Notifications d'urgence",
     navPrePurchase: "Vente incitative pré-achat",
     navInCart: "Vente incitative panier",
@@ -538,6 +671,7 @@ export const DASHBOARD_I18N: Record<SupportedLanguage, Record<string, string>> =
     btnSave: "Enregistrer les modifications",
     savedSuccess: "Traductions enregistrées avec succès.",
     featureProductScarcity: "Bloc de rareté du stock",
+    featureQuantityBreaks: "Remises sur quantité (Quantity Breaks)",
     featurePrePurchase: "Fenêtre d'offre pré-achat",
     featureInCart: "Offres dans le tiroir du panier",
     featureShippingBar: "Barre de progression livraison",
@@ -553,6 +687,7 @@ export const DASHBOARD_I18N: Record<SupportedLanguage, Record<string, string>> =
     navOverview: "Übersicht",
     navPricing: "Preise & Tarife",
     navProductScarcity: "Produkt-Bestandsknappheit",
+    navQuantityBreaks: "Mengenrabatte",
     navUrgency: "Dringlichkeits-Hinweise",
     navPrePurchase: "Pre-Purchase Upsell",
     navInCart: "Warenkorb-Upsell",
@@ -686,6 +821,7 @@ export const DASHBOARD_I18N: Record<SupportedLanguage, Record<string, string>> =
     btnSave: "Salvar alterações",
     savedSuccess: "Traduções salvas com sucesso.",
     featureProductScarcity: "Bloco de escassez de estoque",
+    featureQuantityBreaks: "Descontos por quantidade (Quantity Breaks)",
     featurePrePurchase: "Janela de oferta pré-compra",
     featureInCart: "Ofertas na gaveta do carrinho",
     featureShippingBar: "Barra de progresso do frete grátis",
@@ -786,6 +922,10 @@ function mergeSingleLang(base: FeatureTranslations, override: any): FeatureTrans
     scarcityToast: {
       ...base.scarcityToast,
       ...(override.scarcityToast || {}),
+    },
+    quantityBreaks: {
+      ...base.quantityBreaks,
+      ...(override.quantityBreaks || {}),
     },
   };
 }

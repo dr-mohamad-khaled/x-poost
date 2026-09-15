@@ -48,6 +48,7 @@ model Shop {
   exitIntentEnabled   Boolean @default(false)
   stickyBarEnabled    Boolean @default(false)
   productScarcityEnabled Boolean @default(false)
+  quantityBreaksEnabled  Boolean @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -61,6 +62,7 @@ model Shop {
   upsellStyleConfig UpsellStyleConfig?
   productScarcityConfig ProductScarcityConfig?
   translationConfig TranslationConfig?
+  quantityBreaksOffers  QuantityBreaksOffer[]
 
   @@index([shopDomain])
 }
@@ -266,5 +268,35 @@ model TranslationConfig {
 
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
+}
+
+/// Feature 10: Quantity Breaks & Volume Discounts (Theme Block + Multi-Offer)
+model QuantityBreaksOffer {
+  id               String   @id @default(cuid())
+  shopId           String
+  shop             Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  title            String   @default("Volume Discount Offer")
+  status           String   @default("ACTIVE") // "ACTIVE" | "DRAFT"
+  targetMode       String   @default("ALL")    // "ALL" | "SPECIFIC" | "EXCLUDE"
+  productIdsJson   String   @default("[]")
+  discountType     String   @default("PERCENTAGE") // "PERCENTAGE" | "FIXED_PER_ITEM"
+  tiersJson        String   @default("[]")     // Array of { quantity, discountValue, title, subtitle, badge }
+  designPreset     String   @default("modern_cards") // "modern_cards" | "grid_boxes" | "minimal_table" | "luxury_gold"
+  animationStyle   String   @default("shimmer") // "shimmer" | "shine_glow" | "floating_badge"
+
+  accentColor      String   @default("#D4AF37")
+  backgroundColor  String   @default("#141414")
+  borderColor      String   @default("#282828")
+  textColor        String   @default("#FFFFFF")
+  badgeBgColor     String   @default("#D4AF37")
+  badgeTextColor   String   @default("#000000")
+
+  translationsJson String   @default("{}")
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([shopId])
 }
 

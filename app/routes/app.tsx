@@ -102,6 +102,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       shippingBar: "shippingBarEnabled",
       exitIntent: "exitIntentEnabled",
       productScarcity: "productScarcityEnabled",
+      quantityBreaks: "quantityBreaksEnabled",
     };
 
     const field = featureFieldMap[featureKey];
@@ -141,6 +142,7 @@ export default function App() {
         <a href="/app/pricing">{i18n.navPricing || "Plans & Pricing"}</a>
         <a href="/app/translations">{i18n.navTranslations || "Translations & Languages"}</a>
         <a href="/app/product-scarcity">{i18n.navProductScarcity || "Product Stock Scarcity"}</a>
+        <a href="/app/quantity-breaks">{i18n.navQuantityBreaks || "Quantity Breaks"}</a>
         <a href="/app/scarcity">{i18n.navUrgency || "Urgency Notifications"}</a>
         <a href="/app/pre-purchase">{i18n.navPrePurchase || "Pre-Purchase Upsell"}</a>
         <a href="/app/in-cart">{i18n.navInCart || "Cart Drawer Upsell"}</a>

@@ -1,0 +1,457 @@
+/*
+ * XPoost - Quantity Breaks & Volume Discounts Stylesheet
+ * Native high-converting styling, responsive layouts, RTL support, and smooth micro-animations.
+ */
+
+:root {
+  --xpp-qb-accent: #D4AF37;
+  --xpp-qb-bg: #141414;
+  --xpp-qb-border: #282828;
+  --xpp-qb-text: #FFFFFF;
+  --xpp-qb-badge-bg: #D4AF37;
+  --xpp-qb-badge-text: #000000;
+}
+
+.xpp-qb-root {
+  width: 100%;
+  margin: 16px 0;
+  box-sizing: border-box;
+  font-family: inherit;
+  color: var(--xpp-qb-text);
+}
+
+.xpp-qb-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.xpp-qb-header {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--xpp-qb-text);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.xpp-qb-header-subtitle {
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* Common Tier Item */
+.xpp-qb-tier-item {
+  position: relative;
+  background: var(--xpp-qb-bg);
+  border: 2px solid var(--xpp-qb-border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: all 0.22s ease-in-out;
+  user-select: none;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.xpp-qb-tier-item:hover {
+  border-color: var(--xpp-qb-accent);
+  transform: translateY(-1px);
+}
+
+.xpp-qb-tier-item.xpp-qb-selected {
+  border-color: var(--xpp-qb-accent);
+  background: color-mix(in srgb, var(--xpp-qb-accent) 6%, var(--xpp-qb-bg));
+  box-shadow: 0 0 0 1px var(--xpp-qb-accent);
+}
+
+/* Custom Radio Circle */
+.xpp-qb-radio {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--xpp-qb-border);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.xpp-qb-tier-item.xpp-qb-selected .xpp-qb-radio {
+  border-color: var(--xpp-qb-accent);
+  background: var(--xpp-qb-accent);
+}
+
+.xpp-qb-radio-inner {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: none;
+}
+
+.xpp-qb-tier-item.xpp-qb-selected .xpp-qb-radio-inner {
+  display: block;
+}
+
+/* Badge Pill */
+.xpp-qb-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  background: var(--xpp-qb-badge-bg);
+  color: var(--xpp-qb-badge-text);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+}
+
+/* -------------------------------------------------------------
+ * Preset 1: Modern Cards (Vertical Stack)
+ * ------------------------------------------------------------- */
+.xpp-qb-preset-modern_cards .xpp-qb-tiers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.xpp-qb-preset-modern_cards .xpp-qb-tier-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.xpp-qb-preset-modern_cards .xpp-qb-tier-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.xpp-qb-preset-modern_cards .xpp-qb-tier-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.xpp-qb-preset-modern_cards .xpp-qb-tier-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--xpp-qb-text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.xpp-qb-preset-modern_cards .xpp-qb-tier-subtitle {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.xpp-qb-preset-modern_cards .xpp-qb-tier-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  text-align: right;
+}
+
+.xpp-qb-preset-modern_cards .xpp-qb-price-unit {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--xpp-qb-accent);
+}
+
+.xpp-qb-preset-modern_cards .xpp-qb-price-compare {
+  font-size: 12px;
+  text-decoration: line-through;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.xpp-qb-preset-modern_cards .xpp-qb-price-total {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* -------------------------------------------------------------
+ * Preset 2: Grid Boxes (Multi-Column Layout)
+ * ------------------------------------------------------------- */
+.xpp-qb-preset-grid_boxes .xpp-qb-tiers-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.xpp-qb-preset-grid_boxes .xpp-qb-tier-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 16px 10px 12px 10px;
+  gap: 6px;
+}
+
+.xpp-qb-preset-grid_boxes .xpp-qb-badge-pos {
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+  font-size: 10px;
+  padding: 2px 8px;
+}
+
+.xpp-qb-preset-grid_boxes .xpp-qb-qty-big {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--xpp-qb-text);
+  margin-top: 4px;
+}
+
+.xpp-qb-preset-grid_boxes .xpp-qb-tier-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--xpp-qb-text);
+}
+
+.xpp-qb-preset-grid_boxes .xpp-qb-price-unit {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--xpp-qb-accent);
+}
+
+.xpp-qb-preset-grid_boxes .xpp-qb-price-total {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.xpp-qb-preset-grid_boxes .xpp-qb-save-tag {
+  margin-top: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--xpp-qb-accent);
+  background: color-mix(in srgb, var(--xpp-qb-accent) 15%, transparent);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* -------------------------------------------------------------
+ * Preset 3: Minimal Table
+ * ------------------------------------------------------------- */
+.xpp-qb-preset-minimal_table .xpp-qb-tiers-list {
+  border: 1px solid var(--xpp-qb-border);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.xpp-qb-preset-minimal_table .xpp-qb-tier-item {
+  border: none;
+  border-radius: 0;
+  border-bottom: 1px solid var(--xpp-qb-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+}
+
+.xpp-qb-preset-minimal_table .xpp-qb-tier-item:last-child {
+  border-bottom: none;
+}
+
+.xpp-qb-preset-minimal_table .xpp-qb-tier-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.xpp-qb-preset-minimal_table .xpp-qb-tier-title {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.xpp-qb-preset-minimal_table .xpp-qb-tier-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.xpp-qb-preset-minimal_table .xpp-qb-price-unit {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--xpp-qb-accent);
+}
+
+/* -------------------------------------------------------------
+ * Preset 4: Luxury Gold (Refined Opulence)
+ * ------------------------------------------------------------- */
+.xpp-qb-preset-luxury_gold .xpp-qb-tiers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.xpp-qb-preset-luxury_gold .xpp-qb-tier-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, rgba(25, 25, 25, 0.95), rgba(15, 15, 15, 0.98));
+  border: 1.5px solid var(--xpp-qb-border);
+  border-radius: 12px;
+  padding: 14px 18px;
+}
+
+.xpp-qb-preset-luxury_gold .xpp-qb-tier-item.xpp-qb-selected {
+  border-color: var(--xpp-qb-accent);
+  box-shadow: 0 0 15px color-mix(in srgb, var(--xpp-qb-accent) 25%, transparent);
+}
+
+.xpp-qb-preset-luxury_gold .xpp-qb-tier-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.xpp-qb-preset-luxury_gold .xpp-qb-tier-title {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: var(--xpp-qb-text);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.xpp-qb-preset-luxury_gold .xpp-qb-tier-subtitle {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 2px;
+}
+
+.xpp-qb-preset-luxury_gold .xpp-qb-price-unit {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--xpp-qb-accent);
+}
+
+.xpp-qb-preset-luxury_gold .xpp-qb-badge {
+  background: linear-gradient(135deg, #ECC94B, #D4AF37);
+  color: #000000;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+/* -------------------------------------------------------------
+ * Animations
+ * ------------------------------------------------------------- */
+/* Animation 1: Shimmer Light Sweep */
+.xpp-qb-anim-shimmer .xpp-qb-tier-item.xpp-qb-selected::after,
+.xpp-qb-anim-shimmer .xpp-qb-tier-item.xpp-qb-highlighted::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 80%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16), transparent);
+  transform: skewX(-20deg);
+  animation: xpp-qb-shimmer-sweep 2.8s infinite;
+  pointer-events: none;
+}
+
+@keyframes xpp-qb-shimmer-sweep {
+  0% { left: -150%; }
+  50% { left: 150%; }
+  100% { left: 150%; }
+}
+
+/* Animation 2: Shine Pulse Glow */
+.xpp-qb-anim-shine_glow .xpp-qb-tier-item.xpp-qb-selected,
+.xpp-qb-anim-shine_glow .xpp-qb-tier-item.xpp-qb-highlighted {
+  animation: xpp-qb-pulse-glow 2.2s infinite ease-in-out;
+}
+
+@keyframes xpp-qb-pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--xpp-qb-accent) 40%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 14px 2px color-mix(in srgb, var(--xpp-qb-accent) 65%, transparent);
+  }
+}
+
+/* Animation 3: Floating Badge */
+.xpp-qb-anim-floating_badge .xpp-qb-badge {
+  animation: xpp-qb-float-badge 2s ease-in-out infinite alternate;
+}
+
+@keyframes xpp-qb-float-badge {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-4px); }
+}
+
+.xpp-qb-preset-grid_boxes.xpp-qb-anim-floating_badge .xpp-qb-badge-pos {
+  animation: xpp-qb-float-badge-grid 2s ease-in-out infinite alternate;
+}
+
+@keyframes xpp-qb-float-badge-grid {
+  0% { transform: translateX(-50%) translateY(0); }
+  100% { transform: translateX(-50%) translateY(-3px); }
+}
+
+/* -------------------------------------------------------------
+ * RTL (Right-to-Left) Support for Arabic
+ * ------------------------------------------------------------- */
+[dir="rtl"] .xpp-qb-root,
+.xpp-qb-root[dir="rtl"] {
+  text-align: right;
+  direction: rtl;
+}
+
+[dir="rtl"] .xpp-qb-preset-modern_cards .xpp-qb-tier-right,
+.xpp-qb-root[dir="rtl"] .xpp-qb-preset-modern_cards .xpp-qb-tier-right {
+  text-align: left;
+  align-items: flex-start;
+}
+
+[dir="rtl"] .xpp-qb-preset-minimal_table .xpp-qb-tier-right,
+.xpp-qb-root[dir="rtl"] .xpp-qb-preset-minimal_table .xpp-qb-tier-right {
+  text-align: left;
+}
+
+/* -------------------------------------------------------------
+ * Responsive Adjustments
+ * ------------------------------------------------------------- */
+@media (max-width: 600px) {
+  .xpp-qb-preset-grid_boxes .xpp-qb-tiers-list {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 8px;
+  }
+
+  .xpp-qb-preset-grid_boxes .xpp-qb-qty-big {
+    font-size: 17px;
+  }
+
+  .xpp-qb-preset-modern_cards .xpp-qb-tier-title {
+    font-size: 13px;
+  }
+
+  .xpp-qb-preset-modern_cards .xpp-qb-price-unit {
+    font-size: 14px;
+  }
+}
