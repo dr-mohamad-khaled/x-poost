@@ -292,6 +292,11 @@ model QuantityBreaksOffer {
   badgeBgColor     String   @default("#D4AF37")
   badgeTextColor   String   @default("#000000")
 
+  showAddToCartBtn Boolean  @default(true)
+  addToCartBtnText String   @default("Add to Cart")
+  btnBgColor       String   @default("#D4AF37")
+  btnTextColor     String   @default("#000000")
+
   translationsJson String   @default("{}")
 
   createdAt        DateTime @default(now())

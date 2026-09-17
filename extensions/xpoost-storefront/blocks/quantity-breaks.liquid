@@ -5,13 +5,19 @@
 {% endcomment %}
 
 {% assign current_variant = product.selected_or_first_available_variant %}
+{% assign is_sold_out = false %}
+{% if current_variant.available == false or product.available == false %}
+  {% assign is_sold_out = true %}
+{% endif %}
 
 <div
   id="xpoost-quantity-breaks-root"
-  class="xpp-qb-root"
+  class="xpp-qb-root{% if is_sold_out %} xpp-qb-hidden{% endif %}"
   data-product-id="{{ product.id }}"
   data-variant-id="{{ current_variant.id }}"
   data-variant-price="{{ current_variant.price }}"
+  data-available="{% if current_variant.available %}true{% else %}false{% endif %}"
+  data-product-available="{% if product.available %}true{% else %}false{% endif %}"
   data-currency-symbol="{{ cart.currency.symbol | default: '$' }}"
   data-currency-code="{{ cart.currency.iso_code | default: 'USD' }}"
   data-locale="{{ request.locale.iso_code }}"

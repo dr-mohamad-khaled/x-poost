@@ -1,7 +1,7 @@
 /**
  * XPoost - Quantity Breaks & Volume Discounts Runtime
- * Handles tier selection, dynamic price computation, animation, RTL localization,
- * and seamless product form synchronization with Shopify Discount Functions.
+ * Ultra-compact responsive layout, out-of-stock suppression, unclipped floating badges,
+ * and integrated Add to Cart button synchronized with Shopify Discount Function.
  */
 (function () {
   "use strict";
@@ -25,7 +25,6 @@
   function formatMoney(cents, symbol) {
     var s = symbol || "$";
     var num = (cents / 100).toFixed(2);
-    // If ends in .00, keep decimal for precision or format cleanly
     return s + num;
   }
 
@@ -40,6 +39,33 @@
       document.querySelector('form[data-type="add-to-cart-form"]') ||
       document.querySelector('form#add-to-cart-form')
     );
+  }
+
+  function isOutOfStock(root) {
+    if (root.getAttribute("data-available") === "false" || root.getAttribute("data-product-available") === "false") {
+      return true;
+    }
+    var form = findProductForm(root);
+    if (form) {
+      var submitBtn = form.querySelector('[type="submit"], [name="add"], button.add-to-cart, button.product-form__submit');
+      if (submitBtn) {
+        var btnText = (submitBtn.textContent || "").toLowerCase();
+        if (
+          submitBtn.disabled ||
+          btnText.indexOf("sold out") !== -1 ||
+          btnText.indexOf("out of stock") !== -1 ||
+          btnText.indexOf("غير متوفر") !== -1 ||
+          btnText.indexOf("نفذت") !== -1 ||
+          btnText.indexOf("épuisé") !== -1 ||
+          btnText.indexOf("ausverkauft") !== -1 ||
+          btnText.indexOf("agotado") !== -1 ||
+          btnText.indexOf("esgotado") !== -1
+        ) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   function syncFormWithTier(form, tier, offer) {
@@ -100,6 +126,20 @@
   function initQuantityBreaks() {
     var root = document.getElementById("xpoost-quantity-breaks-root");
     if (!root) return;
+
+    // Check out-of-stock condition first
+    if (isOutOfStock(root)) {
+      root.classList.add("xpp-qb-hidden");
+      root.style.display = "none";
+      setupVariantWatcher(function (newPrice, available) {
+        if (available !== false) {
+          root.setAttribute("data-available", "true");
+          root.classList.remove("xpp-qb-hidden");
+          initQuantityBreaks();
+        }
+      });
+      return;
+    }
 
     var container = root.querySelector(".xpp-qb-container");
     if (!container) return;
@@ -184,6 +224,8 @@
     root.style.setProperty("--xpp-qb-text", offer.textColor || "#FFFFFF");
     root.style.setProperty("--xpp-qb-badge-bg", offer.badgeBgColor || "#D4AF37");
     root.style.setProperty("--xpp-qb-badge-text", offer.badgeTextColor || "#000000");
+    root.style.setProperty("--xpp-qb-btn-bg", offer.btnBgColor || offer.accentColor || "#D4AF37");
+    root.style.setProperty("--xpp-qb-btn-text", offer.btnTextColor || "#000000");
 
     // Apply layout and animation classes
     root.className = "xpp-qb-root xpp-qb-preset-" + preset + " xpp-qb-anim-" + anim;
@@ -234,7 +276,10 @@
       // Header
       var offerTitle = t.offerTitle || "Select Quantity & Save";
       html += '<div class="xpp-qb-header">';
-      html += '<span class="xpp-qb-header-text">' + escapeHtml(offerTitle) + '</span>';
+      html += '<span class="xpp-qb-header-title">' + escapeHtml(offerTitle) + '</span>';
+      if (t.subtitle && t.subtitle.trim() !== "") {
+        html += '<span class="xpp-qb-header-subtitle">' + escapeHtml(t.subtitle) + '</span>';
+      }
       html += '</div>';
 
       html += '<div class="xpp-qb-tiers-list">';
@@ -249,31 +294,33 @@
         if (isSelected) itemClasses += " xpp-qb-selected";
         if (isHighlighted) itemClasses += " xpp-qb-highlighted";
 
+        var isShimmer = anim === "shimmer" && (isHighlighted || isSelected);
+        var shimmerHtml = isShimmer ? '<div class="xpp-qb-shimmer-layer"></div>' : "";
+
         var badgeHtml = "";
-        if (tier.badge && tier.badge.trim() !== "") {
-          badgeHtml = '<span class="xpp-qb-badge">' + escapeHtml(tier.badge) + '</span>';
+        if (isHighlighted) {
+          var badgeClass = "xpp-qb-badge" + (preset === "grid_boxes" ? " xpp-qb-badge-pos" : "");
+          badgeHtml = '<span class="' + badgeClass + '">' + escapeHtml(tier.badge) + '</span>';
         }
 
         var buyLabel = (t.buyPrefix || "Buy") + " " + calc.qty + " " + (t.itemsSuffix || "items");
         var tierTitle = tier.title && tier.title.trim() !== "" ? tier.title : buyLabel;
 
         if (preset === "grid_boxes") {
-          var gridBadgeHtml = "";
-          if (tier.badge && tier.badge.trim() !== "") {
-            gridBadgeHtml = '<span class="xpp-qb-badge xpp-qb-badge-pos">' + escapeHtml(tier.badge) + '</span>';
-          }
           html += '<div class="' + itemClasses + '" data-tier-index="' + idx + '">';
-          html += gridBadgeHtml;
+          html += shimmerHtml;
+          html += badgeHtml;
           html += '<div class="xpp-qb-qty-big">' + calc.qty + 'x</div>';
           html += '<div class="xpp-qb-tier-title">' + escapeHtml(tierTitle) + '</div>';
-          html += '<div class="xpp-qb-price-unit">' + formatMoney(calc.unitPrice, currencySymbol) + ' <span style="font-size:10px;font-weight:normal;opacity:0.75;">' + escapeHtml(t.eachSuffix || "each") + '</span></div>';
-          html += '<div class="xpp-qb-price-total">' + escapeHtml(t.totalLabel || "Total") + ': ' + formatMoney(calc.lineTotal, currencySymbol) + '</div>';
+          html += '<div class="xpp-qb-price-unit">' + formatMoney(calc.lineTotal, currencySymbol) + '</div>';
+          html += '<div class="xpp-qb-price-total">' + formatMoney(calc.unitPrice, currencySymbol) + ' ' + escapeHtml(t.eachSuffix || "ea") + '</div>';
           if (calc.savings > 0) {
             html += '<div class="xpp-qb-save-tag">' + (t.savePrefix || "Save") + " " + formatMoney(calc.savings, currencySymbol) + '</div>';
           }
           html += '</div>';
         } else if (preset === "minimal_table") {
           html += '<div class="' + itemClasses + '" data-tier-index="' + idx + '">';
+          html += shimmerHtml;
           html += '<div class="xpp-qb-tier-left">';
           html += '<span class="xpp-qb-radio"><span class="xpp-qb-radio-inner"></span></span>';
           html += '<div class="xpp-qb-tier-title">' + escapeHtml(tierTitle) + '</div>';
@@ -281,7 +328,7 @@
           html += '</div>';
           html += '<div class="xpp-qb-tier-right">';
           if (calc.savings > 0) {
-            html += '<span style="font-size:12px;color:rgba(255,255,255,0.6);text-decoration:line-through;">' + formatMoney(calc.originalTotal, currencySymbol) + '</span>';
+            html += '<span style="font-size:11px;color:rgba(255,255,255,0.6);text-decoration:line-through;">' + formatMoney(calc.originalTotal, currencySymbol) + '</span>';
           }
           html += '<span class="xpp-qb-price-unit">' + formatMoney(calc.lineTotal, currencySymbol) + '</span>';
           html += '</div>';
@@ -289,27 +336,29 @@
         } else {
           // modern_cards & luxury_gold
           html += '<div class="' + itemClasses + '" data-tier-index="' + idx + '">';
+          html += shimmerHtml;
+          html += badgeHtml;
+
           html += '<div class="xpp-qb-tier-left">';
           html += '<span class="xpp-qb-radio"><span class="xpp-qb-radio-inner"></span></span>';
           html += '<div class="xpp-qb-tier-info">';
-          html += '<div class="xpp-qb-tier-title">';
-          html += escapeHtml(tierTitle);
-          if (badgeHtml) html += ' ' + badgeHtml;
-          html += '</div>';
+          html += '<div class="xpp-qb-tier-title">' + escapeHtml(tierTitle) + '</div>';
           if (tier.subtitle && tier.subtitle.trim() !== "") {
             html += '<div class="xpp-qb-tier-subtitle">' + escapeHtml(tier.subtitle) + '</div>';
           } else if (calc.savings > 0) {
-            html += '<div class="xpp-qb-tier-subtitle" style="color:var(--xpp-qb-accent);font-weight:600;">' + (t.savePrefix || "Save") + " " + formatMoney(calc.savings, currencySymbol) + '</div>';
+            html += '<div class="xpp-qb-tier-subtitle" style="color:var(--xpp-qb-accent);font-weight:700;">' + (t.savePrefix || "Save") + " " + formatMoney(calc.savings, currencySymbol) + '</div>';
           }
           html += '</div>';
           html += '</div>';
 
           html += '<div class="xpp-qb-tier-right">';
-          html += '<div class="xpp-qb-price-unit">' + formatMoney(calc.unitPrice, currencySymbol) + ' <span style="font-size:11px;font-weight:normal;opacity:0.75;">' + escapeHtml(t.eachSuffix || "each") + '</span></div>';
+          html += '<div class="xpp-qb-price-unit">' + formatMoney(calc.lineTotal, currencySymbol) + '</div>';
+          html += '<div class="xpp-qb-price-sub">';
           if (calc.savings > 0) {
-            html += '<div class="xpp-qb-price-compare">' + formatMoney(currentPrice, currencySymbol) + '</div>';
+            html += '<span class="xpp-qb-price-compare">' + formatMoney(calc.originalTotal, currencySymbol) + '</span>';
           }
-          html += '<div class="xpp-qb-price-total">' + escapeHtml(t.totalLabel || "Total") + ': ' + formatMoney(calc.lineTotal, currencySymbol) + '</div>';
+          html += '<span>' + formatMoney(calc.unitPrice, currencySymbol) + ' ' + escapeHtml(t.eachSuffix || "ea") + '</span>';
+          html += '</div>';
           html += '</div>';
 
           html += '</div>';
@@ -317,6 +366,15 @@
       }
 
       html += '</div>';
+
+      // Integrated Add to Cart button
+      if (offer.showAddToCartBtn !== false) {
+        var btnText = t.addToCartBtn || offer.addToCartBtnText || "Add to Cart";
+        html += '<button type="button" class="xpp-qb-atc-btn">';
+        html += '<span class="xpp-qb-btn-label">' + escapeHtml(btnText) + '</span>';
+        html += '</button>';
+      }
+
       return html;
     }
 
@@ -337,6 +395,57 @@
           updateUi();
         });
       });
+
+      // Attach click listener to Add to Cart button
+      var atcBtn = container.querySelector(".xpp-qb-atc-btn");
+      if (atcBtn) {
+        atcBtn.addEventListener("click", function (e) {
+          e.preventDefault();
+          var form = findProductForm(root);
+          if (!form) return;
+
+          syncFormWithTier(form, tiers[selectedIndex], offer);
+
+          atcBtn.classList.add("is-loading");
+          atcBtn.disabled = true;
+          var originalContent = atcBtn.innerHTML;
+          atcBtn.innerHTML = '<span class="xpp-qb-spinner"></span>';
+
+          var formData = new FormData(form);
+          fetch("/cart/add.js", {
+            method: "POST",
+            body: formData,
+            headers: { "X-Requested-With": "XMLHttpRequest" }
+          })
+            .then(function (res) {
+              if (!res.ok) throw new Error("Cart response error");
+              return res.json();
+            })
+            .then(function () {
+              document.dispatchEvent(new CustomEvent("cart:updated", { bubbles: true }));
+              document.dispatchEvent(new CustomEvent("cart:refresh", { bubbles: true }));
+
+              // Try opening theme cart drawer if present
+              var drawer = document.querySelector("cart-drawer, cart-notification, #cart-drawer");
+              if (drawer && typeof drawer.open === "function") {
+                drawer.open();
+              } else if (drawer && drawer.classList) {
+                drawer.classList.add("active", "is-empty");
+              } else {
+                window.location.href = "/cart";
+              }
+            })
+            .catch(function () {
+              // Fallback to native form submission
+              form.submit();
+            })
+            .finally(function () {
+              atcBtn.classList.remove("is-loading");
+              atcBtn.disabled = false;
+              atcBtn.innerHTML = originalContent;
+            });
+        });
+      }
     }
 
     // Initial render
@@ -346,41 +455,53 @@
     var productForm = findProductForm(root);
     syncFormWithTier(productForm, tiers[selectedIndex], offer);
 
-    // Watch for variant change on product page
-    setupVariantWatcher(function (newPrice) {
+    // Watch for variant changes
+    setupVariantWatcher(function (newPrice, isAvailable) {
+      if (isAvailable === false) {
+        root.classList.add("xpp-qb-hidden");
+        root.style.display = "none";
+        return;
+      }
+
+      root.classList.remove("xpp-qb-hidden");
       if (newPrice && newPrice > 0 && newPrice !== currentPrice) {
         currentPrice = newPrice;
         updateUi();
         var f = findProductForm(root);
         syncFormWithTier(f, tiers[selectedIndex], offer);
+      } else {
+        root.style.display = "block";
       }
     });
   }
 
-  function setupVariantWatcher(onVariantPriceChange) {
-    // 1. Dawn / modern theme variant custom events
+  function setupVariantWatcher(onVariantChange) {
     document.addEventListener("variant:change", function (e) {
-      if (e.detail && e.detail.variant && e.detail.variant.price != null) {
-        onVariantPriceChange(parseInt(e.detail.variant.price, 10));
+      if (e.detail && e.detail.variant) {
+        var p = e.detail.variant.price != null ? parseInt(e.detail.variant.price, 10) : null;
+        var avail = e.detail.variant.available;
+        onVariantChange(p, avail);
       }
     });
 
     document.addEventListener("shopify:product:variant-change", function (e) {
-      if (e.detail && e.detail.variant && e.detail.variant.price != null) {
-        onVariantPriceChange(parseInt(e.detail.variant.price, 10));
+      if (e.detail && e.detail.variant) {
+        var p = e.detail.variant.price != null ? parseInt(e.detail.variant.price, 10) : null;
+        var avail = e.detail.variant.available;
+        onVariantChange(p, avail);
       }
     });
 
-    // 2. Standard change on form inputs
     var form = findProductForm();
     if (form) {
       form.addEventListener("change", function (e) {
         var target = e.target;
         if (target && (target.name === "id" || target.getAttribute("data-variant-id"))) {
           var matchedOption = target.options ? target.options[target.selectedIndex] : null;
-          if (matchedOption && matchedOption.getAttribute("data-price")) {
-            var p = parseInt(matchedOption.getAttribute("data-price"), 10);
-            if (!isNaN(p)) onVariantPriceChange(p);
+          if (matchedOption) {
+            var p = matchedOption.getAttribute("data-price") ? parseInt(matchedOption.getAttribute("data-price"), 10) : null;
+            var disabled = matchedOption.disabled || (matchedOption.textContent || "").toLowerCase().indexOf("sold out") !== -1;
+            onVariantChange(p, !disabled);
           }
         }
       });

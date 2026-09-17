@@ -153,6 +153,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
             textColor: existing.textColor,
             badgeBgColor: existing.badgeBgColor,
             badgeTextColor: existing.badgeTextColor,
+            showAddToCartBtn: existing.showAddToCartBtn,
+            addToCartBtnText: existing.addToCartBtnText,
+            btnBgColor: existing.btnBgColor,
+            btnTextColor: existing.btnTextColor,
             translationsJson: existing.translationsJson,
           },
         });
@@ -177,6 +181,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       const textColor = String(formData.get("textColor") || "#FFFFFF");
       const badgeBgColor = String(formData.get("badgeBgColor") || "#D4AF37");
       const badgeTextColor = String(formData.get("badgeTextColor") || "#000000");
+      const showAddToCartBtn = formData.get("showAddToCartBtn") !== "false";
+      const addToCartBtnText = String(formData.get("addToCartBtnText") || "Add to Cart").trim();
+      const btnBgColor = String(formData.get("btnBgColor") || "#D4AF37");
+      const btnTextColor = String(formData.get("btnTextColor") || "#000000");
       const translationsJson = String(formData.get("translationsJson") || "{}");
 
       if (offerId) {
@@ -197,6 +205,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
             textColor,
             badgeBgColor,
             badgeTextColor,
+            showAddToCartBtn,
+            addToCartBtnText,
+            btnBgColor,
+            btnTextColor,
             translationsJson,
           },
         });
@@ -219,6 +231,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
             textColor,
             badgeBgColor,
             badgeTextColor,
+            showAddToCartBtn,
+            addToCartBtnText,
+            btnBgColor,
+            btnTextColor,
             translationsJson,
           },
         });
@@ -290,6 +306,10 @@ export default function QuantityBreaksPage() {
   const [textColor, setTextColor] = useState("#FFFFFF");
   const [badgeBgColor, setBadgeBgColor] = useState("#D4AF37");
   const [badgeTextColor, setBadgeTextColor] = useState("#000000");
+  const [showAddToCartBtn, setShowAddToCartBtn] = useState(true);
+  const [addToCartBtnText, setAddToCartBtnText] = useState("Add to Cart");
+  const [btnBgColor, setBtnBgColor] = useState("#D4AF37");
+  const [btnTextColor, setBtnTextColor] = useState("#000000");
 
   // Multi-Language State
   const [selectedLang, setSelectedLang] = useState<SupportedLanguage>(dashboardLocale || "en");
@@ -339,6 +359,10 @@ export default function QuantityBreaksPage() {
     setTextColor("#FFFFFF");
     setBadgeBgColor("#D4AF37");
     setBadgeTextColor("#000000");
+    setShowAddToCartBtn(true);
+    setAddToCartBtnText("Add to Cart");
+    setBtnBgColor("#D4AF37");
+    setBtnTextColor("#000000");
     setViewMode("create");
   };
 
@@ -368,6 +392,10 @@ export default function QuantityBreaksPage() {
     setTextColor(offer.textColor || "#FFFFFF");
     setBadgeBgColor(offer.badgeBgColor || "#D4AF37");
     setBadgeTextColor(offer.badgeTextColor || "#000000");
+    setShowAddToCartBtn(offer.showAddToCartBtn !== false);
+    setAddToCartBtnText(offer.addToCartBtnText || "Add to Cart");
+    setBtnBgColor(offer.btnBgColor || "#D4AF37");
+    setBtnTextColor(offer.btnTextColor || "#000000");
 
     try {
       const parsedTranslations = JSON.parse(offer.translationsJson || "{}");
@@ -692,11 +720,15 @@ export default function QuantityBreaksPage() {
         }
 
         /* ANIMATIONS FOR PREVIEWS */
-        .xpp-anim-shimmer {
-          position: relative;
+        .xpp-anim-shimmer-layer {
+          position: absolute;
+          inset: 0;
+          border-radius: inherit;
           overflow: hidden;
+          pointer-events: none;
+          z-index: 1;
         }
-        .xpp-anim-shimmer::after {
+        .xpp-anim-shimmer-layer::after {
           content: "";
           position: absolute;
           top: -50%;
@@ -707,7 +739,7 @@ export default function QuantityBreaksPage() {
             60deg,
             transparent 0%,
             transparent 40%,
-            rgba(255, 255, 255, 0.25) 50%,
+            rgba(255, 255, 255, 0.22) 50%,
             transparent 60%,
             transparent 100%
           );
@@ -943,6 +975,10 @@ export default function QuantityBreaksPage() {
             <input type="hidden" name="designPreset" value={designPreset} />
             <input type="hidden" name="animationStyle" value={animationStyle} />
             <input type="hidden" name="translationsJson" value={JSON.stringify(translationsMap)} />
+            <input type="hidden" name="showAddToCartBtn" value={showAddToCartBtn ? "true" : "false"} />
+            <input type="hidden" name="addToCartBtnText" value={addToCartBtnText} />
+            <input type="hidden" name="btnBgColor" value={btnBgColor} />
+            <input type="hidden" name="btnTextColor" value={btnTextColor} />
 
             {/* Top Navigation & Save Bar */}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
@@ -1470,6 +1506,56 @@ export default function QuantityBreaksPage() {
               </div>
             </div>
 
+            {/* Section 6b: Add to Cart Button Settings */}
+            <div className="xpp-card">
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                <div>
+                  <h3 className="xpp-card-title" style={{ margin: 0 }}>Integrated "Add to Cart" Button</h3>
+                  <p className="xpp-card-desc" style={{ margin: "4px 0 0" }}>Display a direct 1-click Add to Cart button inside the Quantity Breaks widget.</p>
+                </div>
+                <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
+                  <input
+                    type="checkbox"
+                    checked={showAddToCartBtn}
+                    onChange={(e) => setShowAddToCartBtn(e.target.checked)}
+                    style={{ width: 18, height: 18, accentColor: "#D4AF37", cursor: "pointer" }}
+                  />
+                  <span style={{ fontSize: 13, fontWeight: 700, color: showAddToCartBtn ? "#4ade80" : "#a1a1aa" }}>
+                    {showAddToCartBtn ? "Enabled" : "Disabled"}
+                  </span>
+                </label>
+              </div>
+
+              {showAddToCartBtn && (
+                <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: 16, marginTop: 14 }}>
+                  <div>
+                    <label className="xpp-label">Button Label</label>
+                    <input
+                      type="text"
+                      className="xpp-input"
+                      value={addToCartBtnText}
+                      onChange={(e) => setAddToCartBtnText(e.target.value)}
+                      placeholder="Add to Cart"
+                    />
+                  </div>
+                  <div>
+                    <label className="xpp-label">Button Background</label>
+                    <div className="xpp-color-picker">
+                      <input type="color" value={btnBgColor} onChange={(e) => setBtnBgColor(e.target.value)} />
+                      <span style={{ fontSize: 13, fontFamily: "monospace" }}>{btnBgColor}</span>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="xpp-label">Button Text Color</label>
+                    <div className="xpp-color-picker">
+                      <input type="color" value={btnTextColor} onChange={(e) => setBtnTextColor(e.target.value)} />
+                      <span style={{ fontSize: 13, fontFamily: "monospace" }}>{btnTextColor}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Section 7: Translations Copy */}
             <div className="xpp-card">
               <h3 className="xpp-card-title">7. Copy & Translation ({selectedLang.toUpperCase()})</h3>
@@ -1556,7 +1642,7 @@ export default function QuantityBreaksPage() {
 
                 {/* Design 1: Modern Stacked Cards */}
                 {designPreset === "modern_cards" && (
-                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 12, paddingTop: 10 }}>
                     {tiers.map((tier, idx) => {
                       const isSelected = selectedPreviewIndex === idx;
                       const unitDiscount = discountType === "PERCENTAGE" ? (samplePrice * tier.discountValue) / 100 : tier.discountValue;
@@ -1564,7 +1650,7 @@ export default function QuantityBreaksPage() {
                       const totalPrice = discountedUnit * tier.quantity;
                       const totalSavings = unitDiscount * tier.quantity;
 
-                      const isShimmer = tier.badge && animationStyle === "shimmer";
+                      const isShimmer = animationStyle === "shimmer" && (tier.badge || isSelected);
                       const isPulse = isSelected && animationStyle === "shine_glow";
                       const isFloat = tier.badge && animationStyle === "floating_badge";
 
@@ -1572,12 +1658,12 @@ export default function QuantityBreaksPage() {
                         <div
                           key={idx}
                           onClick={() => setSelectedPreviewIndex(idx)}
-                          className={`${isShimmer ? "xpp-anim-shimmer" : ""} ${isPulse ? "xpp-anim-pulse" : ""}`}
+                          className={isPulse ? "xpp-anim-pulse" : ""}
                           style={{
                             background: backgroundColor,
                             border: `2px solid ${isSelected ? accentColor : borderColor}`,
                             borderRadius: 12,
-                            padding: "14px 16px",
+                            padding: "12px 14px",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "space-between",
@@ -1586,6 +1672,7 @@ export default function QuantityBreaksPage() {
                             transition: "all 0.2s ease",
                           }}
                         >
+                          {isShimmer && <div className="xpp-anim-shimmer-layer" />}
                           {tier.badge && (
                             <div
                               className={isFloat ? "xpp-anim-float" : ""}
@@ -1601,6 +1688,8 @@ export default function QuantityBreaksPage() {
                                 borderRadius: 12,
                                 letterSpacing: 0.5,
                                 textTransform: "uppercase",
+                                zIndex: 3,
+                                boxShadow: "0 2px 6px rgba(0,0,0,0.35)",
                               }}
                             >
                               {tier.badge}
@@ -1650,29 +1739,30 @@ export default function QuantityBreaksPage() {
 
                 {/* Design 2: Compact Grid Boxes */}
                 {designPreset === "grid_boxes" && (
-                  <div style={{ display: "grid", gridTemplateColumns: `repeat(${tiers.length}, 1fr)`, gap: 10 }}>
+                  <div style={{ display: "grid", gridTemplateColumns: `repeat(${tiers.length}, 1fr)`, gap: 10, paddingTop: 10 }}>
                     {tiers.map((tier, idx) => {
                       const isSelected = selectedPreviewIndex === idx;
                       const unitDiscount = discountType === "PERCENTAGE" ? (samplePrice * tier.discountValue) / 100 : tier.discountValue;
                       const discountedUnit = Math.max(0, samplePrice - unitDiscount);
                       const totalPrice = discountedUnit * tier.quantity;
+                      const isShimmer = animationStyle === "shimmer" && (tier.badge || isSelected);
 
                       return (
                         <div
                           key={idx}
                           onClick={() => setSelectedPreviewIndex(idx)}
-                          className={tier.badge && animationStyle === "shimmer" ? "xpp-anim-shimmer" : ""}
                           style={{
                             background: backgroundColor,
                             border: `2px solid ${isSelected ? accentColor : borderColor}`,
                             borderRadius: 12,
-                            padding: "16px 10px",
+                            padding: "16px 8px 12px",
                             textAlign: "center",
                             cursor: "pointer",
                             position: "relative",
                             transition: "all 0.2s ease",
                           }}
                         >
+                          {isShimmer && <div className="xpp-anim-shimmer-layer" />}
                           {tier.badge && (
                             <div
                               style={{
@@ -1684,9 +1774,11 @@ export default function QuantityBreaksPage() {
                                 color: badgeTextColor,
                                 fontSize: 9,
                                 fontWeight: 900,
-                                padding: "2px 6px",
+                                padding: "2px 8px",
                                 borderRadius: 10,
                                 whiteSpace: "nowrap",
+                                zIndex: 3,
+                                boxShadow: "0 2px 6px rgba(0,0,0,0.35)",
                               }}
                             >
                               {tier.badge}

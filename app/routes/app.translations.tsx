@@ -158,6 +158,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         eachLabel: sanitizeText(String(formData.get("qb_each") || allTranslations[editLang]?.quantityBreaks?.eachLabel || "")),
         totalLabel: sanitizeText(String(formData.get("qb_total") || allTranslations[editLang]?.quantityBreaks?.totalLabel || "")),
         saveLabel: sanitizeText(String(formData.get("qb_save") || allTranslations[editLang]?.quantityBreaks?.saveLabel || "")),
+        addToCartBtn: sanitizeText(String(formData.get("qb_atc_btn") || allTranslations[editLang]?.quantityBreaks?.addToCartBtn || "")),
       },
     };
   }
@@ -606,6 +607,13 @@ export default function TranslationsPage() {
                 onClick={() => setActiveTab("scarcityToast")}
               >
                 {isRtl ? "إشعارات الشراء العاجلة" : "Urgency Toasts"}
+              </button>
+              <button
+                type="button"
+                className={`xpp-tab-btn ${activeTab === "quantityBreaks" ? "is-active" : ""}`}
+                onClick={() => setActiveTab("quantityBreaks")}
+              >
+                {isRtl ? "خصومات الكمية والكراتين" : "Quantity Breaks"}
               </button>
             </div>
 
@@ -1192,6 +1200,108 @@ export default function TranslationsPage() {
                       value={currentTrans.scarcityToast?.shippingText || ""}
                       onChange={(e) =>
                         updateField("scarcityToast", "shippingText", e.target.value)
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Tab 8: Quantity Breaks */}
+            {activeTab === "quantityBreaks" && (
+              <div dir={isEditRtl ? "rtl" : "ltr"}>
+                <div className="xpp-row">
+                  <div className="xpp-field-group" style={{ flex: 1 }}>
+                    <label className="xpp-label">
+                      {isRtl ? "عنوان القسم الرئيسي" : "Section Main Title"}
+                    </label>
+                    <input
+                      type="text"
+                      name="qb_title"
+                      className="xpp-input"
+                      dir={isEditRtl ? "rtl" : "ltr"}
+                      value={currentTrans.quantityBreaks?.sectionTitle || ""}
+                      onChange={(e) =>
+                        updateField("quantityBreaks", "sectionTitle", e.target.value)
+                      }
+                    />
+                  </div>
+                  <div className="xpp-field-group" style={{ flex: 1 }}>
+                    <label className="xpp-label">
+                      {isRtl ? "العنوان الفرعي" : "Subtitle / Tagline"}
+                    </label>
+                    <input
+                      type="text"
+                      name="qb_sub"
+                      className="xpp-input"
+                      dir={isEditRtl ? "rtl" : "ltr"}
+                      value={currentTrans.quantityBreaks?.subtitle || ""}
+                      onChange={(e) =>
+                        updateField("quantityBreaks", "subtitle", e.target.value)
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="xpp-row">
+                  <div className="xpp-field-group" style={{ flex: 1 }}>
+                    <label className="xpp-label">
+                      {isRtl ? "نص زر إضافة للسلة" : "Add to Cart Button Text"}
+                    </label>
+                    <input
+                      type="text"
+                      name="qb_atc_btn"
+                      className="xpp-input"
+                      dir={isEditRtl ? "rtl" : "ltr"}
+                      value={currentTrans.quantityBreaks?.addToCartBtn || ""}
+                      onChange={(e) =>
+                        updateField("quantityBreaks", "addToCartBtn", e.target.value)
+                      }
+                    />
+                  </div>
+                  <div className="xpp-field-group" style={{ flex: 1 }}>
+                    <label className="xpp-label">
+                      {isRtl ? "كلمة 'للقطعة'" : "'Each' Suffix Label"}
+                    </label>
+                    <input
+                      type="text"
+                      name="qb_each"
+                      className="xpp-input"
+                      dir={isEditRtl ? "rtl" : "ltr"}
+                      value={currentTrans.quantityBreaks?.eachLabel || ""}
+                      onChange={(e) =>
+                        updateField("quantityBreaks", "eachLabel", e.target.value)
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="xpp-row">
+                  <div className="xpp-field-group" style={{ flex: 1 }}>
+                    <label className="xpp-label">
+                      {isRtl ? "كلمة 'الإجمالي'" : "'Total' Label"}
+                    </label>
+                    <input
+                      type="text"
+                      name="qb_total"
+                      className="xpp-input"
+                      dir={isEditRtl ? "rtl" : "ltr"}
+                      value={currentTrans.quantityBreaks?.totalLabel || ""}
+                      onChange={(e) =>
+                        updateField("quantityBreaks", "totalLabel", e.target.value)
+                      }
+                    />
+                  </div>
+                  <div className="xpp-field-group" style={{ flex: 1 }}>
+                    <label className="xpp-label">
+                      {isRtl ? "كلمة 'وفر'" : "'Save' Prefix Label"}
+                    </label>
+                    <input
+                      type="text"
+                      name="qb_save"
+                      className="xpp-input"
+                      dir={isEditRtl ? "rtl" : "ltr"}
+                      value={currentTrans.quantityBreaks?.saveLabel || ""}
+                      onChange={(e) =>
+                        updateField("quantityBreaks", "saveLabel", e.target.value)
                       }
                     />
                   </div>

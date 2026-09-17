@@ -10,32 +10,44 @@
   --xpp-qb-text: #FFFFFF;
   --xpp-qb-badge-bg: #D4AF37;
   --xpp-qb-badge-text: #000000;
+  --xpp-qb-btn-bg: #D4AF37;
+  --xpp-qb-btn-text: #000000;
 }
 
 .xpp-qb-root {
   width: 100%;
-  margin: 16px 0;
+  margin: 14px 0;
   box-sizing: border-box;
   font-family: inherit;
   color: var(--xpp-qb-text);
 }
 
+.xpp-qb-root.xpp-qb-hidden {
+  display: none !important;
+}
+
 .xpp-qb-container {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   width: 100%;
   box-sizing: border-box;
 }
 
 .xpp-qb-header {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--xpp-qb-text);
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   display: flex;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.xpp-qb-header-title {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
 }
 
 .xpp-qb-header-subtitle {
@@ -44,28 +56,31 @@
   color: rgba(255, 255, 255, 0.65);
 }
 
+.xpp-qb-tiers-list {
+  padding-top: 10px;
+  box-sizing: border-box;
+}
+
 /* Common Tier Item */
 .xpp-qb-tier-item {
   position: relative;
   background: var(--xpp-qb-bg);
   border: 2px solid var(--xpp-qb-border);
   border-radius: 10px;
-  padding: 12px 14px;
+  padding: 10px 14px;
   cursor: pointer;
-  transition: all 0.22s ease-in-out;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
   user-select: none;
   box-sizing: border-box;
-  overflow: hidden;
 }
 
 .xpp-qb-tier-item:hover {
   border-color: var(--xpp-qb-accent);
-  transform: translateY(-1px);
 }
 
 .xpp-qb-tier-item.xpp-qb-selected {
   border-color: var(--xpp-qb-accent);
-  background: color-mix(in srgb, var(--xpp-qb-accent) 6%, var(--xpp-qb-bg));
+  background: color-mix(in srgb, var(--xpp-qb-accent) 7%, var(--xpp-qb-bg));
   box-shadow: 0 0 0 1px var(--xpp-qb-accent);
 }
 
@@ -81,6 +96,7 @@
   justify-content: center;
   transition: all 0.2s ease;
   box-sizing: border-box;
+  flex-shrink: 0;
 }
 
 .xpp-qb-tier-item.xpp-qb-selected .xpp-qb-radio {
@@ -100,24 +116,63 @@
   display: block;
 }
 
-/* Badge Pill */
+/* Isolated Shimmer Layer (Never clips floating badges) */
+.xpp-qb-shimmer-layer {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.xpp-qb-shimmer-layer::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    transparent 0%,
+    transparent 40%,
+    rgba(255, 255, 255, 0.22) 50%,
+    transparent 60%,
+    transparent 100%
+  );
+  transform: rotate(25deg);
+  animation: xpp-qb-shimmer-sweep 3.2s infinite ease-in-out;
+  pointer-events: none;
+}
+
+@keyframes xpp-qb-shimmer-sweep {
+  0% { transform: translateX(-100%) rotate(25deg); }
+  50%, 100% { transform: translateX(100%) rotate(25deg); }
+}
+
+/* Floating Badge Pill */
 .xpp-qb-badge {
+  position: absolute;
+  top: -10px;
+  right: 14px;
   display: inline-flex;
   align-items: center;
-  padding: 3px 8px;
+  padding: 2px 8px;
   border-radius: 9999px;
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 10px;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.5px;
   background: var(--xpp-qb-badge-bg);
   color: var(--xpp-qb-badge-text);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
   white-space: nowrap;
+  z-index: 3;
 }
 
 /* -------------------------------------------------------------
- * Preset 1: Modern Cards (Vertical Stack)
+ * Preset 1: Modern Cards (Vertical Stack - Compact & Sleek)
  * ------------------------------------------------------------- */
 .xpp-qb-preset-modern_cards .xpp-qb-tiers-list {
   display: flex;
@@ -130,58 +185,77 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  padding: 10px 14px;
+  min-height: 52px;
 }
 
 .xpp-qb-preset-modern_cards .xpp-qb-tier-left {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   flex: 1;
+  min-width: 0;
 }
 
 .xpp-qb-preset-modern_cards .xpp-qb-tier-info {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
+  min-width: 0;
 }
 
 .xpp-qb-preset-modern_cards .xpp-qb-tier-title {
   font-size: 14px;
   font-weight: 700;
   color: var(--xpp-qb-text);
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .xpp-qb-preset-modern_cards .xpp-qb-tier-subtitle {
-  font-size: 12px;
+  font-size: 11px;
   color: rgba(255, 255, 255, 0.65);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .xpp-qb-preset-modern_cards .xpp-qb-tier-right {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 2px;
   text-align: right;
+  gap: 1px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .xpp-qb-preset-modern_cards .xpp-qb-price-unit {
-  font-size: 15px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 800;
   color: var(--xpp-qb-accent);
 }
 
+.xpp-qb-preset-modern_cards .xpp-qb-price-sub {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .xpp-qb-preset-modern_cards .xpp-qb-price-compare {
-  font-size: 12px;
+  font-size: 11px;
   text-decoration: line-through;
   color: rgba(255, 255, 255, 0.45);
 }
 
-.xpp-qb-preset-modern_cards .xpp-qb-price-total {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.6);
+.xpp-qb-preset-modern_cards .xpp-qb-save-pill {
+  font-size: 10px;
+  font-weight: 700;
+  color: #4ade80;
+  margin-top: 1px;
 }
 
 /* -------------------------------------------------------------
@@ -189,8 +263,8 @@
  * ------------------------------------------------------------- */
 .xpp-qb-preset-grid_boxes .xpp-qb-tiers-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
 }
 
 .xpp-qb-preset-grid_boxes .xpp-qb-tier-item {
@@ -198,55 +272,62 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 16px 10px 12px 10px;
-  gap: 6px;
+  padding: 14px 6px 10px 6px;
+  gap: 3px;
+  min-height: 90px;
+  justify-content: center;
 }
 
 .xpp-qb-preset-grid_boxes .xpp-qb-badge-pos {
   position: absolute;
-  top: -1px;
+  top: -10px;
   left: 50%;
   transform: translateX(-50%);
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-  border-bottom-left-radius: 6px;
-  border-bottom-right-radius: 6px;
-  font-size: 10px;
-  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 9px;
+  padding: 2px 7px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  z-index: 3;
 }
 
 .xpp-qb-preset-grid_boxes .xpp-qb-qty-big {
-  font-size: 20px;
-  font-weight: 800;
+  font-size: 18px;
+  font-weight: 900;
   color: var(--xpp-qb-text);
-  margin-top: 4px;
+  line-height: 1.1;
 }
 
 .xpp-qb-preset-grid_boxes .xpp-qb-tier-title {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--xpp-qb-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
 }
 
 .xpp-qb-preset-grid_boxes .xpp-qb-price-unit {
-  font-size: 15px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 800;
   color: var(--xpp-qb-accent);
+  line-height: 1.2;
 }
 
 .xpp-qb-preset-grid_boxes .xpp-qb-price-total {
-  font-size: 11px;
+  font-size: 10px;
   color: rgba(255, 255, 255, 0.6);
 }
 
 .xpp-qb-preset-grid_boxes .xpp-qb-save-tag {
-  margin-top: 4px;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   color: var(--xpp-qb-accent);
   background: color-mix(in srgb, var(--xpp-qb-accent) 15%, transparent);
-  padding: 2px 6px;
+  padding: 1px 5px;
   border-radius: 4px;
+  margin-top: 2px;
+  white-space: nowrap;
 }
 
 /* -------------------------------------------------------------
@@ -258,6 +339,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  padding-top: 0;
 }
 
 .xpp-qb-preset-minimal_table .xpp-qb-tier-item {
@@ -277,7 +359,7 @@
 .xpp-qb-preset-minimal_table .xpp-qb-tier-left {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .xpp-qb-preset-minimal_table .xpp-qb-tier-title {
@@ -288,11 +370,11 @@
 .xpp-qb-preset-minimal_table .xpp-qb-tier-right {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .xpp-qb-preset-minimal_table .xpp-qb-price-unit {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--xpp-qb-accent);
 }
@@ -303,7 +385,7 @@
 .xpp-qb-preset-luxury_gold .xpp-qb-tiers-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .xpp-qb-preset-luxury_gold .xpp-qb-tier-item {
@@ -312,39 +394,41 @@
   justify-content: space-between;
   background: linear-gradient(135deg, rgba(25, 25, 25, 0.95), rgba(15, 15, 15, 0.98));
   border: 1.5px solid var(--xpp-qb-border);
-  border-radius: 12px;
-  padding: 14px 18px;
+  border-radius: 10px;
+  padding: 11px 16px;
+  min-height: 52px;
 }
 
 .xpp-qb-preset-luxury_gold .xpp-qb-tier-item.xpp-qb-selected {
   border-color: var(--xpp-qb-accent);
-  box-shadow: 0 0 15px color-mix(in srgb, var(--xpp-qb-accent) 25%, transparent);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--xpp-qb-accent) 25%, transparent);
 }
 
 .xpp-qb-preset-luxury_gold .xpp-qb-tier-left {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
 }
 
 .xpp-qb-preset-luxury_gold .xpp-qb-tier-title {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.3px;
   color: var(--xpp-qb-text);
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .xpp-qb-preset-luxury_gold .xpp-qb-tier-subtitle {
-  font-size: 12px;
+  font-size: 11px;
   color: rgba(255, 255, 255, 0.7);
-  margin-top: 2px;
 }
 
 .xpp-qb-preset-luxury_gold .xpp-qb-price-unit {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 800;
   color: var(--xpp-qb-accent);
 }
@@ -357,29 +441,64 @@
 }
 
 /* -------------------------------------------------------------
+ * Add to Cart Button Inside Widget
+ * ------------------------------------------------------------- */
+.xpp-qb-atc-btn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 13px 20px;
+  border-radius: 8px;
+  background: var(--xpp-qb-btn-bg, var(--xpp-qb-accent));
+  color: var(--xpp-qb-btn-text, #000000);
+  font-size: 14px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-sizing: border-box;
+}
+
+.xpp-qb-atc-btn:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.xpp-qb-atc-btn:active {
+  transform: translateY(1px);
+  filter: brightness(0.95);
+}
+
+.xpp-qb-atc-btn[disabled],
+.xpp-qb-atc-btn.is-loading {
+  opacity: 0.75;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.xpp-qb-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: xpp-qb-spin 0.6s linear infinite;
+  display: inline-block;
+}
+
+@keyframes xpp-qb-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* -------------------------------------------------------------
  * Animations
  * ------------------------------------------------------------- */
-/* Animation 1: Shimmer Light Sweep */
-.xpp-qb-anim-shimmer .xpp-qb-tier-item.xpp-qb-selected::after,
-.xpp-qb-anim-shimmer .xpp-qb-tier-item.xpp-qb-highlighted::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -150%;
-  width: 80%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16), transparent);
-  transform: skewX(-20deg);
-  animation: xpp-qb-shimmer-sweep 2.8s infinite;
-  pointer-events: none;
-}
-
-@keyframes xpp-qb-shimmer-sweep {
-  0% { left: -150%; }
-  50% { left: 150%; }
-  100% { left: 150%; }
-}
-
 /* Animation 2: Shine Pulse Glow */
 .xpp-qb-anim-shine_glow .xpp-qb-tier-item.xpp-qb-selected,
 .xpp-qb-anim-shine_glow .xpp-qb-tier-item.xpp-qb-highlighted {
@@ -423,6 +542,12 @@
   direction: rtl;
 }
 
+[dir="rtl"] .xpp-qb-badge,
+.xpp-qb-root[dir="rtl"] .xpp-qb-badge {
+  right: auto;
+  left: 14px;
+}
+
 [dir="rtl"] .xpp-qb-preset-modern_cards .xpp-qb-tier-right,
 .xpp-qb-root[dir="rtl"] .xpp-qb-preset-modern_cards .xpp-qb-tier-right {
   text-align: left;
@@ -435,16 +560,32 @@
 }
 
 /* -------------------------------------------------------------
- * Responsive Adjustments
+ * Responsive Mobile Constraints
  * ------------------------------------------------------------- */
 @media (max-width: 600px) {
   .xpp-qb-preset-grid_boxes .xpp-qb-tiers-list {
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    gap: 8px;
+    gap: 6px;
+  }
+
+  .xpp-qb-preset-grid_boxes .xpp-qb-tier-item {
+    padding: 14px 4px 8px 4px;
   }
 
   .xpp-qb-preset-grid_boxes .xpp-qb-qty-big {
-    font-size: 17px;
+    font-size: 16px;
+  }
+
+  .xpp-qb-preset-grid_boxes .xpp-qb-tier-title {
+    font-size: 11px;
+  }
+
+  .xpp-qb-preset-grid_boxes .xpp-qb-price-unit {
+    font-size: 13px;
+  }
+
+  .xpp-qb-preset-modern_cards .xpp-qb-tier-item {
+    padding: 8px 12px;
+    min-height: 48px;
   }
 
   .xpp-qb-preset-modern_cards .xpp-qb-tier-title {
@@ -452,6 +593,11 @@
   }
 
   .xpp-qb-preset-modern_cards .xpp-qb-price-unit {
-    font-size: 14px;
+    font-size: 13px;
+  }
+
+  .xpp-qb-atc-btn {
+    padding: 12px 16px;
+    font-size: 13px;
   }
 }

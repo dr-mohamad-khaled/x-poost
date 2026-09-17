@@ -90,6 +90,7 @@ export interface FeatureTranslations {
     eachLabel: string;
     totalLabel: string;
     saveLabel: string;
+    addToCartBtn: string;
   };
 }
 
@@ -156,6 +157,7 @@ export const DEFAULT_ENGLISH_TRANSLATIONS: FeatureTranslations = {
     eachLabel: "each",
     totalLabel: "Total",
     saveLabel: "Save",
+    addToCartBtn: "Add to Cart",
   },
 };
 
@@ -222,6 +224,7 @@ export const DEFAULT_ARABIC_TRANSLATIONS: FeatureTranslations = {
     eachLabel: "للقطعة",
     totalLabel: "الإجمالي",
     saveLabel: "وفر",
+    addToCartBtn: "أضف إلى السلة",
   },
 };
 
@@ -288,6 +291,7 @@ export const DEFAULT_FRENCH_TRANSLATIONS: FeatureTranslations = {
     eachLabel: "l'unité",
     totalLabel: "Total",
     saveLabel: "Économisez",
+    addToCartBtn: "Ajouter au panier",
   },
 };
 
@@ -354,6 +358,7 @@ export const DEFAULT_GERMAN_TRANSLATIONS: FeatureTranslations = {
     eachLabel: "pro Stück",
     totalLabel: "Gesamt",
     saveLabel: "Sparen Sie",
+    addToCartBtn: "In den Warenkorb",
   },
 };
 
@@ -486,6 +491,7 @@ export const DEFAULT_ITALIAN_TRANSLATIONS: FeatureTranslations = {
     eachLabel: "ciascuno",
     totalLabel: "Totale",
     saveLabel: "Risparmia",
+    addToCartBtn: "Aggiungi al carrello",
   },
 };
 
