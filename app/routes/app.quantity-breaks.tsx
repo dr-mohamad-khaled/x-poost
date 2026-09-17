@@ -181,7 +181,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       const textColor = String(formData.get("textColor") || "#FFFFFF");
       const badgeBgColor = String(formData.get("badgeBgColor") || "#D4AF37");
       const badgeTextColor = String(formData.get("badgeTextColor") || "#000000");
-      const showAddToCartBtn = formData.get("showAddToCartBtn") !== "false";
+      const showAddToCartBtn = formData.get("showAddToCartBtn") === "true";
       const addToCartBtnText = String(formData.get("addToCartBtnText") || "Add to Cart").trim();
       const btnBgColor = String(formData.get("btnBgColor") || "#D4AF37");
       const btnTextColor = String(formData.get("btnTextColor") || "#000000");
@@ -306,7 +306,7 @@ export default function QuantityBreaksPage() {
   const [textColor, setTextColor] = useState("#FFFFFF");
   const [badgeBgColor, setBadgeBgColor] = useState("#D4AF37");
   const [badgeTextColor, setBadgeTextColor] = useState("#000000");
-  const [showAddToCartBtn, setShowAddToCartBtn] = useState(true);
+  const [showAddToCartBtn, setShowAddToCartBtn] = useState(false);
   const [addToCartBtnText, setAddToCartBtnText] = useState("Add to Cart");
   const [btnBgColor, setBtnBgColor] = useState("#D4AF37");
   const [btnTextColor, setBtnTextColor] = useState("#000000");
@@ -359,7 +359,7 @@ export default function QuantityBreaksPage() {
     setTextColor("#FFFFFF");
     setBadgeBgColor("#D4AF37");
     setBadgeTextColor("#000000");
-    setShowAddToCartBtn(true);
+    setShowAddToCartBtn(false);
     setAddToCartBtnText("Add to Cart");
     setBtnBgColor("#D4AF37");
     setBtnTextColor("#000000");
@@ -392,7 +392,7 @@ export default function QuantityBreaksPage() {
     setTextColor(offer.textColor || "#FFFFFF");
     setBadgeBgColor(offer.badgeBgColor || "#D4AF37");
     setBadgeTextColor(offer.badgeTextColor || "#000000");
-    setShowAddToCartBtn(offer.showAddToCartBtn !== false);
+    setShowAddToCartBtn(offer.showAddToCartBtn === true);
     setAddToCartBtnText(offer.addToCartBtnText || "Add to Cart");
     setBtnBgColor(offer.btnBgColor || "#D4AF37");
     setBtnTextColor(offer.btnTextColor || "#000000");
@@ -1148,7 +1148,7 @@ export default function QuantityBreaksPage() {
                             }}
                           >
                             <span style={{ fontSize: 13, color: isSelected ? "#FFD700" : "#fff" }}>{prod.title}</span>
-                            <span style={{ fontSize: 12, fontWeight: 700 }}>{isSelected ? "Selected ✓" : "+ Add"}</span>
+                            <span style={{ fontSize: 12, fontWeight: 700 }}>{isSelected ? "Selected" : "+ Add"}</span>
                           </div>
                         );
                       })}
@@ -1772,13 +1772,19 @@ export default function QuantityBreaksPage() {
                                 transform: "translateX(-50%)",
                                 background: badgeBgColor,
                                 color: badgeTextColor,
-                                fontSize: 9,
+                                fontSize: 8.5,
                                 fontWeight: 900,
-                                padding: "2px 8px",
-                                borderRadius: 10,
+                                padding: "2px 7px",
+                                borderRadius: 9999,
                                 whiteSpace: "nowrap",
+                                width: "max-content",
+                                maxWidth: "94%",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                boxSizing: "border-box",
                                 zIndex: 3,
                                 boxShadow: "0 2px 6px rgba(0,0,0,0.35)",
+                                letterSpacing: 0.2,
                               }}
                             >
                               {tier.badge}
@@ -1910,6 +1916,30 @@ export default function QuantityBreaksPage() {
                       );
                     })}
                   </div>
+                )}
+
+                {/* Live Preview: Add to Cart Button (Only shown when enabled) */}
+                {showAddToCartBtn && (
+                  <button
+                    type="button"
+                    style={{
+                      width: "100%",
+                      marginTop: 14,
+                      padding: "13px 20px",
+                      background: btnBgColor,
+                      color: btnTextColor,
+                      border: "none",
+                      borderRadius: 10,
+                      fontSize: 14,
+                      fontWeight: 800,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.5px",
+                      cursor: "pointer",
+                      boxShadow: "0 4px 14px rgba(0,0,0,0.25)",
+                    }}
+                  >
+                    {addToCartBtnText || "Add to Cart"}
+                  </button>
                 )}
               </div>
             </div>

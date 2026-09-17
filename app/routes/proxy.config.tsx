@@ -414,7 +414,7 @@ function parseSocialPosition(rawPos: string | null | undefined) {
         textColor: offer.textColor,
         badgeBgColor: offer.badgeBgColor,
         badgeTextColor: offer.badgeTextColor,
-        showAddToCartBtn: offer.showAddToCartBtn !== false,
+        showAddToCartBtn: offer.showAddToCartBtn === true,
         addToCartBtnText: offer.addToCartBtnText || "Add to Cart",
         btnBgColor: offer.btnBgColor || "#D4AF37",
         btnTextColor: offer.btnTextColor || "#000000",

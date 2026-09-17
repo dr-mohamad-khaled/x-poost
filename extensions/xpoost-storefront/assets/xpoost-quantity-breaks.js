@@ -368,7 +368,7 @@
       html += '</div>';
 
       // Integrated Add to Cart button
-      if (offer.showAddToCartBtn !== false) {
+      if (offer.showAddToCartBtn === true) {
         var btnText = t.addToCartBtn || offer.addToCartBtnText || "Add to Cart";
         html += '<button type="button" class="xpp-qb-atc-btn">';
         html += '<span class="xpp-qb-btn-label">' + escapeHtml(btnText) + '</span>';

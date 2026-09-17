@@ -279,15 +279,28 @@
 }
 
 .xpp-qb-preset-grid_boxes .xpp-qb-badge-pos {
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  border-radius: 9999px;
-  font-size: 9px;
-  padding: 2px 7px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
-  z-index: 3;
+  position: absolute !important;
+  top: -10px !important;
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: max-content !important;
+  max-width: calc(100% - 6px) !important;
+  border-radius: 9999px !important;
+  font-size: 8.5px !important;
+  font-weight: 800 !important;
+  line-height: 1.1 !important;
+  padding: 2px 6px !important;
+  letter-spacing: 0.2px !important;
+  white-space: nowrap !important;
+  box-sizing: border-box !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35) !important;
+  z-index: 3 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }
 
 .xpp-qb-preset-grid_boxes .xpp-qb-qty-big {
@@ -548,6 +561,14 @@
   left: 14px;
 }
 
+/* Ensure grid boxes badges remain centered in RTL */
+[dir="rtl"] .xpp-qb-preset-grid_boxes .xpp-qb-badge-pos,
+.xpp-qb-root[dir="rtl"] .xpp-qb-preset-grid_boxes .xpp-qb-badge-pos {
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+}
+
 [dir="rtl"] .xpp-qb-preset-modern_cards .xpp-qb-tier-right,
 .xpp-qb-root[dir="rtl"] .xpp-qb-preset-modern_cards .xpp-qb-tier-right {
   text-align: left;
@@ -569,6 +590,13 @@
 
   .xpp-qb-preset-grid_boxes .xpp-qb-tier-item {
     padding: 14px 4px 8px 4px;
+  }
+
+  .xpp-qb-preset-grid_boxes .xpp-qb-badge-pos {
+    font-size: 8px !important;
+    padding: 2px 4px !important;
+    max-width: calc(100% - 4px) !important;
+    letter-spacing: 0 !important;
   }
 
   .xpp-qb-preset-grid_boxes .xpp-qb-qty-big {
