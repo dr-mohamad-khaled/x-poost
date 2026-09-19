@@ -1,0 +1,25 @@
+# fly.toml app configuration file for x-poost
+
+app = "x-poost"
+primary_region = "ams"
+
+[build]
+
+[env]
+  PORT = "3000"
+  NODE_ENV = "production"
+  SHOPIFY_API_KEY = "872f7f6415d1c243c11ccdfe9426b07f"
+  SCOPES = "write_products,write_discounts,write_metaobjects,write_metaobject_definitions"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+[[vm]]
+  memory = "512mb"
+  cpu_kind = "shared"
+  cpus = 1

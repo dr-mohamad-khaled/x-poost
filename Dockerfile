@@ -1,18 +1,26 @@
-FROM node:20-alpine
-RUN apk add --no-cache openssl
+FROM node:20-alpine AS base
 
-EXPOSE 3000
+# Install openssl for Prisma
+RUN apk add --no-cache openssl
 
 WORKDIR /app
 
-ENV NODE_ENV=production
-
+# Install dependencies
 COPY package.json package-lock.json* ./
+COPY prisma ./prisma/
 
-RUN npm ci --omit=dev && npm cache clean --force
+RUN npm ci
 
+# Copy application files
 COPY . .
 
+# Generate Prisma client and build application
+RUN npx prisma generate
 RUN npm run build
+
+# Production settings
+ENV NODE_ENV=production
+ENV PORT=3000
+EXPOSE 3000
 
 CMD ["npm", "run", "docker-start"]
