@@ -139,6 +139,7 @@ export default function App() {
     <AppProvider embedded apiKey={apiKey}>
       <NavMenu>
         <a href="/app" rel="home">{i18n.navOverview || "Overview"}</a>
+        <a href="/app/analytics">{(i18n as any).navAnalytics || "Analytics"}</a>
         <a href="/app/pricing">{i18n.navPricing || "Plans & Pricing"}</a>
         <a href="/app/translations">{i18n.navTranslations || "Translations & Languages"}</a>
         <a href="/app/product-scarcity">{i18n.navProductScarcity || "Product Stock Scarcity"}</a>
