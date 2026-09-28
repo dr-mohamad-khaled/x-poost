@@ -1,12 +1,12 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "872f7f6415d1c243c11ccdfe9426b07f"
-application_url = "https://x-poost.onrender.com"
+application_url = "https://sea-turtle-app-a4uct.ondigitalocean.app"
 embedded = true
 name = "XPoost"
 
 [app_proxy]
-url = "https://x-poost.onrender.com/proxy"
+url = "https://sea-turtle-app-a4uct.ondigitalocean.app/proxy"
 prefix = "apps"
 subpath = "xpoost"
 
@@ -63,9 +63,9 @@ api_version = "2026-10"
 
 [auth]
 redirect_urls = [
-  "https://x-poost.onrender.com/api/auth",
-  "https://x-poost.onrender.com/auth/callback",
-  "https://x-poost.onrender.com/auth/shopify/callback"
+  "https://sea-turtle-app-a4uct.ondigitalocean.app/api/auth",
+  "https://sea-turtle-app-a4uct.ondigitalocean.app/auth/callback",
+  "https://sea-turtle-app-a4uct.ondigitalocean.app/auth/shopify/callback"
 ]
 
 [build]

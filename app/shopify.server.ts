@@ -26,12 +26,12 @@ console.log("[SHOPIFY_BOOT_CONFIG]", {
   hasApiSecret: Boolean(rawSecret),
   apiSecretPrefix: rawSecret ? rawSecret.slice(0, 10) + "..." : "MISSING",
   apiSecretLength: rawSecret ? rawSecret.length : 0,
-  appUrl: process.env.SHOPIFY_APP_URL || "https://x-poost.onrender.com",
+  appUrl: process.env.SHOPIFY_APP_URL || "https://sea-turtle-app-a4uct.ondigitalocean.app",
 });
 
 const apiKey = (process.env.SHOPIFY_API_KEY || "872f7f6415d1c243c11ccdfe9426b07f").trim();
 const apiSecretKey = rawSecret.trim();
-const appUrl = (process.env.SHOPIFY_APP_URL || "https://x-poost.onrender.com").trim().replace(/\/$/, "");
+const appUrl = (process.env.SHOPIFY_APP_URL || "https://sea-turtle-app-a4uct.ondigitalocean.app").trim().replace(/\/$/, "");
 const rawScopes = (process.env.SCOPES || "write_products,write_discounts,write_metaobjects,write_metaobject_definitions").trim();
 const scopes = rawScopes.split(",").map((s) => s.trim()).filter(Boolean);
 
