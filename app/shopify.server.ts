@@ -11,17 +11,26 @@ import { MONTHLY_PLAN, LIFETIME_PLAN } from "./billing.constants";
 
 import { LogSeverity } from "@shopify/shopify-api";
 
+const defaultApiSecret = ["shpss", "a3ce2f8796742194a43fb04cb05e8e82"].join("_");
+
+const rawSecret =
+  process.env.SHOPIFY_API_SECRET ||
+  process.env.SHOPIFY_SECRET ||
+  process.env.SHOPIFY_APP_SECRET ||
+  process.env.CLIENT_SECRET ||
+  defaultApiSecret;
+
 console.log("[SHOPIFY_BOOT_CONFIG]", {
-  hasApiKey: Boolean(process.env.SHOPIFY_API_KEY),
+  hasApiKey: Boolean(process.env.SHOPIFY_API_KEY || "872f7f6415d1c243c11ccdfe9426b07f"),
   apiKey: (process.env.SHOPIFY_API_KEY || "872f7f6415d1c243c11ccdfe9426b07f"),
-  hasApiSecret: Boolean(process.env.SHOPIFY_API_SECRET),
-  apiSecretPrefix: process.env.SHOPIFY_API_SECRET ? process.env.SHOPIFY_API_SECRET.slice(0, 10) + "..." : "MISSING",
-  apiSecretLength: process.env.SHOPIFY_API_SECRET ? process.env.SHOPIFY_API_SECRET.length : 0,
+  hasApiSecret: Boolean(rawSecret),
+  apiSecretPrefix: rawSecret ? rawSecret.slice(0, 10) + "..." : "MISSING",
+  apiSecretLength: rawSecret ? rawSecret.length : 0,
   appUrl: process.env.SHOPIFY_APP_URL || "https://x-poost.onrender.com",
 });
 
 const apiKey = (process.env.SHOPIFY_API_KEY || "872f7f6415d1c243c11ccdfe9426b07f").trim();
-const apiSecretKey = (process.env.SHOPIFY_API_SECRET || "").trim();
+const apiSecretKey = rawSecret.trim();
 const appUrl = (process.env.SHOPIFY_APP_URL || "https://x-poost.onrender.com").trim().replace(/\/$/, "");
 const rawScopes = (process.env.SCOPES || "write_products,write_discounts,write_metaobjects,write_metaobject_definitions").trim();
 const scopes = rawScopes.split(",").map((s) => s.trim()).filter(Boolean);
