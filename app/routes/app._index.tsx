@@ -425,7 +425,7 @@ const CASE_STUDIES: CaseStudy[] = [
     url: "https://baymard.com/lists/cart-abandonment-rate",
   },
   {
-    /* feature: "Exit-Intent Saver",
+    feature: "Exit-Intent Saver",
     route: "/app/exit-intent",
     headline: "Popups with a countdown timer converted 2.7× better.",
     detail: "12.84% conversion with a timer vs 4.73% without.",
