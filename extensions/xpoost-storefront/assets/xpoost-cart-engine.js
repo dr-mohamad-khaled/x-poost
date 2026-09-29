@@ -246,6 +246,23 @@
 
   var productHandleMap = {};
 
+  // Analytics helpers (xpoost-track.js provides window.XPT)
+  function xpTrack(f, e, opts) {
+    try { if (window.XPT) window.XPT.track(f, e, opts); } catch (err) {}
+  }
+  function xpObserve(el, f, opts) {
+    try { if (window.XPT && el) window.XPT.observe(el, f, opts); } catch (err) {}
+  }
+  function findRuleByVariant(rules, variantId) {
+    var clean = String(variantId || "").replace(/[^0-9]/g, "");
+    if (!clean) return null;
+    for (var i = 0; i < rules.length; i++) {
+      var rv = String((rules[i] && rules[i].targetVariantId) || "").replace(/[^0-9]/g, "");
+      if (rv && rv === clean) return rules[i];
+    }
+    return null;
+  }
+
   function slugify(text) {
     if (!text) return "";
     return String(text)
@@ -1158,6 +1175,13 @@
     var modalEl = wrap.firstElementChild;
     container.appendChild(modalEl);
 
+    // Analytics: one modal view + one view per offered product
+    var xpOfferId = (rules[0] && rules[0].id) || "";
+    xpTrack("pp", "i", { o: xpOfferId, d: "modal" });
+    rules.forEach(function (r) {
+      if (r && r.id) xpTrack("pp", "i", { o: r.id, d: "item" });
+    });
+
     // Live countdown timer for flash urgency layout
     if (layoutStyle === "flash_urgency") {
       var timerEl = modalEl.querySelector("#xpc-urgency-timer");
@@ -1320,22 +1344,26 @@
     }
 
     modalEl.querySelector("#xpc-modal-close").addEventListener("click", function () {
+      xpTrack("pp", "x", { o: xpOfferId, d: "modal" });
       closeModal();
       pendingSubmission = null;
     });
 
     modalEl.querySelector("#xpc-btn-decline").addEventListener("click", function () {
+      xpTrack("pp", "x", { o: xpOfferId, d: "modal" });
       closeModal();
       pendingSubmission = null;
     });
 
     acceptBtn.addEventListener("click", function () {
+      xpTrack("pp", "c", { o: xpOfferId, d: "modal" });
       acceptBtn.disabled = true;
       acceptBtn.classList.add("is-loading");
       acceptBtn.innerHTML = '<span class="xpc-spinner"></span> ' + escapeHtml(getUiString('adding'));
 
       var rawItems = [];
       var discountCodes = [];
+      var xpPicked = {};
       checkboxes.forEach(function (cb) {
         if (cb.checked) {
           var vId = cb.getAttribute("data-variant-id");
@@ -1343,10 +1371,17 @@
           var ruleIdx = parseInt(cb.getAttribute("data-index") || "0", 10);
           var rule = rules[ruleIdx];
           var disc = (rule && rule.discountPercent) ? String(rule.discountPercent) : "";
+          var srcRule = findRuleByVariant(rules, vId) || rule;
+          var itemProps = disc ? { "_xpoost_discount": disc, "_xpoost_upsell": "true" } : {};
+          if (srcRule && srcRule.id) itemProps["_xpoost_src"] = "pp:" + srcRule.id;
+          xpPicked[String(vId).replace(/[^0-9]/g, "")] = {
+            ruleId: (srcRule && srcRule.id) || "",
+            price: parseFloat(cb.getAttribute("data-price") || "0") || 0
+          };
           rawItems.push({
             id: vId,
             quantity: 1,
-            properties: disc ? { "_xpoost_discount": disc, "_xpoost_upsell": "true" } : {}
+            properties: itemProps
           });
           if (rule && rule.discountCode) {
             discountCodes.push(rule.discountCode);
@@ -1369,6 +1404,13 @@
       var activeDiscountCode = discountCodes.length > 0 ? discountCodes[0] : null;
 
       if (deduplicated.length > 0) {
+        var xpTotal = 0;
+        deduplicated.forEach(function (item) {
+          var picked = xpPicked[String(item.id).replace(/[^0-9]/g, "")] || {};
+          xpTotal += picked.price || 0;
+          xpTrack("pp", "a", { o: picked.ruleId || "", d: "item", v: picked.price });
+        });
+        xpTrack("pp", "a", { o: xpOfferId, d: "modal", v: xpTotal });
         addItemsAndOpenDrawer(deduplicated, activeDiscountCode).finally(function () {
           closeModal();
           pendingSubmission = null;
@@ -1506,10 +1548,17 @@
         '</div>';
     }
 
+    // Analytics: carts reaching each reward tier (once per session per tier)
+    var xpReached = tiers.filter(function (t) { return currentTotal >= t.targetAmount; }).length;
+    for (var xpT = 1; xpT <= xpReached; xpT++) {
+      xpTrack("sb", "a", { d: "tier" + xpT, once: true });
+    }
+
     // 1. Explicit Theme App Blocks
     var blockContainers = document.querySelectorAll(".xpoost-shipping-bar-block");
     blockContainers.forEach(function (c) {
       c.innerHTML = barInnerHtml;
+      xpObserve(c, "sb");
     });
 
     // 2. Cart Drawer Auto-Injection
@@ -1553,6 +1602,7 @@
         } else if (drawerHeader) {
           drawerHeader.parentNode.insertBefore(autoBarWrap, drawerHeader.nextSibling);
         }
+        xpObserve(autoBarWrap, "sb");
       } else {
         // Smart in-place update: avoid wiping innerHTML and causing flashes
         var prevTotal = existingDrawerBar.getAttribute("data-rendered-total");
@@ -1581,6 +1631,7 @@
         pageBarWrap.style.cssText = "display:block!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding:0 16px!important;margin:10px 0!important;min-width:0!important;overflow:visible!important;";
         pageBarWrap.innerHTML = barInnerHtml;
         cartPageForm.parentNode.insertBefore(pageBarWrap, cartPageForm);
+        xpObserve(pageBarWrap, "sb");
       } else {
         existingPageBar.innerHTML = barInnerHtml;
       }
@@ -1675,6 +1726,7 @@
     var inCartConf = configStore.inCart || {};
     var inCartBg = inCartConf.backgroundColor || "#0B0B0B";
     var inCartAccent = inCartConf.accentColor || "#D4AF37";
+    var inCartText = inCartConf.textColor || "#FFFFFF";
     var tInCart = (configStore.translations && configStore.translations.inCart) || {};
     var inCartTitle = activeRule.offerHeadline || tInCart.sectionTitle || getUiString('recommendedAddOn');
     var inCartBtnText = activeRule.addButton || tInCart.addButton || getUiString('add');
@@ -1718,7 +1770,7 @@
       if (c.getAttribute("data-variant-id") !== targetVariant) {
         c.setAttribute("data-variant-id", targetVariant);
         c.innerHTML = cardInnerHtml;
-        attachAddEvent(c, targetVariant, activeRule.discountCode, activeRule.discountPercent);
+        attachAddEvent(c, targetVariant, activeRule.discountCode, activeRule.discountPercent, activeRule);
       }
     });
 
@@ -1742,11 +1794,11 @@
         autoUpsellWrap.style.cssText = "display:block!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding:0 16px!important;margin:10px 0!important;min-width:0!important;overflow:hidden!important;";
         autoUpsellWrap.innerHTML = cardInnerHtml;
         drawerTarget.parentNode.insertBefore(autoUpsellWrap, drawerTarget);
-        attachAddEvent(autoUpsellWrap, targetVariant, activeRule.discountCode, activeRule.discountPercent);
+        attachAddEvent(autoUpsellWrap, targetVariant, activeRule.discountCode, activeRule.discountPercent, activeRule);
       } else {
         existingDrawerUpsell.setAttribute("data-variant-id", targetVariant);
         existingDrawerUpsell.innerHTML = cardInnerHtml;
-        attachAddEvent(existingDrawerUpsell, targetVariant, activeRule.discountCode, activeRule.discountPercent);
+        attachAddEvent(existingDrawerUpsell, targetVariant, activeRule.discountCode, activeRule.discountPercent, activeRule);
       }
     } else {
       // Fallback: below items in drawer (support both next-gen and Dawn)
@@ -1765,11 +1817,11 @@
           autoItemsWrap.style.cssText = "display:block!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding:0 16px!important;margin:10px 0!important;min-width:0!important;overflow:hidden!important;";
           autoItemsWrap.innerHTML = cardInnerHtml;
           itemsTarget.parentNode.insertBefore(autoItemsWrap, itemsTarget.nextSibling);
-          attachAddEvent(autoItemsWrap, targetVariant, activeRule.discountCode, activeRule.discountPercent);
+          attachAddEvent(autoItemsWrap, targetVariant, activeRule.discountCode, activeRule.discountPercent, activeRule);
         } else {
           existingDrawerUpsell.setAttribute("data-variant-id", targetVariant);
           existingDrawerUpsell.innerHTML = cardInnerHtml;
-          attachAddEvent(existingDrawerUpsell, targetVariant, activeRule.discountCode, activeRule.discountPercent);
+          attachAddEvent(existingDrawerUpsell, targetVariant, activeRule.discountCode, activeRule.discountPercent, activeRule);
         }
       }
     }
@@ -1785,32 +1837,41 @@
         pageWrap.style.cssText = "display:block!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding:0 16px!important;margin:10px 0!important;min-width:0!important;overflow:hidden!important;";
         pageWrap.innerHTML = cardInnerHtml;
         cartPageItems.parentNode.insertBefore(pageWrap, cartPageItems);
-        attachAddEvent(pageWrap, targetVariant, activeRule.discountCode, activeRule.discountPercent);
+        attachAddEvent(pageWrap, targetVariant, activeRule.discountCode, activeRule.discountPercent, activeRule);
       } else {
         existingPageUpsell.style.cssText = "display:block!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding:0 16px!important;margin:10px 0!important;min-width:0!important;overflow:hidden!important;";
         existingPageUpsell.innerHTML = cardInnerHtml;
-        attachAddEvent(existingPageUpsell, targetVariant, activeRule.discountCode, activeRule.discountPercent);
+        attachAddEvent(existingPageUpsell, targetVariant, activeRule.discountCode, activeRule.discountPercent, activeRule);
       }
     }
   }
 
-  function attachAddEvent(container, targetVariant, discountCode, discountPercent) {
+  function attachAddEvent(container, targetVariant, discountCode, discountPercent, rule) {
+    var ruleId = (rule && rule.id) || "";
+    xpObserve(container, "ic", { o: ruleId });
     var btn = container.querySelector(".xpc-in-cart-btn");
     if (btn && targetVariant) {
+      var btnOriginalText = btn.textContent;
       btn.addEventListener("click", function () {
+        xpTrack("ic", "c", { o: ruleId });
         btn.disabled = true;
         btn.classList.add("is-loading");
         btn.innerHTML = '<span class="xpc-spinner"></span> ' + escapeHtml(getUiString('adding'));
 
         var disc = (discountPercent && parseFloat(discountPercent) > 0) ? String(discountPercent) : "";
+        var itemProps = disc ? { "_xpoost_discount": disc, "_xpoost_upsell": "true" } : {};
+        if (ruleId) itemProps["_xpoost_src"] = "ic:" + ruleId;
         var itemToAdd = {
           id: targetVariant,
           quantity: 1,
-          properties: disc ? { "_xpoost_discount": disc, "_xpoost_upsell": "true" } : {}
+          properties: itemProps
         };
+        var basePrice = parseFloat((rule && rule.targetProductPrice) || "0") || 0;
+        var paidPrice = disc ? basePrice * (1 - parseFloat(disc) / 100) : basePrice;
 
         addItemsAndOpenDrawer([itemToAdd], discountCode || null)
           .then(function () {
+            xpTrack("ic", "a", { o: ruleId, v: paidPrice });
             btn.classList.remove("is-loading");
             btn.classList.add("is-added");
             btn.innerHTML = '<span>' + escapeHtml(getUiString('added')) + ' <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-left:2px"><polyline points="20 6 9 17 4 12"/></svg></span>';
@@ -1824,7 +1885,7 @@
           .catch(function () {
             btn.disabled = false;
             btn.classList.remove("is-loading");
-            btn.textContent = inCartBtnText || getUiString("add");
+            btn.textContent = btnOriginalText || getUiString("add");
           });
       });
     }

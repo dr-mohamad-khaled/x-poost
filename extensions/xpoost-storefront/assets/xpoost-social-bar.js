@@ -1,6 +1,13 @@
 (function () {
   "use strict";
 
+  function xpTrack(f, e, opts) {
+    try { if (window.XPT) window.XPT.track(f, e, opts); } catch (err) {}
+  }
+  function xpObserve(el, f, opts) {
+    try { if (window.XPT && el) window.XPT.observe(el, f, opts); } catch (err) {}
+  }
+
   
   function detectStorefrontLocale(mountEl) {
     var l = "";
@@ -272,11 +279,28 @@
     }
 
     if (trigger) {
+      xpObserve(trigger, "so");
       trigger.addEventListener("click", function (e) {
         e.stopPropagation();
+        if (deck && !deck.classList.contains("is-open")) xpTrack("so", "c", { d: "open" });
         toggleDeck();
       });
     }
+
+    // Analytics: which channel shoppers pick
+    mount.addEventListener("click", function (e) {
+      var link = e.target && e.target.closest ? e.target.closest("a[href]") : null;
+      if (!link || !mount.contains(link)) return;
+      var href = (link.getAttribute("href") || "").toLowerCase();
+      var channel = "other";
+      if (href.indexOf("wa.me") !== -1 || href.indexOf("whatsapp") !== -1) {
+        channel = link.classList.contains("xpsb-chip") ? "whatsapp_quick" : "whatsapp";
+      } else if (href.indexOf("instagram") !== -1) channel = "instagram";
+      else if (href.indexOf("tiktok") !== -1) channel = "tiktok";
+      else if (href.indexOf("facebook") !== -1 || href.indexOf("fb.com") !== -1) channel = "facebook";
+      else if (config.vipCommunityUrl && href === String(config.vipCommunityUrl).toLowerCase()) channel = "vip";
+      xpTrack("so", "a", { d: channel });
+    });
 
     if (closeBtn) {
       closeBtn.addEventListener("click", function (e) {

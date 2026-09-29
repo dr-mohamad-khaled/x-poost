@@ -62,6 +62,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         enabled: shopData?.shippingBarEnabled ?? false,
         badge: shopData?.shippingConfig?.active ? "Active" : "Disabled",
       },
+      /*
       exitIntent: {
         id: "exitIntent",
         title: "Exit-Intent Cart Recovery Modal",
@@ -70,6 +71,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         enabled: shopData?.exitIntentEnabled ?? false,
         badge: shopData?.exitIntentConfig?.active ? "Active" : "Disabled",
       },
+      */
       productScarcity: {
         id: "productScarcity",
         title: "Product Stock Scarcity Block",
@@ -258,7 +260,7 @@ const FEATURE_PITCH: Record<string, { name: string; pitch: string }> = {
   prePurchase: { name: "Pre-Purchase Upsell", pitch: "A complementary bundle offer right after Add to Cart, without blocking the cart." },
   inCart: { name: "Cart Drawer Upsell", pitch: "One-click add-ons inside the slide-out cart, where intent is highest." },
   shippingBar: { name: "Free Shipping Bar", pitch: "A milestone bar that pulls cart totals up toward free shipping." },
-  exitIntent: { name: "Exit-Intent Saver", pitch: "A last-chance offer that catches shoppers before they leave." },
+  /* exitIntent: { name: "Exit-Intent Saver", pitch: "A last-chance offer that catches shoppers before they leave." }, */
   socialBar: { name: "Support & Social Bar", pitch: "WhatsApp support and your social channels, one tap away." },
 };
 
@@ -423,7 +425,7 @@ const CASE_STUDIES: CaseStudy[] = [
     url: "https://baymard.com/lists/cart-abandonment-rate",
   },
   {
-    feature: "Exit-Intent Saver",
+    /* feature: "Exit-Intent Saver",
     route: "/app/exit-intent",
     headline: "Popups with a countdown timer converted 2.7× better.",
     detail: "12.84% conversion with a timer vs 4.73% without.",

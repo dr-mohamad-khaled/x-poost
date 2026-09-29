@@ -64,6 +64,14 @@ model Shop {
   translationConfig TranslationConfig?
   quantityBreaksOffers  QuantityBreaksOffer[]
 
+  // Analytics
+  analyticsTimezone     String?   // IANA timezone used to bucket analytics days
+  analyticsCurrency     String?   // Shop currency code for revenue display
+  analyticsBackfilledAt DateTime? // When the 60-day order import finished
+  xpDailyStats          XpDailyStat[]
+  xpExposures           XpExposure[]
+  xpOrders              XpOrder[]
+
   @@index([shopDomain])
 }
 
@@ -305,3 +313,65 @@ model QuantityBreaksOffer {
   @@index([shopId])
 }
 
+
+// ─────────────────────────────────────────────────────────────
+// Analytics
+// ─────────────────────────────────────────────────────────────
+
+/// Daily counters per feature / offer / dimension / device.
+/// feature: "_store" (sessions) | scarcity | productScarcity | quantityBreaks | prePurchase | inCart | shippingBar | exitIntent | socialBar
+/// For feature "_store", impressions = sessions.
+model XpDailyStat {
+  shopId      String
+  shop        Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  day         DateTime @db.Date
+  feature     String
+  offerId     String   @default("")
+  dim         String   @default("")
+  device      String   @default("d") // "m" | "d"
+
+  impressions Int      @default(0)
+  clicks      Int      @default(0)
+  actions     Int      @default(0)
+  dismissals  Int      @default(0)
+  value       Float    @default(0)
+
+  @@id([shopId, day, feature, offerId, dim, device])
+  @@index([shopId, day])
+}
+
+/// Which features a visitor has seen (anonymous random visitor id). Used for influenced revenue.
+model XpExposure {
+  shopId    String
+  shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  visitorId String
+  feature   String
+  firstSeen DateTime @default(now())
+  lastSeen  DateTime @default(now())
+
+  @@id([shopId, visitorId, feature])
+  @@index([shopId, lastSeen])
+}
+
+/// One row per store order (from the orders/create webhook or the 60-day import).
+model XpOrder {
+  id             String   @id // Shopify order GID
+  shopId         String
+  shop           Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  orderName      String?
+  createdAt      DateTime
+  day            DateTime @db.Date
+  currency       String
+  subtotal       Float
+  total          Float
+  directRevenue  Float    @default(0)  // revenue of XPoost-tagged lines, after discounts
+  discountCost   Float    @default(0)  // discounts on XPoost-tagged lines
+  sourcesJson    String   @default("[]") // [{ f, o, d, qty, rev, disc, title }]
+  influencedJson String   @default("[]") // features the buyer saw in the 7 days before ordering
+  visitorId      String?
+  cancelled      Boolean  @default(false)
+  source         String   @default("webhook") // "webhook" | "backfill"
+  updatedAt      DateTime @updatedAt
+
+  @@index([shopId, day])
+}

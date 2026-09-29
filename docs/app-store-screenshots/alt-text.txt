@@ -1,0 +1,19 @@
+XPoost – App Store screenshot alt text (1600 x 900)
+
+1. xpoost-01-pre-purchase-upsell.png
+   Pre-purchase upsell popup on a product page, offering three complementary products with a bundle discount after the shopper adds an item to the cart.
+
+2. xpoost-02-cart-drawer-upsell.png
+   Cart drawer showing a free shipping progress bar with two reward tiers at the top and a one-click add-on product offer above the checkout button.
+
+3. xpoost-03-quantity-breaks.png
+   Product page with a low-stock meter and quantity break options for 1, 2 or 3 bottles, each showing its price per item and savings.
+
+4. xpoost-04-exit-intent.png
+   Exit-intent popup with a countdown timer, a copyable discount code and a button to claim the offer and go to checkout.
+
+5. xpoost-05-trust-and-support.png
+   Storefront with a recent-order notification in the corner and an open support panel with WhatsApp chat, a VIP group and social media links.
+
+6. xpoost-06-analytics.png
+   XPoost analytics dashboard showing revenue from XPoost items, orders, average order value, views, click rate, discount cost and a daily revenue chart.

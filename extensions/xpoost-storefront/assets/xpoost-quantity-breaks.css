@@ -37,7 +37,8 @@
 .xpp-qb-header {
   font-size: 14px;
   font-weight: 700;
-  color: var(--xpp-qb-text);
+  /* Sits on the theme's own background, so follow the theme's text color */
+  color: var(--xpp-qb-heading-color, inherit);
   margin-bottom: 2px;
   display: flex;
   flex-direction: column;
@@ -53,7 +54,7 @@
 .xpp-qb-header-subtitle {
   font-size: 12px;
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.65);
+  opacity: 0.7;
 }
 
 .xpp-qb-tiers-list {

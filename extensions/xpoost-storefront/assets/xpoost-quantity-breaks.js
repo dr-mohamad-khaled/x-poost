@@ -22,6 +22,13 @@
     return valid.indexOf(code) !== -1 ? code : "en";
   }
 
+  function xpTrack(f, e, opts) {
+    try { if (window.XPT) window.XPT.track(f, e, opts); } catch (err) {}
+  }
+  function xpObserve(el, f, opts) {
+    try { if (window.XPT && el) window.XPT.observe(el, f, opts); } catch (err) {}
+  }
+
   function formatMoney(cents, symbol) {
     var s = symbol || "$";
     var num = (cents / 100).toFixed(2);
@@ -106,6 +113,20 @@
       }
     } else if (discountInput) {
       discountInput.remove();
+    }
+
+    // 2b. Analytics attribution tag (_xpoost_src = qb:<offerId>:<qty>)
+    var srcInput = form.querySelector('input[name="properties[_xpoost_src]"]');
+    if (discountVal > 0 && offer && offer.id) {
+      if (!srcInput) {
+        srcInput = document.createElement("input");
+        srcInput.type = "hidden";
+        srcInput.name = "properties[_xpoost_src]";
+        form.appendChild(srcInput);
+      }
+      srcInput.value = "qb:" + offer.id + ":" + tier.quantity;
+    } else if (srcInput) {
+      srcInput.remove();
     }
 
     // 3. Sync tier label property (_xpoost_qb_tier)
@@ -226,6 +247,10 @@
     root.style.setProperty("--xpp-qb-badge-text", offer.badgeTextColor || "#000000");
     root.style.setProperty("--xpp-qb-btn-bg", offer.btnBgColor || offer.accentColor || "#D4AF37");
     root.style.setProperty("--xpp-qb-btn-text", offer.btnTextColor || "#000000");
+    // The section heading sits on the theme's background: use the theme's own text color
+    try {
+      if (root.parentElement) root.style.setProperty("--xpp-qb-heading-color", getComputedStyle(root.parentElement).color);
+    } catch (e) {}
 
     // Apply layout and animation classes
     root.className = "xpp-qb-root xpp-qb-preset-" + preset + " xpp-qb-anim-" + anim;
@@ -381,6 +406,7 @@
     function updateUi() {
       container.innerHTML = buildHtml();
       root.style.display = "block";
+      xpObserve(root, "qb", { o: offer.id });
 
       // Attach click listeners to tier elements
       var tierEls = container.querySelectorAll(".xpp-qb-tier-item");
@@ -390,6 +416,7 @@
           if (isNaN(idx) || idx === selectedIndex) return;
 
           selectedIndex = idx;
+          xpTrack("qb", "c", { o: offer.id, d: String(tiers[selectedIndex].quantity) });
           var form = findProductForm(root);
           syncFormWithTier(form, tiers[selectedIndex], offer);
           updateUi();
@@ -405,6 +432,7 @@
           if (!form) return;
 
           syncFormWithTier(form, tiers[selectedIndex], offer);
+          xpTrack("qb", "a", { o: offer.id, d: String(tiers[selectedIndex].quantity) });
 
           atcBtn.classList.add("is-loading");
           atcBtn.disabled = true;
@@ -454,6 +482,16 @@
     // Initial product form sync
     var productForm = findProductForm(root);
     syncFormWithTier(productForm, tiers[selectedIndex], offer);
+
+    // Analytics: the theme's own Add to Cart button submits the product form
+    if (productForm && !productForm.__xpQbTracked) {
+      productForm.__xpQbTracked = true;
+      productForm.addEventListener("submit", function () {
+        if (root.style.display === "none") return;
+        var tier = tiers[selectedIndex];
+        if (tier) xpTrack("qb", "a", { o: offer.id, d: String(tier.quantity) });
+      }, true);
+    }
 
     // Watch for variant changes
     setupVariantWatcher(function (newPrice, isAvailable) {

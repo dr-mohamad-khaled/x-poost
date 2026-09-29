@@ -1,6 +1,10 @@
 (function () {
   "use strict";
 
+  function xpTrack(f, e, opts) {
+    try { if (window.XPT) window.XPT.track(f, e, opts); } catch (err) {}
+  }
+
   function ready(fn) {
     if ("requestIdleCallback" in window) {
       window.requestIdleCallback(fn, { timeout: 2000 });
@@ -233,6 +237,7 @@
     wrap.innerHTML = modalHtml;
     var modalEl = wrap.firstElementChild;
     document.body.appendChild(modalEl);
+    xpTrack("ei", "i");
 
     // Suppress further triggers for configured days (unless in test mode)
     var isTestMode = window.location.href.indexOf("xpoost_test") !== -1 ||
@@ -257,16 +262,27 @@
       }
     }, 1000);
 
+    var xpDismissed = false;
+    function trackDismiss() {
+      if (xpDismissed) return;
+      xpDismissed = true;
+      xpTrack("ei", "x");
+    }
+
     function closeModal() {
       clearInterval(timerInterval);
       modalEl.classList.remove("is-open");
       setTimeout(function () { modalEl.remove(); }, 250);
     }
 
-    modalEl.querySelector("#xpr-exit-close").addEventListener("click", closeModal);
+    modalEl.querySelector("#xpr-exit-close").addEventListener("click", function () {
+      trackDismiss();
+      closeModal();
+    });
 
     modalEl.addEventListener("click", function (e) {
       if (e.target === modalEl) {
+        trackDismiss();
         closeModal();
       }
     });
@@ -282,9 +298,15 @@
         setTimeout(function () { copyLabel.textContent = "CLICK TO COPY"; }, 2000);
       }
     }
-    couponBox.addEventListener("click", copyCode);
+    couponBox.addEventListener("click", function () {
+      xpTrack("ei", "c", { d: "copy", once: true });
+      copyCode();
+    });
 
     modalEl.querySelector("#xpr-exit-cta").addEventListener("click", function () {
+      xpTrack("ei", "c", { d: "checkout" });
+      xpDismissed = true;
+      if (window.XPT) window.XPT.flush();
       copyCode();
       closeModal();
       window.location.href = "/checkout?discount=" + encodeURIComponent(code);

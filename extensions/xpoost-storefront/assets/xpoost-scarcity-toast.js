@@ -1,6 +1,13 @@
 (function () {
   "use strict";
 
+  function xpTrack(f, e, opts) {
+    try { if (window.XPT) window.XPT.track(f, e, opts); } catch (err) {}
+  }
+  function xpObserve(el, f, opts) {
+    try { if (window.XPT && el) window.XPT.observe(el, f, opts); } catch (err) {}
+  }
+
   var ICONS = {
     discount:
       '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="7" cy="7" r="1.5" fill="currentColor"/></svg>',
@@ -152,7 +159,11 @@
     function show() {
       if (dismissed) return;
       clearTimer();
-      renderMessage(els.item, messages[index % messages.length]);
+      var xpMsg = messages[index % messages.length] || {};
+      renderMessage(els.item, xpMsg);
+      if (!document.hidden) {
+        xpTrack("st", "i", { o: String(index % messages.length), d: xpMsg.type || xpMsg.icon || "message", once: true });
+      }
       els.card.classList.remove("is-hiding");
       els.card.classList.add("is-visible");
       startProgress();
@@ -186,10 +197,19 @@
       });
     }
 
+    els.item.addEventListener("click", function (e) {
+      if (e.target && e.target.closest && e.target.closest("a.xpoost-toast-link")) {
+        var m = messages[index % messages.length] || {};
+        xpTrack("st", "c", { o: String(index % messages.length), d: m.type || m.icon || "message" });
+      }
+    });
+
     if (els.closeBtn) {
       els.closeBtn.addEventListener("click", function (e) {
         e.preventDefault();
         e.stopPropagation();
+        var mClosed = messages[index % messages.length] || {};
+        xpTrack("st", "x", { o: String(index % messages.length), d: mClosed.type || mClosed.icon || "message" });
         dismissed = true;
         clearTimer();
         els.card.classList.remove("is-visible");

@@ -32,7 +32,7 @@ console.log("[SHOPIFY_BOOT_CONFIG]", {
 const apiKey = (process.env.SHOPIFY_API_KEY || "872f7f6415d1c243c11ccdfe9426b07f").trim();
 const apiSecretKey = rawSecret.trim();
 const appUrl = (process.env.SHOPIFY_APP_URL || "https://sea-turtle-app-a4uct.ondigitalocean.app").trim().replace(/\/$/, "");
-const rawScopes = (process.env.SCOPES || "write_products,write_discounts,write_metaobjects,write_metaobject_definitions").trim();
+const rawScopes = (process.env.SCOPES || "write_products,write_discounts,write_metaobjects,write_metaobject_definitions,read_orders").trim();
 const scopes = rawScopes.split(",").map((s) => s.trim()).filter(Boolean);
 
 const shopify = shopifyApp({

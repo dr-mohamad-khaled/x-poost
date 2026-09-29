@@ -12,7 +12,7 @@ subpath = "xpoost"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_products,write_discounts,write_metaobjects,write_metaobject_definitions"
+scopes = "write_products,write_discounts,write_metaobjects,write_metaobject_definitions,read_orders"
 
 [product.metafields.app.demo_info]
 type = "single_line_text_field"
@@ -48,6 +48,14 @@ api_version = "2026-10"
   [[webhooks.subscriptions]]
   uri = "/webhooks/app/scopes_update"
   topics = [ "app/scopes_update" ]
+
+  [[webhooks.subscriptions]]
+  uri = "/webhooks/orders/create"
+  topics = [ "orders/create" ]
+
+  [[webhooks.subscriptions]]
+  uri = "/webhooks/orders/cancelled"
+  topics = [ "orders/cancelled" ]
 
   [[webhooks.subscriptions]]
   uri = "/webhooks/customers/data_request"

@@ -16,6 +16,7 @@
 </div>
 
 {{ 'xpoost-retention.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'xpoost-track.js' | asset_url }}" defer></script>
 <script src="{{ 'xpoost-retention.js' | asset_url }}" defer></script>
 
 {% schema %}

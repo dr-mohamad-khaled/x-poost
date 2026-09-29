@@ -5,6 +5,13 @@
 (function () {
   "use strict";
 
+  function xpTrack(f, e, opts) {
+    try { if (window.XPT) window.XPT.track(f, e, opts); } catch (err) {}
+  }
+  function xpObserve(el, f, opts) {
+    try { if (window.XPT && el) window.XPT.observe(el, f, opts); } catch (err) {}
+  }
+
   var FLAME_SVG = '<svg viewBox="0 0 1200 1200" width="18" height="18" fill="currentColor"><path d="M 381.63997,1200 C 135.77919,1061.434 71.049038,930.27865 108.05732,751.14866 135.37841,618.87726 224.83888,511.26304 233.417,379.24524 271.63184,448.78945 287.59935,498.9368 291.87036,571.60898 413.41348,422.69507 493.73121,216.54632 498.48692,0 c 0,0 316.57523,186.01008 337.34836,466.98023 27.25312,-57.91289 40.97132,-149.89172 13.7182,-209.5043 C 931.31098,317.09086 1409.8464,846.31428 784.73519,1200 902.263,971.16186 815.05535,662.38827 610.99652,519.78234 624.62426,581.10164 600.73114,809.80288 510.45434,910.29655 535.46754,742.38092 486.6538,671.37843 486.6538,671.37843 c 0,0 -16.75337,94.05444 -81.7575,189.06609 C 345.53708,947.20639 304.40709,1039.2914 381.64021,1200 z" /></svg>';
   var EYE_SVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
 
@@ -355,6 +362,17 @@
             viewingSuffix: activeViewingSuffix,
             barPercent: barPercent
           });
+
+          // Analytics: viewable impression + add to cart on this product page
+          xpObserve(root, "ps", { d: activePreset });
+          var xpForm = root.closest("form") || document.querySelector('form[action*="/cart/add"]');
+          if (xpForm && !xpForm.__xpPsTracked) {
+            xpForm.__xpPsTracked = true;
+            xpForm.addEventListener("submit", function () {
+              if (root.classList.contains("xpp-ps-hidden")) return;
+              xpTrack("ps", "a", { d: root.dataset.designPreset || activePreset });
+            }, true);
+          }
         })
         .catch(function () {});
 
