@@ -1,4 +1,4 @@
-import { ActionFunctionArgs, json } from "react-router";
+import type { ActionFunctionArgs } from "react-router";
 import { authenticate } from "../shopify.server";
 import prisma from "../db.server";
 import { getOrCreateShop } from "../shop.server";
@@ -24,7 +24,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
     const field = featureFieldMap[featureKey];
     if (!field) {
-      return json({ ok: false, error: "Unknown feature" });
+      return Response.json({ ok: false, error: "Unknown feature" });
     }
 
     await prisma.shop.update({
@@ -32,10 +32,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       data: { [field]: enable },
     });
 
-    return json({ ok: true, featureKey, enable });
+    return Response.json({ ok: true, featureKey, enable });
   } catch (err: any) {
     console.error("[ACTION_ERROR api.toggle]", err?.stack || err?.message || err);
     if (err instanceof Response) throw err;
-    return json({ ok: false, error: err?.message || "Failed to update feature" });
+    return Response.json({ ok: false, error: err?.message || "Failed to update feature" });
   }
 };
