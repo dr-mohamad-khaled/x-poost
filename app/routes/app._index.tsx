@@ -198,7 +198,7 @@ export default function XPoostDashboard() {
               </div>
               <p className="xp-card-desc">{f.description}</p>
               <div className="xp-card-actions">
-                <toggleFetcher.Form method="post" action="/app" className="xp-inline-form">
+                <toggleFetcher.Form method="post"  className="xp-inline-form">
                   <input type="hidden" name="featureKey" value={f.id} />
                   <input type="hidden" name="enable" value={f.enabled ? "false" : "true"} />
                   <button
