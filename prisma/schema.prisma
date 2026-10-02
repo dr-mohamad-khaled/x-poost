@@ -49,6 +49,7 @@ model Shop {
   stickyBarEnabled    Boolean @default(false)
   productScarcityEnabled Boolean @default(false)
   quantityBreaksEnabled  Boolean @default(true)
+  checkoutUpsellEnabled  Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -63,6 +64,7 @@ model Shop {
   productScarcityConfig ProductScarcityConfig?
   translationConfig TranslationConfig?
   quantityBreaksOffers  QuantityBreaksOffer[]
+  checkoutUpsellFunnels CheckoutUpsellFunnel[]
 
   // Analytics
   analyticsTimezone     String?   // IANA timezone used to bucket analytics days
@@ -311,6 +313,73 @@ model QuantityBreaksOffer {
   updatedAt        DateTime @updatedAt
 
   @@index([shopId])
+}
+
+
+/// Feature 11: Checkout & Thank You Page Upsell Funnels
+model CheckoutUpsellFunnel {
+  id               String   @id @default(cuid())
+  shopId           String
+  shop             Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  
+  title            String   @default("Thank You Page Upsell")
+  status           String   @default("ACTIVE") // "ACTIVE" | "DRAFT"
+  
+  // Trigger Conditions
+  triggerMinTotal  Float?
+  triggerMaxTotal  Float?
+  triggerMode      String   @default("ALL") // "ALL" | "SPECIFIC_PRODUCTS"
+  triggerProductIdsJson String @default("[]") // products that trigger this funnel
+
+  // Display Settings
+  pageTarget       String   @default("THANK_YOU") // "POST_PURCHASE" | "THANK_YOU" | "ORDER_STATUS"
+  
+  // Offers associated with this funnel
+  offers           CheckoutUpsellOffer[]
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([shopId])
+}
+
+model CheckoutUpsellOffer {
+  id               String   @id @default(cuid())
+  funnelId         String
+  funnel           CheckoutUpsellFunnel @relation(fields: [funnelId], references: [id], onDelete: Cascade)
+  
+  offerType        String   @default("PRODUCT_UPSELL") // "PRODUCT_UPSELL" | "DISCOUNT_CODE"
+  
+  // If PRODUCT_UPSELL
+  targetProductId  String?
+  targetVariantId  String?
+  discountType     String?  @default("PERCENTAGE") // PERCENTAGE | FIXED_AMOUNT | FREE_SHIPPING
+  discountValue    Float?
+  
+  // If DISCOUNT_CODE
+  discountCode     String?
+  discountCodeValue Float?
+  discountCodeType String?  @default("PERCENTAGE") // PERCENTAGE | FIXED_AMOUNT
+  
+  // Design & Copy
+  designPreset     String   @default("MODERN_CARD") // "MODERN_CARD" | "ELEGANT_BANNER"
+  headline         String   @default("Special Offer Just For You")
+  bodyText         String   @default("Add this item to your order now at a special discounted price.")
+  buttonText       String   @default("Add to Order")
+  declineText      String   @default("No thanks")
+  
+  // Urgency Timer
+  showTimer        Boolean  @default(true)
+  timerSeconds     Int      @default(300)
+  timerText        String   @default("Offer expires in {timer}. Add now to include in this shipment without extra shipping fees!")
+
+  // Translations
+  translationsJson String   @default("{}")
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([funnelId])
 }
 
 

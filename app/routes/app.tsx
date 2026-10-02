@@ -147,6 +147,7 @@ export default function App() {
         <a href="/app/scarcity">{i18n.navUrgency || "Urgency Notifications"}</a>
         <a href="/app/pre-purchase">{i18n.navPrePurchase || "Pre-Purchase Upsell"}</a>
         <a href="/app/in-cart">{i18n.navInCart || "Cart Drawer Upsell"}</a>
+        <a href="/app/post-purchase">Post-Purchase & Thank You</a>
         <a href="/app/social-bar">{i18n.navSocialBar || "Support & Social Bar"}</a>
         <a href="/app/shipping-bar">{i18n.navShippingBar || "Free Shipping Bar"}</a>
         {/* <a href="/app/exit-intent">{i18n.navExitIntent || "Exit-Intent Recovery"}</a> */}

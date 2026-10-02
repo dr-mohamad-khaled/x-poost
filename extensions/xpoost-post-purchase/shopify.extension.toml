@@ -1,0 +1,11 @@
+name = "xpoost-post-purchase"
+type = "checkout_post_purchase"
+uid = "92bd8b0a-c1de-cb4a-c02e-af2e6a163bcf4a22511d"
+
+# [[metafields]]
+# namespace = "my-namespace"
+# key = "my-key"
+
+# [[metafields]]
+# namespace = "my-namespace"
+# key = "my-key-2"
