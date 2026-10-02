@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useAppBridge } from "@shopify/app-bridge-react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Form, useActionData, useLoaderData, useNavigation, Link, useFetcher } from "react-router";
 import { authenticate } from "../shopify.server";
@@ -135,6 +136,7 @@ export default function XPoostDashboard() {
   const { shopDomain, features } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const toggleFetcher = useFetcher();
+  const shopify = useAppBridge();
   const isSubmitting = toggleFetcher.state !== "idle";
 
   const featureList = Object.values(features);
@@ -198,17 +200,7 @@ export default function XPoostDashboard() {
               </div>
               <p className="xp-card-desc">{f.description}</p>
               <div className="xp-card-actions">
-                <toggleFetcher.Form method="post"  className="xp-inline-form">
-                  <input type="hidden" name="featureKey" value={f.id} />
-                  <input type="hidden" name="enable" value={f.enabled ? "false" : "true"} />
-                  <button
-                    type="submit"
-                    className={`xp-toggle-btn ${f.enabled ? "xp-toggle-btn--off" : "xp-toggle-btn--on"}`}
-                    disabled={isSubmitting}
-                  >
-                    {f.enabled ? "Disable" : "Enable"}
-                  </button>
-                </toggleFetcher.Form>
+                <button className={`xp-toggle-btn ${f.enabled ? "xp-toggle-btn--off" : "xp-toggle-btn--on"}`} disabled={isSubmitting} onClick={async (e) => { const btn = e.currentTarget; btn.disabled = true; btn.innerText = "Saving..."; try { const token = await shopify.idToken(); await fetch("/app?index", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded", "Authorization": `Bearer ${token}` }, body: new URLSearchParams({ featureKey: f.id, enable: f.enabled ? "false" : "true" }) }); window.location.reload(); } catch (err) { btn.disabled = false; btn.innerText = f.enabled ? "Disable" : "Enable"; } }}>{f.enabled ? "Disable" : "Enable"}</button>
                 <Link to={f.route} className="xp-config-link">
                   Configure Settings &rarr;
                 </Link>
