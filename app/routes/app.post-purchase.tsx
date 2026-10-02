@@ -1,15 +1,3 @@
-import {
-  Box,
-  Card,
-  Layout,
-  Page,
-  Text,
-  Button,
-  InlineStack,
-  BlockStack,
-  Badge,
-  EmptyState,
-} from "@shopify/polaris";
 import { useLoaderData } from "@react-router/react";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { authenticate } from "../shopify.server";
@@ -29,53 +17,45 @@ export default function PostPurchaseDashboard() {
   const { funnels } = useLoaderData<typeof loader>();
 
   return (
-    <Page
-      title="Post-Purchase & Thank You Funnels"
-      subtitle="One-click upsells and post-purchase offers to maximize AOV."
-      primaryAction={{ content: "Create Funnel", onAction: () => {} }}
-    >
-      <Layout>
-        <Layout.Section>
-          {funnels.length === 0 ? (
-            <Card>
-              <EmptyState
-                heading="Supercharge your checkout revenue"
-                action={{ content: "Create your first funnel" }}
-                image="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png"
-              >
-                <p>
-                  Create highly converting post-purchase and thank-you page
-                  upsells. Offer discounts, trigger impulse buys, and increase
-                  retention.
+    <div className="xp-container">
+      <div className="xp-header-row">
+        <div>
+          <h1 className="xp-title">Post-Purchase & Thank You Funnels</h1>
+          <p className="xp-subtitle">One-click upsells and post-purchase offers to maximize AOV.</p>
+        </div>
+        <button className="xp-btn xp-btn--primary">Create Funnel</button>
+      </div>
+
+      <div className="xp-card">
+        {funnels.length === 0 ? (
+          <div style={{ textAlign: "center", padding: "40px" }}>
+            <h3 className="xp-card-title">Supercharge your checkout revenue</h3>
+            <p className="xp-card-desc" style={{ maxWidth: "500px", margin: "16px auto" }}>
+              Create highly converting post-purchase and thank-you page upsells. Offer discounts, trigger impulse buys, and increase retention.
+            </p>
+            <button className="xp-btn xp-btn--primary">Create your first funnel</button>
+          </div>
+        ) : (
+          <div className="xp-grid">
+            {funnels.map((funnel) => (
+              <div key={funnel.id} className="xp-card">
+                <div className="xp-card-header">
+                  <h3 className="xp-card-title">{funnel.title}</h3>
+                  <span className={`xp-pill ${funnel.status === "ACTIVE" ? "xp-pill--active" : "xp-pill--inactive"}`}>
+                    {funnel.status}
+                  </span>
+                </div>
+                <p className="xp-card-desc">
+                  Target: {funnel.pageTarget === "POST_PURCHASE" ? "Post-Purchase One-Click Upsell" : "Thank You Page"}
                 </p>
-              </EmptyState>
-            </Card>
-          ) : (
-            <BlockStack gap="400">
-              {funnels.map((funnel) => (
-                <Card key={funnel.id}>
-                  <InlineStack align="space-between" blockAlign="center">
-                    <BlockStack gap="200">
-                      <InlineStack gap="300" blockAlign="center">
-                        <Text variant="headingMd" as="h3">
-                          {funnel.title}
-                        </Text>
-                        <Badge tone={funnel.status === "ACTIVE" ? "success" : "info"}>
-                          {funnel.status}
-                        </Badge>
-                      </InlineStack>
-                      <Text variant="bodySm" as="p" tone="subdued">
-                        Target: {funnel.pageTarget === "POST_PURCHASE" ? "Post-Purchase One-Click Upsell" : "Thank You Page"}
-                      </Text>
-                    </BlockStack>
-                    <Button variant="secondary">Edit Funnel</Button>
-                  </InlineStack>
-                </Card>
-              ))}
-            </BlockStack>
-          )}
-        </Layout.Section>
-      </Layout>
-    </Page>
+                <div className="xp-card-actions" style={{ marginTop: "16px" }}>
+                  <button className="xp-btn">Edit Funnel</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
