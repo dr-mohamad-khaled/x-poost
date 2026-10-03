@@ -1,5 +1,5 @@
 import type { ActionFunctionArgs, HeadersFunction, LoaderFunctionArgs } from "react-router";
-import { Outlet, useFetcher, useLoaderData, useRouteError } from "react-router";
+import { Outlet, useFetcher, useLoaderData, useLocation, useRouteError } from "react-router";
 import { boundary } from "@shopify/shopify-app-react-router/server";
 import { AppProvider } from "@shopify/shopify-app-react-router/react";
 import { NavMenu } from "@shopify/app-bridge-react";
@@ -7,6 +7,7 @@ import { NavMenu } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 import prisma from "../db.server";
 import { getOrCreateShop } from "../shop.server";
+import { FeatureDemoBanner, demoIdFromPath } from "../components/FeatureDemo";
 import { EXIT_INTENT_AVAILABLE } from "../utils/features";
 import {
   SUPPORTED_LANGUAGES,
@@ -128,6 +129,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 export default function App() {
   const { apiKey, dashboardLocale, i18n } = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
+  const { pathname } = useLocation();
+  const demoId = demoIdFromPath(pathname);
   const isAr = dashboardLocale === "ar";
 
   const handleLanguageChange = (newLang: SupportedLanguage) => {
@@ -267,6 +270,7 @@ export default function App() {
         </header>
 
         <main style={{ padding: "0 4px" }}>
+          <FeatureDemoBanner id={demoId} />
           <Outlet context={{ dashboardLocale, isAr, i18n }} />
         </main>
       </div>

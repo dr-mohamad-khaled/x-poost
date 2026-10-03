@@ -7,6 +7,7 @@ import prisma from "../db.server";
 import { getOrCreateShop, getShopWithConfigs } from "../shop.server";
 import { ensureUpsellDiscountRegistered } from "../discount.server";
 import { EXIT_INTENT_AVAILABLE } from "../utils/features";
+import { FeatureDemo, type DemoId } from "../components/FeatureDemo";
 
 let discountRegisteredShops = new Set<string>();
 
@@ -201,6 +202,7 @@ export default function XPoostDashboard() {
                   </span>
                 </div>
               </div>
+              <FeatureDemo id={f.id as DemoId} size="sm" />
               <p className="xp-card-desc">{f.description}</p>
               <div className="xp-card-actions">
                 <button className={`xp-toggle-btn ${f.enabled ? "xp-toggle-btn--off" : "xp-toggle-btn--on"}`} disabled={isSubmitting} onClick={async (e) => { const btn = e.currentTarget; btn.disabled = true; btn.innerText = "Saving..."; try { const token = await shopify.idToken(); const res = await fetch("/api/toggle", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded", "Authorization": `Bearer ${token}` }, body: new URLSearchParams({ featureKey: f.id, enable: f.enabled ? "false" : "true" }) }); if (!res.ok) { shopify.toast.show("Network Error: " + res.status); btn.disabled = false; btn.innerText = f.enabled ? "Disable" : "Enable"; return; } const json = await res.json(); if (!json.ok) { shopify.toast.show("Action Error: " + (json.error || "Unknown error")); btn.disabled = false; btn.innerText = f.enabled ? "Disable" : "Enable"; return; } window.location.reload(); } catch (err) { shopify.toast.show("Error: " + err.message); btn.disabled = false; btn.innerText = f.enabled ? "Disable" : "Enable"; } }}>{f.enabled ? "Disable" : "Enable"}</button>
