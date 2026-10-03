@@ -1,4 +1,5 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
+import { useEffect } from "react";
 import { Form, useActionData, useLoaderData, useNavigation } from "react-router";
 import { getBillingData, processBillingAction } from "../pricing.server";
 import { MONTHLY_PLAN, LIFETIME_PLAN } from "../billing.constants";
@@ -22,6 +23,19 @@ export default function Pricing() {
   const actionData = useActionData<typeof action>();
   const nav = useNavigation();
   const isSubmitting = nav.state === "submitting";
+
+  // The billing action returns Shopify's approval URL; open it at the top level
+  // (a plain redirect can't leave the embedded iframe).
+  const confirmationUrl =
+    actionData && "confirmationUrl" in actionData ? (actionData as { confirmationUrl?: string }).confirmationUrl : undefined;
+  useEffect(() => {
+    if (!confirmationUrl) return;
+    try {
+      window.open(confirmationUrl, "_top");
+    } catch {
+      window.location.href = confirmationUrl;
+    }
+  }, [confirmationUrl]);
 
   return (
     <s-page heading="Plans & Pricing">

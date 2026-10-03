@@ -78,11 +78,30 @@ export async function processBillingAction(request: Request) {
   }
 
   if (plan === MONTHLY_PLAN || plan === LIFETIME_PLAN) {
-    return await billing.request({
-      plan,
-      isTest,
-      returnUrl: `${new URL(request.url).origin}/app/pricing`,
-    });
+    // Behind DigitalOcean's proxy request.url is http://, so build an https return URL.
+    const origin = (process.env.SHOPIFY_APP_URL || new URL(request.url).origin).replace(/\/$/, "");
+    const secureOrigin = /localhost|127\.0\.0\.1/.test(origin) ? origin : origin.replace(/^http:\/\//i, "https://");
+    try {
+      return await billing.request({
+        plan,
+        isTest,
+        returnUrl: `${secureOrigin}/app/pricing`,
+      });
+    } catch (error) {
+      // billing.request signals "go to Shopify's approval page" by throwing a Response
+      // (401 + reauthorize header for fetch requests, or a 3xx Location for documents).
+      // A plain fetch from the iframe can't follow that, so hand the URL to the client
+      // and let it open the approval page at the top level.
+      if (error instanceof Response) {
+        const confirmationUrl =
+          error.headers.get("X-Shopify-API-Request-Failure-Reauthorize-Url") ||
+          error.headers.get("Location");
+        if (confirmationUrl) {
+          return { success: true, confirmationUrl };
+        }
+      }
+      throw error;
+    }
   }
 
   return { success: false, error: "Invalid plan selected." };
