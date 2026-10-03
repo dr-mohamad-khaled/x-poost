@@ -32,6 +32,12 @@ async function call(body) {
   return res.json();
 }
 
+// `shopify.extension.editable` is a plain boolean in the checkout API (not a signal), so don't rely on `.value`.
+function isEditor() {
+  const e = shopify.extension?.editable;
+  return typeof e === "boolean" ? e : Boolean(e?.value);
+}
+
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 function readContext() {
@@ -48,7 +54,7 @@ function readContext() {
 
 async function load() {
   const ctx = readContext();
-  const editing = Boolean(shopify.extension?.editable?.value);
+  const editing = isEditor();
   if (editing || !ctx.orderId) {
     // Checkout editor (or no real order): show a sample so the merchant can see the placement
     return call({ intent: "sample", locale: ctx.locale });
@@ -75,7 +81,7 @@ function Extension() {
   const [payload, setPayload] = useState(null);
   const [problem, setProblem] = useState("");
   const cd = useCountdown(payload);
-  const inEditor = Boolean(shopify.extension?.editable?.value);
+  const inEditor = isEditor();
 
   useEffect(() => {
     let alive = true;
