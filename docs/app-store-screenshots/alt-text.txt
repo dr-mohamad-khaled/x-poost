@@ -1,4 +1,4 @@
-XPoost – App Store screenshot alt text (1600 x 900)
+XPoost – App Store screenshot alt text (desktop 1600 x 900)
 
 1. xpoost-01-pre-purchase-upsell.png
    Pre-purchase upsell popup on a product page, offering three complementary products with a bundle discount after the shopper adds an item to the cart.
@@ -15,5 +15,25 @@ XPoost – App Store screenshot alt text (1600 x 900)
 5. xpoost-05-trust-and-support.png
    Storefront with a recent-order notification in the corner and an open support panel with WhatsApp chat, a VIP group and social media links.
 
-6. xpoost-06-analytics.png
-   XPoost analytics dashboard showing revenue from XPoost items, orders, average order value, views, click rate, discount cost and a daily revenue chart.
+6. xpoost-06-thank-you-upsell.png
+   Order confirmation page with an XPoost thank-you offer card showing two add-on products with savings, a countdown timer and an "Add 2 items to my shipment" button that ships them with the order just placed.
+
+Mobile screenshots (1080 x 1920, in the mobile folder)
+
+M1. mobile/xpoost-mobile-01-pre-purchase-upsell.png
+   Phone showing a bundle popup that slides up after Add to Cart, offering three complementary products with a bundle discount and an "Add all items & save" button.
+
+M2. mobile/xpoost-mobile-02-cart-drawer-upsell.png
+   Phone showing a cart drawer with a free shipping progress bar at the top, three cart items and a one-tap add-on offer above the checkout button.
+
+M3. mobile/xpoost-mobile-03-quantity-breaks.png
+   Phone showing a product page with a low-stock meter and quantity break options for 1, 2 or 3 bottles, each showing its price per item and savings.
+
+M4. mobile/xpoost-mobile-04-thank-you-upsell.png
+   Phone showing an order confirmation page with a thank-you offer card, two add-on products, a countdown timer and an "Add to my shipment" button.
+
+M5. mobile/xpoost-mobile-05-trust-and-support.png
+   Phone showing a product page with a recent-order notification, an open quick actions panel with WhatsApp chat, a VIP group and social links, and a chat button.
+
+M6. mobile/xpoost-mobile-06-exit-intent.png
+   Phone showing an exit-intent popup with a countdown timer, a copyable discount code and a button to claim the offer and go to checkout.

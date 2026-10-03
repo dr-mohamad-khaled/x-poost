@@ -708,7 +708,7 @@ export default function Pricing() {
               The full 6-in-1 engine. <span className="xpp-hl-gold">No feature locks</span>. <span className="xpp-hl-gold">No usage caps</span>. Start free for 7 days.
             </p>
             <div className="xpp-plan-price-box">
-              <span className="xpp-plan-price">$15</span>
+              <span className="xpp-plan-price">$20</span>
               <span className="xpp-plan-period">/ month</span>
               <div className="xpp-plan-note">
                 First 7 Days <span className="xpp-badge-green">100% Free</span> -- Cancel in <span className="xpp-hl-gold">1 Click</span>
@@ -797,7 +797,7 @@ export default function Pricing() {
               </li>
               <li className="xpp-feature-item">
                 <span className="xpp-check-icon">&#10003;</span>
-                <span><span className="xpp-badge-green">Saves $720+</span> in subscription fees over 4 years</span>
+                <span><span className="xpp-badge-green">Saves $960+</span> in subscription fees over 4 years</span>
               </li>
               <li className="xpp-feature-item">
                 <span className="xpp-check-icon">&#10003;</span>
@@ -879,7 +879,7 @@ export default function Pricing() {
               </div>
               <div className="xpp-vs-row">
                 <span className="xpp-vs-row-label">Monthly Plan</span>
-                <span className="xpp-badge-green">$15/mo -- everything included</span>
+                <span className="xpp-badge-green">$20/mo -- everything included</span>
               </div>
               <div className="xpp-vs-row">
                 <span className="xpp-vs-row-label">Lifetime Option</span>
@@ -947,7 +947,7 @@ export default function Pricing() {
               <tr>
                 <td>Total Annual Cost</td>
                 <td><span className="xpp-badge-red">$960+ / year</span> (and rising with traffic)</td>
-                <td><span className="xpp-badge-green">$180/yr</span> or <span className="xpp-badge-gold">$249 lifetime</span></td>
+                <td><span className="xpp-badge-green">$240/yr</span> or <span className="xpp-badge-gold">$249 lifetime</span></td>
               </tr>
             </tbody>
           </table>
@@ -978,7 +978,7 @@ export default function Pricing() {
             <div className="xpp-faq-item">
               <div className="xpp-faq-q">What happens after my 7-day trial?</div>
               <p className="xpp-faq-a">
-                If you love it, you continue at $15/month or upgrade to lifetime. If not, cancel
+                If you love it, you continue at $20/month or upgrade to lifetime. If not, cancel
                 with <span className="xpp-hl-gold">1 click</span> before the trial ends and you pay <span className="xpp-badge-green">$0.00</span>. No hoops, no support emails required.
               </p>
             </div>
