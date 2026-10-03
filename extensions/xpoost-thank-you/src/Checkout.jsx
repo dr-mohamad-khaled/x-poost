@@ -73,13 +73,23 @@ function track(p, event, dim = "") {
 
 function Extension() {
   const [payload, setPayload] = useState(null);
+  const [problem, setProblem] = useState("");
   const cd = useCountdown(payload);
+  const inEditor = Boolean(shopify.extension?.editable?.value);
 
   useEffect(() => {
     let alive = true;
     load()
-      .then((p) => alive && p?.show && setPayload(p))
-      .catch(() => {}); // never break the thank-you page
+      .then((p) => {
+        if (!alive) return;
+        if (p?.show) setPayload(p);
+        else if (inEditor) setProblem(p?.error ? `The server answered: ${p.error}` : "No offer to preview. Create and switch on an offer in XPoost, and turn the feature on.");
+      })
+      .catch((e) => {
+        // Never break the real thank-you page; only tell the merchant while they are in the checkout editor.
+        console.error("[XPoost]", e);
+        if (alive && inEditor) setProblem(`Could not reach XPoost (${e?.message || e}).`);
+      });
     return () => {
       alive = false;
     };
@@ -89,7 +99,10 @@ function Extension() {
     if (payload) track(payload, "view");
   }, [payload?.offerId]);
 
-  if (!payload) return null; // nothing to show → no layout jump
+  if (!payload) {
+    // Only visible to the merchant inside the checkout editor
+    return problem ? <s-banner tone="warning" heading="XPoost preview">{problem}</s-banner> : null;
+  }
 
   // {time_left} is live: fill it into every text each second
   const texts = Object.fromEntries(Object.entries(payload.texts || {}).map(([k, v]) => [k, withTime(v, cd.text)]));

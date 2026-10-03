@@ -82,8 +82,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       await recordThankYouEvent(shop, offer.id, event as any, String(body?.dim || ""));
       return reply({ ok: true });
     }
-  } catch (err) {
-    console.error("[XPoost thank-you api] failed:", err);
+  } catch (err: any) {
+    console.error("[XPoost thank-you api] failed:", err?.stack || err);
+    // The message is only used by the checkout editor preview, so the merchant can see what is wrong.
+    return reply({ show: false, error: String(err?.message || err).slice(0, 240) });
   }
   return reply({ show: false });
 };

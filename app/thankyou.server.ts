@@ -591,10 +591,16 @@ export async function sampleThankYou(shopDomain: string, locale?: string): Promi
   const row = await prisma.tyOffer.findFirst({ where: { shopId: shop.id }, orderBy: [{ enabled: "desc" }, { priority: "asc" }] });
   if (!row) return { show: false };
   const offer = parseOffer(row);
-  const { admin } = await unauthenticated.admin(shopDomain);
-  const info = await getShopInfo(admin, shopDomain);
-  const products =
-    offer.kind === "reward" ? [] : await fetchLiveProducts(admin, offer.config.addon.products).catch(() => offer.config.addon.products);
+  // The preview should still work if the Admin API is unreachable (e.g. scopes not approved yet): use the saved data.
+  let info: ShopInfo = { name: shopDomain, currency: "USD", url: `https://${shopDomain}` };
+  let products = offer.kind === "reward" ? [] : offer.config.addon.products;
+  try {
+    const { admin } = await unauthenticated.admin(shopDomain);
+    info = await getShopInfo(admin, shopDomain);
+    if (offer.kind !== "reward") products = await fetchLiveProducts(admin, offer.config.addon.products).catch(() => offer.config.addon.products);
+  } catch (err) {
+    console.error("[XPoost thank-you] sample: Admin API unavailable, using saved data:", err);
+  }
   return buildSample(offer, { ...info, domain: shopDomain }, pickLang(locale), products);
 }
 
