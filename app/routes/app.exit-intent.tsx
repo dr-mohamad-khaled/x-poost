@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Form, useActionData, useLoaderData, useNavigation } from "react-router";
+import { redirect } from "react-router";
 import { authenticate } from "../shopify.server";
+import { EXIT_INTENT_AVAILABLE } from "../utils/features";
 import prisma from "../db.server";
 import { getOrCreateShop } from "../shop.server";
 import { FeatureLanguageSwitcher } from "../components/FeatureLanguageSwitcher";
@@ -14,6 +16,7 @@ import {
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { session } = await authenticate.admin(request);
+  if (!EXIT_INTENT_AVAILABLE) throw redirect("/app");
   const shop = await getOrCreateShop(session.shop);
 
   let config = await prisma.exitIntentConfig.findUnique({

@@ -6,6 +6,7 @@ import { authenticate } from "../shopify.server";
 import prisma from "../db.server";
 import { getOrCreateShop, getShopWithConfigs } from "../shop.server";
 import { ensureUpsellDiscountRegistered } from "../discount.server";
+import { EXIT_INTENT_AVAILABLE } from "../utils/features";
 
 let discountRegisteredShops = new Set<string>();
 
@@ -19,6 +20,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       .then(() => discountRegisteredShops.add(session.shop))
       .catch((err) => console.error("[xpoost] Error registering upsell discount:", err));
   }
+
+  const tyActive = await prisma.tyOffer.count({ where: { shopId: shopData?.id ?? "", enabled: true } });
 
   return {
     shopDomain: session.shop,
@@ -63,16 +66,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         enabled: shopData?.shippingBarEnabled ?? false,
         badge: shopData?.shippingConfig?.active ? "Active" : "Disabled",
       },
-      /*
-      exitIntent: {
-        id: "exitIntent",
-        title: "Exit-Intent Cart Recovery Modal",
-        description: "Engage shoppers intending to leave your store with a targeted discount offer to save the sale before they bounce.",
-        route: "/app/exit-intent",
-        enabled: shopData?.exitIntentEnabled ?? false,
-        badge: shopData?.exitIntentConfig?.active ? "Active" : "Disabled",
-      },
-      */
       productScarcity: {
         id: "productScarcity",
         title: "Product Stock Scarcity Block",
@@ -80,6 +73,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         route: "/app/product-scarcity",
         enabled: shopData?.productScarcityEnabled ?? false,
         badge: shopData?.productScarcityConfig?.active ? "Active" : "Disabled",
+      },
+      thankYou: {
+        id: "thankYou",
+        title: "Thank-You Page Upsell & Rewards",
+        description: "Turn the order confirmation page into extra revenue: a unique next-order code, matching products, or a ship-together countdown, with conditions and translations.",
+        route: "/app/thank-you",
+        enabled: shopData?.thankYouEnabled ?? false,
+        badge: tyActive > 0 ? `${tyActive} Active` : "No active offers",
       },
       quantityBreaks: {
         id: "quantityBreaks",
@@ -112,6 +113,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       exitIntent: "exitIntentEnabled",
       productScarcity: "productScarcityEnabled",
       quantityBreaks: "quantityBreaksEnabled",
+      thankYou: "thankYouEnabled",
     };
 
     const field = featureFieldMap[featureKey];
@@ -252,7 +254,8 @@ const FEATURE_PITCH: Record<string, { name: string; pitch: string }> = {
   prePurchase: { name: "Pre-Purchase Upsell", pitch: "A complementary bundle offer right after Add to Cart, without blocking the cart." },
   inCart: { name: "Cart Drawer Upsell", pitch: "One-click add-ons inside the slide-out cart, where intent is highest." },
   shippingBar: { name: "Free Shipping Bar", pitch: "A milestone bar that pulls cart totals up toward free shipping." },
-  /* exitIntent: { name: "Exit-Intent Saver", pitch: "A last-chance offer that catches shoppers before they leave." }, */
+  exitIntent: { name: "Exit-Intent Saver", pitch: "A last-chance offer that catches shoppers before they leave." },
+  thankYou: { name: "Thank-You Page Upsell", pitch: "A reward for the next order or a ship-together offer, right after checkout." },
   socialBar: { name: "Support & Social Bar", pitch: "WhatsApp support and your social channels, one tap away." },
 };
 
@@ -383,7 +386,7 @@ type CaseStudy = {
   url: string;
 };
 
-const CASE_STUDIES: CaseStudy[] = [
+const ALL_CASE_STUDIES: CaseStudy[] = [
   {
     feature: "Pre-Purchase Upsell",
     route: "/app/pre-purchase",
@@ -440,7 +443,16 @@ const CASE_STUDIES: CaseStudy[] = [
     source: "Wisepops Popup Statistics 2026 · 1 billion popup displays",
     url: "https://wisepops.com/blog/popup-stats",
   },
+  {
+    feature: "Thank-You Page Upsell",
+    route: "/app/thank-you",
+    headline: "Offers with 3 products were taken twice as often as offers with 1.",
+    detail: "2.9% vs 1.5%. On the thank-you page the bigger win is the next-order reward, which brings the customer back.",
+    source: "Digismoothie Upsell Benchmarks 2026 · 3,199 Shopify stores, Jan–Aug 2026",
+    url: "https://www.digismoothie.com/blog/upsell-benchmarks",
+  },
 ];
+const CASE_STUDIES: CaseStudy[] = ALL_CASE_STUDIES.filter((c) => EXIT_INTENT_AVAILABLE || c.route !== "/app/exit-intent");
 
 function CaseStudyStrip() {
   const total = CASE_STUDIES.length;
@@ -577,6 +589,16 @@ function FeatureIcon({ id }: { id: string }) {
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
           <path d="m16 17 5-5-5-5" />
           <path d="M21 12H9" />
+        </svg>
+      );
+    case "thankYou":
+      return (
+        <svg {...common}>
+          <path d="M20 12v10H4V12" />
+          <path d="M2 7h20v5H2z" />
+          <path d="M12 22V7" />
+          <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z" />
+          <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" />
         </svg>
       );
     case "socialBar":

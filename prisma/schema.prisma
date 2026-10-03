@@ -49,6 +49,7 @@ model Shop {
   stickyBarEnabled    Boolean @default(false)
   productScarcityEnabled Boolean @default(false)
   quantityBreaksEnabled  Boolean @default(true)
+  thankYouEnabled        Boolean @default(false)
   checkoutUpsellEnabled  Boolean @default(false)
 
   createdAt DateTime @default(now())
@@ -73,6 +74,18 @@ model Shop {
   xpDailyStats          XpDailyStat[]
   xpExposures           XpExposure[]
   xpOrders              XpOrder[]
+
+  // Analytics
+  analyticsTimezone     String?   // IANA timezone used to bucket analytics days
+  analyticsCurrency     String?   // Shop currency code for revenue display
+  analyticsBackfilledAt DateTime? // When the 60-day order import finished
+  xpDailyStats          XpDailyStat[]
+  xpExposures           XpExposure[]
+  xpOrders              XpOrder[]
+
+  // Thank-you page upsell
+  tyOffers              TyOffer[]
+  tyClaims              TyClaim[]
 
   @@index([shopDomain])
 }
@@ -443,4 +456,60 @@ model XpOrder {
   updatedAt      DateTime @updatedAt
 
   @@index([shopId, day])
+}
+
+// ─────────────────────────────────────────────────────────────
+// Thank-you page upsell
+// ─────────────────────────────────────────────────────────────
+
+model TyOffer {
+  id             String   @id @default(cuid())
+  shopId         String
+  shop           Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  name           String
+  kind           String   // reward | addon | shiptogether
+  design         String   // gift_reveal | vip_ladder | ship_timer | routine | spotlight | minimal
+  enabled        Boolean  @default(true)
+  priority       Int      @default(100) // lower number = checked first
+  configJson     String   @default("{}") // TyConfig
+  conditionsJson String   @default("{}") // TyConditions
+  textsJson      String   @default("{}") // TyTextsByLang
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  claims         TyClaim[]
+
+  @@index([shopId, enabled, priority])
+}
+
+/// One claim per order: the unique codes issued for that order's thank-you page.
+model TyClaim {
+  id          String   @id @default(cuid())
+  shopId      String
+  shop        Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  offerId     String
+  offer       TyOffer  @relation(fields: [offerId], references: [id], onDelete: Cascade)
+  orderId     String   // order GID
+  orderNumber String?
+  kind        String
+  expiresAt   DateTime
+  codesJson   String   @default("[]") // [{code,label,minSpend,discountText,type}]
+  createdAt   DateTime @default(now())
+  codes       TyCode[]
+
+  @@unique([shopId, orderId])
+  @@index([shopId, createdAt])
+}
+
+model TyCode {
+  id         String    @id @default(cuid())
+  shopId     String
+  claimId    String
+  claim      TyClaim   @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  code       String    // stored upper-case
+  type       String    // reward | addon_percent | addon_shipping
+  redeemedAt DateTime?
+  orderName  String?   // the order that used it
+
+  @@unique([shopId, code])
+  @@index([claimId])
 }

@@ -1,3 +1,4 @@
+import { EXIT_INTENT_AVAILABLE } from "../utils/features";
 import type { LoaderFunctionArgs } from "react-router";
 import { authenticate } from "../shopify.server";
 import prisma from "../db.server";
@@ -311,7 +312,7 @@ function parseSocialPosition(rawPos: string | null | undefined) {
 
   // Exit-Intent Saver Modal
   let exitIntent = null;
-  if (shop.exitIntentEnabled && shop.exitIntentConfig?.active) {
+  if (EXIT_INTENT_AVAILABLE && shop.exitIntentEnabled && shop.exitIntentConfig?.active) {
     exitIntent = {
       active: true,
       countdownSeconds: shop.exitIntentConfig.countdownSeconds,

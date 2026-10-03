@@ -26,6 +26,7 @@ const FEATURE_ROUTES: Record<string, string> = {
   scarcity: "/app/scarcity",
   productScarcity: "/app/product-scarcity",
   socialBar: "/app/social-bar",
+  thankYou: "/app/thank-you",
 };
 
 const dayStr = (d: Date) => d.toISOString().slice(0, 10);
@@ -49,7 +50,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const today = localDay(Date.now(), shop.analyticsTimezone);
   const from = new Date(`${addDays(today, -(2 * rangeDays - 1))}T00:00:00.000Z`);
 
-  const [stats, orders, rules, qbOffers, scarcityCfg, shippingCfg] = await Promise.all([
+  const [stats, orders, rules, qbOffers, scarcityCfg, shippingCfg, tyOffers] = await Promise.all([
     prisma.xpDailyStat.findMany({ where: { shopId: shop.id, day: { gte: from } } }),
     prisma.xpOrder.findMany({
       where: { shopId: shop.id, day: { gte: from }, cancelled: false },
@@ -59,11 +60,13 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     prisma.quantityBreaksOffer.findMany({ where: { shopId: shop.id }, select: { id: true, title: true } }),
     prisma.scarcityWidgetConfig.findUnique({ where: { shopId: shop.id }, select: { messagesJson: true } }),
     prisma.shippingBarConfig.findUnique({ where: { shopId: shop.id }, select: { tiersJson: true } }),
+    prisma.tyOffer.findMany({ where: { shopId: shop.id }, select: { id: true, name: true } }),
   ]);
 
   const offerNames: Record<string, string> = {};
   for (const r of rules) offerNames[r.id] = r.targetProductTitle || r.offerHeadline || "Offer";
   for (const o of qbOffers) offerNames[o.id] = o.title;
+  for (const o of tyOffers) offerNames[o.id] = o.name;
 
   const messageNames: Record<string, string> = {};
   try {
@@ -92,6 +95,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       scarcity: shop.scarcityEnabled,
       productScarcity: shop.productScarcityEnabled,
       socialBar: shop.socialBarEnabled,
+      thankYou: shop.thankYouEnabled,
     },
     offerNames,
     messageNames,
@@ -200,6 +204,12 @@ const TIPS: Record<string, Tip[]> = {
   productScarcity: [
     { text: "Choose design presets by their add-to-cart numbers, not by looks alone." },
     { text: "Use real Shopify inventory where you can. Invented stock counts (the manual range option) carry legal and trust risk." },
+  ],
+  thankYou: [
+    { text: "Thank-you page offers are taken about 0.7% of the time on average, versus 2.4% for product-page pop-ups. Judge this feature by returning-customer orders (code redemptions) as much as by add-on clicks.", ...DIGI },
+    { text: "Offers with 3 products were taken about twice as often as 1 (2.9% vs 1.5%). If your add-on offer shows one product, try three.", ...DIGI },
+    { text: "Compare offers in the table: a reward that is redeemed rarely may have a minimum spend that is too high, or an expiry that is too short or too long." },
+    { text: "Use conditions to give first-time and returning customers different offers, then compare their numbers here." },
   ],
   socialBar: [
     { text: "WhatsApp questions usually point to missing information. Put answers to the most common questions on your product pages." },

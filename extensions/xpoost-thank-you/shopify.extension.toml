@@ -1,0 +1,16 @@
+api_version = "2026-07"
+
+[[extensions]]
+name = "t:name"
+handle = "xpoost-thank-you"
+type = "ui_extension"
+description = "t:description"
+
+  [[extensions.targeting]]
+  module = "./src/Checkout.jsx"
+  target = "purchase.thank-you.block.render"
+
+  # Talks to the XPoost backend to pick the offer and create the unique, expiring codes.
+  # Shopify asks for approval of "network access" in the Partner Dashboard before the app is published.
+  [extensions.capabilities]
+  network_access = true

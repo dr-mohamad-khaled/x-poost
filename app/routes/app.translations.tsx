@@ -1,3 +1,4 @@
+import { EXIT_INTENT_AVAILABLE } from "../utils/features";
 import { useState, useEffect } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Form, useActionData, useLoaderData, useNavigation } from "react-router";
@@ -587,6 +588,7 @@ export default function TranslationsPage() {
               >
                 {isRtl ? "شريط الشحن المجاني" : "Free Shipping Bar"}
               </button>
+              {EXIT_INTENT_AVAILABLE ? (
               <button
                 type="button"
                 className={`xpp-tab-btn ${activeTab === "exitIntent" ? "is-active" : ""}`}
@@ -594,6 +596,7 @@ export default function TranslationsPage() {
               >
                 {isRtl ? "استعادة الزوار" : "Exit-Intent Recovery"}
               </button>
+              ) : null}
               <button
                 type="button"
                 className={`xpp-tab-btn ${activeTab === "socialBar" ? "is-active" : ""}`}

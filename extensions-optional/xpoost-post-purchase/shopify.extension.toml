@@ -1,0 +1,14 @@
+# XPoost post-purchase offer (OPTIONAL — see README.md before moving this folder into /extensions)
+api_version = "2026-07"
+
+[[extensions]]
+name = "XPoost Post-purchase Add-on"
+handle = "xpoost-post-purchase"
+type = "ui_extension"
+
+  [[extensions.targeting]]
+  target = "purchase.post-purchase.render"
+  module = "./src/index.jsx"
+
+  [extensions.capabilities]
+  network_access = true

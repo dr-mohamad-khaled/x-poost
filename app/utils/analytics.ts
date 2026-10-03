@@ -3,6 +3,8 @@
  * Used by the storefront ingest route, the order webhooks/backfill and the dashboard.
  */
 
+import { EXIT_INTENT_AVAILABLE } from "./features";
+
 export const FEATURE_CODES = {
   _s: "_store",
   pp: "prePurchase",
@@ -13,12 +15,13 @@ export const FEATURE_CODES = {
   st: "scarcity",
   ps: "productScarcity",
   so: "socialBar",
+  ty: "thankYou",
 } as const;
 
 export type FeatureCode = keyof typeof FEATURE_CODES;
 export type FeatureKey = (typeof FEATURE_CODES)[FeatureCode];
 
-export const FEATURE_KEYS: Exclude<FeatureKey, "_store">[] = [
+const ALL_FEATURE_KEYS: Exclude<FeatureKey, "_store">[] = [
   "prePurchase",
   "inCart",
   "quantityBreaks",
@@ -27,7 +30,11 @@ export const FEATURE_KEYS: Exclude<FeatureKey, "_store">[] = [
   "scarcity",
   "productScarcity",
   "socialBar",
+  "thankYou",
 ];
+
+/** Features shown in analytics (retired features are hidden; their stored data is kept). */
+export const FEATURE_KEYS: Exclude<FeatureKey, "_store">[] = ALL_FEATURE_KEYS.filter((k) => EXIT_INTENT_AVAILABLE || k !== "exitIntent");
 
 export const FEATURE_LABELS: Record<string, string> = {
   prePurchase: "Pre-Purchase Upsell",
@@ -38,6 +45,7 @@ export const FEATURE_LABELS: Record<string, string> = {
   scarcity: "Urgency Notifications",
   productScarcity: "Stock Scarcity Block",
   socialBar: "Support & Social Bar",
+  thankYou: "Thank-You Page Upsell",
   upsellLegacy: "Upsells (untagged)",
 };
 
@@ -256,7 +264,12 @@ const SRC_FEATURES: Record<string, string> = { pp: "prePurchase", ic: "inCart", 
  * - Older lines: `_xpoost_qb_tier` → Quantity Breaks; `_xpoost_upsell` → untagged upsell.
  * - Exit-intent: the order used the exit-intent discount code → the order subtotal.
  */
-export function attributeOrder(order: NormalizedOrder, opts: { exitIntentCode?: string | null } = {}): AttributedOrder {
+export type ThankYouCodeInfo = { offerId: string; type: string };
+
+export function attributeOrder(
+  order: NormalizedOrder,
+  opts: { exitIntentCode?: string | null; thankYouCodes?: Map<string, ThankYouCodeInfo> } = {},
+): AttributedOrder {
   const sources: OrderSource[] = [];
   let direct = 0;
   let discountCost = 0;
@@ -294,6 +307,34 @@ export function attributeOrder(order: NormalizedOrder, opts: { exitIntentCode?: 
     const rev = Math.max(0, order.subtotal - direct);
     sources.push({ f: "exitIntent", o: "", d: exitCode.toUpperCase(), qty: 1, rev: round2(rev), disc: 0, title: order.name || "" });
     direct += rev;
+  }
+
+  // Thank-you page upsell: the order redeemed a code we issued, or came from an "add to my shipment" link
+  const tyAttr = order.attributes.find((a) => a.key === "_xp_ty")?.value || "";
+  let tyHit: ThankYouCodeInfo | undefined;
+  for (const c of order.discountCodes) {
+    const hit = opts.thankYouCodes?.get(c.trim().toUpperCase());
+    if (hit) {
+      tyHit = hit;
+      break;
+    }
+  }
+  if (tyHit || tyAttr) {
+    const rev = Math.max(0, order.subtotal - direct);
+    const allLineDiscounts = order.lines.reduce((acc, l) => acc + l.discount, 0);
+    const disc = Math.max(0, allLineDiscounts - discountCost);
+    const type = tyHit?.type || "addon";
+    sources.push({
+      f: "thankYou",
+      o: (tyHit?.offerId || tyAttr).slice(0, 40),
+      d: type,
+      qty: order.lines.reduce((acc, l) => acc + l.quantity, 0),
+      rev: round2(rev),
+      disc: round2(disc),
+      title: order.name || "",
+    });
+    direct += rev;
+    discountCost += disc;
   }
 
   const vid = order.attributes.find((a) => a.key === "_xp_vid")?.value || "";

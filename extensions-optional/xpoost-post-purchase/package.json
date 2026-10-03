@@ -1,0 +1,11 @@
+{
+  "name": "xpoost-post-purchase",
+  "private": true,
+  "version": "1.0.0",
+  "license": "UNLICENSED",
+  "type": "module",
+  "dependencies": {
+    "@shopify/post-purchase-ui-extensions-react": "^0.13.5",
+    "react": "^18.3.1"
+  }
+}

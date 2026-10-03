@@ -72,6 +72,9 @@ const shopify = shopifyApp({
     : {}),
 });
 
+/** Used to sign post-purchase changesets (same credentials the app already authenticates with). */
+export const appCredentials = { apiKey, apiSecretKey };
+
 export default shopify;
 export const apiVersion = ApiVersion.July26;
 export const addDocumentResponseHeaders = shopify.addDocumentResponseHeaders;

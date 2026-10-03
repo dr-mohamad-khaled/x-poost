@@ -69,7 +69,22 @@ export async function saveOrder(
     where: { shopId: shop.id },
     select: { discountCode: true },
   });
-  const attributed = attributeOrder(order, { exitIntentCode: exitCfg?.discountCode });
+  // Thank-you page codes this order redeemed (unique per order, so a hit is unambiguous)
+  const thankYouCodes = new Map<string, { offerId: string; type: string }>();
+  const upperCodes = order.discountCodes.map((c) => c.trim().toUpperCase()).filter(Boolean);
+  if (upperCodes.length) {
+    const tyRows = await prisma.tyCode.findMany({
+      where: { shopId: shop.id, code: { in: upperCodes } },
+      select: { id: true, code: true, type: true, redeemedAt: true, claim: { select: { offerId: true } } },
+    });
+    for (const r of tyRows) {
+      thankYouCodes.set(r.code, { offerId: r.claim.offerId, type: r.type });
+      if (!r.redeemedAt && !order.cancelled) {
+        await prisma.tyCode.update({ where: { id: r.id }, data: { redeemedAt: new Date(), orderName: order.name } }).catch(() => {});
+      }
+    }
+  }
+  const attributed = attributeOrder(order, { exitIntentCode: exitCfg?.discountCode, thankYouCodes });
 
   let influenced: string[] = [];
   if (attributed.visitorId) {

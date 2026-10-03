@@ -20,6 +20,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       exitIntent: "exitIntentEnabled",
       productScarcity: "productScarcityEnabled",
       quantityBreaks: "quantityBreaksEnabled",
+      thankYou: "thankYouEnabled",
     };
 
     const field = featureFieldMap[featureKey];
@@ -38,4 +39,4 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     if (err instanceof Response) throw err;
     return Response.json({ ok: false, error: err?.message || "Failed to update feature" });
   }
-};
+};

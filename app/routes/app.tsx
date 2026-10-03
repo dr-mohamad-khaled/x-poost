@@ -7,6 +7,7 @@ import { NavMenu } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 import prisma from "../db.server";
 import { getOrCreateShop } from "../shop.server";
+import { EXIT_INTENT_AVAILABLE } from "../utils/features";
 import {
   SUPPORTED_LANGUAGES,
   type SupportedLanguage,
@@ -103,6 +104,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       exitIntent: "exitIntentEnabled",
       productScarcity: "productScarcityEnabled",
       quantityBreaks: "quantityBreaksEnabled",
+      thankYou: "thankYouEnabled",
     };
 
     const field = featureFieldMap[featureKey];
@@ -147,10 +149,10 @@ export default function App() {
         <a href="/app/scarcity">{i18n.navUrgency || "Urgency Notifications"}</a>
         <a href="/app/pre-purchase">{i18n.navPrePurchase || "Pre-Purchase Upsell"}</a>
         <a href="/app/in-cart">{i18n.navInCart || "Cart Drawer Upsell"}</a>
-        <a href="/app/post-purchase">Post-Purchase & Thank You</a>
         <a href="/app/social-bar">{i18n.navSocialBar || "Support & Social Bar"}</a>
         <a href="/app/shipping-bar">{i18n.navShippingBar || "Free Shipping Bar"}</a>
-        {/* <a href="/app/exit-intent">{i18n.navExitIntent || "Exit-Intent Recovery"}</a> */}
+        <a href="/app/thank-you">{(i18n as any).navThankYou || "Thank-you Page Upsell"}</a>
+        {EXIT_INTENT_AVAILABLE ? <a href="/app/exit-intent">{i18n.navExitIntent || "Exit-Intent Recovery"}</a> : null}
       </NavMenu>
 
       <div dir={isAr ? "rtl" : "ltr"} style={{ width: "100%", minHeight: "100vh", background: "#0a0a0c" }}>
