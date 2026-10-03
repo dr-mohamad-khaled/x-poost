@@ -454,7 +454,12 @@ export async function resolveThankYou(input: {
   isFirstOrder?: boolean | null;
 }): Promise<TyRenderPayload> {
   const none: TyRenderPayload = { show: false };
-  if (!/^gid:\/\/shopify\/Order\/\d+$/.test(input.orderId)) return none;
+  // The checkout extension reports the order as gid://shopify/OrderIdentity/<id>; the Admin API wants gid://shopify/Order/<id>
+  input = { ...input, orderId: String(input.orderId || "").replace("/OrderIdentity/", "/Order/") };
+  if (!/^gid:\/\/shopify\/Order\/\d+$/.test(input.orderId)) {
+    console.warn("[XPoost thank-you] unexpected order id:", input.orderId);
+    return none;
+  }
 
   const shop = await prisma.shop.findUnique({ where: { shopDomain: input.shopDomain }, select: { id: true, thankYouEnabled: true, analyticsTimezone: true } });
   if (!shop || !shop.thankYouEnabled) return none;
