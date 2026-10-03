@@ -12,21 +12,21 @@ datasource db {
 }
 
 model Session {
-  id            String    @id
-  shop          String
-  state         String
-  isOnline      Boolean   @default(false)
-  scope         String?
-  expires       DateTime?
-  accessToken   String
-  userId        BigInt?
-  firstName     String?
-  lastName      String?
-  email         String?
-  accountOwner  Boolean   @default(false)
-  locale        String?
-  collaborator  Boolean?  @default(false)
-  emailVerified Boolean?  @default(false)
+  id                  String    @id
+  shop                String
+  state               String
+  isOnline            Boolean   @default(false)
+  scope               String?
+  expires             DateTime?
+  accessToken         String
+  userId              BigInt?
+  firstName           String?
+  lastName            String?
+  email               String?
+  accountOwner        Boolean   @default(false)
+  locale              String?
+  collaborator        Boolean?  @default(false)
+  emailVerified       Boolean?  @default(false)
   refreshToken        String?
   refreshTokenExpires DateTime?
 }
@@ -36,17 +36,17 @@ model Session {
 // ─────────────────────────────────────────────────────────────
 
 model Shop {
-  id       String @id @default(cuid())
+  id         String @id @default(cuid())
   shopDomain String @unique
 
   // Feature activation flags
-  scarcityEnabled     Boolean @default(false)
-  prePurchaseEnabled  Boolean @default(false)
-  inCartUpsellEnabled Boolean @default(false)
-  socialBarEnabled    Boolean @default(false)
-  shippingBarEnabled  Boolean @default(false)
-  exitIntentEnabled   Boolean @default(false)
-  stickyBarEnabled    Boolean @default(false)
+  scarcityEnabled        Boolean @default(false)
+  prePurchaseEnabled     Boolean @default(false)
+  inCartUpsellEnabled    Boolean @default(false)
+  socialBarEnabled       Boolean @default(false)
+  shippingBarEnabled     Boolean @default(false)
+  exitIntentEnabled      Boolean @default(false)
+  stickyBarEnabled       Boolean @default(false)
   productScarcityEnabled Boolean @default(false)
   quantityBreaksEnabled  Boolean @default(true)
   thankYouEnabled        Boolean @default(false)
@@ -55,37 +55,29 @@ model Shop {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  scarcityConfig    ScarcityWidgetConfig?
-  upsellRules       UpsellRule[]
-  socialConfig      SocialWidgetConfig?
-  shippingConfig    ShippingBarConfig?
-  exitIntentConfig  ExitIntentConfig?
-  stickyBarConfig   StickyBarConfig?
-  upsellStyleConfig UpsellStyleConfig?
+  scarcityConfig        ScarcityWidgetConfig?
+  upsellRules           UpsellRule[]
+  socialConfig          SocialWidgetConfig?
+  shippingConfig        ShippingBarConfig?
+  exitIntentConfig      ExitIntentConfig?
+  stickyBarConfig       StickyBarConfig?
+  upsellStyleConfig     UpsellStyleConfig?
   productScarcityConfig ProductScarcityConfig?
-  translationConfig TranslationConfig?
+  translationConfig     TranslationConfig?
   quantityBreaksOffers  QuantityBreaksOffer[]
   checkoutUpsellFunnels CheckoutUpsellFunnel[]
 
   // Analytics
-  analyticsTimezone     String?   // IANA timezone used to bucket analytics days
-  analyticsCurrency     String?   // Shop currency code for revenue display
-  analyticsBackfilledAt DateTime? // When the 60-day order import finished
-  xpDailyStats          XpDailyStat[]
-  xpExposures           XpExposure[]
-  xpOrders              XpOrder[]
-
-  // Analytics
-  analyticsTimezone     String?   // IANA timezone used to bucket analytics days
-  analyticsCurrency     String?   // Shop currency code for revenue display
+  analyticsTimezone     String? // IANA timezone used to bucket analytics days
+  analyticsCurrency     String? // Shop currency code for revenue display
   analyticsBackfilledAt DateTime? // When the 60-day order import finished
   xpDailyStats          XpDailyStat[]
   xpExposures           XpExposure[]
   xpOrders              XpOrder[]
 
   // Thank-you page upsell
-  tyOffers              TyOffer[]
-  tyClaims              TyClaim[]
+  tyOffers TyOffer[]
+  tyClaims TyClaim[]
 
   @@index([shopDomain])
 }
@@ -124,10 +116,10 @@ model UpsellRule {
   shopId String
   shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
 
-  type                String  // "PRE_PURCHASE" | "IN_CART"
-  triggerProductId    String  // Shopify product GID (parent), or "ALL"
+  type                String // "PRE_PURCHASE" | "IN_CART"
+  triggerProductId    String // Shopify product GID (parent), or "ALL"
   triggerProductTitle String?
-  targetProductId     String  // Shopify product GID (upsell)
+  targetProductId     String // Shopify product GID (upsell)
   targetProductTitle  String?
   targetVariantId     String? // Shopify variant GID (optional pre-selection)
   targetProductPrice  String?
@@ -218,15 +210,15 @@ model StickyBarConfig {
   shopId String @unique
   shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
 
-  active              Boolean @default(false)
-  mobileOnly          Boolean @default(true)
-  showPrice           Boolean @default(true)
-  showCompareAtPrice  Boolean @default(true)
-  buttonStyle         String  @default("solid")
-  buttonLabel         String  @default("Add to Cart")
-  backgroundColor     String  @default("#0B0B0B")
-  accentColor         String  @default("#D4AF37")
-  textColor           String  @default("#FFFFFF")
+  active             Boolean @default(false)
+  mobileOnly         Boolean @default(true)
+  showPrice          Boolean @default(true)
+  showCompareAtPrice Boolean @default(true)
+  buttonStyle        String  @default("solid")
+  buttonLabel        String  @default("Add to Cart")
+  backgroundColor    String  @default("#0B0B0B")
+  accentColor        String  @default("#D4AF37")
+  textColor          String  @default("#FFFFFF")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -234,167 +226,165 @@ model StickyBarConfig {
 
 /// Styling Configuration for Pre-Purchase Modal and In-Cart Drawer
 model UpsellStyleConfig {
-  id                String   @id @default(cuid())
-  shopId            String   @unique
-  shop              Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  id     String @id @default(cuid())
+  shopId String @unique
+  shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
 
-  prePurchaseBg     String   @default("#0B0B0B")
-  prePurchaseAccent String   @default("#D4AF37")
-  prePurchaseText   String   @default("#FFFFFF")
+  prePurchaseBg     String @default("#0B0B0B")
+  prePurchaseAccent String @default("#D4AF37")
+  prePurchaseText   String @default("#FFFFFF")
 
-  inCartBg          String   @default("#0B0B0B")
-  inCartAccent      String   @default("#D4AF37")
-  inCartText        String   @default("#FFFFFF")
+  inCartBg     String @default("#0B0B0B")
+  inCartAccent String @default("#D4AF37")
+  inCartText   String @default("#FFFFFF")
 
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 /// Feature 8: Product Information Scarcity & Urgency Block (Theme Section Block)
 model ProductScarcityConfig {
-  id                 String   @id @default(cuid())
-  shopId             String   @unique
-  shop               Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  id     String @id @default(cuid())
+  shopId String @unique
+  shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
 
-  active             Boolean  @default(true)
-  designPreset       String   @default("pulse_meter") // pulse_meter | urgency_badge | luxury_card | flash_demand
-  stockSource        String   @default("shopify")     // shopify | manual_range
-  minStock           Int      @default(3)
-  maxStock           Int      @default(12)
-  lowStockThreshold  Int      @default(20)
+  active            Boolean @default(true)
+  designPreset      String  @default("pulse_meter") // pulse_meter | urgency_badge | luxury_card | flash_demand
+  stockSource       String  @default("shopify") // shopify | manual_range
+  minStock          Int     @default(3)
+  maxStock          Int     @default(12)
+  lowStockThreshold Int     @default(20)
 
-  headlineText       String   @default("Hurry! Only {stock} items left in stock")
-  subText            String?  @default("High demand: selling fast")
+  headlineText String  @default("Hurry! Only {stock} items left in stock")
+  subText      String? @default("High demand: selling fast")
 
-  accentColor        String   @default("#D4AF37")
-  backgroundColor    String   @default("#141414")
-  textColor          String   @default("#FFFFFF")
-  borderColor        String   @default("#2d2d2d")
+  accentColor     String @default("#D4AF37")
+  backgroundColor String @default("#141414")
+  textColor       String @default("#FFFFFF")
+  borderColor     String @default("#2d2d2d")
 
   // Product Targeting: ALL | SPECIFIC | EXCLUDE
-  targetMode         String   @default("ALL")
-  productIdsJson     String   @default("[]")
+  targetMode     String @default("ALL")
+  productIdsJson String @default("[]")
 
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 /// Feature 9: Multi-Language Translation Management
 model TranslationConfig {
-  id                String   @id @default(cuid())
-  shopId            String   @unique
-  shop              Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  id     String @id @default(cuid())
+  shopId String @unique
+  shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
 
-  dashboardLocale   String   @default("en") // "en" | "ar"
-  storefrontLocale  String   @default("ar") // "ar" | "en" | "auto"
-  translationsJson  String   @default("{}")
+  dashboardLocale  String @default("en") // "en" | "ar"
+  storefrontLocale String @default("ar") // "ar" | "en" | "auto"
+  translationsJson String @default("{}")
 
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 /// Feature 10: Quantity Breaks & Volume Discounts (Theme Block + Multi-Offer)
 model QuantityBreaksOffer {
-  id               String   @id @default(cuid())
-  shopId           String
-  shop             Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  id     String @id @default(cuid())
+  shopId String
+  shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
 
-  title            String   @default("Volume Discount Offer")
-  status           String   @default("ACTIVE") // "ACTIVE" | "DRAFT"
-  targetMode       String   @default("ALL")    // "ALL" | "SPECIFIC" | "EXCLUDE"
-  productIdsJson   String   @default("[]")
-  discountType     String   @default("PERCENTAGE") // "PERCENTAGE" | "FIXED_PER_ITEM"
-  tiersJson        String   @default("[]")     // Array of { quantity, discountValue, title, subtitle, badge }
-  designPreset     String   @default("modern_cards") // "modern_cards" | "grid_boxes" | "minimal_table" | "luxury_gold"
-  animationStyle   String   @default("shimmer") // "shimmer" | "shine_glow" | "floating_badge"
+  title          String @default("Volume Discount Offer")
+  status         String @default("ACTIVE") // "ACTIVE" | "DRAFT"
+  targetMode     String @default("ALL") // "ALL" | "SPECIFIC" | "EXCLUDE"
+  productIdsJson String @default("[]")
+  discountType   String @default("PERCENTAGE") // "PERCENTAGE" | "FIXED_PER_ITEM"
+  tiersJson      String @default("[]") // Array of { quantity, discountValue, title, subtitle, badge }
+  designPreset   String @default("modern_cards") // "modern_cards" | "grid_boxes" | "minimal_table" | "luxury_gold"
+  animationStyle String @default("shimmer") // "shimmer" | "shine_glow" | "floating_badge"
 
-  accentColor      String   @default("#D4AF37")
-  backgroundColor  String   @default("#141414")
-  borderColor      String   @default("#282828")
-  textColor        String   @default("#FFFFFF")
-  badgeBgColor     String   @default("#D4AF37")
-  badgeTextColor   String   @default("#000000")
+  accentColor     String @default("#D4AF37")
+  backgroundColor String @default("#141414")
+  borderColor     String @default("#282828")
+  textColor       String @default("#FFFFFF")
+  badgeBgColor    String @default("#D4AF37")
+  badgeTextColor  String @default("#000000")
 
-  showAddToCartBtn Boolean  @default(false)
-  addToCartBtnText String   @default("Add to Cart")
-  btnBgColor       String   @default("#D4AF37")
-  btnTextColor     String   @default("#000000")
+  showAddToCartBtn Boolean @default(false)
+  addToCartBtnText String  @default("Add to Cart")
+  btnBgColor       String  @default("#D4AF37")
+  btnTextColor     String  @default("#000000")
 
-  translationsJson String   @default("{}")
+  translationsJson String @default("{}")
 
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([shopId])
 }
 
-
 /// Feature 11: Checkout & Thank You Page Upsell Funnels
 model CheckoutUpsellFunnel {
-  id               String   @id @default(cuid())
-  shopId           String
-  shop             Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
-  
-  title            String   @default("Thank You Page Upsell")
-  status           String   @default("ACTIVE") // "ACTIVE" | "DRAFT"
-  
+  id     String @id @default(cuid())
+  shopId String
+  shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  title  String @default("Thank You Page Upsell")
+  status String @default("ACTIVE") // "ACTIVE" | "DRAFT"
+
   // Trigger Conditions
-  triggerMinTotal  Float?
-  triggerMaxTotal  Float?
-  triggerMode      String   @default("ALL") // "ALL" | "SPECIFIC_PRODUCTS"
+  triggerMinTotal       Float?
+  triggerMaxTotal       Float?
+  triggerMode           String @default("ALL") // "ALL" | "SPECIFIC_PRODUCTS"
   triggerProductIdsJson String @default("[]") // products that trigger this funnel
 
   // Display Settings
-  pageTarget       String   @default("THANK_YOU") // "POST_PURCHASE" | "THANK_YOU" | "ORDER_STATUS"
-  
-  // Offers associated with this funnel
-  offers           CheckoutUpsellOffer[]
+  pageTarget String @default("THANK_YOU") // "POST_PURCHASE" | "THANK_YOU" | "ORDER_STATUS"
 
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  // Offers associated with this funnel
+  offers CheckoutUpsellOffer[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([shopId])
 }
 
 model CheckoutUpsellOffer {
-  id               String   @id @default(cuid())
-  funnelId         String
-  funnel           CheckoutUpsellFunnel @relation(fields: [funnelId], references: [id], onDelete: Cascade)
-  
-  offerType        String   @default("PRODUCT_UPSELL") // "PRODUCT_UPSELL" | "DISCOUNT_CODE"
-  
+  id       String               @id @default(cuid())
+  funnelId String
+  funnel   CheckoutUpsellFunnel @relation(fields: [funnelId], references: [id], onDelete: Cascade)
+
+  offerType String @default("PRODUCT_UPSELL") // "PRODUCT_UPSELL" | "DISCOUNT_CODE"
+
   // If PRODUCT_UPSELL
-  targetProductId  String?
-  targetVariantId  String?
-  discountType     String?  @default("PERCENTAGE") // PERCENTAGE | FIXED_AMOUNT | FREE_SHIPPING
-  discountValue    Float?
-  
+  targetProductId String?
+  targetVariantId String?
+  discountType    String? @default("PERCENTAGE") // PERCENTAGE | FIXED_AMOUNT | FREE_SHIPPING
+  discountValue   Float?
+
   // If DISCOUNT_CODE
-  discountCode     String?
+  discountCode      String?
   discountCodeValue Float?
-  discountCodeType String?  @default("PERCENTAGE") // PERCENTAGE | FIXED_AMOUNT
-  
+  discountCodeType  String? @default("PERCENTAGE") // PERCENTAGE | FIXED_AMOUNT
+
   // Design & Copy
-  designPreset     String   @default("MODERN_CARD") // "MODERN_CARD" | "ELEGANT_BANNER"
-  headline         String   @default("Special Offer Just For You")
-  bodyText         String   @default("Add this item to your order now at a special discounted price.")
-  buttonText       String   @default("Add to Order")
-  declineText      String   @default("No thanks")
-  
+  designPreset String @default("MODERN_CARD") // "MODERN_CARD" | "ELEGANT_BANNER"
+  headline     String @default("Special Offer Just For You")
+  bodyText     String @default("Add this item to your order now at a special discounted price.")
+  buttonText   String @default("Add to Order")
+  declineText  String @default("No thanks")
+
   // Urgency Timer
-  showTimer        Boolean  @default(true)
-  timerSeconds     Int      @default(300)
-  timerText        String   @default("Offer expires in {timer}. Add now to include in this shipment without extra shipping fees!")
+  showTimer    Boolean @default(true)
+  timerSeconds Int     @default(300)
+  timerText    String  @default("Offer expires in {timer}. Add now to include in this shipment without extra shipping fees!")
 
   // Translations
-  translationsJson String   @default("{}")
+  translationsJson String @default("{}")
 
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([funnelId])
 }
-
 
 // ─────────────────────────────────────────────────────────────
 // Analytics
@@ -404,19 +394,19 @@ model CheckoutUpsellOffer {
 /// feature: "_store" (sessions) | scarcity | productScarcity | quantityBreaks | prePurchase | inCart | shippingBar | exitIntent | socialBar
 /// For feature "_store", impressions = sessions.
 model XpDailyStat {
-  shopId      String
-  shop        Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
-  day         DateTime @db.Date
-  feature     String
-  offerId     String   @default("")
-  dim         String   @default("")
-  device      String   @default("d") // "m" | "d"
+  shopId  String
+  shop    Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  day     DateTime @db.Date
+  feature String
+  offerId String   @default("")
+  dim     String   @default("")
+  device  String   @default("d") // "m" | "d"
 
-  impressions Int      @default(0)
-  clicks      Int      @default(0)
-  actions     Int      @default(0)
-  dismissals  Int      @default(0)
-  value       Float    @default(0)
+  impressions Int   @default(0)
+  clicks      Int   @default(0)
+  actions     Int   @default(0)
+  dismissals  Int   @default(0)
+  value       Float @default(0)
 
   @@id([shopId, day, feature, offerId, dim, device])
   @@index([shopId, day])
@@ -446,8 +436,8 @@ model XpOrder {
   currency       String
   subtotal       Float
   total          Float
-  directRevenue  Float    @default(0)  // revenue of XPoost-tagged lines, after discounts
-  discountCost   Float    @default(0)  // discounts on XPoost-tagged lines
+  directRevenue  Float    @default(0) // revenue of XPoost-tagged lines, after discounts
+  discountCost   Float    @default(0) // discounts on XPoost-tagged lines
   sourcesJson    String   @default("[]") // [{ f, o, d, qty, rev, disc, title }]
   influencedJson String   @default("[]") // features the buyer saw in the 7 days before ordering
   visitorId      String?
@@ -463,19 +453,19 @@ model XpOrder {
 // ─────────────────────────────────────────────────────────────
 
 model TyOffer {
-  id             String   @id @default(cuid())
+  id             String    @id @default(cuid())
   shopId         String
-  shop           Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  shop           Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
   name           String
-  kind           String   // reward | addon | shiptogether
-  design         String   // gift_reveal | vip_ladder | ship_timer | routine | spotlight | minimal
-  enabled        Boolean  @default(true)
-  priority       Int      @default(100) // lower number = checked first
-  configJson     String   @default("{}") // TyConfig
-  conditionsJson String   @default("{}") // TyConditions
-  textsJson      String   @default("{}") // TyTextsByLang
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  kind           String // reward | addon | shiptogether
+  design         String // gift_reveal | vip_ladder | ship_timer | routine | spotlight | minimal
+  enabled        Boolean   @default(true)
+  priority       Int       @default(100) // lower number = checked first
+  configJson     String    @default("{}") // TyConfig
+  conditionsJson String    @default("{}") // TyConditions
+  textsJson      String    @default("{}") // TyTextsByLang
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
   claims         TyClaim[]
 
   @@index([shopId, enabled, priority])
@@ -488,7 +478,7 @@ model TyClaim {
   shop        Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
   offerId     String
   offer       TyOffer  @relation(fields: [offerId], references: [id], onDelete: Cascade)
-  orderId     String   // order GID
+  orderId     String // order GID
   orderNumber String?
   kind        String
   expiresAt   DateTime
@@ -505,10 +495,10 @@ model TyCode {
   shopId     String
   claimId    String
   claim      TyClaim   @relation(fields: [claimId], references: [id], onDelete: Cascade)
-  code       String    // stored upper-case
-  type       String    // reward | addon_percent | addon_shipping
+  code       String // stored upper-case
+  type       String // reward | addon_percent | addon_shipping
   redeemedAt DateTime?
-  orderName  String?   // the order that used it
+  orderName  String? // the order that used it
 
   @@unique([shopId, code])
   @@index([claimId])
