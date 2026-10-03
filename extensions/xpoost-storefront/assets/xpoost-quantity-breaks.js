@@ -255,16 +255,14 @@
     // Apply layout and animation classes
     root.className = "xpp-qb-root xpp-qb-preset-" + preset + " xpp-qb-anim-" + anim;
 
-    // Pick default selected tier (tier with badge, or 2nd tier, or 1st tier)
+    // Default selected tier: always the single-item tier (quantity 1), otherwise the first tier.
+    // Badges ("Most Popular", etc.) still highlight a tier visually, but never change the default selection.
     var selectedIndex = 0;
     for (var i = 0; i < tiers.length; i++) {
-      if (tiers[i].badge && tiers[i].badge.trim() !== "") {
+      if (parseInt(tiers[i].quantity || 1, 10) === 1) {
         selectedIndex = i;
         break;
       }
-    }
-    if (selectedIndex === 0 && tiers.length > 1) {
-      selectedIndex = 1;
     }
 
     function calculateTier(tier) {

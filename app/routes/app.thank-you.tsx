@@ -287,20 +287,17 @@ function ListView({ data }: { data: LoaderData }) {
       </div>
 
       <div className="ty-card">
-        <h3 className="ty-title">Set up in 3 steps</h3>
+        <h3 className="ty-title">Set up in 2 steps</h3>
         <ol className="ty-steps">
           <li>
-            <b>Deploy the extension.</b> Run <code>shopify app deploy</code> once so the thank-you block exists in your store.
-          </li>
-          <li>
-            <b>Place the block.</b>{" "}
+            <b>Add the block to your Thank-you page.</b>{" "}
             <a href={data.checkoutEditorUrl} target="_blank" rel="noreferrer">
               Open the checkout editor → Thank-you page → Add app block → “XPoost Thank-you Upsell”
             </a>
             . Drag it where you like (under the order summary works well), then save.
           </li>
           <li>
-            <b>Create an offer below and switch it on.</b> Place a test order (use Shopify's bogus gateway or a 100% discount) to see it live.
+            <b>Create an offer below and switch it on.</b> Place a test order to see it live.
           </li>
         </ol>
       </div>

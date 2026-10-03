@@ -188,7 +188,8 @@ export default function XPoostDashboard() {
         <CaseStudyStrip />
       </div>
 
-      <s-section heading="Conversion Features">
+      <section className="xp-panel">
+        <h2 className="xp-panel-title">Conversion Features</h2>
         <div className="xp-grid">
           {featureList.map((f) => (
             <div key={f.id} className={`xp-card ${f.enabled ? "is-enabled" : ""}`}>
@@ -210,9 +211,10 @@ export default function XPoostDashboard() {
             </div>
           ))}
         </div>
-      </s-section>
+      </section>
 
-      <s-section heading="Theme App Extension Setup">
+      <section className="xp-panel">
+        <h2 className="xp-panel-title">Theme App Extension Setup</h2>
         <div className="xp-setup-guide">
           <div className="xp-step">
             <div className="xp-step-num">1</div>
@@ -236,7 +238,7 @@ export default function XPoostDashboard() {
             </div>
           </div>
         </div>
-      </s-section>
+      </section>
     </s-page>
   );
 }
@@ -626,6 +628,33 @@ function FeatureIcon({ id }: { id: string }) {
 }
 
 const DASHBOARD_STYLES = `
+  /* Section panels below the hero: same dark surface, border and radius as the hero */
+  .xp-panel {
+    background: linear-gradient(135deg, #0B0B0B 0%, #141414 100%);
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    border-radius: 12px;
+    padding: 24px 28px 28px;
+    color: #FFFFFF;
+    margin-bottom: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  }
+  .xp-panel-title {
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: #D4AF37;
+  }
+  .xp-panel .xp-grid,
+  .xp-panel .xp-setup-guide {
+    margin-top: 14px;
+  }
+  @media (max-width: 640px) {
+    .xp-panel {
+      padding: 18px 16px 20px;
+    }
+  }
   .xp-hero {
     background: linear-gradient(135deg, #0B0B0B 0%, #171717 60%, #201b10 100%);
     border: 1px solid rgba(212, 175, 55, 0.25);

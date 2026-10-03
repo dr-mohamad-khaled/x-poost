@@ -3203,13 +3203,23 @@ const PRE_PURCHASE_STYLES = `
   }
   .xp-pre-layout {
     display: grid;
-    grid-template-columns: 1fr 380px;
+    /* minmax(0, 1fr): without it the form column refuses to shrink and pushes the preview off-screen */
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 400px);
+    align-items: start;
     gap: 24px;
     margin-top: 12px;
   }
-  @media (max-width: 992px) {
+  .xp-pre-config,
+  .xp-pre-preview-wrap {
+    min-width: 0;
+  }
+  @media (max-width: 1100px) {
     .xp-pre-layout {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .xp-preview-sticky {
+      position: static !important;
+      max-height: none !important;
     }
   }
   .xp-sub {
@@ -3576,8 +3586,20 @@ const PRE_PURCHASE_STYLES = `
   .xp-preview-sticky {
     position: sticky;
     top: 20px;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+  }
+  .xp-modal-mock img {
+    max-width: 100%;
   }
   .xp-modal-mock {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    overflow-wrap: anywhere;
     background: #0B0B0B;
     border: 1px solid rgba(212, 175, 55, 0.4);
     border-radius: 14px;

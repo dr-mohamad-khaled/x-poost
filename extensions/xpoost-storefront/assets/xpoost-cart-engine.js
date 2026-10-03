@@ -345,7 +345,11 @@
       } catch (e) {}
     }
 
-    var basePath = proxyPath || "/apps/xpoost/config";
+    // Some blocks already pass "?locale=xx" in the path; strip it so we never send two locale params
+    // (a duplicated param makes the app proxy answer HTTP 400 and the whole cart engine stays silent).
+    var basePath = String(proxyPath || "/apps/xpoost/config")
+      .replace(/([?&])locale=[^&]*&?/g, "$1")
+      .replace(/[?&]$/, "");
     var sep = basePath.indexOf("?") === -1 ? "?" : "&";
     var urlWithLocale = basePath + sep + "locale=" + encodeURIComponent(detectedLoc);
 
@@ -1650,6 +1654,104 @@
     blockContainers.forEach(function (c) { c.innerHTML = ""; });
   }
 
+  /* Places the in-cart upsell card directly below the cart line that triggered it.
+     Falls back to the old position (above the footer / below the items) when the line cannot be found. */
+  var XPC_ROW_SELECTOR =
+    "tr.cart-item, .cart-item, .cart-items__table-row, .cart-drawer__item, [data-cart-item], cart-drawer-items li, .cart-items__row";
+
+  function xpcFindTriggerIndex(rule) {
+    var items = cartState.items || [];
+    if (!items.length) return -1;
+    if (rule && rule.triggerProductId && rule.triggerProductId !== "ALL") {
+      var tokens = String(rule.triggerProductId).split(",").map(function (tok) {
+        return tok.replace(/[^0-9]/g, "").trim();
+      });
+      for (var i = 0; i < items.length; i++) {
+        var itemVar = String(items[i].variant_id || items[i].id || "").replace(/[^0-9]/g, "");
+        var itemProd = String(items[i].product_id || "").replace(/[^0-9]/g, "");
+        if (tokens.some(function (tok) { return tok && (tok === itemProd || tok === itemVar); })) return i;
+      }
+    }
+    // Storewide offer: no specific trigger product, so sit under the last line
+    return items.length - 1;
+  }
+
+  function xpcFindLineElement(item, index) {
+    var scopes = [
+      document.querySelector("cart-drawer-component"),
+      document.querySelector("cart-drawer"),
+      document.querySelector(".cart-drawer"),
+      document.querySelector("form[action*='/cart']"),
+      document.body
+    ].filter(Boolean);
+
+    for (var s = 0; s < scopes.length; s++) {
+      var scope = scopes[s];
+
+      // 1. Match by the line item key when the theme exposes it
+      if (item && item.key) {
+        var attrs = ["data-key", "data-line-key", "data-cart-item-key", "data-item-key", "data-id"];
+        for (var a = 0; a < attrs.length; a++) {
+          try {
+            var byKey = scope.querySelector("[" + attrs[a] + '="' + String(item.key).replace(/"/g, '\\"') + '"]');
+            if (byKey) return byKey.closest(XPC_ROW_SELECTOR) || byKey;
+          } catch (e) {}
+        }
+      }
+
+      // 2. Match by position: the rendered rows follow the same order as cart.items
+      var all = Array.prototype.slice.call(scope.querySelectorAll(XPC_ROW_SELECTOR)).filter(function (el) {
+        return !el.closest(".xpc-in-cart-auto, .xpc-in-cart-row, .xpoost-in-cart-upsell-block");
+      });
+      var rows = all.filter(function (el) {
+        // keep the outermost rows only (ignore elements nested inside another row)
+        return !all.some(function (other) { return other !== el && other.contains(el); });
+      });
+      if (rows.length === (cartState.items || []).length && rows[index]) return rows[index];
+    }
+    return null;
+  }
+
+  function xpcPositionUnderTrigger(wrap, rule) {
+    try {
+      if (!wrap || !wrap.isConnected) return false;
+      var index = xpcFindTriggerIndex(rule);
+      if (index < 0) return false;
+      var row = xpcFindLineElement((cartState.items || [])[index], index);
+      if (!row || !row.parentNode) return false;
+
+      var holder = wrap.closest ? wrap.closest(".xpc-in-cart-row") : null;
+      var tag = row.tagName === "TR" ? "tr" : row.tagName === "LI" ? "li" : "";
+
+      if (tag) {
+        if (!holder) {
+          holder = document.createElement(tag);
+          holder.className = "xpc-in-cart-row";
+          if (tag === "tr") {
+            var td = document.createElement("td");
+            td.colSpan = 20;
+            td.style.cssText = "padding:0;border:0;";
+            td.appendChild(wrap);
+            holder.appendChild(td);
+          } else {
+            holder.style.cssText = "list-style:none;margin:0;padding:0;";
+            holder.appendChild(wrap);
+          }
+        }
+        if (holder.previousElementSibling !== row) row.parentNode.insertBefore(holder, row.nextSibling);
+      } else {
+        if (holder) {
+          holder.parentNode.insertBefore(wrap, holder);
+          holder.remove();
+        }
+        if (wrap.previousElementSibling !== row) row.parentNode.insertBefore(wrap, row.nextSibling);
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   function renderInCartUpsell() {
     var config = configStore.inCart;
     if (!config || !config.active) {
@@ -1756,7 +1858,8 @@
     // Check if the in-cart drawer upsell is ALREADY displayed for this exact product
     var existingDrawerUpsell = document.getElementById("xpc-in-cart-drawer");
     if (existingDrawerUpsell && existingDrawerUpsell.isConnected && existingDrawerUpsell.getAttribute("data-variant-id") === targetVariant) {
-      // Already rendered and connected with this variant -- exit cleanly to avoid flashing!
+      // Already rendered and connected with this variant -- keep it right under its trigger item, then exit to avoid flashing!
+      xpcPositionUnderTrigger(existingDrawerUpsell, activeRule);
       return;
     }
     // If the element exists but was orphaned by theme DOM morphing, clean it up
@@ -1826,6 +1929,10 @@
       }
     }
 
+    // Move the card directly below the cart line that triggered it (drawer first, then the cart page)
+    var placedDrawer = document.getElementById("xpc-in-cart-drawer");
+    if (placedDrawer) xpcPositionUnderTrigger(placedDrawer, activeRule);
+
     // 3. Cart Page Auto-Injection
     var cartPageItems = document.querySelector(".cart__items, table.cart-items, form[action*='/cart'] .cart__footer");
     if (cartPageItems && !drawerTarget) {
@@ -1843,6 +1950,7 @@
         existingPageUpsell.innerHTML = cardInnerHtml;
         attachAddEvent(existingPageUpsell, targetVariant, activeRule.discountCode, activeRule.discountPercent, activeRule);
       }
+      xpcPositionUnderTrigger(document.getElementById("xpc-in-cart-page"), activeRule);
     }
   }
 

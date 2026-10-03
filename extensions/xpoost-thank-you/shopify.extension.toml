@@ -1,7 +1,7 @@
 api_version = "2026-07"
 
 [[extensions]]
-name = "Thank You Page Upselling & Offers"
+name = "XPoost Thank-you Upsell"
 handle = "xpoost-thank-you"
 uid = "db2845cb-6ed7-5b4e-96e7-ad1fd8ce1f146b17a941"
 type = "ui_extension"

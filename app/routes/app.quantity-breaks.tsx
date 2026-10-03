@@ -521,7 +521,7 @@ export default function QuantityBreaksPage() {
   };
 
   // Live Interactive Preview State
-  const [selectedPreviewIndex, setSelectedPreviewIndex] = useState(1);
+  const [selectedPreviewIndex, setSelectedPreviewIndex] = useState(0);
   const samplePrice = 50.0;
   const isPreviewRtl = selectedLang === "ar";
 

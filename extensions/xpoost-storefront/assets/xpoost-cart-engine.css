@@ -902,8 +902,10 @@
   width: 100% !important;
   max-width: 100% !important;
   margin: 0 auto !important;
-  background: linear-gradient(165deg, rgba(26, 26, 26, 0.95) 0%, rgba(14, 14, 14, 0.98) 100%) !important;
-  border: 1px solid rgba(212, 175, 55, 0.32) !important;
+  /* honour the colours chosen in the XPoost dashboard (set inline as --xpc-bg / --xpc-gold / --xpc-text) */
+  background: var(--xpc-bg, #0B0B0B) !important;
+  border: 1px solid var(--xpc-gold, #D4AF37) !important;
+  border: 1px solid color-mix(in srgb, var(--xpc-gold, #D4AF37) 55%, transparent) !important;
   border-radius: 12px !important;
   padding: 13px 15px !important;
   color: var(--xpc-text, #FFFFFF) !important;
@@ -926,17 +928,19 @@
 .xpc-in-cart-title {
   font-size: 11px !important;
   font-weight: 800 !important;
-  color: var(--xpc-gold, #D4AF37) !important;
+  color: var(--xpc-text, #FFFFFF) !important;
   text-transform: uppercase !important;
   letter-spacing: 0.9px !important;
   margin-bottom: 10px !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 6px !important;
+  display: block !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+  line-height: 1.35 !important;
 }
 
 .xpc-in-cart-item {
   display: flex !important;
+  flex-wrap: wrap !important;
   gap: 12px !important;
   align-items: center !important;
   width: 100% !important;
@@ -993,22 +997,19 @@
 }
 
 .xpc-in-cart-details {
-  flex: 1 1 auto !important;
+  flex: 1 1 140px !important;
   min-width: 0 !important;
-  overflow: hidden !important;
+  /* no overflow:hidden here: it was cutting off the price row and the discount badge */
 }
 
 .xpc-in-cart-name {
   font-size: 13px !important;
   font-weight: 600 !important;
-  color: #fff !important;
-  display: -webkit-box !important;
-  -webkit-line-clamp: 2 !important;
-  -webkit-box-orient: vertical !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
+  color: var(--xpc-text, #fff) !important;
+  display: block !important;
   line-height: 1.35 !important;
   white-space: normal !important;
+  overflow-wrap: anywhere !important;
   word-break: break-word !important;
   margin-bottom: 3px !important;
   width: 100% !important;
@@ -1017,24 +1018,26 @@
 
 .xpc-in-cart-pricing {
   display: flex !important;
-  gap: 6px !important;
+  flex-wrap: wrap !important;
+  gap: 4px 6px !important;
   align-items: center !important;
 }
 
 .xpc-in-cart-price {
   font-size: 14px !important;
   font-weight: 800 !important;
-  color: var(--xpc-gold, #D4AF37) !important;
+  color: var(--xpc-text, #FFFFFF) !important;
 }
 
 .xpc-in-cart-orig {
   font-size: 11px !important;
-  color: #777 !important;
+  color: var(--xpc-text, #777) !important;
+  opacity: 0.6 !important;
   text-decoration: line-through !important;
 }
 
 .xpc-in-cart-btn {
-  background: linear-gradient(135deg, #E5C358 0%, #D4AF37 100%) !important;
+  background: var(--xpc-gold, #D4AF37) !important;
   color: #0B0B0B !important;
   border: none !important;
   border-radius: 8px !important;
