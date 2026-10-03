@@ -1,11 +1,11 @@
 api_version = "2026-07"
 
 [[extensions]]
-name = "t:name"
+name = "Thank You Page Upselling & Offers"
 handle = "xpoost-thank-you"
 uid = "db2845cb-6ed7-5b4e-96e7-ad1fd8ce1f146b17a941"
 type = "ui_extension"
-description = "t:description"
+description = "Next-order reward, add-on products or a ship-together countdown on the order confirmation page."
 
   [[extensions.targeting]]
   module = "./src/Checkout.jsx"

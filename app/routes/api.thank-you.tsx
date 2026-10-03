@@ -38,7 +38,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   let shopDomain = "";
   try {
-    shopDomain = new URL(sessionToken.dest).host;
+    // `dest` is usually a bare shop domain ("shop.myshopify.com"), not a full URL
+    const dest = String(sessionToken.dest || "");
+    shopDomain = (/^https?:\/\//i.test(dest) ? new URL(dest).host : dest.replace(/\/.*$/, "")).toLowerCase();
+    if (!shopDomain) throw new Error("empty dest");
   } catch {
     return reply({ show: false }, 400);
   }

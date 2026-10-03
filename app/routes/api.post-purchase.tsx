@@ -23,7 +23,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const reply = (body: unknown, status = 200) => cors(Response.json(body, { status, headers: { "Cache-Control": "no-store" } }));
   let shopDomain = "";
   try {
-    shopDomain = new URL(sessionToken.dest).host;
+    const dest = String(sessionToken.dest || "");
+    shopDomain = (/^https?:\/\//i.test(dest) ? new URL(dest).host : dest.replace(/\/.*$/, "")).toLowerCase();
+    if (!shopDomain) throw new Error("empty dest");
   } catch {
     return reply({ show: false }, 400);
   }
