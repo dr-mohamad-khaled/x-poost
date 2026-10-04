@@ -1,10 +1,25 @@
 {
-  "name": "xpoost-perks",
-  "private": true,
-  "version": "1.0.0",
-  "license": "UNLICENSED",
-  "type": "module",
-  "dependencies": {
-    "@shopify/shopify_function": "^2.0.0"
-  }
+    "name":  "xpoost-perks",
+    "private":  true,
+    "version":  "1.0.0",
+    "license":  "UNLICENSED",
+    "type":  "module",
+    "dependencies":  {
+                         "@shopify/shopify_function":  "^2.0.0"
+                     },
+    "codegen":  {
+                    "config":  {
+                                   "omitOperationSuffix":  true
+                               },
+                    "documents":  "src/*.graphql",
+                    "generates":  {
+                                      "./generated/api.ts":  {
+                                                                 "plugins":  [
+                                                                                 "typescript",
+                                                                                 "typescript-operations"
+                                                                             ]
+                                                             }
+                                  },
+                    "schema":  "schema.graphql"
+                }
 }
