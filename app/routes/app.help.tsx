@@ -636,19 +636,19 @@ const FEATURE_ICON: Record<FeatureId, string> = {
   thankYou: "book",
 };
 
-/** Adds .is-in to .xh-reveal elements as they scroll into view. */
+/** Marks .xh-reveal elements with data-in as they scroll into view (an attribute, so React className re-renders never strip it). */
 function useReveal(deps: unknown[]) {
   useEffect(() => {
-    const els = Array.from(document.querySelectorAll<HTMLElement>(".xh-reveal:not(.is-in)"));
+    const els = Array.from(document.querySelectorAll<HTMLElement>(".xh-reveal:not([data-in])"));
     if (typeof IntersectionObserver === "undefined") {
-      els.forEach((e) => e.classList.add("is-in"));
+      els.forEach((e) => e.setAttribute("data-in", "1"));
       return;
     }
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((en) => {
           if (en.isIntersecting) {
-            en.target.classList.add("is-in");
+            en.target.setAttribute("data-in", "1");
             io.unobserve(en.target);
           }
         });
@@ -656,7 +656,12 @@ function useReveal(deps: unknown[]) {
       { threshold: 0.12 },
     );
     els.forEach((e) => io.observe(e));
-    return () => io.disconnect();
+    // Safety net: never leave content hidden if the observer does not fire.
+    const t = window.setTimeout(() => els.forEach((e) => e.setAttribute("data-in", "1")), 2500);
+    return () => {
+      window.clearTimeout(t);
+      io.disconnect();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
 }
@@ -1066,7 +1071,7 @@ const HELP_STYLES = `
 
   /* reveal on scroll */
   .xh-reveal { opacity: 0; transform: translateY(14px); transition: opacity .55s ease, transform .55s cubic-bezier(.2,.7,.2,1); }
-  .xh-reveal.is-in { opacity: 1; transform: none; }
+  .xh-reveal[data-in] { opacity: 1; transform: none; }
 
   /* buttons */
   .xh-btn { display:inline-flex; align-items:center; gap:6px; padding: 8px 14px; border-radius: 8px; border:1px solid rgba(212,175,55,.5); color: var(--gold); background: rgba(212,175,55,.06); font-size: 12.5px; font-weight: 700; text-decoration:none; cursor:pointer; transition: background .2s, transform .2s, box-shadow .2s; }
@@ -1241,8 +1246,8 @@ const HELP_STYLES = `
 
   /* best practices */
   .xh-bp { display:grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
-  .xh-bp-card { background: var(--card); border:1px solid var(--line); border-radius: 12px; padding: 16px; transition: border-color .25s, transform .25s, box-shadow .25s, opacity .55s ease; }
-  .xh-bp-card.is-in:hover, .xh-bp-card.is-hot.is-in:hover { transform: translateY(-4px); border-color: rgba(212,175,55,.55); box-shadow: 0 12px 28px rgba(0,0,0,.4); }
+  .xh-bp-card { background: var(--card); border:1px solid var(--line); border-radius: 12px; padding: 16px; transition: border-color .25s, transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .25s, opacity .55s ease; }
+  .xh-bp-card[data-in]:hover, .xh-bp-card.is-hot[data-in]:hover { transform: translateY(-4px); border-color: rgba(212,175,55,.55); box-shadow: 0 12px 28px rgba(0,0,0,.4); }
   .xh-bp-icon { width:36px; height:36px; border-radius:10px; display:grid; place-items:center; color: var(--gold); background: rgba(212,175,55,.1); border:1px solid rgba(212,175,55,.3); margin-bottom:10px; }
   .xh-bp-card h3 { margin:0 0 6px; font-size:14.5px; }
   .xh-bp-card p { margin:0; font-size: 12.8px; line-height:1.65; color: var(--muted); }
