@@ -27,14 +27,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return {
     shopDomain: session.shop,
     features: {
-      scarcity: {
-        id: "scarcity",
-        title: "Urgency & Social Proof Notifications",
-        description: "Display recent purchase activity, stock scarcity alerts, and limited-time countdown offers in the corner of your store.",
-        route: "/app/scarcity",
-        enabled: shopData?.scarcityEnabled ?? false,
-        badge: shopData?.scarcityConfig?.active ? "Active" : "Disabled",
-      },
       prePurchase: {
         id: "prePurchase",
         title: "Pre-Purchase Upsell Modal",
@@ -51,13 +43,13 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         enabled: shopData?.inCartUpsellEnabled ?? false,
         badge: (shopData?.upsellRules?.filter((r) => r.type === "IN_CART" && r.active).length ?? 0) > 0 ? "Active" : "No rules active",
       },
-      socialBar: {
-        id: "socialBar",
-        title: "Customer Support & Social Bar",
-        description: "Provide floating 1-click WhatsApp customer support, links to your official social channels, and VIP community access.",
-        route: "/app/social-bar",
-        enabled: shopData?.socialBarEnabled ?? false,
-        badge: shopData?.socialConfig?.active ? "Active" : "Disabled",
+      thankYou: {
+        id: "thankYou",
+        title: "Thank-You Page Upsell & Rewards",
+        description: "Turn the order confirmation page into extra revenue: a unique next-order code, matching products, or a ship-together countdown, with conditions and translations.",
+        route: "/app/thank-you",
+        enabled: shopData?.thankYouEnabled ?? false,
+        badge: tyActive > 0 ? `${tyActive} Active` : "No active offers",
       },
       shippingBar: {
         id: "shippingBar",
@@ -66,22 +58,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         route: "/app/shipping-bar",
         enabled: shopData?.shippingBarEnabled ?? false,
         badge: shopData?.shippingConfig?.active ? "Active" : "Disabled",
-      },
-      productScarcity: {
-        id: "productScarcity",
-        title: "Product Stock Scarcity Block",
-        description: "Display live low-stock meters, flash demand bars, and urgency badges directly on your product pages with 4 high-converting designs.",
-        route: "/app/product-scarcity",
-        enabled: shopData?.productScarcityEnabled ?? false,
-        badge: shopData?.productScarcityConfig?.active ? "Active" : "Disabled",
-      },
-      thankYou: {
-        id: "thankYou",
-        title: "Thank-You Page Upsell & Rewards",
-        description: "Turn the order confirmation page into extra revenue: a unique next-order code, matching products, or a ship-together countdown, with conditions and translations.",
-        route: "/app/thank-you",
-        enabled: shopData?.thankYouEnabled ?? false,
-        badge: tyActive > 0 ? `${tyActive} Active` : "No active offers",
       },
       quantityBreaks: {
         id: "quantityBreaks",
@@ -92,6 +68,30 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         badge: (shopData?.quantityBreaksOffers?.filter((o: any) => o.status === "ACTIVE").length ?? 0) > 0
           ? `${shopData?.quantityBreaksOffers?.filter((o: any) => o.status === "ACTIVE").length} Active`
           : "No active offers",
+      },
+      productScarcity: {
+        id: "productScarcity",
+        title: "Product Stock Scarcity Block",
+        description: "Display live low-stock meters, flash demand bars, and urgency badges directly on your product pages with 4 high-converting designs.",
+        route: "/app/product-scarcity",
+        enabled: shopData?.productScarcityEnabled ?? false,
+        badge: shopData?.productScarcityConfig?.active ? "Active" : "Disabled",
+      },
+      socialBar: {
+        id: "socialBar",
+        title: "Customer Support & Social Bar",
+        description: "Provide floating 1-click WhatsApp customer support, links to your official social channels, and VIP community access.",
+        route: "/app/social-bar",
+        enabled: shopData?.socialBarEnabled ?? false,
+        badge: shopData?.socialConfig?.active ? "Active" : "Disabled",
+      },
+      scarcity: {
+        id: "scarcity",
+        title: "Urgency & Social Proof Notifications",
+        description: "Display recent purchase activity, stock scarcity alerts, and limited-time countdown offers in the corner of your store.",
+        route: "/app/scarcity",
+        enabled: shopData?.scarcityEnabled ?? false,
+        badge: shopData?.scarcityConfig?.active ? "Active" : "Disabled",
       },
     },
   };

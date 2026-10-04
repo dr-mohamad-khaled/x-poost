@@ -147,14 +147,14 @@ export default function App() {
         <a href="/app/analytics">{(i18n as any).navAnalytics || "Analytics"}</a>
         <a href="/app/pricing">{i18n.navPricing || "Plans & Pricing"}</a>
         <a href="/app/translations">{i18n.navTranslations || "Translations & Languages"}</a>
-        <a href="/app/product-scarcity">{i18n.navProductScarcity || "Product Stock Scarcity"}</a>
-        <a href="/app/quantity-breaks">{i18n.navQuantityBreaks || "Quantity Breaks"}</a>
-        <a href="/app/scarcity">{i18n.navUrgency || "Urgency Notifications"}</a>
         <a href="/app/pre-purchase">{i18n.navPrePurchase || "Pre-Purchase Upsell"}</a>
         <a href="/app/in-cart">{i18n.navInCart || "Cart Drawer Upsell"}</a>
-        <a href="/app/social-bar">{i18n.navSocialBar || "Support & Social Bar"}</a>
-        <a href="/app/shipping-bar">{i18n.navShippingBar || "Free Shipping Bar"}</a>
         <a href="/app/thank-you">{(i18n as any).navThankYou || "Thank-you Page Upsell"}</a>
+        <a href="/app/shipping-bar">{i18n.navShippingBar || "Free Shipping Bar"}</a>
+        <a href="/app/quantity-breaks">{i18n.navQuantityBreaks || "Quantity Breaks"}</a>
+        <a href="/app/product-scarcity">{i18n.navProductScarcity || "Product Stock Scarcity"}</a>
+        <a href="/app/social-bar">{i18n.navSocialBar || "Support & Social Bar"}</a>
+        <a href="/app/scarcity">{i18n.navUrgency || "Urgency Notifications"}</a>
         <a href="/app/help">{isAr ? "المساعدة والدليل" : "Help & Guide"}</a>
         {EXIT_INTENT_AVAILABLE ? <a href="/app/exit-intent">{i18n.navExitIntent || "Exit-Intent Recovery"}</a> : null}
       </NavMenu>

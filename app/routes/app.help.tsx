@@ -52,52 +52,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 const FEATURES: Feature[] = [
   {
-    id: "shippingBar",
-    route: "/app/shipping-bar",
-    category: "aov",
-    name: { en: "Tiered Perks & Free Shipping Bar", ar: "شريط المزايا المتدرجة والشحن المجاني" },
-    goal: {
-      en: "Show shoppers how close they are to the next reward, so they add one more item to reach it and your average order value grows.",
-      ar: "يوضح للعميل كم تبقّى له ليفتح المكافأة التالية، فيضيف منتجًا إضافيًا للوصول إليها وترتفع قيمة متوسط الطلب.",
-    },
-    how: {
-      en: [
-        "Set up to a few milestones (for example 500, 1,000 and 2,000) in your store currency. Shoppers on another currency see them converted automatically.",
-        "Pick what each milestone gives: display only, free shipping, a percentage or fixed amount off shipping, or a percentage or fixed amount off the whole order. Rewards are applied automatically at checkout, no discount code needed.",
-        "Optionally show the bar only in selected countries, or give each country group its own thresholds and rewards. It follows the country your customer picks in your store's country selector.",
-        "Choose a layout and your own colors, including a light preset for light stores, then save.",
-      ],
-      ar: [
-        "حدّد عدة مراحل (مثل 500 و1,000 و2,000) بعملة متجرك. العميل الذي يتصفح بعملة أخرى يراها محوّلة تلقائيًا.",
-        "اختر مكافأة كل مرحلة: عرض فقط، أو شحن مجاني، أو خصم بنسبة أو مبلغ ثابت على الشحن، أو خصم بنسبة أو مبلغ ثابت على الطلب كله. تُطبَّق المكافآت تلقائيًا عند الدفع بدون كود خصم.",
-        "يمكنك إظهار الشريط في دول محددة فقط، أو إعطاء كل مجموعة دول مراحل ومكافآت خاصة بها. يتبع الشريط الدولة التي يختارها العميل من محدد الدولة في متجرك.",
-        "اختر التصميم وألوانك الخاصة، بما في ذلك نمط فاتح للمتاجر الفاتحة، ثم احفظ.",
-      ],
-    },
-    result: {
-      en: "A higher average order value and fewer abandoned carts, because the reward is visible and the goal feels within reach.",
-      ar: "ارتفاع متوسط قيمة الطلب وانخفاض عدد السلات المتروكة، لأن المكافأة ظاهرة والهدف يبدو قريبًا.",
-    },
-    watch: {
-      en: "Average order value, and how many carts reach each milestone (Analytics).",
-      ar: "متوسط قيمة الطلب، وعدد السلات التي تصل إلى كل مرحلة (صفحة التحليلات).",
-    },
-    tips: {
-      en: [
-        "Set the first milestone a little above your current average order value, so it is a small step rather than a leap.",
-        "Only promise what you can afford: check your margin at every threshold, especially for order discounts.",
-        "If you use free shipping, make sure your shipping profile has a rate for the countries you sell to. The reward discounts an existing rate.",
-        "On a light store theme, press the Light preset so the text stays readable.",
-      ],
-      ar: [
-        "اجعل أول مرحلة أعلى قليلًا من متوسط قيمة الطلب الحالي لديك، لتكون خطوة صغيرة وليست قفزة.",
-        "لا تعد إلا بما تتحمله: راجع هامش ربحك عند كل مرحلة، خاصة مع خصومات الطلب.",
-        "عند استخدام الشحن المجاني، تأكد أن ملف الشحن لديك يحتوي على سعر شحن للدول التي تبيع لها. المكافأة تخصم من سعر موجود فعلًا.",
-        "إذا كان متجرك فاتح اللون، اضغط على النمط الفاتح ليبقى النص واضحًا.",
-      ],
-    },
-  },
-  {
     id: "prePurchase",
     route: "/app/pre-purchase",
     category: "aov",
@@ -182,6 +136,94 @@ const FEATURES: Feature[] = [
     },
   },
   {
+    id: "thankYou",
+    route: "/app/thank-you",
+    category: "retention",
+    name: { en: "Thank-You Page Upsell", ar: "عرض صفحة الشكر" },
+    goal: {
+      en: "After checkout, reward the customer with an offer for the next order or a chance to ship another item together.",
+      ar: "بعد إتمام الدفع، تكافئ العميل بعرض لطلبه القادم أو بفرصة إضافة منتج آخر يُشحن معه.",
+    },
+    how: {
+      en: [
+        "In your Shopify checkout editor, add the XPoost Thank-you Upsell block to the Thank you page once.",
+        "In XPoost, create offers with conditions such as order total, products in the order, new or returning customer, or country.",
+        "Pick a design and a time window for the code, then save.",
+      ],
+      ar: [
+        "في محرر صفحة الدفع في Shopify، أضف بلوك XPoost Thank-you Upsell إلى صفحة الشكر مرة واحدة.",
+        "في XPoost أنشئ عروضًا بشروط مثل قيمة الطلب أو المنتجات في الطلب أو عميل جديد أو عائد أو الدولة.",
+        "اختر التصميم ومدة صلاحية الكود ثم احفظ.",
+      ],
+    },
+    result: {
+      en: "Repeat purchases and a bigger first order, using the moment when the customer is happiest with you.",
+      ar: "مشتريات متكررة وطلب أول أكبر، بالاستفادة من اللحظة التي يكون فيها العميل أسعد ما يكون بتجربتك.",
+    },
+    watch: {
+      en: "Offer views, reveals and redeemed codes.",
+      ar: "مرات ظهور العرض والكشف عنه والأكواد المستخدمة.",
+    },
+    tips: {
+      en: [
+        "Use a code with a short, real deadline. It gives the offer real urgency.",
+        "Keep the offer simple and relevant to what was just bought.",
+        "Test with a real order to see exactly what customers will see.",
+      ],
+      ar: [
+        "استخدم كودًا بمهلة قصيرة وحقيقية. هذا يمنح العرض إلحاحًا فعليًا.",
+        "اجعل العرض بسيطًا ومرتبطًا بما اشتراه العميل للتو.",
+        "جرّب بطلب حقيقي لترى بالضبط ما سيراه العملاء.",
+      ],
+    },
+  },
+  {
+    id: "shippingBar",
+    route: "/app/shipping-bar",
+    category: "aov",
+    name: { en: "Tiered Perks & Free Shipping Bar", ar: "شريط المزايا المتدرجة والشحن المجاني" },
+    goal: {
+      en: "Show shoppers how close they are to the next reward, so they add one more item to reach it and your average order value grows.",
+      ar: "يوضح للعميل كم تبقّى له ليفتح المكافأة التالية، فيضيف منتجًا إضافيًا للوصول إليها وترتفع قيمة متوسط الطلب.",
+    },
+    how: {
+      en: [
+        "Set up to a few milestones (for example 500, 1,000 and 2,000) in your store currency. Shoppers on another currency see them converted automatically.",
+        "Pick what each milestone gives: display only, free shipping, a percentage or fixed amount off shipping, or a percentage or fixed amount off the whole order. Rewards are applied automatically at checkout, no discount code needed.",
+        "Optionally show the bar only in selected countries, or give each country group its own thresholds and rewards. It follows the country your customer picks in your store's country selector.",
+        "Choose a layout and your own colors, including a light preset for light stores, then save.",
+      ],
+      ar: [
+        "حدّد عدة مراحل (مثل 500 و1,000 و2,000) بعملة متجرك. العميل الذي يتصفح بعملة أخرى يراها محوّلة تلقائيًا.",
+        "اختر مكافأة كل مرحلة: عرض فقط، أو شحن مجاني، أو خصم بنسبة أو مبلغ ثابت على الشحن، أو خصم بنسبة أو مبلغ ثابت على الطلب كله. تُطبَّق المكافآت تلقائيًا عند الدفع بدون كود خصم.",
+        "يمكنك إظهار الشريط في دول محددة فقط، أو إعطاء كل مجموعة دول مراحل ومكافآت خاصة بها. يتبع الشريط الدولة التي يختارها العميل من محدد الدولة في متجرك.",
+        "اختر التصميم وألوانك الخاصة، بما في ذلك نمط فاتح للمتاجر الفاتحة، ثم احفظ.",
+      ],
+    },
+    result: {
+      en: "A higher average order value and fewer abandoned carts, because the reward is visible and the goal feels within reach.",
+      ar: "ارتفاع متوسط قيمة الطلب وانخفاض عدد السلات المتروكة، لأن المكافأة ظاهرة والهدف يبدو قريبًا.",
+    },
+    watch: {
+      en: "Average order value, and how many carts reach each milestone (Analytics).",
+      ar: "متوسط قيمة الطلب، وعدد السلات التي تصل إلى كل مرحلة (صفحة التحليلات).",
+    },
+    tips: {
+      en: [
+        "Set the first milestone a little above your current average order value, so it is a small step rather than a leap.",
+        "Only promise what you can afford: check your margin at every threshold, especially for order discounts.",
+        "If you use free shipping, make sure your shipping profile has a rate for the countries you sell to. The reward discounts an existing rate.",
+        "On a light store theme, press the Light preset so the text stays readable.",
+      ],
+      ar: [
+        "اجعل أول مرحلة أعلى قليلًا من متوسط قيمة الطلب الحالي لديك، لتكون خطوة صغيرة وليست قفزة.",
+        "لا تعد إلا بما تتحمله: راجع هامش ربحك عند كل مرحلة، خاصة مع خصومات الطلب.",
+        "عند استخدام الشحن المجاني، تأكد أن ملف الشحن لديك يحتوي على سعر شحن للدول التي تبيع لها. المكافأة تخصم من سعر موجود فعلًا.",
+        "إذا كان متجرك فاتح اللون، اضغط على النمط الفاتح ليبقى النص واضحًا.",
+      ],
+    },
+  },
+  {
     id: "quantityBreaks",
     route: "/app/quantity-breaks",
     category: "aov",
@@ -220,48 +262,6 @@ const FEATURES: Feature[] = [
         "ميّز المستوى الأوسط، فهو الأكثر اختيارًا.",
         "الأنسب للمنتجات الاستهلاكية مثل العناية بالبشرة، حيث يكون شراء اثنين أو ثلاثة منطقيًا.",
         "تأكد أن الخصم في كل مستوى ما زال يترك هامش ربح جيدًا.",
-      ],
-    },
-  },
-  {
-    id: "scarcity",
-    route: "/app/scarcity",
-    category: "trust",
-    name: { en: "Urgency & Social Proof Notifications", ar: "إشعارات الإلحاح والإثبات الاجتماعي" },
-    goal: {
-      en: "Small corner messages that build trust and gentle urgency: recent purchases, low stock, limited offers and shipping hints.",
-      ar: "رسائل صغيرة في زاوية الشاشة تبني الثقة وإحساسًا لطيفًا بالإلحاح: مشتريات حديثة، ومخزون منخفض، وعروض محدودة، وتنبيهات الشحن.",
-    },
-    how: {
-      en: [
-        "Write a few short messages and choose which kinds to show.",
-        "Set when the first message appears, how long it stays and the gap between messages.",
-        "Choose colors and position, then save.",
-      ],
-      ar: [
-        "اكتب عدة رسائل قصيرة واختر الأنواع التي تريد إظهارها.",
-        "حدّد وقت ظهور أول رسالة ومدة بقائها والفاصل بين الرسائل.",
-        "اختر الألوان والمكان ثم احفظ.",
-      ],
-    },
-    result: {
-      en: "Less hesitation. Visitors feel others are buying, which makes them more comfortable to buy too.",
-      ar: "تردد أقل. يشعر الزائر أن آخرين يشترون، فيصبح أكثر راحة للشراء.",
-    },
-    watch: {
-      en: "Notification views and the add-to-cart rate after them.",
-      ar: "مرات ظهور الإشعارات ومعدل الإضافة للسلة بعدها.",
-    },
-    tips: {
-      en: [
-        "Keep every message true. Never invent purchases or stock levels.",
-        "Use a calm rhythm: a message every twenty to thirty seconds is plenty.",
-        "Do not run it together with many other pop-ups on the same page.",
-      ],
-      ar: [
-        "اجعل كل رسالة صادقة. لا تختلق مشتريات أو كميات مخزون.",
-        "استخدم إيقاعًا هادئًا: رسالة كل عشرين إلى ثلاثين ثانية تكفي.",
-        "لا تشغّله مع نوافذ منبثقة كثيرة أخرى في الصفحة نفسها.",
       ],
     },
   },
@@ -348,44 +348,44 @@ const FEATURES: Feature[] = [
     },
   },
   {
-    id: "thankYou",
-    route: "/app/thank-you",
-    category: "retention",
-    name: { en: "Thank-You Page Upsell", ar: "عرض صفحة الشكر" },
+    id: "scarcity",
+    route: "/app/scarcity",
+    category: "trust",
+    name: { en: "Urgency & Social Proof Notifications", ar: "إشعارات الإلحاح والإثبات الاجتماعي" },
     goal: {
-      en: "After checkout, reward the customer with an offer for the next order or a chance to ship another item together.",
-      ar: "بعد إتمام الدفع، تكافئ العميل بعرض لطلبه القادم أو بفرصة إضافة منتج آخر يُشحن معه.",
+      en: "Small corner messages that build trust and gentle urgency: recent purchases, low stock, limited offers and shipping hints.",
+      ar: "رسائل صغيرة في زاوية الشاشة تبني الثقة وإحساسًا لطيفًا بالإلحاح: مشتريات حديثة، ومخزون منخفض، وعروض محدودة، وتنبيهات الشحن.",
     },
     how: {
       en: [
-        "In your Shopify checkout editor, add the XPoost Thank-you Upsell block to the Thank you page once.",
-        "In XPoost, create offers with conditions such as order total, products in the order, new or returning customer, or country.",
-        "Pick a design and a time window for the code, then save.",
+        "Write a few short messages and choose which kinds to show.",
+        "Set when the first message appears, how long it stays and the gap between messages.",
+        "Choose colors and position, then save.",
       ],
       ar: [
-        "في محرر صفحة الدفع في Shopify، أضف بلوك XPoost Thank-you Upsell إلى صفحة الشكر مرة واحدة.",
-        "في XPoost أنشئ عروضًا بشروط مثل قيمة الطلب أو المنتجات في الطلب أو عميل جديد أو عائد أو الدولة.",
-        "اختر التصميم ومدة صلاحية الكود ثم احفظ.",
+        "اكتب عدة رسائل قصيرة واختر الأنواع التي تريد إظهارها.",
+        "حدّد وقت ظهور أول رسالة ومدة بقائها والفاصل بين الرسائل.",
+        "اختر الألوان والمكان ثم احفظ.",
       ],
     },
     result: {
-      en: "Repeat purchases and a bigger first order, using the moment when the customer is happiest with you.",
-      ar: "مشتريات متكررة وطلب أول أكبر، بالاستفادة من اللحظة التي يكون فيها العميل أسعد ما يكون بتجربتك.",
+      en: "Less hesitation. Visitors feel others are buying, which makes them more comfortable to buy too.",
+      ar: "تردد أقل. يشعر الزائر أن آخرين يشترون، فيصبح أكثر راحة للشراء.",
     },
     watch: {
-      en: "Offer views, reveals and redeemed codes.",
-      ar: "مرات ظهور العرض والكشف عنه والأكواد المستخدمة.",
+      en: "Notification views and the add-to-cart rate after them.",
+      ar: "مرات ظهور الإشعارات ومعدل الإضافة للسلة بعدها.",
     },
     tips: {
       en: [
-        "Use a code with a short, real deadline. It gives the offer real urgency.",
-        "Keep the offer simple and relevant to what was just bought.",
-        "Test with a real order to see exactly what customers will see.",
+        "Keep every message true. Never invent purchases or stock levels.",
+        "Use a calm rhythm: a message every twenty to thirty seconds is plenty.",
+        "Do not run it together with many other pop-ups on the same page.",
       ],
       ar: [
-        "استخدم كودًا بمهلة قصيرة وحقيقية. هذا يمنح العرض إلحاحًا فعليًا.",
-        "اجعل العرض بسيطًا ومرتبطًا بما اشتراه العميل للتو.",
-        "جرّب بطلب حقيقي لترى بالضبط ما سيراه العملاء.",
+        "اجعل كل رسالة صادقة. لا تختلق مشتريات أو كميات مخزون.",
+        "استخدم إيقاعًا هادئًا: رسالة كل عشرين إلى ثلاثين ثانية تكفي.",
+        "لا تشغّله مع نوافذ منبثقة كثيرة أخرى في الصفحة نفسها.",
       ],
     },
   },
