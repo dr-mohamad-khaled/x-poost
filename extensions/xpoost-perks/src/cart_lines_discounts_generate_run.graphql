@@ -1,0 +1,26 @@
+query CartLinesDiscountsInput {
+  cart {
+    cost {
+      subtotalAmount {
+        amount
+      }
+    }
+    deliveryGroups {
+      deliveryAddress {
+        countryCode
+      }
+    }
+  }
+  presentmentCurrencyRate
+  localization {
+    country {
+      isoCode
+    }
+  }
+  discount {
+    discountClasses
+    metafield(namespace: "$app:tier-perks", key: "config") {
+      jsonValue
+    }
+  }
+}

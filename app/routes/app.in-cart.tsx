@@ -268,6 +268,28 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const targetVariantId = String(formData.get("targetVariantId") || "");
     const targetProductPrice = String(formData.get("targetProductPrice") || "19.99");
     const targetProductImage = String(formData.get("targetProductImage") || "");
+    // Up to 2 extra add-on products (3 total per offer)
+    let extraTargets: { id: string; title: string; handle: string; price: string; variantId: string; image: string }[] = [];
+    try {
+      const rawExtras = JSON.parse(String(formData.get("extraTargetsJson") || "[]"));
+      if (Array.isArray(rawExtras)) {
+        const seen = new Set<string>([targetProductId]);
+        for (const x of rawExtras) {
+          const id = String(x?.id || "");
+          if (!id || seen.has(id)) continue;
+          seen.add(id);
+          extraTargets.push({
+            id,
+            title: String(x?.title || "").slice(0, 200),
+            handle: String(x?.handle || ""),
+            price: String(x?.price || ""),
+            variantId: String(x?.variantId || ""),
+            image: String(x?.image || ""),
+          });
+          if (extraTargets.length >= 2) break;
+        }
+      }
+    } catch (e) {}
     const offerI18nJsonRaw = String(formData.get("offerI18nJson") || "");
     let offerI18n: any = null;
     if (offerI18nJsonRaw) {
@@ -293,6 +315,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     if (offerI18n) {
       offerDescription += `<!--xp:i18n:${encodeURIComponent(JSON.stringify(offerI18n))}-->`;
     }
+    if (extraTargets.length > 0) {
+      offerDescription += `<!--xp:x:${encodeURIComponent(JSON.stringify(extraTargets))}-->`;
+    }
 
     // Register Shopify Automatic Discount and Code Discount if discount percentage is configured
     if (hasDiscount && discountPercent && discountPercent > 0) {
@@ -300,8 +325,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         discountCode = `XPOOST_CART_${Math.round(discountPercent)}OFF_${Date.now().toString().slice(-4)}`;
       }
       try {
+        const discountedProductIds = [targetProductId, ...extraTargets.map((x) => x.id)].filter((id) =>
+          id.startsWith("gid://shopify/Product/")
+        );
         const itemsPayload = targetProductId.startsWith("gid://shopify/Product/")
-          ? { products: { productsToAdd: [targetProductId] } }
+          ? { products: { productsToAdd: discountedProductIds } }
           : { all: true };
 
         const discountTitle = `${offerHeadline} (${discountPercent}% OFF - ${discountCode})`;
@@ -516,6 +544,11 @@ export default function InCartUpsellSettings() {
   const [triggerSearch, setTriggerSearch] = useState("");
 
   const [selectedTargetId, setSelectedTargetId] = useState(products[0]?.id || "");
+
+  // Extra add-on products (max 2) shown alongside the main add-on in the cart widget
+  const [extraTargetIds, setExtraTargetIds] = useState<string[]>([]);
+  const [isExtraPickerOpen, setIsExtraPickerOpen] = useState(false);
+  const [extraSearch, setExtraSearch] = useState("");
   const [targetSearch, setTargetSearch] = useState("");
   const [isTargetDropdownOpen, setIsTargetDropdownOpen] = useState(false);
 
@@ -623,6 +656,9 @@ export default function InCartUpsellSettings() {
     setSelectedTargetId(catalog[0]?.id || products[0]?.id || "");
     setTargetSearch("");
     setIsTargetDropdownOpen(false);
+    setExtraTargetIds([]);
+    setIsExtraPickerOpen(false);
+    setExtraSearch("");
     setHasDiscount(true);
     setDiscountPercent("10");
     setDiscountCode("SAVE10");
@@ -675,6 +711,35 @@ export default function InCartUpsellSettings() {
           variantId: rule.targetVariantId || "",
         },
       ]);
+    }
+    {
+      const xm = (rule.offerDescription || "").match(/<!--xp:x:([^>]+)-->/);
+      let savedExtras: any[] = [];
+      if (xm) {
+        try {
+          const parsedX = JSON.parse(decodeURIComponent(xm[1].trim()));
+          if (Array.isArray(parsedX)) savedExtras = parsedX.slice(0, 2);
+        } catch (e) {}
+      }
+      setCatalog((prev) => {
+        const next = [...prev];
+        savedExtras.forEach((x: any) => {
+          if (x?.id && !next.some((p) => p.id === x.id)) {
+            next.push({
+              id: x.id,
+              title: x.title || "Product",
+              imageUrl: x.image || "",
+              price: x.price || "19.99",
+              variantId: x.variantId || "",
+              handle: x.handle || "",
+            });
+          }
+        });
+        return next;
+      });
+      setExtraTargetIds(savedExtras.map((x: any) => x.id).filter(Boolean));
+      setIsExtraPickerOpen(false);
+      setExtraSearch("");
     }
     setTriggerSearch("");
     setSelectedTargetId(rule.targetProductId);
@@ -739,6 +804,30 @@ export default function InCartUpsellSettings() {
       return terms.every((term) => target.includes(term));
     });
   }, [catalog, targetSearch]);
+
+  const extraProducts = useMemo(
+    () => extraTargetIds.map((id) => catalog.find((p) => p.id === id)).filter(Boolean) as CatalogProduct[],
+    [catalog, extraTargetIds]
+  );
+  const extraTargetsJson = JSON.stringify(
+    extraProducts.map((p) => ({
+      id: p.id,
+      title: p.title,
+      handle: p.handle || "",
+      price: p.price,
+      variantId: p.variantId || "",
+      image: p.imageUrl || "",
+    }))
+  );
+  const filteredExtraProducts = useMemo(() => {
+    const terms = extraSearch.toLowerCase().split(/\s+/).filter(Boolean);
+    return catalog.filter((p) => {
+      if (p.id === selectedTargetId || extraTargetIds.includes(p.id)) return false;
+      if (terms.length === 0) return true;
+      const t = `${p.title} ${p.handle || ""}`.toLowerCase();
+      return terms.every((term) => t.includes(term));
+    });
+  }, [catalog, extraSearch, selectedTargetId, extraTargetIds]);
 
   const originalPrice = parseFloat(selectedProduct?.price || "25.00");
   const isDiscounted = hasDiscount && parseFloat(discountPercent) > 0;
@@ -1063,7 +1152,14 @@ export default function InCartUpsellSettings() {
                         </td>
                         <td>
                           <div className="xp-promoted-cell">
-                            <span className="xp-promoted-count">{rule.targetProductTitle}</span>
+                            <span className="xp-promoted-count">{rule.targetProductTitle}{(() => {
+                              const xm = (rule.offerDescription || "").match(/<!--xp:x:([^>]+)-->/);
+                              if (!xm) return "";
+                              try {
+                                const arr = JSON.parse(decodeURIComponent(xm[1].trim()));
+                                return Array.isArray(arr) && arr.length ? ` +${arr.length} more` : "";
+                              } catch (e) { return ""; }
+                            })()}</span>
                             <span className="xp-promoted-names">${rule.targetProductPrice || "19.99"}</span>
                           </div>
                         </td>
@@ -1541,6 +1637,96 @@ export default function InCartUpsellSettings() {
                   <input type="hidden" name="targetProductPrice" value={selectedProduct?.price || "19.99"} />
                   <input type="hidden" name="targetVariantId" value={selectedProduct?.variantId || ""} />
                   <input type="hidden" name="targetProductImage" value={selectedProduct?.imageUrl || ""} />
+                  <input type="hidden" name="extraTargetsJson" value={extraTargetsJson} />
+
+                  {/* Extra add-ons: up to 3 products total in the cart widget */}
+                  <div style={{ marginTop: "16px", paddingTop: "14px", borderTop: "1px solid #282828" }}>
+                    <strong style={{ color: "#ffffff", fontSize: "13px" }}>
+                      Additional add-ons ({extraProducts.length}/2)
+                    </strong>
+                    <p className="xp-sub" style={{ marginBottom: "10px" }}>
+                      Show up to 3 products in the cart widget. Each one gets its own Add button.
+                    </p>
+
+                    {extraProducts.map((p) => (
+                      <div
+                        key={p.id}
+                        className="xp-selected-trigger-card"
+                        style={{ background: "#181818", padding: "10px", border: "1px solid #282828", borderRadius: "6px", marginBottom: "8px" }}
+                      >
+                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                          {p.imageUrl ? (
+                            <img src={p.imageUrl} alt="" className="xp-picker-thumb" />
+                          ) : (
+                            <div className="xp-picker-thumb-placeholder" />
+                          )}
+                          <div>
+                            <strong style={{ color: "#ffffff", fontSize: "14px", fontWeight: "700" }}>{p.title}</strong>
+                            <div className="xp-sub" style={{ color: "#D4AF37", fontWeight: "600" }}>${p.price}</div>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          className="xp-btn-text"
+                          onClick={() => setExtraTargetIds((prev) => prev.filter((id) => id !== p.id))}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ))}
+
+                    {extraProducts.length < 2 && (
+                      <button
+                        type="button"
+                        className="xp-btn-text"
+                        onClick={() => setIsExtraPickerOpen(!isExtraPickerOpen)}
+                      >
+                        {isExtraPickerOpen ? "Close Search" : "+ Add another product"}
+                      </button>
+                    )}
+
+                    {isExtraPickerOpen && extraProducts.length < 2 && (
+                      <div style={{ marginTop: "10px" }}>
+                        <input
+                          type="text"
+                          className="xp-input xp-picker-search"
+                          placeholder="Search products to add as an extra add-on..."
+                          value={extraSearch}
+                          onChange={(e) => setExtraSearch(e.target.value)}
+                          autoFocus
+                        />
+                        <div className="xp-picker-list">
+                          {filteredExtraProducts.length === 0 ? (
+                            <div style={{ padding: "20px", textAlign: "center", color: "#8c9196", fontSize: "12px" }}>
+                              No products found
+                            </div>
+                          ) : (
+                            filteredExtraProducts.map((p) => (
+                              <div
+                                key={p.id}
+                                className="xp-picker-item"
+                                onClick={() => {
+                                  setExtraTargetIds((prev) => (prev.length < 2 ? [...prev, p.id] : prev));
+                                  setIsExtraPickerOpen(false);
+                                  setExtraSearch("");
+                                }}
+                              >
+                                {p.imageUrl ? (
+                                  <img src={p.imageUrl} alt="" className="xp-picker-thumb" />
+                                ) : (
+                                  <div className="xp-picker-thumb-placeholder" />
+                                )}
+                                <div className="xp-picker-item-info">
+                                  <div className="xp-picker-item-title">{p.title}</div>
+                                  <div className="xp-picker-item-price">${p.price}</div>
+                                </div>
+                              </div>
+                            ))
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {/* Promotional Discount */}
@@ -1670,6 +1856,33 @@ export default function InCartUpsellSettings() {
                       </button>
                     </div>
                   </div>
+
+                  {extraProducts.map((p) => {
+                    const pPrice = parseFloat(p.price || "0") || 0;
+                    const pSale = (isDiscounted ? pPrice * (1 - (parseFloat(discountPercent) || 0) / 100) : pPrice).toFixed(2);
+                    return (
+                      <div className="xp-addon-card" key={p.id} style={{ marginTop: "10px" }}>
+                        {p.imageUrl ? (
+                          <img src={p.imageUrl} alt={p.title} className="xp-addon-img" />
+                        ) : (
+                          <div className="xp-addon-placeholder" />
+                        )}
+                        <div className="xp-addon-body">
+                          <div className="xp-addon-name" style={{ color: "#ffffff", fontWeight: "600" }}>{p.title}</div>
+                          <div className="xp-addon-pricing">
+                            <span className="xp-addon-sale">${pSale}</span>
+                            {isDiscounted && <span className="xp-addon-orig">${pPrice.toFixed(2)}</span>}
+                            {isDiscounted && (
+                              <span className="xp-addon-badge">{(activeOfferCopy.saveBadge || (selectedLang === "ar" ? "وفر {discount}%" : "SAVE {discount}%")).replace("{discount}", discountPercent)}</span>
+                            )}
+                          </div>
+                          <button type="button" className="xp-addon-quickadd">
+                            {activeOfferCopy.addButton || (selectedLang === "ar" ? "+ أضف للسلة" : "+ Add to Cart")}
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>

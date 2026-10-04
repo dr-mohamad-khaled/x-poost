@@ -191,9 +191,29 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           }
           const localized = ruleI18n && ruleI18n[storefrontLocale] ? ruleI18n[storefrontLocale] : null;
 
+          // Up to 2 extra add-on products packed into the description (3 products total per offer)
+          const xMatch = (r.offerDescription || "").match(/<!--xp:x:([^>]+)-->/);
+          let extraTargets: any[] = [];
+          if (xMatch) {
+            try {
+              const parsedX = JSON.parse(decodeURIComponent(xMatch[1].trim()));
+              if (Array.isArray(parsedX)) {
+                extraTargets = parsedX.slice(0, 2).map((x: any) => ({
+                  productId: String(x.id || ""),
+                  variantId: String(x.variantId || ""),
+                  title: String(x.title || ""),
+                  handle: String(x.handle || ""),
+                  price: String(x.price || ""),
+                  image: String(x.image || ""),
+                }));
+              }
+            } catch (e) {}
+          }
+
           const cleanDesc = (r.offerDescription || "")
             .replace(/<!--xp:h:[^>]+-->/g, "")
             .replace(/<!--xp:i18n:[^>]+-->/g, "")
+            .replace(/<!--xp:x:[^>]+-->/g, "")
             .trim();
 
           const offerHeadline = localized?.headline || r.offerHeadline;
@@ -209,6 +229,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
             targetVariantId: r.targetVariantId,
             targetProductPrice: r.targetProductPrice,
             targetProductImage: r.targetProductImage,
+            extraTargets,
             offerHeadline: offerHeadline,
             offerDescription: cleanDesc,
             discountPercent: r.discountPercent,
@@ -221,17 +242,32 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     }
   }
 
+// Returns "" for empty values and for the old "yourstore" placeholder links.
+function socialUrlOrEmpty(raw: string | null | undefined): string {
+  const v = String(raw || "").trim();
+  if (!v || /yourstore|yourvipgroup|yourcommunity/i.test(v)) return "";
+  return v;
+}
+
 function parseSocialPosition(rawPos: string | null | undefined) {
   let side = "bottom-right";
   let bottomOffsetPx = 24;
   let mobileBottomOffsetPx = 24;
   let designTheme = "gold_luxury";
   let layoutStyle = "action_stack";
+  const networks: Record<string, string> = {};
+  const ALLOWED_NETWORKS = ["x", "pinterest", "youtube", "linkedin", "snapchat", "telegram", "threads", "discord", "reddit", "twitch"];
 
   if (rawPos) {
     if (rawPos.startsWith("{")) {
       try {
         const parsed = JSON.parse(rawPos);
+        if (parsed.networks && typeof parsed.networks === "object") {
+          for (const k of ALLOWED_NETWORKS) {
+            const v = String(parsed.networks[k] || "").trim();
+            if (/^https?:\/\//i.test(v)) networks[k] = v;
+          }
+        }
         if (parsed.side) side = parsed.side;
         if (typeof parsed.bottomOffsetPx === "number" || typeof parsed.bottomOffsetPx === "string") {
           const b = parseInt(String(parsed.bottomOffsetPx), 10);
@@ -251,7 +287,7 @@ function parseSocialPosition(rawPos: string | null | undefined) {
     }
   }
 
-  return { side, bottomOffsetPx, mobileBottomOffsetPx, designTheme, layoutStyle };
+  return { side, bottomOffsetPx, mobileBottomOffsetPx, designTheme, layoutStyle, networks };
 }
 
   // Social & Support Bar
@@ -266,13 +302,15 @@ function parseSocialPosition(rawPos: string | null | undefined) {
       designTheme: posDetails.designTheme,
       layoutStyle: posDetails.layoutStyle,
       badgeText: shop.socialConfig.badgeText,
-      whatsappNumber: shop.socialConfig.whatsappNumber,
+      // Placeholder values from older default settings are treated as empty so they never show.
+      whatsappNumber: /^\+?1234567890$/.test(String(shop.socialConfig.whatsappNumber || "").trim()) ? "" : shop.socialConfig.whatsappNumber,
       whatsappMessage: shop.socialConfig.whatsappMessage,
-      instagramUrl: shop.socialConfig.instagramUrl,
-      facebookUrl: shop.socialConfig.facebookUrl,
-      tiktokUrl: shop.socialConfig.tiktokUrl,
+      instagramUrl: socialUrlOrEmpty(shop.socialConfig.instagramUrl),
+      facebookUrl: socialUrlOrEmpty(shop.socialConfig.facebookUrl),
+      tiktokUrl: socialUrlOrEmpty(shop.socialConfig.tiktokUrl),
+      networks: posDetails.networks,
       vipCommunityLabel: shop.socialConfig.vipCommunityLabel,
-      vipCommunityUrl: shop.socialConfig.vipCommunityUrl,
+      vipCommunityUrl: socialUrlOrEmpty(shop.socialConfig.vipCommunityUrl),
       backgroundColor: shop.socialConfig.backgroundColor,
       accentColor: shop.socialConfig.accentColor,
       textColor: shop.socialConfig.textColor,
@@ -284,6 +322,7 @@ function parseSocialPosition(rawPos: string | null | undefined) {
   if (shop.shippingBarEnabled && shop.shippingConfig?.active) {
     let tiers = [];
     let layoutStyle = "milestone_stepper";
+    let targeting: { mode: string; countries: string[]; overrides: { countries: string[]; tiers: unknown[] }[] } = { mode: "all", countries: [], overrides: [] };
     try {
       const parsed = JSON.parse(shop.shippingConfig.tiersJson);
       if (Array.isArray(parsed)) {
@@ -291,6 +330,31 @@ function parseSocialPosition(rawPos: string | null | undefined) {
       } else if (parsed && Array.isArray(parsed.tiers)) {
         tiers = parsed.tiers;
         if (parsed.layoutStyle) layoutStyle = parsed.layoutStyle;
+        const t = parsed.targeting;
+        if (t && (t.mode === "include" || t.mode === "exclude") && Array.isArray(t.countries)) {
+          const list = Array.from(
+            new Set(
+              t.countries
+                .map((c: unknown) => String(c).trim().toUpperCase())
+                .filter((c: string) => /^[A-Z]{2}$/.test(c)),
+            ),
+          ) as string[];
+          if (list.length > 0) targeting = { ...targeting, mode: t.mode, countries: list };
+        }
+        if (t && Array.isArray(t.overrides)) {
+          targeting.overrides = t.overrides
+            .map((o: { countries?: unknown[]; tiers?: unknown[] }) => ({
+              countries: Array.from(
+                new Set(
+                  (Array.isArray(o?.countries) ? o.countries : [])
+                    .map((c) => String(c).trim().toUpperCase())
+                    .filter((c) => /^[A-Z]{2}$/.test(c)),
+                ),
+              ) as string[],
+              tiers: Array.isArray(o?.tiers) ? o.tiers : [],
+            }))
+            .filter((o: { countries: string[]; tiers: unknown[] }) => o.countries.length > 0 && o.tiers.length > 0);
+        }
       }
     } catch {
       tiers = [];
@@ -298,6 +362,7 @@ function parseSocialPosition(rawPos: string | null | undefined) {
     shipping = {
       active: true,
       layoutStyle,
+      targeting,
       currency: shop.shippingConfig.currency,
       currencySymbol: shop.shippingConfig.currencySymbol,
       tiers,

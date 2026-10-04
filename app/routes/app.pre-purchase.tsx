@@ -3213,6 +3213,11 @@ const PRE_PURCHASE_STYLES = `
   .xp-pre-preview-wrap {
     min-width: 0;
   }
+  /* Stretch the preview column to the full height of the form column so the
+     sticky preview inside it has room to travel while the page scrolls. */
+  .xp-pre-preview-wrap {
+    align-self: stretch;
+  }
   @media (max-width: 1100px) {
     .xp-pre-layout {
       grid-template-columns: minmax(0, 1fr);

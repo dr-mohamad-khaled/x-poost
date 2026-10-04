@@ -94,7 +94,48 @@ const DESIGN_THEMES = [
     text: "#FFFFFF",
     description: "Dynamic sunset neon gradient border (Pink to Violet to Cyan).",
   },
+  {
+    id: "light_clean",
+    name: "Clean White (Light)",
+    badge: "Light Mode",
+    bg: "#FFFFFF",
+    accent: "#111827",
+    text: "#111827",
+    description: "Bright white card with dark text and accents, ideal for light, minimal stores.",
+  },
+  {
+    id: "custom",
+    name: "My Own Colors",
+    badge: "Fully Custom",
+    bg: "#FFFFFF",
+    accent: "#2563EB",
+    text: "#111827",
+    description: "Start from any look, then set the background, accent and text colors yourself in section 8.",
+  },
 ];
+
+// Extra social networks (shown on the storefront only when a link is filled in)
+const EXTRA_NETWORKS = [
+  { key: "x", label: "X (Twitter) URL", placeholder: "https://x.com/yourstore" },
+  { key: "pinterest", label: "Pinterest URL", placeholder: "https://pinterest.com/yourstore" },
+  { key: "youtube", label: "YouTube URL", placeholder: "https://youtube.com/@yourstore" },
+  { key: "linkedin", label: "LinkedIn URL", placeholder: "https://linkedin.com/company/yourstore" },
+  { key: "snapchat", label: "Snapchat URL", placeholder: "https://snapchat.com/add/yourstore" },
+  { key: "telegram", label: "Telegram URL", placeholder: "https://t.me/yourstore" },
+  { key: "threads", label: "Threads URL", placeholder: "https://threads.net/@yourstore" },
+  { key: "discord", label: "Discord invite URL", placeholder: "https://discord.gg/yourinvite" },
+  { key: "reddit", label: "Reddit URL", placeholder: "https://reddit.com/r/yourstore" },
+  { key: "twitch", label: "Twitch URL", placeholder: "https://twitch.tv/yourstore" },
+] as const;
+
+function cleanNetworkUrl(raw: string): string {
+  const v = String(raw || "").trim();
+  if (!v) return "";
+  if (/^https?:\/\//i.test(v)) return v;
+  if (/^[a-z][a-z0-9+.-]*:/i.test(v)) return "";
+  if (/^[\w-]+(\.[\w-]+)+(\/|$|\?|#)/i.test(v)) return `https://${v}`;
+  return "";
+}
 
 function parsePosition(rawPos: string | null | undefined) {
   let side = "bottom-right";
@@ -102,11 +143,18 @@ function parsePosition(rawPos: string | null | undefined) {
   let mobileBottomOffsetPx = 24;
   let designTheme = "gold_luxury";
   let layoutStyle = "action_stack";
+  let networks: Record<string, string> = {};
 
   if (rawPos) {
     if (rawPos.startsWith("{")) {
       try {
         const parsed = JSON.parse(rawPos);
+        if (parsed.networks && typeof parsed.networks === "object") {
+          for (const k of Object.keys(parsed.networks)) {
+            const u = cleanNetworkUrl(parsed.networks[k]);
+            if (u) networks[k] = u;
+          }
+        }
         if (parsed.side) side = parsed.side;
         if (typeof parsed.bottomOffsetPx === "number" || typeof parsed.bottomOffsetPx === "string") {
           const b = parseInt(String(parsed.bottomOffsetPx), 10);
@@ -126,7 +174,7 @@ function parsePosition(rawPos: string | null | undefined) {
     }
   }
 
-  return { side, bottomOffsetPx, mobileBottomOffsetPx, designTheme, layoutStyle };
+  return { side, bottomOffsetPx, mobileBottomOffsetPx, designTheme, layoutStyle, networks };
 }
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -152,11 +200,11 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         badgeText: "Need help? Chat with us",
         whatsappNumber: "+1234567890",
         whatsappMessage: "Hi, I have a question about my order!",
-        instagramUrl: "https://instagram.com/yourstore",
-        facebookUrl: "https://facebook.com/yourstore",
-        tiktokUrl: "https://tiktok.com/@yourstore",
+        instagramUrl: "",
+        facebookUrl: "",
+        tiktokUrl: "",
         vipCommunityLabel: "Join our VIP Deals Group",
-        vipCommunityUrl: "https://t.me/yourvipgroup",
+        vipCommunityUrl: "",
         backgroundColor: "#0B0B0B",
         accentColor: "#D4AF37",
         textColor: "#FFFFFF",
@@ -205,12 +253,19 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const designTheme = String(formData.get("designTheme") || "gold_luxury");
   const layoutStyle = String(formData.get("layoutStyle") || "action_stack");
 
+  const networks: Record<string, string> = {};
+  for (const n of EXTRA_NETWORKS) {
+    const u = cleanNetworkUrl(String(formData.get(`net_${n.key}`) || ""));
+    if (u) networks[n.key] = u;
+  }
+
   const position = JSON.stringify({
     side,
     bottomOffsetPx,
     mobileBottomOffsetPx,
     designTheme,
     layoutStyle,
+    networks,
   });
 
   const badgeText = String(formData.get("badgeText") || "Need help? Chat with us");
@@ -342,9 +397,12 @@ export default function SocialBarSettings() {
 
   const handleSelectTheme = (theme: typeof DESIGN_THEMES[number]) => {
     setSelectedTheme(theme.id);
-    setBgColor(theme.bg);
-    setAccentColor(theme.accent);
-    setTextColor(theme.text);
+    // "My Own Colors" keeps whatever colors are currently picked; presets load their palette.
+    if (theme.id !== "custom") {
+      setBgColor(theme.bg);
+      setAccentColor(theme.accent);
+      setTextColor(theme.text);
+    }
   };
 
   return (
@@ -661,10 +719,29 @@ export default function SocialBarSettings() {
                   placeholder="https://tiktok.com/@yourstore"
                 />
               </div>
+              {EXTRA_NETWORKS.map((n) => (
+                <div className="xp-field" key={n.key}>
+                  <label>{n.label}</label>
+                  <input
+                    type="text"
+                    name={`net_${n.key}`}
+                    className="xp-input"
+                    defaultValue={parsedPos.networks?.[n.key] || ""}
+                    placeholder={n.placeholder}
+                  />
+                </div>
+              ))}
+              <p className="xp-sub" style={{ marginTop: "8px" }}>
+                Only the networks with a link appear on your store. Leave a field empty to hide that network.
+              </p>
             </div>
 
             {/* Appearance Overrides */}
-            <div className="xp-section-card"><h3 className="xp-section-title">8. Color Customization (Optional Overrides)</h3>
+            <div className="xp-section-card"><h3 className="xp-section-title">8. Your Own Colors</h3>
+              <p className="xp-sub" style={{ marginBottom: "12px" }}>
+                Not a fan of the preset colors? Pick any background, accent and text color. Your choices apply on top
+                of any theme, including light backgrounds. The preview updates instantly.
+              </p>
               <div className="xp-grid-3">
                 <div className="xp-field">
                   <label>Background Color</label>
@@ -703,6 +780,21 @@ export default function SocialBarSettings() {
                   </div>
                 </div>
               </div>
+              <button
+                type="button"
+                className="xp-btn-text"
+                style={{ marginTop: "10px" }}
+                onClick={() => {
+                  const t = DESIGN_THEMES.find((x) => x.id === selectedTheme);
+                  if (t && t.id !== "custom") {
+                    setBgColor(t.bg);
+                    setAccentColor(t.accent);
+                    setTextColor(t.text);
+                  }
+                }}
+              >
+                Reset to theme colors
+              </button>
             </div>
 
             <button type="submit" className="xp-btn-submit" disabled={isSubmitting}>

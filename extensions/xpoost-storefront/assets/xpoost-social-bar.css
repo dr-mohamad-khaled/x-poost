@@ -113,7 +113,7 @@
   align-items: center;
   margin-bottom: 12px;
   padding-bottom: 8px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid color-mix(in srgb, var(--xpsb-text, #FFFFFF) 8%, transparent);
 }
 
 #xpoost-social-root .xpsb-deck-title {
@@ -127,7 +127,7 @@
 #xpoost-social-root .xpsb-deck-close {
   background: none;
   border: none;
-  color: #888;
+  color: color-mix(in srgb, var(--xpsb-text, #FFFFFF) 55%, transparent);
   cursor: pointer;
   padding: 2px 6px;
   font-size: 18px;
@@ -136,7 +136,7 @@
 }
 
 #xpoost-social-root .xpsb-deck-close:hover {
-  color: #fff;
+  color: var(--xpsb-text, #FFFFFF);
 }
 
 /* ===================================================
@@ -165,9 +165,9 @@
   box-shadow: 0 6px 20px rgba(37, 211, 102, 0.45);
 }
 #xpoost-social-root .xpsb-stack-btn-vip {
-  background: rgba(255, 255, 255, 0.04);
+  background: color-mix(in srgb, var(--xpsb-text, #FFFFFF) 4%, transparent);
   border: 1px dashed var(--xpsb-gold, #D4AF37);
-  color: #ffffff;
+  color: var(--xpsb-text, #FFFFFF);
 }
 #xpoost-social-root .xpsb-stack-btn-vip:hover {
   background: rgba(212, 175, 55, 0.08);
@@ -192,7 +192,7 @@
 }
 #xpoost-social-root .xpsb-stack-info strong {
   font-size: 13px;
-  color: #ffffff;
+  color: var(--xpsb-text, #FFFFFF);
 }
 #xpoost-social-root .xpsb-stack-info small {
   font-size: 10px;
@@ -201,13 +201,13 @@
 #xpoost-social-root .xpsb-stack-arrow {
   font-size: 16px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--xpsb-text, #FFFFFF);
 }
 #xpoost-social-root .xpsb-stack-badge {
   font-size: 9px;
   font-weight: 800;
   background: var(--xpsb-gold, #D4AF37);
-  color: #0B0B0B;
+  color: var(--xpsb-bg, #0B0B0B);
   padding: 2px 6px;
   border-radius: 4px;
   letter-spacing: 0.5px;
@@ -216,7 +216,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid color-mix(in srgb, var(--xpsb-text, #FFFFFF) 8%, transparent);
   padding-top: 10px;
   margin-top: 4px;
 }
@@ -224,17 +224,17 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(255, 255, 255, 0.05);
+  background: color-mix(in srgb, var(--xpsb-text, #FFFFFF) 5%, transparent);
   border-radius: 8px;
   padding: 8px 12px;
   font-size: 12px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--xpsb-text, #FFFFFF);
   text-decoration: none;
   transition: all 0.2s ease;
 }
 #xpoost-social-root .xpsb-stack-social-item:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: color-mix(in srgb, var(--xpsb-text, #FFFFFF) 10%, transparent);
   transform: translateX(3px);
   color: var(--xpsb-gold, #D4AF37);
 }
@@ -264,7 +264,7 @@
   gap: 10px;
   padding-bottom: 10px;
   margin-bottom: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid color-mix(in srgb, var(--xpsb-text, #FFFFFF) 8%, transparent);
 }
 #xpoost-social-root .xpsb-concierge-avatar {
   width: 36px;
@@ -275,7 +275,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--xpsb-text, #FFFFFF) 6%, transparent);
   color: var(--xpsb-gold, #D4AF37);
 }
 #xpoost-social-root .xpsb-concierge-avatar svg {
@@ -299,7 +299,7 @@
 #xpoost-social-root .xpsb-concierge-name {
   font-size: 13px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--xpsb-text, #FFFFFF);
 }
 #xpoost-social-root .xpsb-concierge-status {
   font-size: 11px;
@@ -308,7 +308,7 @@
 }
 #xpoost-social-root .xpsb-chips-label {
   font-size: 11px;
-  color: #888;
+  color: color-mix(in srgb, var(--xpsb-text, #FFFFFF) 55%, transparent);
   margin: 6px 0 4px;
 }
 #xpoost-social-root .xpsb-chips-row {
@@ -319,16 +319,16 @@
 }
 #xpoost-social-root .xpsb-chip {
   font-size: 11px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #fff;
+  background: color-mix(in srgb, var(--xpsb-text, #FFFFFF) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--xpsb-text, #FFFFFF) 12%, transparent);
+  color: var(--xpsb-text, #FFFFFF);
   padding: 4px 8px;
   border-radius: 12px;
   text-decoration: none;
   transition: all 0.15s ease;
 }
 #xpoost-social-root .xpsb-chip:hover {
-  background: rgba(255, 255, 255, 0.14);
+  background: color-mix(in srgb, var(--xpsb-text, #FFFFFF) 14%, transparent);
   border-color: var(--xpsb-gold, #D4AF37);
   color: var(--xpsb-gold, #D4AF37);
 }
@@ -340,7 +340,7 @@
   border: 1px solid var(--xpsb-gold, #D4AF37);
   border-radius: 10px;
   padding: 14px;
-  background: rgba(255, 255, 255, 0.03);
+  background: color-mix(in srgb, var(--xpsb-text, #FFFFFF) 3%, transparent);
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -360,7 +360,7 @@
 #xpoost-social-root .xpsb-vip-hero-title {
   font-size: 14px;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--xpsb-text, #FFFFFF);
   margin: 0;
 }
 #xpoost-social-root .xpsb-vip-checklist {
@@ -371,7 +371,7 @@
   flex-direction: column;
   gap: 6px;
   font-size: 12px;
-  color: #ddd;
+  color: color-mix(in srgb, var(--xpsb-text, #FFFFFF) 85%, transparent);
 }
 #xpoost-social-root .xpsb-check-ico {
   display: inline-flex;
@@ -387,7 +387,7 @@
 }
 #xpoost-social-root .xpsb-vip-claim-btn {
   background: var(--xpsb-gold, #D4AF37);
-  color: #0B0B0B;
+  color: var(--xpsb-bg, #0B0B0B);
   font-weight: 800;
   font-size: 12px;
   text-align: center;
@@ -430,7 +430,7 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  background: rgba(255, 255, 255, 0.04);
+  background: color-mix(in srgb, var(--xpsb-text, #FFFFFF) 4%, transparent);
   border: 1px dashed var(--xpsb-gold, #D4AF37);
   border-radius: 10px;
   padding: 12px 14px;
@@ -441,7 +441,7 @@
   box-sizing: border-box;
 }
 #xpoost-social-root .xpsb-vip-card:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--xpsb-text, #FFFFFF) 8%, transparent);
   transform: translateY(-1px);
 }
 #xpoost-social-root .xpsb-vip-card-top {
@@ -463,14 +463,14 @@
   border-radius: 4px;
   text-transform: uppercase;
   background: var(--xpsb-gold, #D4AF37);
-  color: #0B0B0B;
+  color: var(--xpsb-bg, #0B0B0B);
   display: inline-block;
   width: fit-content;
 }
 #xpoost-social-root .xpsb-vip-text {
   font-size: 13px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--xpsb-text, #FFFFFF);
   margin: 2px 0;
 }
 #xpoost-social-root .xpsb-vip-sub {
@@ -532,12 +532,12 @@
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: color-mix(in srgb, var(--xpsb-text, #FFFFFF) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--xpsb-text, #FFFFFF) 16%, transparent);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  color: var(--xpsb-text, #FFFFFF);
   text-decoration: none;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   flex-shrink: 0;
@@ -548,7 +548,7 @@
   fill: currentColor;
 }
 #xpoost-social-root .xpsb-social-circle-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: color-mix(in srgb, var(--xpsb-text, #FFFFFF) 20%, transparent);
   border-color: var(--xpsb-gold, #D4AF37);
   color: var(--xpsb-gold, #D4AF37);
   transform: translateY(-2px);
@@ -559,11 +559,11 @@
   gap: 6px;
   margin-top: 12px;
   padding-top: 10px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid color-mix(in srgb, var(--xpsb-text, #FFFFFF) 8%, transparent);
 }
 #xpoost-social-root .xpsb-funnel-social-label {
   font-size: 11px;
-  color: #888;
+  color: color-mix(in srgb, var(--xpsb-text, #FFFFFF) 55%, transparent);
 }
 
 /* ===================================================
@@ -619,14 +619,14 @@
 }
 #xpoost-social-root .xpsb-dock-pill-vip:hover {
   background: var(--xpsb-gold, #D4AF37);
-  color: #0B0B0B;
+  color: var(--xpsb-bg, #0B0B0B);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(212, 175, 55, 0.35);
 }
 #xpoost-social-root .xpsb-dock-divider {
   width: 1px;
   height: 20px;
-  background: rgba(255, 255, 255, 0.15);
+  background: color-mix(in srgb, var(--xpsb-text, #FFFFFF) 15%, transparent);
   flex-shrink: 0;
 }
 #xpoost-social-root .xpsb-dock-social-group {
@@ -638,12 +638,12 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: color-mix(in srgb, var(--xpsb-text, #FFFFFF) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--xpsb-text, #FFFFFF) 16%, transparent);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  color: var(--xpsb-text, #FFFFFF);
   text-decoration: none;
   transition: all 0.2s ease;
   flex-shrink: 0;
@@ -654,7 +654,7 @@
   fill: currentColor;
 }
 #xpoost-social-root .xpsb-dock-social-btn:hover {
-  background: rgba(255, 255, 255, 0.22);
+  background: color-mix(in srgb, var(--xpsb-text, #FFFFFF) 22%, transparent);
   border-color: var(--xpsb-gold, #D4AF37);
   color: var(--xpsb-gold, #D4AF37);
   transform: translateY(-2px);
@@ -662,7 +662,7 @@
 #xpoost-social-root .xpsb-dock-close {
   background: transparent;
   border: none;
-  color: #888;
+  color: color-mix(in srgb, var(--xpsb-text, #FFFFFF) 55%, transparent);
   font-size: 16px;
   cursor: pointer;
   padding: 0 4px;
@@ -670,7 +670,7 @@
   line-height: 1;
 }
 #xpoost-social-root .xpsb-dock-close:hover {
-  color: #fff;
+  color: var(--xpsb-text, #FFFFFF);
 }
 
 /* ===================================================
@@ -686,14 +686,14 @@
 
 /* Theme 2: Frosted Crystal Glassmorphism */
 #xpoost-social-root .xpoost-social-bar--theme-glassmorphism .xpsb-trigger {
-  background: rgba(18, 20, 26, 0.72) !important;
+  background: color-mix(in srgb, var(--xpsb-bg, #12141A) 72%, transparent) !important;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.2) !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 #xpoost-social-root .xpoost-social-bar--theme-glassmorphism .xpsb-deck {
-  background: rgba(18, 20, 26, 0.8) !important;
+  background: color-mix(in srgb, var(--xpsb-bg, #12141A) 80%, transparent) !important;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.18) !important;
@@ -702,45 +702,45 @@
 
 /* Theme 3: Rose Gold & Silk */
 #xpoost-social-root .xpoost-social-bar--theme-rose_beauty .xpsb-trigger {
-  border-color: #E8A598;
-  box-shadow: 0 8px 24px rgba(28, 14, 20, 0.5), 0 0 12px rgba(232, 165, 152, 0.25);
+  border-color: var(--xpsb-gold, #E8A598);
+  box-shadow: 0 8px 24px rgba(28, 14, 20, 0.5), 0 0 12px color-mix(in srgb, var(--xpsb-gold, #E8A598) 25%, transparent);
 }
 #xpoost-social-root .xpoost-social-bar--theme-rose_beauty .xpsb-deck {
-  border-color: rgba(232, 165, 152, 0.35);
+  border-color: color-mix(in srgb, var(--xpsb-gold, #E8A598) 35%, transparent);
   box-shadow: 0 16px 40px rgba(28, 14, 20, 0.7), 0 0 15px rgba(232, 165, 152, 0.15);
 }
 #xpoost-social-root .xpoost-social-bar--theme-rose_beauty .xpsb-deck-title,
 #xpoost-social-root .xpoost-social-bar--theme-rose_beauty .xpsb-vip-sub,
 #xpoost-social-root .xpoost-social-bar--theme-rose_beauty .xpsb-icon-wrap {
-  color: #E8A598;
+  color: var(--xpsb-gold, #E8A598);
 }
 
 /* Theme 4: Emerald Concierge */
 #xpoost-social-root .xpoost-social-bar--theme-emerald_care .xpsb-trigger {
-  border-color: #25D366;
-  box-shadow: 0 8px 24px rgba(6, 33, 23, 0.6), 0 0 12px rgba(37, 211, 102, 0.25);
+  border-color: var(--xpsb-gold, #25D366);
+  box-shadow: 0 8px 24px rgba(6, 33, 23, 0.6), 0 0 12px color-mix(in srgb, var(--xpsb-gold, #25D366) 25%, transparent);
 }
 #xpoost-social-root .xpoost-social-bar--theme-emerald_care .xpsb-deck {
-  border-color: rgba(37, 211, 102, 0.35);
+  border-color: color-mix(in srgb, var(--xpsb-gold, #25D366) 35%, transparent);
   box-shadow: 0 16px 45px rgba(6, 33, 23, 0.85), 0 0 16px rgba(37, 211, 102, 0.2);
 }
 #xpoost-social-root .xpoost-social-bar--theme-emerald_care .xpsb-deck-title,
 #xpoost-social-root .xpoost-social-bar--theme-emerald_care .xpsb-vip-sub,
 #xpoost-social-root .xpoost-social-bar--theme-emerald_care .xpsb-icon-wrap {
-  color: #25D366;
+  color: var(--xpsb-gold, #25D366);
 }
 
 /* Theme 5: Midnight Stealth Minimal */
 #xpoost-social-root .xpoost-social-bar--theme-midnight_minimal .xpsb-trigger {
-  border: 1px solid #FFFFFF !important;
+  border: 1px solid var(--xpsb-gold, #FFFFFF) !important;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
 }
 #xpoost-social-root .xpoost-social-bar--theme-midnight_minimal .xpsb-deck {
-  border: 1px solid #333333;
+  border: 1px solid color-mix(in srgb, var(--xpsb-text, #FFFFFF) 20%, transparent);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8);
 }
 #xpoost-social-root .xpoost-social-bar--theme-midnight_minimal .xpsb-deck-title {
-  color: #FFFFFF;
+  color: var(--xpsb-text, #FFFFFF);
 }
 
 /* Theme 6: Sunset Aurora Gradient */
@@ -760,5 +760,26 @@
 }
 #xpoost-social-root .xpoost-social-bar--theme-cyber_gradient .xpsb-deck-title,
 #xpoost-social-root .xpoost-social-bar--theme-cyber_gradient .xpsb-icon-wrap {
-  color: #FF5E7E;
+  color: var(--xpsb-gold, #FF5E7E);
+}
+
+/* ===================================================
+   More social networks: wrap rows and scroll long lists
+   =================================================== */
+#xpoost-social-root .xpsb-concierge-social-row {
+  flex-wrap: wrap;
+}
+#xpoost-social-root .xpsb-stack-social-list {
+  max-height: 220px;
+  overflow-y: auto;
+}
+#xpoost-social-root .xpsb-dock-strip {
+  flex-wrap: wrap;
+}
+#xpoost-social-root .xpsb-social-circle-btn svg,
+#xpoost-social-root .xpsb-dock-social-btn svg {
+  fill: currentColor;
+}
+#xpoost-social-root .xpsb-dock-strip {
+  max-width: min(92vw, 420px);
 }

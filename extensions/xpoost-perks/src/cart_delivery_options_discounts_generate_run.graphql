@@ -1,0 +1,33 @@
+query CartDeliveryOptionsDiscountsInput {
+  cart {
+    cost {
+      subtotalAmount {
+        amount
+      }
+    }
+    deliveryGroups {
+      id
+      deliveryAddress {
+        countryCode
+      }
+      deliveryOptions {
+        handle
+        cost {
+          amount
+        }
+      }
+    }
+  }
+  presentmentCurrencyRate
+  localization {
+    country {
+      isoCode
+    }
+  }
+  discount {
+    discountClasses
+    metafield(namespace: "$app:tier-perks", key: "config") {
+      jsonValue
+    }
+  }
+}

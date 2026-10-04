@@ -232,8 +232,50 @@
   var cartState = {
     totalPrice: 0,
     items: [],
-    currency: "USD",
+    currency: "",
   };
+
+  // Resolve the currency the shopper is actually seeing (store / Markets currency).
+  function getActiveCurrency() {
+    return cartState.currency ||
+      (window.Shopify && window.Shopify.currency && window.Shopify.currency.active) ||
+      "USD";
+  }
+
+  // Currency symbol for the active store currency (any ISO code, not just USD/EGP).
+  function getCurrencySymbol() {
+    var code = String(getActiveCurrency()).toUpperCase();
+    var isAr = String(configStore.storefrontLocale || "").toLowerCase().indexOf("ar") === 0;
+    if (code === "EGP" || code === "LE") return isAr ? "\u062c.\u0645. " : "LE ";
+    try {
+      var parts = new Intl.NumberFormat(isAr ? "ar" : "en", {
+        style: "currency",
+        currency: code,
+        currencyDisplay: "narrowSymbol"
+      }).formatToParts(0);
+      for (var i = 0; i < parts.length; i++) {
+        if (parts[i].type === "currency") {
+          var sym = parts[i].value;
+          if (sym === "\u00a4") break;
+          return /^[A-Za-z]{2,}$/.test(sym) ? sym + " " : sym;
+        }
+      }
+    } catch (e) { /* unknown code: fall through */ }
+    return code + " ";
+  }
+
+  // Shipping tiers are entered in the store's base currency. If the shopper
+  // sees another (Markets) currency, convert thresholds with Shopify's rate.
+  function getTierScale() {
+    try {
+      var cur = window.Shopify && window.Shopify.currency;
+      if (cur && cur.rate && (!cartState.currency || cartState.currency === cur.active)) {
+        var r = parseFloat(cur.rate);
+        if (r > 0 && isFinite(r)) return r;
+      }
+    } catch (e) {}
+    return 1;
+  }
 
   var configStore = {
     prePurchase: null,
@@ -524,7 +566,7 @@
         itemCount = cart.item_count || 0;
         cartState.totalPrice = (cart.total_price || 0) / 100;
         cartState.items = cart.items || [];
-        cartState.currency = cart.currency || "USD";
+        cartState.currency = cart.currency || (window.Shopify && window.Shopify.currency && window.Shopify.currency.active) || "USD";
 
         // Build the event detail payload that matches the theme's CartUpdateEvent shape
         var eventData = {
@@ -931,7 +973,7 @@
     var layoutStyle = rules[0].layoutStyle || "spotlight_hero";
 
 
-    var symbol = (cartState.currency === "EGP" || cartState.currency === "LE" ? "LE " : "$");
+    var symbol = getCurrencySymbol();
 
     var modalInnerHtml = "";
     var countdownInterval = null;
@@ -1438,9 +1480,86 @@
     blockContainers.forEach(function (c) { c.innerHTML = ""; });
   }
 
+  // ── Audience targeting (show / hide the perk bar by visitor country) ──
+  var xpVisitorCountry = null;
+  var xpGeoPending = false;
+
+  function readMarketCountry() {
+    var el = document.getElementById("xpoost-cart-engine") || document.querySelector(".xpoost-shipping-bar-block");
+    var c = el && el.getAttribute ? el.getAttribute("data-country") : "";
+    if (!c && window.Shopify && window.Shopify.country) c = window.Shopify.country;
+    c = String(c || "").trim().toUpperCase();
+    return /^[A-Z]{2}$/.test(c) ? c : "";
+  }
+
+  // Resolves the visitor's country once per session: geo-IP via Shopify's own
+  // storefront endpoint, falling back to the market country the theme reports.
+  function resolveVisitorCountry() {
+    if (xpVisitorCountry !== null) return xpVisitorCountry;
+    try {
+      var cached = sessionStorage.getItem("xp_geo_country");
+      if (cached !== null) { xpVisitorCountry = cached; return xpVisitorCountry; }
+    } catch (e) {}
+    if (xpGeoPending) return null;
+    xpGeoPending = true;
+    var finish = function (code) {
+      if (xpVisitorCountry !== null) return;
+      xpVisitorCountry = /^[A-Z]{2}$/.test(code || "") ? code : readMarketCountry();
+      try { sessionStorage.setItem("xp_geo_country", xpVisitorCountry); } catch (e) {}
+      xpGeoPending = false;
+      try { renderShippingBar(); } catch (e) {}
+    };
+    try {
+      var timer = setTimeout(function () { finish(""); }, 2000);
+      fetch("/browsing_context_suggestions.json?country[enabled]=true&country[exclude]=ZZ", { headers: { Accept: "application/json" } })
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+          clearTimeout(timer);
+          var h = j && j.detected_values && j.detected_values.country && j.detected_values.country.handle;
+          finish(String(h || "").toUpperCase());
+        })
+        .catch(function () { clearTimeout(timer); finish(""); });
+    } catch (e) { finish(""); }
+    return null;
+  }
+
+  // false = hide the bar for this visitor (or while the country is still resolving)
+  function isShippingAudienceAllowed(config) {
+    var t = config && config.targeting;
+    if (!t) return true;
+    var hasVisibility = (t.mode === "include" || t.mode === "exclude") && t.countries && t.countries.length;
+    var hasOverrides = t.overrides && t.overrides.length;
+    if (!hasVisibility && !hasOverrides) return true;
+    var country = resolveVisitorCountry();
+    if (country === null) return false;
+    if (!hasVisibility) return true;
+    var inList = t.countries.indexOf(country) !== -1;
+    return t.mode === "include" ? inList : !inList;
+  }
+
+  // Country-specific reward ladders: first matching rule wins, else the default tiers.
+  function pickShippingTiers(config) {
+    var t = config && config.targeting;
+    if (t && t.overrides && t.overrides.length) {
+      var country = resolveVisitorCountry();
+      if (country) {
+        for (var i = 0; i < t.overrides.length; i++) {
+          var o = t.overrides[i];
+          if (o && o.countries && o.countries.indexOf(country) !== -1 && o.tiers && o.tiers.length) return o.tiers;
+        }
+      }
+    }
+    return config.tiers || [];
+  }
+
   function renderShippingBar() {
     var config = configStore.shipping;
     if (!config || !config.active) {
+      removeShippingBars();
+      return;
+    }
+
+    if (!isShippingAudienceAllowed(config)) {
       removeShippingBars();
       return;
     }
@@ -1450,15 +1569,22 @@
       return;
     }
 
-    var tiers = config.tiers || [];
+    var tiers = pickShippingTiers(config);
     if (tiers.length === 0) {
       removeShippingBars();
       return;
     }
+    var tierScale = getTierScale();
+    tiers = tiers.map(function (t) {
+      var amt = Number(t.targetAmount) || 0;
+      var scaled = tierScale !== 1 ? amt * tierScale : amt;
+      if (tierScale !== 1) scaled = scaled >= 10 ? Math.round(scaled) : Math.round(scaled * 100) / 100;
+      return Object.assign({}, t, { targetAmount: scaled });
+    });
     tiers.sort(function (a, b) { return a.targetAmount - b.targetAmount; });
 
     var currentTotal = cartState.totalPrice;
-    var symbol = config.currencySymbol || (cartState.currency === "EGP" || cartState.currency === "LE" ? "LE " : "$");
+    var symbol = getCurrencySymbol();
     var highestTarget = tiers.length > 0 ? tiers[tiers.length - 1].targetAmount : 100;
     var progressPercent = Math.min(100, Math.round((currentTotal / highestTarget) * 100));
 
@@ -1752,6 +1878,28 @@
     }
   }
 
+  // Items a rule can offer (main add-on + up to 2 extras) that are not already in the cart.
+  function xpcRuleItems(r) {
+    var list = [{
+      productId: r.targetProductId, variantId: r.targetVariantId, title: r.targetProductTitle,
+      price: r.targetProductPrice, image: r.targetProductImage, handle: r.targetProductHandle
+    }];
+    (r.extraTargets || []).slice(0, 2).forEach(function (x) {
+      if (x && (x.productId || x.variantId)) {
+        list.push({ productId: x.productId, variantId: x.variantId, title: x.title, price: x.price, image: x.image, handle: x.handle });
+      }
+    });
+    return list.filter(function (it) {
+      var v = it.variantId ? String(it.variantId).replace(/[^0-9]/g, "") : "";
+      var p = it.productId ? String(it.productId).replace(/[^0-9]/g, "") : "";
+      return !cartState.items.some(function (item) {
+        var itemVar = String(item.variant_id || item.id || "").replace(/[^0-9]/g, "");
+        var itemProd = String(item.product_id || "").replace(/[^0-9]/g, "");
+        return (v && itemVar === v) || (p && itemProd === p);
+      });
+    });
+  }
+
   function renderInCartUpsell() {
     var config = configStore.inCart;
     if (!config || !config.active) {
@@ -1778,16 +1926,8 @@
 
     for (var i = 0; i < rules.length; i++) {
       var r = rules[i];
-      var targetV = r.targetVariantId ? String(r.targetVariantId).replace(/[^0-9]/g, "") : "";
-      var targetP = r.targetProductId ? String(r.targetProductId).replace(/[^0-9]/g, "") : "";
-
-      var inCartAlready = cartState.items.some(function (item) {
-        var itemVar = String(item.variant_id || item.id || "").replace(/[^0-9]/g, "");
-        var itemProd = String(item.product_id || "").replace(/[^0-9]/g, "");
-        return (targetV && itemVar === targetV) || (targetP && itemProd === targetP);
-      });
-
-      if (inCartAlready) continue;
+      // Skip the rule only when every product it offers is already in the cart
+      if (xpcRuleItems(r).length === 0) continue;
 
       if (r.triggerProductId === "ALL") {
         if (!storewideCandidate) storewideCandidate = r;
@@ -1816,14 +1956,13 @@
       return;
     }
 
-    var symbol = (cartState.currency === "EGP" || cartState.currency === "LE" ? "LE " : "$");
-    var origPrice = parseFloat(activeRule.targetProductPrice || "19.99");
+    var symbol = getCurrencySymbol();
+    var ruleItems = xpcRuleItems(activeRule);
     var discount = activeRule.discountPercent ? parseFloat(activeRule.discountPercent) : 0;
     var hasDiscount = discount > 0;
-    var salePrice = (hasDiscount ? origPrice * (1 - discount / 100) : origPrice).toFixed(2);
-    var targetVariant = activeRule.targetVariantId ? activeRule.targetVariantId.replace(/[^0-9]/g, "") : "";
-
-    var productUrl = getProductUrl(activeRule);
+    var targetVariant = ruleItems.map(function (it) {
+      return it.variantId ? String(it.variantId).replace(/[^0-9]/g, "") : "";
+    }).join(",");
 
     var inCartConf = configStore.inCart || {};
     var inCartBg = inCartConf.backgroundColor || "#0B0B0B";
@@ -1835,24 +1974,32 @@
     var inCartSaveBadgeFormat = activeRule.saveBadge || tInCart.saveBadge || getUiString('saveBadge');
     var inCartBadgeText = inCartSaveBadgeFormat.replace('{discount}', String(discount));
 
+    var itemsHtml = ruleItems.map(function (it) {
+      var origPrice = parseFloat(it.price || "19.99");
+      var salePrice = (hasDiscount ? origPrice * (1 - discount / 100) : origPrice).toFixed(2);
+      var variantNum = it.variantId ? String(it.variantId).replace(/[^0-9]/g, "") : "";
+      var url = getProductUrl({ targetProductHandle: it.handle, targetProductId: it.productId, targetProductTitle: it.title });
+      return '<div class="xpc-in-cart-item">' +
+        '<a href="' + url + '" target="_blank" class="xpc-in-cart-thumb-link">' +
+        (it.image
+          ? '<img class="xpc-in-cart-thumb" src="' + escapeHtml(it.image) + '" alt="" />'
+          : '<div class="xpc-in-cart-thumb"></div>') +
+        '</a>' +
+        '<div class="xpc-in-cart-details">' +
+        '<div class="xpc-in-cart-name"><a href="' + url + '" target="_blank" class="xpc-product-link">' + escapeHtml(it.title || "Recommended Add-On") + '</a></div>' +
+        '<div class="xpc-in-cart-pricing">' +
+        '<span class="xpc-in-cart-price">' + symbol + salePrice + '</span>' +
+        (hasDiscount ? '<span class="xpc-in-cart-orig">' + symbol + origPrice.toFixed(2) + '</span><span class="xpc-modal-save-pill" style="margin-inline-start:6px;font-size:10px;padding:2px 6px;">' + escapeHtml(inCartBadgeText) + '</span>' : "") +
+        '</div>' +
+        '</div>' +
+        '<button type="button" class="xpc-in-cart-btn" data-variant-id="' + variantNum + '" data-base-price="' + origPrice + '">' + escapeHtml(inCartBtnText) + '</button>' +
+        '</div>';
+    }).join("");
+
     var cardInnerHtml =
       '<div class="xpc-in-cart-upsell xpc-animate-in"' + (configStore.isRtl ? ' dir="rtl"' : '') + ' style="--xpc-bg:' + inCartBg + ';--xpc-gold:' + inCartAccent + ';--xpc-text:' + inCartText + ';display:block!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;margin:0 auto!important;min-width:0!important;overflow:hidden!important;">' +
       '<div class="xpc-in-cart-title">' + escapeHtml(inCartTitle) + '</div>' +
-      '<div class="xpc-in-cart-item">' +
-      '<a href="' + productUrl + '" target="_blank" class="xpc-in-cart-thumb-link">' +
-      (activeRule.targetProductImage
-        ? '<img class="xpc-in-cart-thumb" src="' + escapeHtml(activeRule.targetProductImage) + '" alt="" />'
-        : '<div class="xpc-in-cart-thumb"></div>') +
-      '</a>' +
-      '<div class="xpc-in-cart-details">' +
-      '<div class="xpc-in-cart-name"><a href="' + productUrl + '" target="_blank" class="xpc-product-link">' + escapeHtml(activeRule.targetProductTitle || "Recommended Add-On") + '</a></div>' +
-      '<div class="xpc-in-cart-pricing">' +
-      '<span class="xpc-in-cart-price">' + symbol + salePrice + '</span>' +
-      (hasDiscount ? '<span class="xpc-in-cart-orig">' + symbol + origPrice.toFixed(2) + '</span><span class="xpc-modal-save-pill" style="margin-inline-start:6px;font-size:10px;padding:2px 6px;">' + escapeHtml(inCartBadgeText) + '</span>' : "") +
-      '</div>' +
-      '</div>' +
-      '<button type="button" class="xpc-in-cart-btn" data-variant-id="' + targetVariant + '">' + escapeHtml(inCartBtnText) + '</button>' +
-      '</div>' +
+      itemsHtml +
       '</div>';
 
     // Check if the in-cart drawer upsell is ALREADY displayed for this exact product
@@ -1957,8 +2104,10 @@
   function attachAddEvent(container, targetVariant, discountCode, discountPercent, rule) {
     var ruleId = (rule && rule.id) || "";
     xpObserve(container, "ic", { o: ruleId });
-    var btn = container.querySelector(".xpc-in-cart-btn");
-    if (btn && targetVariant) {
+    var buttons = container.querySelectorAll(".xpc-in-cart-btn");
+    Array.prototype.forEach.call(buttons, function (btn) {
+      var variantId = btn.getAttribute("data-variant-id");
+      if (!variantId) return;
       var btnOriginalText = btn.textContent;
       btn.addEventListener("click", function () {
         xpTrack("ic", "c", { o: ruleId });
@@ -1970,11 +2119,11 @@
         var itemProps = disc ? { "_xpoost_discount": disc, "_xpoost_upsell": "true" } : {};
         if (ruleId) itemProps["_xpoost_src"] = "ic:" + ruleId;
         var itemToAdd = {
-          id: targetVariant,
+          id: variantId,
           quantity: 1,
           properties: itemProps
         };
-        var basePrice = parseFloat((rule && rule.targetProductPrice) || "0") || 0;
+        var basePrice = parseFloat(btn.getAttribute("data-base-price") || "0") || 0;
         var paidPrice = disc ? basePrice * (1 - parseFloat(disc) / 100) : basePrice;
 
         addItemsAndOpenDrawer([itemToAdd], discountCode || null)
@@ -1996,7 +2145,7 @@
             btn.textContent = btnOriginalText || getUiString("add");
           });
       });
-    }
+    });
   }
 
   ready(initCartEngine);

@@ -1,9 +1,16 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Form, useActionData, useLoaderData, useNavigation } from "react-router";
 import { authenticate } from "../shopify.server";
 import prisma from "../db.server";
 import { getOrCreateShop } from "../shop.server";
+import {
+  DEFAULT_PERK_SETTINGS,
+  sanitizePerkSettings,
+  sanitizeTier,
+  syncPerksDiscount,
+} from "../perks.server";
+import type { PerkSettings } from "../perks.server";
 import { FeatureLanguageSwitcher } from "../components/FeatureLanguageSwitcher";
 import {
   type SupportedLanguage,
@@ -16,6 +23,10 @@ type Tier = {
   targetAmount: number;
   rewardTitle: string;
   unlockedMessage: string;
+  rewardType?: string;
+  rewardValue?: number;
+  rewardCap?: number;
+  rewardLabel?: string;
 };
 
 const DEFAULT_TIERS: Tier[] = [
@@ -51,9 +62,36 @@ const SHIPPING_LAYOUTS = [
   },
 ];
 
+function symbolForCurrency(code: string): string {
+  const c = String(code || "USD").toUpperCase();
+  if (c === "EGP") return "LE ";
+  try {
+    const part = new Intl.NumberFormat("en", { style: "currency", currency: c, currencyDisplay: "narrowSymbol" })
+      .formatToParts(0)
+      .find((p) => p.type === "currency");
+    const sym = part?.value || "";
+    if (!sym || sym === "\u00a4") return `${c} `;
+    return /^[A-Za-z]{2,}$/.test(sym) ? `${sym} ` : sym;
+  } catch {
+    return `${c} `;
+  }
+}
+
+async function getShopCurrency(admin: any): Promise<string> {
+  try {
+    const res = await admin.graphql(`#graphql\nquery XpShipCurrency { shop { currencyCode } }`);
+    const j = await res.json();
+    return String(j?.data?.shop?.currencyCode || "USD").toUpperCase();
+  } catch {
+    return "USD";
+  }
+}
+
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const { session } = await authenticate.admin(request);
+  const { admin, session } = await authenticate.admin(request);
   const shop = await getOrCreateShop(session.shop);
+  const shopCurrency = await getShopCurrency(admin);
+  const shopSymbol = symbolForCurrency(shopCurrency);
 
   let config = await prisma.shippingBarConfig.findUnique({
     where: { shopId: shop.id },
@@ -64,8 +102,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       data: {
         shopId: shop.id,
         active: true,
-        currency: "USD",
-        currencySymbol: "$",
+        currency: shopCurrency,
+        currencySymbol: shopSymbol,
         tiersJson: JSON.stringify({ tiers: DEFAULT_TIERS, layoutStyle: "milestone_stepper" }),
         progressColor: "#D4AF37",
         trackColor: "#222222",
@@ -74,6 +112,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         initialMessage: "Add items to unlock Free Shipping!",
         allUnlockedMessage: "Congratulations! You unlocked all rewards!",
       },
+    });
+  }
+
+  // The bar always uses the store's own currency (never a hard-coded USD).
+  if (config.currency !== shopCurrency || config.currencySymbol !== shopSymbol) {
+    config = await prisma.shippingBarConfig.update({
+      where: { shopId: shop.id },
+      data: { currency: shopCurrency, currencySymbol: shopSymbol },
     });
   }
 
@@ -96,6 +142,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   let tiers: Tier[] = [];
   let layoutStyle = "milestone_stepper";
+  let targeting: { mode: string; countries: string[]; overrides: { countries: string[]; tiers: Tier[] }[] } = { mode: "all", countries: [], overrides: [] };
+  let perks: PerkSettings = DEFAULT_PERK_SETTINGS;
   try {
     const parsed = JSON.parse(config.tiersJson);
     if (Array.isArray(parsed)) {
@@ -103,6 +151,19 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     } else if (parsed && Array.isArray(parsed.tiers)) {
       tiers = parsed.tiers;
       if (parsed.layoutStyle) layoutStyle = parsed.layoutStyle;
+      perks = sanitizePerkSettings(parsed.perks);
+      const t = parsed.targeting;
+      if (t && (t.mode === "include" || t.mode === "exclude") && Array.isArray(t.countries)) {
+        targeting = { ...targeting, mode: t.mode, countries: t.countries.map((c: unknown) => String(c).toUpperCase()) };
+      }
+      if (t && Array.isArray(t.overrides)) {
+        targeting.overrides = t.overrides
+          .filter((o: { countries?: unknown; tiers?: unknown }) => Array.isArray(o?.countries) && Array.isArray(o?.tiers))
+          .map((o: { countries: unknown[]; tiers: Tier[] }) => ({
+            countries: o.countries.map((c) => String(c).toUpperCase()),
+            tiers: o.tiers,
+          }));
+      }
     }
     if (tiers.length === 0) tiers = DEFAULT_TIERS;
   } catch {
@@ -112,20 +173,21 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return {
     shop,
     enabled: shop.shippingBarEnabled,
-    config: { ...config, tiers, layoutStyle },
+    config: { ...config, tiers, layoutStyle, targeting, perks },
     allTranslations,
     dashboardLocale,
   };
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  const { session } = await authenticate.admin(request);
+  const { admin, session } = await authenticate.admin(request);
   const shop = await getOrCreateShop(session.shop);
+  const shopCurrency = await getShopCurrency(admin);
   const formData = await request.formData();
 
   const active = formData.get("active") === "on";
-  const currency = String(formData.get("currency") || "USD").toUpperCase();
-  const currencySymbol = String(formData.get("currencySymbol") || "$");
+  const currency = shopCurrency;
+  const currencySymbol = symbolForCurrency(shopCurrency);
   const progressColor = String(formData.get("progressColor") || "#D4AF37");
   const trackColor = String(formData.get("trackColor") || "#222222");
   const backgroundColor = String(formData.get("backgroundColor") || "#0B0B0B");
@@ -144,12 +206,68 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     return { error: "Failed to parse tiers configuration." };
   }
 
-  // Sort tiers ascending by target amount
-  tiers.sort((a, b) => a.targetAmount - b.targetAmount);
+  // Normalise milestones (reward type / value / cap / label) and sort ascending
+  tiers = tiers
+    .map((t) => sanitizeTier(t))
+    .filter((t): t is NonNullable<typeof t> => !!t)
+    .sort((a, b) => a.targetAmount - b.targetAmount);
+  if (tiers.length === 0) {
+    return { error: "Add at least one milestone with a threshold and a reward name." };
+  }
+
+  let perks: PerkSettings;
+  try {
+    perks = sanitizePerkSettings(JSON.parse(String(formData.get("perksJson") || "{}")));
+  } catch {
+    perks = DEFAULT_PERK_SETTINGS;
+  }
+
+  const targetModeRaw = String(formData.get("targetMode") || "all");
+  const targetCountries = Array.from(
+    new Set(
+      String(formData.get("targetCountries") || "")
+        .split(",")
+        .map((c) => c.trim().toUpperCase())
+        .filter((c) => /^[A-Z]{2}$/.test(c)),
+    ),
+  );
+  let overrides: { countries: string[]; tiers: Tier[] }[] = [];
+  try {
+    const rawOv = JSON.parse(String(formData.get("targetOverrides") || "[]"));
+    if (Array.isArray(rawOv)) {
+      overrides = rawOv
+        .slice(0, 10)
+        .map((o: { countries?: unknown; tiers?: unknown }) => {
+          const countries = Array.from(
+            new Set(
+              (Array.isArray(o?.countries) ? o.countries : [])
+                .map((c: unknown) => String(c).trim().toUpperCase())
+                .filter((c: string) => /^[A-Z]{2}$/.test(c)),
+            ),
+          ) as string[];
+          const ovTiers = (Array.isArray(o?.tiers) ? o.tiers : [])
+            .map((t: Partial<Tier>) => sanitizeTier(t))
+            .filter((t): t is NonNullable<ReturnType<typeof sanitizeTier>> => !!t)
+            .sort((a, b) => a.targetAmount - b.targetAmount)
+            .slice(0, 6);
+          return { countries, tiers: ovTiers };
+        })
+        .filter((o) => o.countries.length > 0 && o.tiers.length > 0);
+    }
+  } catch {
+    overrides = [];
+  }
+  const targeting = {
+    mode: (targetModeRaw === "include" || targetModeRaw === "exclude") && targetCountries.length > 0 ? targetModeRaw : "all",
+    countries: (targetModeRaw === "include" || targetModeRaw === "exclude") ? targetCountries : ([] as string[]),
+    overrides,
+  };
 
   const serializedTiers = JSON.stringify({
     tiers,
     layoutStyle,
+    targeting,
+    perks,
   });
 
   await prisma.shippingBarConfig.upsert({
@@ -204,7 +322,17 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     data: { shippingBarEnabled: active },
   });
 
-  return { ok: true, message: "Tiered Shipping Bar configuration saved!" };
+  const sync = await syncPerksDiscount(admin, {
+    tiers: tiers as any,
+    targeting: targeting as any,
+    perks,
+  });
+
+  return {
+    ok: true,
+    message: "Tiered Shipping Bar configuration saved! " + sync.message,
+    perksState: sync.state,
+  };
 };
 
 export default function ShippingBarSettings() {
@@ -244,9 +372,27 @@ export default function ShippingBarSettings() {
   };
 
   const [selectedLayout, setSelectedLayout] = useState<string>(config.layoutStyle || "milestone_stepper");
-  const [currencySymbol, setCurrencySymbol] = useState(config.currencySymbol || "$");
+  const currencySymbol = config.currencySymbol || "$";
   const [progressColor, setProgressColor] = useState(config.progressColor || "#D4AF37");
   const [bgColor, setBgColor] = useState(config.backgroundColor || "#0B0B0B");
+  const [textColor, setTextColor] = useState(config.textColor || "#FFFFFF");
+  const [trackColor, setTrackColor] = useState(config.trackColor || "#222222");
+  const [targetMode, setTargetMode] = useState<string>(config.targeting?.mode || "all");
+  const [targetCountries, setTargetCountries] = useState<string[]>(config.targeting?.countries || []);
+  const [targetOverrides, setTargetOverrides] = useState<{ countries: string[]; tiers: Tier[] }[]>(
+    (config.targeting?.overrides as { countries: string[]; tiers: Tier[] }[]) || [],
+  );
+  const countryNames = useMemo(() => buildCountryNames(), []);
+  const updateOverride = (i: number, patch: Partial<{ countries: string[]; tiers: Tier[] }>) =>
+    setTargetOverrides((prev) => prev.map((o, idx) => (idx === i ? { ...o, ...patch } : o)));
+  const [perks, setPerks] = useState<PerkSettings>(config.perks as PerkSettings);
+  const patchOverrideTier = (oi: number, ti: number, patch: Partial<Tier>) =>
+    setTargetOverrides((prev) =>
+      prev.map((o, i) =>
+        i === oi ? { ...o, tiers: o.tiers.map((t, j) => (j === ti ? { ...t, ...patch } : t)) } : o,
+      ),
+    );
+  const previewVars = { color: textColor, "--xp-t": textColor, "--xp-track": trackColor } as CSSProperties;
   const [tiers, setTiers] = useState<Tier[]>(config.tiers || DEFAULT_TIERS);
 
   // Simulator state
@@ -330,25 +476,13 @@ export default function ShippingBarSettings() {
                 </label>
               </div>
 
-              <div className="xp-grid-2">
-                <div className="xp-field">
-                  <label>Currency Code</label>
-                  <input
-                    type="text"
-                    name="currency"
-                    className="xp-input"
-                    defaultValue={config.currency || "USD"}
-                  />
-                </div>
-                <div className="xp-field">
-                  <label>Currency Symbol</label>
-                  <input
-                    type="text"
-                    name="currencySymbol"
-                    className="xp-input"
-                    value={currencySymbol}
-                    onChange={(e) => setCurrencySymbol(e.target.value)}
-                  />
+              <div className="xp-field">
+                <label>Store Currency</label>
+                <input type="hidden" name="currency" value={config.currency} />
+                <input type="hidden" name="currencySymbol" value={currencySymbol} />
+                <div className="xp-input" style={{ opacity: 0.85 }}>
+                  {config.currency} ({currencySymbol.trim()}) — taken automatically from your Shopify store settings.
+                  Shoppers who see another market currency get thresholds converted automatically.
                 </div>
               </div>
 
@@ -429,6 +563,7 @@ export default function ShippingBarSettings() {
                         />
                       </div>
                     </div>
+                    <RewardFields tier={tier} symbol={currencySymbol} onChange={(patch) => updateTier(idx, patch)} />
                   </div>
                 ))}
               </div>
@@ -440,7 +575,7 @@ export default function ShippingBarSettings() {
 
             {/* Appearance */}
             <div className="xp-section-card"><h3 className="xp-section-title">4. Palette Customization</h3>
-              <div className="xp-grid-3">
+              <div className="xp-grid-3" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))" }}>
                 <div className="xp-field">
                   <label>Progress Accent</label>
                   <div className="xp-color-wrap">
@@ -471,12 +606,319 @@ export default function ShippingBarSettings() {
                     <input
                       type="color"
                       name="trackColor"
-                      defaultValue={config.trackColor || "#222222"}
+                      value={trackColor}
+                      onChange={(e) => setTrackColor(e.target.value)}
                     />
-                    <span>{config.trackColor || "#222222"}</span>
+                    <span>{trackColor}</span>
+                  </div>
+                </div>
+                <div className="xp-field">
+                  <label>Text Color</label>
+                  <div className="xp-color-wrap">
+                    <input
+                      type="color"
+                      name="textColor"
+                      value={textColor}
+                      onChange={(e) => setTextColor(e.target.value)}
+                    />
+                    <span>{textColor}</span>
                   </div>
                 </div>
               </div>
+              <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
+                <button
+                  type="button"
+                  className="xp-btn-secondary"
+                  onClick={() => { setBgColor("#0B0B0B"); setTextColor("#FFFFFF"); setTrackColor("#222222"); setProgressColor("#D4AF37"); }}
+                >
+                  Dark preset
+                </button>
+                <button
+                  type="button"
+                  className="xp-btn-secondary"
+                  onClick={() => { setBgColor("#FFFFFF"); setTextColor("#1A1A1A"); setTrackColor("#E5E5E5"); setProgressColor("#B8860B"); }}
+                >
+                  Light preset
+                </button>
+              </div>
+            </div>
+
+            {/* Audience targeting */}
+            <div className="xp-section-card">
+              <h3 className="xp-section-title">5. Audience Targeting</h3>
+              <p className="xp-sub" style={{ margin: "0 0 12px" }}>
+                Choose which visitors see the perk bar, based on the country they are browsing from.
+              </p>
+              <input type="hidden" name="targetMode" value={targetCountries.length === 0 ? "all" : targetMode} />
+              <input type="hidden" name="targetCountries" value={targetCountries.join(",")} />
+              <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 12 }}>
+                {[
+                  { id: "all", label: "Show to visitors from all countries" },
+                  { id: "include", label: "Show only to visitors from the countries below" },
+                  { id: "exclude", label: "Hide from visitors from the countries below" },
+                ].map((o) => (
+                  <label key={o.id} style={{ display: "flex", gap: 8, alignItems: "center", cursor: "pointer" }}>
+                    <input
+                      type="radio"
+                      name="targetModeRadio"
+                      checked={targetMode === o.id}
+                      onChange={() => setTargetMode(o.id)}
+                    />
+                    <span>{o.label}</span>
+                  </label>
+                ))}
+              </div>
+              {targetMode !== "all" && (
+                <CountryPicker value={targetCountries} onChange={setTargetCountries} names={countryNames} />
+              )}
+            </div>
+
+            {/* Country-specific rewards */}
+            <div className="xp-section-card">
+              <h3 className="xp-section-title">6. Country-Specific Rewards</h3>
+              <p className="xp-sub" style={{ margin: "0 0 12px" }}>
+                Give selected countries their own reward ladder (different thresholds and rewards). Visitors from any other country
+                see the default milestones from section 3. Amounts are entered in your store currency ({config.currency}) and are
+                converted automatically for shoppers who see another currency. If a visitor matches several rules, the first one is used.
+              </p>
+              <input type="hidden" name="targetOverrides" value={JSON.stringify(targetOverrides)} />
+
+              {targetOverrides.map((ov, oi) => (
+                <div
+                  key={oi}
+                  style={{ border: "1px solid rgba(212,175,55,0.35)", borderRadius: 10, padding: 14, marginBottom: 14 }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                    <strong>Rule {oi + 1}: {ov.countries.length ? ov.countries.join(", ") : "no countries yet"}</strong>
+                    <button
+                      type="button"
+                      className="xp-btn-secondary"
+                      onClick={() => setTargetOverrides((prev) => prev.filter((_, i) => i !== oi))}
+                    >
+                      Delete rule
+                    </button>
+                  </div>
+
+                  <CountryPicker
+                    value={ov.countries}
+                    onChange={(countries) => updateOverride(oi, { countries })}
+                    names={countryNames}
+                    label="Countries for this rule"
+                  />
+
+                  <div style={{ marginTop: 12 }}>
+                    <label style={{ fontWeight: 600, display: "block", marginBottom: 6 }}>Rewards for these countries</label>
+                    {ov.tiers.map((t, ti) => (
+                      <div key={ti} style={{ marginBottom: 14, paddingBottom: 10, borderBottom: "1px dashed rgba(255,255,255,0.12)" }}>
+                      <div
+                        style={{ display: "grid", gridTemplateColumns: "110px 1fr 1fr auto", gap: 8, marginBottom: 8, alignItems: "center" }}
+                      >
+                        <input
+                          type="number"
+                          min="1"
+                          className="xp-input"
+                          value={t.targetAmount}
+                          onChange={(e) =>
+                            updateOverride(oi, {
+                              tiers: ov.tiers.map((x, i) => (i === ti ? { ...x, targetAmount: parseFloat(e.target.value) || 0 } : x)),
+                            })
+                          }
+                        />
+                        <input
+                          type="text"
+                          className="xp-input"
+                          placeholder="Reward title"
+                          value={t.rewardTitle}
+                          onChange={(e) =>
+                            updateOverride(oi, {
+                              tiers: ov.tiers.map((x, i) => (i === ti ? { ...x, rewardTitle: sanitizeText(e.target.value) } : x)),
+                            })
+                          }
+                        />
+                        <input
+                          type="text"
+                          className="xp-input"
+                          placeholder="Unlocked message"
+                          value={t.unlockedMessage}
+                          onChange={(e) =>
+                            updateOverride(oi, {
+                              tiers: ov.tiers.map((x, i) => (i === ti ? { ...x, unlockedMessage: sanitizeText(e.target.value) } : x)),
+                            })
+                          }
+                        />
+                        <button
+                          type="button"
+                          className="xp-btn-secondary"
+                          aria-label="Remove reward"
+                          disabled={ov.tiers.length <= 1}
+                          onClick={() => updateOverride(oi, { tiers: ov.tiers.filter((_, i) => i !== ti) })}
+                        >
+                          &times;
+                        </button>
+                      </div>
+                      <RewardFields tier={t} symbol={currencySymbol} onChange={(patch) => patchOverrideTier(oi, ti, patch)} />
+                      </div>
+                    ))}
+                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                      <button
+                        type="button"
+                        className="xp-btn-secondary"
+                        disabled={ov.tiers.length >= 6}
+                        onClick={() => {
+                          const last = ov.tiers[ov.tiers.length - 1];
+                          updateOverride(oi, {
+                            tiers: [
+                              ...ov.tiers,
+                              {
+                                targetAmount: last ? last.targetAmount + 50 : 50,
+                                rewardTitle: `Reward Level ${ov.tiers.length + 1}`,
+                                unlockedMessage: `Unlocked Level ${ov.tiers.length + 1}!`,
+                              },
+                            ],
+                          });
+                        }}
+                      >
+                        + Add reward
+                      </button>
+                      <button
+                        type="button"
+                        className="xp-btn-secondary"
+                        onClick={() => updateOverride(oi, { tiers: tiers.map((t) => ({ ...t })) })}
+                      >
+                        Copy default milestones
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              <button
+                type="button"
+                className="xp-btn-secondary"
+                disabled={targetOverrides.length >= 10}
+                onClick={() =>
+                  setTargetOverrides((prev) => [...prev, { countries: [], tiers: tiers.map((t) => ({ ...t })) }])
+                }
+              >
+                + Add country rule
+              </button>
+            </div>
+
+            {/* Checkout rewards (Shopify Function) */}
+            <div className="xp-section-card">
+              <h3 className="xp-section-title">7. Checkout Rewards (applied automatically)</h3>
+              <p className="xp-sub" style={{ margin: "0 0 12px" }}>
+                Milestones with a reward type other than &quot;Display only&quot; are applied at checkout by a Shopify Function, so what the
+                bar promises is exactly what the customer gets &mdash; no discount codes needed. It appears in your Shopify admin under
+                Discounts as &quot;Tier Perks Rewards&quot;.
+              </p>
+              <input type="hidden" name="perksJson" value={JSON.stringify(perks)} />
+
+              <div className="xp-field">
+                <label>When a cart unlocks several rewards</label>
+                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                  <label style={{ display: "flex", gap: 8, alignItems: "center", cursor: "pointer" }}>
+                    <input type="radio" name="perkStacking" checked={perks.stacking === "best"} onChange={() => setPerks({ ...perks, stacking: "best" })} />
+                    <span>Give only the best reward of each kind (recommended)</span>
+                  </label>
+                  <label style={{ display: "flex", gap: 8, alignItems: "center", cursor: "pointer" }}>
+                    <input type="radio" name="perkStacking" checked={perks.stacking === "all"} onChange={() => setPerks({ ...perks, stacking: "all" })} />
+                    <span>Stack every unlocked reward</span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="xp-field">
+                <label>Can combine with your other Shopify discounts</label>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
+                  <label style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                    <input type="checkbox" checked={perks.combineProduct} onChange={(e) => setPerks({ ...perks, combineProduct: e.target.checked })} />
+                    <span>Product discounts</span>
+                  </label>
+                  <label style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                    <input type="checkbox" checked={perks.combineOrder} onChange={(e) => setPerks({ ...perks, combineOrder: e.target.checked })} />
+                    <span>Order discounts</span>
+                  </label>
+                  <label style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                    <input type="checkbox" checked={perks.combineShipping} onChange={(e) => setPerks({ ...perks, combineShipping: e.target.checked })} />
+                    <span>Shipping discounts</span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="xp-grid-2">
+                <div className="xp-field">
+                  <label>Campaign starts (optional, UTC)</label>
+                  <input type="date" className="xp-input" value={perks.startsAt ? perks.startsAt.slice(0, 10) : ""} onChange={(e) => setPerks({ ...perks, startsAt: e.target.value })} />
+                </div>
+                <div className="xp-field">
+                  <label>Campaign ends (optional, UTC)</label>
+                  <input type="date" className="xp-input" value={perks.endsAt ? perks.endsAt.slice(0, 10) : ""} onChange={(e) => setPerks({ ...perks, endsAt: e.target.value })} />
+                </div>
+              </div>
+
+              <div className="xp-field">
+                <label>What will be applied</label>
+                <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13, lineHeight: 1.7 }}>
+                  {tiers.some(isFunctionalTier) ? (
+                    [...tiers].sort((a, b) => a.targetAmount - b.targetAmount).filter(isFunctionalTier).map((t, i) => (
+                      <li key={`d${i}`}>
+                        <strong>Everyone{targetCountries.length ? (targetMode === "include" ? " in the selected countries" : " outside the selected countries") : ""}:</strong>{" "}
+                        cart of {currencySymbol}{t.targetAmount}+ &rarr; {describeReward(t, currencySymbol)}
+                      </li>
+                    ))
+                  ) : (
+                    <li>Nothing yet. Set a reward type on a milestone above.</li>
+                  )}
+                  {targetOverrides.filter((o) => o.countries.length).map((o, oi) =>
+                    [...o.tiers].sort((a, b) => a.targetAmount - b.targetAmount).filter(isFunctionalTier).map((t, i) => (
+                      <li key={`o${oi}-${i}`}>
+                        <strong>{o.countries.join(", ")}:</strong> cart of {currencySymbol}{t.targetAmount}+ &rarr; {describeReward(t, currencySymbol)}
+                      </li>
+                    )),
+                  )}
+                </ul>
+                <small>Amounts are in {config.currency} and converted automatically for other currencies. Thresholds use the cart subtotal before shipping and tax.</small>
+              </div>
+
+              {actionData && "perksState" in actionData && actionData.perksState === "not_deployed" && (
+                <s-banner tone="warning">
+                  The rewards engine has not been deployed yet. Run <code>shopify app deploy</code>, then save this page again.
+                </s-banner>
+              )}
+              {actionData && "perksState" in actionData && actionData.perksState === "error" && (
+                <s-banner tone="critical">Checkout rewards could not be synced. See the message above and try saving again.</s-banner>
+              )}
+
+              <a
+                href="shopify:admin/discounts"
+                target="_top"
+                className="xp-btn-secondary"
+                style={{ display: "inline-block", textDecoration: "none", marginTop: 10 }}
+              >
+                View in Shopify Discounts &rarr;
+              </a>
+            </div>
+
+            {/* Real free shipping note */}
+            <div className="xp-section-card xp-ship-note">
+              <h3 className="xp-section-title">Free shipping and your store&apos;s shipping rates</h3>
+              <p className="xp-sub" style={{ margin: "0 0 10px" }}>
+                The easiest way: set a milestone&apos;s reward to <strong>Free shipping</strong> (or a shipping discount) above. The rewards engine then
+                discounts your existing shipping rates automatically at checkout. It can only discount rates that exist, so make sure your
+                shipping profile has at least one rate for the countries you sell to.
+                Prefer to manage it yourself? Leave the reward as <strong>Display only</strong> and create a matching free-shipping rate with the same
+                minimum order price in your Shopify shipping settings (Shipping and delivery &rarr; your profile &rarr; Add rate &rarr; condition based on order price),
+                keeping the amount identical to the milestone here.
+              </p>
+              <a
+                href="shopify:admin/settings/shipping"
+                target="_top"
+                className="xp-btn-secondary"
+                style={{ display: "inline-block", textDecoration: "none" }}
+              >
+                Open Shipping &amp; delivery settings &rarr;
+              </a>
             </div>
 
             <button type="submit" className="xp-btn-submit" disabled={isSubmitting}>
@@ -516,7 +958,7 @@ export default function ShippingBarSettings() {
               <div
                 className="xp-bar-preview-box"
                 dir={selectedLang === "ar" ? "rtl" : "ltr"}
-                style={{ background: bgColor, borderColor: `${progressColor}55` }}
+                style={{ ...previewVars, background: bgColor, borderColor: `${progressColor}55` }}
               >
                 <div className="xp-bar-status-text">
                   {nextTier
@@ -537,9 +979,9 @@ export default function ShippingBarSettings() {
                           <div
                             className="xp-node-circle"
                             style={{
-                              borderColor: isReached ? progressColor : "#444",
+                              borderColor: isReached ? progressColor : "color-mix(in srgb, var(--xp-t) 35%, transparent)",
                               background: isReached ? progressColor : bgColor,
-                              color: isReached ? bgColor : "#888",
+                              color: isReached ? bgColor : "color-mix(in srgb, var(--xp-t) 65%, transparent)",
                             }}
                           >
                             {isReached ? (
@@ -565,7 +1007,7 @@ export default function ShippingBarSettings() {
               <div
                 className="xp-bar-preview-box"
                 dir={selectedLang === "ar" ? "rtl" : "ltr"}
-                style={{ background: bgColor, borderColor: `${progressColor}55` }}
+                style={{ ...previewVars, background: bgColor, borderColor: `${progressColor}55` }}
               >
                 <div className="xp-bar-status-text">
                   {nextTier
@@ -584,9 +1026,9 @@ export default function ShippingBarSettings() {
                       <div
                         key={i}
                         className={`xp-reward-card-item ${isReached ? "is-unlocked" : "is-locked"}`}
-                        style={{ borderColor: isReached ? progressColor : "rgba(255,255,255,0.1)" }}
+                        style={{ borderColor: isReached ? progressColor : "color-mix(in srgb, var(--xp-t) 16%, transparent)" }}
                       >
-                        <div className="xp-card-icon-wrap" style={{ color: isReached ? progressColor : "#666" }}>
+                        <div className="xp-card-icon-wrap" style={{ color: isReached ? progressColor : "color-mix(in srgb, var(--xp-t) 50%, transparent)" }}>
                           {isReached ? (
                             <svg className="xp-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                               <rect x="3" y="8" width="18" height="13" rx="2"/>
@@ -602,7 +1044,7 @@ export default function ShippingBarSettings() {
                           )}
                         </div>
                         <div className="xp-card-title">{t.rewardTitle}</div>
-                        <div className="xp-card-badge" style={{ background: isReached ? progressColor : "rgba(255,255,255,0.1)", color: isReached ? bgColor : "#aaa" }}>
+                        <div className="xp-card-badge" style={{ background: isReached ? progressColor : "color-mix(in srgb, var(--xp-t) 12%, transparent)", color: isReached ? bgColor : "color-mix(in srgb, var(--xp-t) 75%, transparent)" }}>
                           {isReached ? "UNLOCKED" : `${currencySymbol}${t.targetAmount}`}
                         </div>
                       </div>
@@ -617,7 +1059,7 @@ export default function ShippingBarSettings() {
               <div
                 className="xp-bar-preview-box"
                 dir={selectedLang === "ar" ? "rtl" : "ltr"}
-                style={{ background: bgColor, borderColor: `${progressColor}55` }}
+                style={{ ...previewVars, background: bgColor, borderColor: `${progressColor}55` }}
               >
                 <div className="xp-luxury-headline">
                   {nextTier ? (
@@ -647,7 +1089,7 @@ export default function ShippingBarSettings() {
               <div
                 className="xp-bar-preview-box"
                 dir={selectedLang === "ar" ? "rtl" : "ltr"}
-                style={{ background: bgColor, borderColor: `${progressColor}55` }}
+                style={{ ...previewVars, background: bgColor, borderColor: `${progressColor}55` }}
               >
                 <div className="xp-split-ribbon-top">
                   <div className="xp-split-badge-achieved" style={{ borderColor: progressColor, color: progressColor }}>
@@ -667,6 +1109,253 @@ export default function ShippingBarSettings() {
         </div>
       </div>
     </s-page>
+  );
+}
+
+const REWARD_OPTIONS: { id: string; label: string }[] = [
+  { id: "display", label: "Display only (no automatic discount)" },
+  { id: "free_shipping", label: "Free shipping" },
+  { id: "shipping_percent", label: "% off shipping" },
+  { id: "shipping_fixed", label: "Fixed amount off shipping" },
+  { id: "order_percent", label: "% off the whole order" },
+  { id: "order_fixed", label: "Fixed amount off the whole order" },
+];
+
+function isFunctionalTier(t: Tier): boolean {
+  if (!t.rewardType || t.rewardType === "display") return false;
+  if (t.rewardType === "free_shipping") return true;
+  return (t.rewardValue || 0) > 0;
+}
+
+function suggestRewardTitle(type: string, value: number, symbol: string, current: string): string {
+  const v = Number(value) || 0;
+  switch (type) {
+    case "free_shipping": return "Free Shipping";
+    case "shipping_percent": return v ? `${v}% Off Shipping` : current;
+    case "shipping_fixed": return v ? `${symbol}${v} Off Shipping` : current;
+    case "order_percent": return v ? `${v}% Off Your Order` : current;
+    case "order_fixed": return v ? `${symbol}${v} Off Your Order` : current;
+    default: return current;
+  }
+}
+
+function describeReward(t: Tier, symbol: string): string {
+  const v = Number(t.rewardValue) || 0;
+  switch (t.rewardType) {
+    case "free_shipping": return "free shipping";
+    case "shipping_percent": return `${v}% off shipping`;
+    case "shipping_fixed": return `${symbol}${v} off shipping`;
+    case "order_percent": return `${v}% off the order${t.rewardCap ? ` (max ${symbol}${t.rewardCap})` : ""}`;
+    case "order_fixed": return `${symbol}${v} off the order`;
+    default: return "display only";
+  }
+}
+
+function RewardFields({
+  tier,
+  symbol,
+  onChange,
+}: {
+  tier: Tier;
+  symbol: string;
+  onChange: (patch: Partial<Tier>) => void;
+}) {
+  const type = tier.rewardType || "display";
+  const needsValue = type !== "display" && type !== "free_shipping";
+  const isPercent = type === "shipping_percent" || type === "order_percent";
+
+  // Keep the reward name in sync with the reward while it is still auto-generated.
+  const withTitle = (nextType: string, nextValue: number): Partial<Tier> => {
+    const previousAuto = suggestRewardTitle(type, tier.rewardValue || 0, symbol, "");
+    const looksAuto =
+      !tier.rewardTitle ||
+      tier.rewardTitle === previousAuto ||
+      /^Reward Level \d+$/.test(tier.rewardTitle) ||
+      ["Free Standard Shipping", "Free Express Priority", "Free Mystery Luxury Gift"].includes(tier.rewardTitle);
+    if (!looksAuto) return {};
+    const next = suggestRewardTitle(nextType, nextValue, symbol, tier.rewardTitle);
+    return next && next !== tier.rewardTitle ? { rewardTitle: next, unlockedMessage: `${next} Unlocked!` } : {};
+  };
+
+  return (
+    <div style={{ marginTop: 10, padding: 10, borderRadius: 8, background: "rgba(212,175,55,0.06)", border: "1px dashed rgba(212,175,55,0.35)" }}>
+      <div className="xp-field" style={{ marginBottom: 8 }}>
+        <label>Checkout reward</label>
+        <select
+          className="xp-input"
+          value={type}
+          onChange={(e) => {
+            const nextType = e.target.value;
+            onChange({
+              rewardType: nextType,
+              rewardValue: nextType === "display" || nextType === "free_shipping" ? undefined : tier.rewardValue || (nextType.endsWith("percent") ? 10 : 5),
+              rewardCap: nextType === "order_percent" ? tier.rewardCap : undefined,
+              ...withTitle(nextType, tier.rewardValue || (nextType.endsWith("percent") ? 10 : 5)),
+            });
+          }}
+        >
+          {REWARD_OPTIONS.map((o) => (
+            <option key={o.id} value={o.id}>{o.label}</option>
+          ))}
+        </select>
+      </div>
+      {type !== "display" && (
+        <div className="xp-grid-2" style={{ gap: 8 }}>
+          {needsValue && (
+            <div className="xp-field" style={{ marginBottom: 0 }}>
+              <label>{isPercent ? "Discount (%)" : `Discount amount (${symbol.trim()})`}</label>
+              <input
+                type="number"
+                min="0"
+                max={isPercent ? 100 : undefined}
+                className="xp-input"
+                value={tier.rewardValue ?? ""}
+                onChange={(e) => {
+                  const v = parseFloat(e.target.value) || 0;
+                  onChange({ rewardValue: v, ...withTitle(type, v) });
+                }}
+              />
+            </div>
+          )}
+          {type === "order_percent" && (
+            <div className="xp-field" style={{ marginBottom: 0 }}>
+              <label>Max discount ({symbol.trim()}, optional)</label>
+              <input
+                type="number"
+                min="0"
+                className="xp-input"
+                value={tier.rewardCap ?? ""}
+                placeholder="No cap"
+                onChange={(e) => {
+                  const v = parseFloat(e.target.value);
+                  onChange({ rewardCap: Number.isFinite(v) && v > 0 ? v : undefined });
+                }}
+              />
+            </div>
+          )}
+          <div className="xp-field" style={{ marginBottom: 0, gridColumn: "1 / -1" }}>
+            <label>Label shown at checkout (optional)</label>
+            <input
+              type="text"
+              className="xp-input"
+              value={tier.rewardLabel ?? ""}
+              placeholder={tier.rewardTitle || "Defaults to the reward name"}
+              onChange={(e) => onChange({ rewardLabel: e.target.value })}
+            />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+const COUNTRY_CODES = "AD AE AF AG AI AL AM AO AQ AR AS AT AU AW AX AZ BA BB BD BE BF BG BH BI BJ BL BM BN BO BQ BR BS BT BV BW BY BZ CA CC CD CF CG CH CI CK CL CM CN CO CR CU CV CW CX CY CZ DE DJ DK DM DO DZ EC EE EG EH ER ES ET FI FJ FK FM FO FR GA GB GD GE GF GG GH GI GL GM GN GP GQ GR GS GT GU GW GY HK HM HN HR HT HU ID IE IL IM IN IO IQ IR IS IT JE JM JO JP KE KG KH KI KM KN KP KR KW KY KZ LA LB LC LI LK LR LS LT LU LV LY MA MC MD ME MF MG MH MK ML MM MN MO MP MQ MR MS MT MU MV MW MX MY MZ NA NC NE NF NG NI NL NO NP NR NU NZ OM PA PE PF PG PH PK PL PM PN PR PS PT PW PY QA RE RO RS RU RW SA SB SC SD SE SG SH SI SJ SK SL SM SN SO SR SS ST SV SX SY SZ TC TD TF TG TH TJ TK TL TM TN TO TR TT TV TW TZ UA UG UM US UY UZ VA VC VE VG VI VN VU WF WS XK YE YT ZA ZM ZW".split(" ");
+
+const COUNTRY_GROUPS: { label: string; codes: string[] }[] = [
+  { label: "Gulf (GCC)", codes: ["SA", "AE", "KW", "QA", "BH", "OM"] },
+  { label: "Arab world", codes: ["EG", "SA", "AE", "KW", "QA", "BH", "OM", "JO", "LB", "IQ", "MA", "DZ", "TN", "LY", "SD", "YE", "SY", "PS"] },
+  { label: "North America", codes: ["US", "CA", "MX"] },
+  { label: "Europe (EU)", codes: ["AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK", "SI", "ES", "SE"] },
+];
+
+function buildCountryNames(): Record<string, string> {
+  let dn: Intl.DisplayNames | null = null;
+  try { dn = new Intl.DisplayNames(["en"], { type: "region" }); } catch { dn = null; }
+  const map: Record<string, string> = {};
+  for (const c of COUNTRY_CODES) {
+    let n = c;
+    try { n = (dn && dn.of(c)) || c; } catch { n = c; }
+    map[c] = n;
+  }
+  return map;
+}
+
+function CountryPicker({
+  value,
+  onChange,
+  names,
+  label = "Add a country",
+}: {
+  value: string[];
+  onChange: (next: string[]) => void;
+  names: Record<string, string>;
+  label?: string;
+}) {
+  const [search, setSearch] = useState("");
+  const matches = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return [] as string[];
+    return COUNTRY_CODES.filter(
+      (c) => !value.includes(c) && (c.toLowerCase() === q || (names[c] || c).toLowerCase().includes(q)),
+    ).slice(0, 8);
+  }, [search, value, names]);
+  const add = (codes: string[]) => onChange(Array.from(new Set([...value, ...codes])));
+
+  return (
+    <div>
+      <div className="xp-field">
+        <label>{label}</label>
+        <input
+          type="text"
+          className="xp-input"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Type a country name or code (e.g. Egypt, SA)"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              if (matches[0]) { add([matches[0]]); setSearch(""); }
+            }
+          }}
+        />
+        {matches.length > 0 && (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 }}>
+            {matches.map((c) => (
+              <button key={c} type="button" className="xp-btn-secondary" onClick={() => { add([c]); setSearch(""); }}>
+                + {names[c]} ({c})
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, margin: "10px 0" }}>
+        <span className="xp-sub" style={{ alignSelf: "center" }}>Quick add:</span>
+        {COUNTRY_GROUPS.map((g) => (
+          <button key={g.label} type="button" className="xp-btn-secondary" onClick={() => add(g.codes)}>
+            {g.label}
+          </button>
+        ))}
+      </div>
+
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+        {value.length === 0 && <span className="xp-sub">No countries selected yet.</span>}
+        {value.map((c) => (
+          <span
+            key={c}
+            style={{
+              display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 10px",
+              borderRadius: 999, background: "rgba(212,175,55,0.15)", border: "1px solid rgba(212,175,55,0.5)", fontSize: 12,
+            }}
+          >
+            {names[c] || c} ({c})
+            <button
+              type="button"
+              aria-label={`Remove ${c}`}
+              onClick={() => onChange(value.filter((x) => x !== c))}
+              style={{ background: "none", border: "none", cursor: "pointer", color: "inherit", fontSize: 14, lineHeight: 1, padding: 0 }}
+            >
+              &times;
+            </button>
+          </span>
+        ))}
+        {value.length > 0 && (
+          <button type="button" className="xp-btn-secondary" onClick={() => onChange([])}>
+            Clear all
+          </button>
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -1027,7 +1716,7 @@ const SHIPPING_BAR_STYLES = `
     border-style: solid;
     border-radius: 12px;
     padding: 16px;
-    color: #fff;
+    color: var(--xp-t, #fff);
     box-shadow: 0 8px 24px rgba(0,0,0,0.5);
   }
   .xp-bar-status-text {
@@ -1049,7 +1738,7 @@ const SHIPPING_BAR_STYLES = `
     left: 20px;
     right: 20px;
     height: 4px;
-    background: #333;
+    background: var(--xp-track, #333);
     border-radius: 2px;
     z-index: 1;
   }
@@ -1085,17 +1774,17 @@ const SHIPPING_BAR_STYLES = `
   .xp-node-amount {
     font-size: 11px;
     font-weight: 700;
-    color: #fff;
+    color: var(--xp-t, #fff);
   }
   .xp-node-title {
     font-size: 10px;
-    color: #888;
+    color: color-mix(in srgb, var(--xp-t, #fff) 65%, transparent);
   }
 
   /* Gamified Cards */
   .xp-cards-progress-bar {
     height: 6px;
-    background: #333;
+    background: var(--xp-track, #333);
     border-radius: 3px;
     overflow: hidden;
     margin-bottom: 12px;
@@ -1115,7 +1804,7 @@ const SHIPPING_BAR_STYLES = `
     border-radius: 8px;
     padding: 8px 6px;
     text-align: center;
-    background: rgba(255, 255, 255, 0.04);
+    background: color-mix(in srgb, var(--xp-t, #fff) 6%, transparent);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1129,7 +1818,7 @@ const SHIPPING_BAR_STYLES = `
     font-size: 10px;
     font-weight: 700;
     line-height: 1.2;
-    color: #fff;
+    color: var(--xp-t, #fff);
     min-height: 24px;
     display: flex;
     align-items: center;
@@ -1151,7 +1840,7 @@ const SHIPPING_BAR_STYLES = `
   }
   .xp-luxury-bar-track {
     height: 8px;
-    background: #222;
+    background: var(--xp-track, #222);
     border-radius: 4px;
     overflow: hidden;
     position: relative;
@@ -1179,7 +1868,7 @@ const SHIPPING_BAR_STYLES = `
     display: flex;
     justify-content: space-between;
     font-size: 11px;
-    color: #888;
+    color: color-mix(in srgb, var(--xp-t, #fff) 65%, transparent);
     margin-top: 6px;
   }
 
@@ -1199,12 +1888,12 @@ const SHIPPING_BAR_STYLES = `
   }
   .xp-split-next-target {
     font-size: 11px;
-    color: #aaa;
+    color: color-mix(in srgb, var(--xp-t, #fff) 80%, transparent);
     font-weight: 600;
   }
   .xp-split-track {
     height: 6px;
-    background: #222;
+    background: var(--xp-track, #222);
     border-radius: 3px;
     overflow: hidden;
   }
