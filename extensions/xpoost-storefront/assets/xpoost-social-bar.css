@@ -783,3 +783,60 @@
 #xpoost-social-root .xpsb-dock-strip {
   max-width: min(92vw, 420px);
 }
+
+/* Support chat -> quick inquiry list */
+#xpoost-social-root button.xpsb-inq-toggle {
+  width: 100%;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  text-align: start;
+}
+#xpoost-social-root .xpsb-inq-chevron {
+  transition: transform 0.2s ease;
+}
+#xpoost-social-root .xpsb-inq-toggle.is-open .xpsb-inq-chevron {
+  transform: rotate(90deg);
+}
+#xpoost-social-root .xpsb-inq[hidden] {
+  display: none !important;
+}
+#xpoost-social-root .xpsb-inq {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 8px 0 10px;
+  padding: 10px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--xpsb-text, #FFFFFF) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--xpsb-text, #FFFFFF) 14%, transparent);
+  animation: xpsb-inq-in 0.18s ease-out;
+}
+@keyframes xpsb-inq-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+#xpoost-social-root .xpsb-inq-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--xpsb-gold, #D4AF37);
+  padding: 0 4px 4px;
+}
+#xpoost-social-root .xpsb-inq-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 9px 12px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--xpsb-text, #FFFFFF);
+  background: color-mix(in srgb, var(--xpsb-text, #FFFFFF) 7%, transparent);
+  transition: background 0.15s ease;
+}
+#xpoost-social-root .xpsb-inq-item:hover {
+  background: color-mix(in srgb, var(--xpsb-gold, #D4AF37) 22%, transparent);
+}
+
