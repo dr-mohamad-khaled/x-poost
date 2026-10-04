@@ -132,6 +132,66 @@
       });
   }
 
+  // Quick-inquiry options for the support chat. Each option opens WhatsApp with its own ready-made message.
+  var INQUIRIES = {
+    en: { title: "How can we help you?", other: "Ask something else", opts: [
+      ["Track my order", "Hi, I would like to track my order."],
+      ["Product advice", "Hi, I need help choosing the right product."],
+      ["Return request", "Hi, I would like to request a return for my order."],
+      ["Shipping & delivery", "Hi, I have a question about shipping and delivery."],
+      ["Discounts & offers", "Hi, are there any active discounts or offers today?"],
+      ["Payment or order issue", "Hi, I have a problem with my payment or order."]
+    ] },
+    ar: { title: "\u0643\u064a\u0641 \u064a\u0645\u0643\u0646\u0646\u0627 \u0645\u0633\u0627\u0639\u062f\u062a\u0643\u061f", other: "\u0633\u0624\u0627\u0644 \u0622\u062e\u0631", opts: [
+      ["\u062a\u062a\u0628\u0639 \u0637\u0644\u0628\u064a", "\u0645\u0631\u062d\u0628\u0627\u064b\u060c \u0623\u0648\u062f \u062a\u062a\u0628\u0639 \u0637\u0644\u0628\u064a."],
+      ["\u0646\u0635\u064a\u062d\u0629 \u0628\u062e\u0635\u0648\u0635 \u0645\u0646\u062a\u062c", "\u0645\u0631\u062d\u0628\u0627\u064b\u060c \u0623\u062d\u062a\u0627\u062c \u0645\u0633\u0627\u0639\u062f\u0629 \u0641\u064a \u0627\u062e\u062a\u064a\u0627\u0631 \u0627\u0644\u0645\u0646\u062a\u062c \u0627\u0644\u0645\u0646\u0627\u0633\u0628."],
+      ["\u0637\u0644\u0628 \u0625\u0631\u062c\u0627\u0639", "\u0645\u0631\u062d\u0628\u0627\u064b\u060c \u0623\u0648\u062f \u0637\u0644\u0628 \u0625\u0631\u062c\u0627\u0639 \u0644\u0637\u0644\u0628\u064a."],
+      ["\u0627\u0644\u0634\u062d\u0646 \u0648\u0627\u0644\u062a\u0648\u0635\u064a\u0644", "\u0645\u0631\u062d\u0628\u0627\u064b\u060c \u0644\u062f\u064a \u0633\u0624\u0627\u0644 \u0639\u0646 \u0627\u0644\u0634\u062d\u0646 \u0648\u0627\u0644\u062a\u0648\u0635\u064a\u0644."],
+      ["\u0627\u0644\u062e\u0635\u0648\u0645\u0627\u062a \u0648\u0627\u0644\u0639\u0631\u0648\u0636", "\u0645\u0631\u062d\u0628\u0627\u064b\u060c \u0647\u0644 \u062a\u0648\u062c\u062f \u062e\u0635\u0648\u0645\u0627\u062a \u0623\u0648 \u0639\u0631\u0648\u0636 \u0645\u062a\u0627\u062d\u0629 \u0627\u0644\u064a\u0648\u0645\u061f"],
+      ["\u0645\u0634\u0643\u0644\u0629 \u0641\u064a \u0627\u0644\u062f\u0641\u0639 \u0623\u0648 \u0627\u0644\u0637\u0644\u0628", "\u0645\u0631\u062d\u0628\u0627\u064b\u060c \u0644\u062f\u064a \u0645\u0634\u0643\u0644\u0629 \u0641\u064a \u0627\u0644\u062f\u0641\u0639 \u0623\u0648 \u0641\u064a \u0637\u0644\u0628\u064a."]
+    ] },
+    fr: { title: "Comment pouvons-nous vous aider ?", other: "Poser une autre question", opts: [
+      ["Suivre ma commande", "Bonjour, je souhaite suivre ma commande."],
+      ["Conseil produit", "Bonjour, j'ai besoin d'aide pour choisir le bon produit."],
+      ["Demande de retour", "Bonjour, je souhaite demander un retour pour ma commande."],
+      ["Livraison et exp\u00e9dition", "Bonjour, j'ai une question sur la livraison et l'exp\u00e9dition."],
+      ["Promotions et offres", "Bonjour, y a-t-il des promotions ou des offres en cours aujourd'hui ?"],
+      ["Probl\u00e8me de paiement ou de commande", "Bonjour, j'ai un probl\u00e8me avec mon paiement ou ma commande."]
+    ] },
+    de: { title: "Wie k\u00f6nnen wir Ihnen helfen?", other: "Andere Frage stellen", opts: [
+      ["Bestellung verfolgen", "Hallo, ich m\u00f6chte meine Bestellung verfolgen."],
+      ["Produktberatung", "Hallo, ich brauche Hilfe bei der Auswahl des richtigen Produkts."],
+      ["R\u00fccksendung anfragen", "Hallo, ich m\u00f6chte eine R\u00fccksendung f\u00fcr meine Bestellung anfragen."],
+      ["Versand & Lieferung", "Hallo, ich habe eine Frage zu Versand und Lieferung."],
+      ["Rabatte & Angebote", "Hallo, gibt es heute aktuelle Rabatte oder Angebote?"],
+      ["Zahlungs- oder Bestellproblem", "Hallo, ich habe ein Problem mit meiner Zahlung oder Bestellung."]
+    ] },
+    es: { title: "\u00bfC\u00f3mo podemos ayudarte?", other: "Hacer otra pregunta", opts: [
+      ["Rastrear mi pedido", "Hola, me gustar\u00eda rastrear mi pedido."],
+      ["Asesor\u00eda de producto", "Hola, necesito ayuda para elegir el producto adecuado."],
+      ["Solicitar una devoluci\u00f3n", "Hola, quisiera solicitar una devoluci\u00f3n de mi pedido."],
+      ["Env\u00edo y entrega", "Hola, tengo una pregunta sobre el env\u00edo y la entrega."],
+      ["Descuentos y ofertas", "Hola, \u00bfhay descuentos u ofertas activos hoy?"],
+      ["Problema de pago o pedido", "Hola, tengo un problema con mi pago o mi pedido."]
+    ] },
+    it: { title: "Come possiamo aiutarti?", other: "Fai un'altra domanda", opts: [
+      ["Traccia il mio ordine", "Ciao, vorrei tracciare il mio ordine."],
+      ["Consigli sui prodotti", "Ciao, ho bisogno di aiuto per scegliere il prodotto giusto."],
+      ["Richiesta di reso", "Ciao, vorrei richiedere un reso per il mio ordine."],
+      ["Spedizione e consegna", "Ciao, ho una domanda sulla spedizione e sulla consegna."],
+      ["Sconti e offerte", "Ciao, ci sono sconti o offerte attive oggi?"],
+      ["Problema di pagamento o ordine", "Ciao, ho un problema con il pagamento o con il mio ordine."]
+    ] },
+    pt: { title: "Como podemos ajudar?", other: "Fazer outra pergunta", opts: [
+      ["Rastrear meu pedido", "Ol\u00e1, gostaria de rastrear meu pedido."],
+      ["Orienta\u00e7\u00e3o sobre produtos", "Ol\u00e1, preciso de ajuda para escolher o produto certo."],
+      ["Solicitar devolu\u00e7\u00e3o", "Ol\u00e1, gostaria de solicitar a devolu\u00e7\u00e3o do meu pedido."],
+      ["Envio e entrega", "Ol\u00e1, tenho uma d\u00favida sobre envio e entrega."],
+      ["Descontos e ofertas", "Ol\u00e1, h\u00e1 descontos ou ofertas ativos hoje?"],
+      ["Problema com pagamento ou pedido", "Ol\u00e1, estou com um problema no pagamento ou no meu pedido."]
+    ] }
+  };
+
   function renderSocialBar(mount, config) {
     var position = config.position || "bottom-right";
     var designTheme = config.designTheme || "gold_luxury";
@@ -152,6 +212,14 @@
     var waUrl = waClean ? "https://wa.me/" + waClean + "?text=" + waMsg : "";
 
     var socials = getSocials(config);
+
+    // Nothing configured: don't show an empty button / popup on the storefront.
+    if (!waClean && !config.vipCommunityUrl && !socials.length) {
+      mount.innerHTML = "";
+      mount.style.display = "none";
+      return;
+    }
+    mount.style.display = "";
 
     var deckHtml = "";
 
@@ -182,9 +250,13 @@
     }
     // LAYOUT 2: Concierge Card (Agent silhouette + Quick Inquiries)
     else if (layoutStyle === "concierge_card") {
-      var trackMsg = waClean ? "https://wa.me/" + waClean + "?text=" + encodeURIComponent("Hi, I would like to track my order.") : "#";
-      var adviceMsg = waClean ? "https://wa.me/" + waClean + "?text=" + encodeURIComponent("Hi, I need assistance picking a product.") : "#";
-      var discMsg = waClean ? "https://wa.me/" + waClean + "?text=" + encodeURIComponent("Hi, are there any active discount offers today?") : "#";
+      // Quick inquiries: each option opens WhatsApp with its own tailored message
+      var inq = INQUIRIES[detectStorefrontLocale(mount)] || INQUIRIES.en;
+      var inqOpts = inq.opts.concat([[inq.other, config.whatsappMessage || INQUIRIES.en.opts[0][1]]]);
+      var inqRows = waClean ? inqOpts.map(function (o) {
+        return '<a href="https://wa.me/' + waClean + '?text=' + encodeURIComponent(o[1]) + '" target="_blank" rel="noreferrer noopener" class="xpsb-inq-item" data-inq="1">' +
+          '<span>' + escapeHtml(o[0]) + '</span><span class="xpsb-stack-sub-arrow">\u2192</span></a>';
+      }).join("") : "";
 
       var conciergeSocialRow = "";
       if (socials.length) {
@@ -203,19 +275,17 @@
         '</div>' +
         '<button type="button" class="xpsb-deck-close" id="xpsb-close" aria-label="Close"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>' +
         '</div>' +
-        (waUrl
-          ? '<a href="' + waUrl + '" target="_blank" rel="noreferrer" class="xpsb-wa-btn">' +
+        (waClean
+          ? '<button type="button" class="xpsb-wa-btn xpsb-inq-toggle" id="xpsb-inq-toggle" aria-expanded="false" aria-controls="xpsb-inq">' +
             ICONS.whatsapp +
             '<div class="xpsb-wa-text"><strong>Chat with Customer Support</strong><small>Typically replies in minutes</small></div>' +
-            '<span class="xpsb-stack-arrow">→</span>' +
-            '</a>'
+            '<span class="xpsb-stack-arrow xpsb-inq-chevron">\u2192</span>' +
+            '</button>' +
+            '<div class="xpsb-inq" id="xpsb-inq" hidden>' +
+            '<div class="xpsb-inq-title">' + escapeHtml(inq.title) + '</div>' +
+            inqRows +
+            '</div>'
           : "") +
-        '<div class="xpsb-chips-label">Quick Inquiries:</div>' +
-        '<div class="xpsb-chips-row">' +
-        (waClean ? '<a href="' + trackMsg + '" target="_blank" rel="noreferrer" class="xpsb-chip">Track My Order</a>' : '') +
-        (waClean ? '<a href="' + adviceMsg + '" target="_blank" rel="noreferrer" class="xpsb-chip">Product Advice</a>' : '') +
-        (waClean ? '<a href="' + discMsg + '" target="_blank" rel="noreferrer" class="xpsb-chip">Discount Help</a>' : '') +
-        '</div>' +
         (config.vipCommunityUrl
           ? '<a href="' + escapeHtml(safeUrl(config.vipCommunityUrl)) + '" target="_blank" rel="noreferrer" class="xpsb-vip-card">' +
             '<div class="xpsb-vip-card-top">' +
@@ -337,11 +407,24 @@
       var href = (link.getAttribute("href") || "").toLowerCase();
       var channel = "other";
       if (href.indexOf("wa.me") !== -1 || href.indexOf("whatsapp") !== -1) {
-        channel = link.classList.contains("xpsb-chip") ? "whatsapp_quick" : "whatsapp";
+        channel = (link.classList.contains("xpsb-chip") || link.hasAttribute("data-inq")) ? "whatsapp_quick" : "whatsapp";
       } else if (link.getAttribute("data-net")) channel = link.getAttribute("data-net");
       else if (config.vipCommunityUrl && href === safeUrl(config.vipCommunityUrl).toLowerCase()) channel = "vip";
       xpTrack("so", "a", { d: channel });
     });
+
+    var inqToggle = mount.querySelector("#xpsb-inq-toggle");
+    var inqPanel = mount.querySelector("#xpsb-inq");
+    if (inqToggle && inqPanel) {
+      inqToggle.addEventListener("click", function (e) {
+        e.preventDefault();
+        var open = inqPanel.hasAttribute("hidden");
+        if (open) inqPanel.removeAttribute("hidden"); else inqPanel.setAttribute("hidden", "");
+        inqToggle.setAttribute("aria-expanded", open ? "true" : "false");
+        inqToggle.classList.toggle("is-open", open);
+        if (open) xpTrack("so", "a", { d: "support_menu" });
+      });
+    }
 
     if (closeBtn) {
       closeBtn.addEventListener("click", function (e) {

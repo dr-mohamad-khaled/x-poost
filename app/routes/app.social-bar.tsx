@@ -379,13 +379,14 @@ export default function SocialBarSettings() {
   };
 
   const [selectedLayout, setSelectedLayout] = useState<string>(parsedPos.layoutStyle || "action_stack");
+  const [inqOpen, setInqOpen] = useState(true);
   const [selectedTheme, setSelectedTheme] = useState<string>(parsedPos.designTheme || "gold_luxury");
   const [side, setSide] = useState<string>(parsedPos.side || "bottom-right");
   const [desktopOffset, setDesktopOffset] = useState<number>(parsedPos.bottomOffsetPx || 24);
   const [mobileOffset, setMobileOffset] = useState<number>(parsedPos.mobileBottomOffsetPx || 24);
 
   const [badgeText, setBadgeText] = useState(config.badgeText || "Need help? Chat with us");
-  const [waNumber, setWaNumber] = useState(config.whatsappNumber || "+1234567890");
+  const [waNumber, setWaNumber] = useState(/^\+?1234567890$/.test(String(config.whatsappNumber || "").trim()) ? "" : (config.whatsappNumber || ""));
   const [waMsg, setWaMsg] = useState(config.whatsappMessage || "Hi, I have a question about my order!");
   const [vipLabel, setVipLabel] = useState(config.vipCommunityLabel || "Join our VIP Deals Group");
   const [accentColor, setAccentColor] = useState(config.accentColor || "#D4AF37");
@@ -411,6 +412,18 @@ export default function SocialBarSettings() {
 
       {actionData && "ok" in actionData ? (
         <s-banner tone="success">{actionData.message}</s-banner>
+      ) : null}
+
+      {!cleanWaNumber &&
+      !config.vipCommunityUrl &&
+      !config.instagramUrl &&
+      !config.facebookUrl &&
+      !config.tiktokUrl &&
+      Object.keys(parsedPos.networks || {}).length === 0 ? (
+        <s-banner tone="warning">
+          Nothing to show yet: add a WhatsApp number or at least one link below, then click Save. Until then the
+          widget stays hidden on your storefront.
+        </s-banner>
       ) : null}
 
       <div className="xp-social-layout">
@@ -904,7 +917,14 @@ export default function SocialBarSettings() {
                 </div>
 
                 {/* Primary WhatsApp Support Button */}
-                <a href={waUrl} target="_blank" rel="noreferrer" className="xp-concierge-wa-btn">
+                <a
+                  href="#"
+                  className="xp-concierge-wa-btn"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setInqOpen((v) => !v);
+                  }}
+                >
                   <svg className="xp-svg-icon" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm0 18.14c-1.52 0-3-.4-4.3-1.17l-.31-.18-3.19.84.85-3.11-.2-.32a8.16 8.16 0 0 1-1.25-4.29c0-4.51 3.67-8.18 8.18-8.18 2.19 0 4.24.85 5.79 2.4 1.54 1.55 2.4 3.61 2.4 5.79 0 4.51-3.67 8.19-8.17 8.19z"/>
                   </svg>
@@ -915,13 +935,18 @@ export default function SocialBarSettings() {
                   <span className="xp-concierge-wa-arrow">{selectedLang === "ar" ? "\u2190" : "\u2192"}</span>
                 </a>
 
-                {/* Quick Inquiry Chips */}
-                <div className="xp-chips-label">{selectedLang === "ar" ? "استفسارات شائعة:" : "Quick Inquiries:"}</div>
-                <div className="xp-quick-chips">
-                  <span className="xp-chip">{selectedLang === "ar" ? "تتبع طلبي" : "Track My Order"}</span>
-                  <span className="xp-chip">{selectedLang === "ar" ? "استشارة منتج" : "Product Advice"}</span>
-                  <span className="xp-chip">{selectedLang === "ar" ? "كوبونات وتخفيضات" : "Discount Help"}</span>
-                </div>
+                {/* Quick inquiry list: opens when the support button is clicked; each option sends its own message */}
+                {inqOpen && (
+                  <div className="xp-quick-chips" style={{ flexDirection: "column", alignItems: "stretch", gap: "6px" }}>
+                    <div className="xp-chips-label">{selectedLang === "ar" ? "كيف يمكننا مساعدتك؟" : "How can we help you?"}</div>
+                    {(selectedLang === "ar"
+                      ? ["تتبع طلبي", "نصيحة بخصوص منتج", "طلب إرجاع", "الشحن والتوصيل", "الخصومات والعروض", "مشكلة في الدفع أو الطلب", "سؤال آخر"]
+                      : ["Track my order", "Product advice", "Return request", "Shipping & delivery", "Discounts & offers", "Payment or order issue", "Ask something else"]
+                    ).map((label) => (
+                      <span className="xp-chip" key={label} style={{ display: "block" }}>{label}</span>
+                    ))}
+                  </div>
+                )}
 
                 {/* VIP Pass Banner Card */}
                 <div className="xp-vip-card" style={{ borderColor: accentColor }}>
