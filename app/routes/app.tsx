@@ -1,5 +1,5 @@
 import type { ActionFunctionArgs, HeadersFunction, LoaderFunctionArgs } from "react-router";
-import { Outlet, useFetcher, useLoaderData, useLocation, useRouteError } from "react-router";
+import { Link, Outlet, useFetcher, useLoaderData, useLocation, useRouteError } from "react-router";
 import { boundary } from "@shopify/shopify-app-react-router/server";
 import { AppProvider } from "@shopify/shopify-app-react-router/react";
 import { NavMenu } from "@shopify/app-bridge-react";
@@ -155,6 +155,7 @@ export default function App() {
         <a href="/app/social-bar">{i18n.navSocialBar || "Support & Social Bar"}</a>
         <a href="/app/shipping-bar">{i18n.navShippingBar || "Free Shipping Bar"}</a>
         <a href="/app/thank-you">{(i18n as any).navThankYou || "Thank-you Page Upsell"}</a>
+        <a href="/app/help">{isAr ? "المساعدة والدليل" : "Help & Guide"}</a>
         {EXIT_INTENT_AVAILABLE ? <a href="/app/exit-intent">{i18n.navExitIntent || "Exit-Intent Recovery"}</a> : null}
       </NavMenu>
 
@@ -175,6 +176,31 @@ export default function App() {
             border-bottom: 1px solid #282828 !important;
             padding-bottom: 12px !important;
           }
+
+          .xp-help-link {
+            display: inline-flex; align-items: center; gap: 7px;
+            padding: 6px 14px; border-radius: 999px;
+            border: 1px solid rgba(212,175,55,0.55);
+            background: rgba(212,175,55,0.08);
+            color: #F3E5AB !important; font-size: 12px; font-weight: 700;
+            text-decoration: none !important; cursor: pointer;
+            transition: background .2s, transform .2s, box-shadow .2s;
+            animation: xp-help-pulse 2.8s ease-in-out infinite;
+          }
+          .xp-help-link:hover, .xp-help-link.is-active {
+            background: rgba(212,175,55,0.2); transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(212,175,55,0.25);
+          }
+          .xp-help-q {
+            display: inline-grid; place-items: center; width: 18px; height: 18px;
+            border-radius: 50%; background: #D4AF37; color: #0B0B0B;
+            font-size: 11px; font-weight: 900;
+          }
+          @keyframes xp-help-pulse {
+            0%,100% { box-shadow: 0 0 0 0 rgba(212,175,55,0.35); }
+            50% { box-shadow: 0 0 0 7px rgba(212,175,55,0); }
+          }
+          @media (prefers-reduced-motion: reduce) { .xp-help-link { animation: none; } }
 
           :root {
             --p-color-bg-surface: #141414;
@@ -236,8 +262,16 @@ export default function App() {
             </span>
           </div>
 
-          {/* Quick Language Switcher Dropdown */}
+          {/* Quick Language Switcher Dropdown + Help & Guide */}
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <Link
+              to="/app/help"
+              className={`xp-help-link${pathname.startsWith("/app/help") ? " is-active" : ""}`}
+              aria-label={isAr ? "المساعدة والدليل" : "Help & Guide"}
+            >
+              <span className="xp-help-q">?</span>
+              {isAr ? "المساعدة والدليل" : "Help & Guide"}
+            </Link>
             <select
               id="top-dashboard-lang-select"
               value={dashboardLocale}
