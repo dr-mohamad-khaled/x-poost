@@ -3,18 +3,19 @@ api_version = "2026-07"
 [[extensions]]
 name = "t:name"
 handle = "xpoost-perks"
+uid = "e6955c1d-7850-e048-fd0e-07faef42a1ea3b2611aa"
 type = "function"
 description = "t:description"
 
   [[extensions.targeting]]
   target = "cart.lines.discounts.generate.run"
   input_query = "src/cart_lines_discounts_generate_run.graphql"
-  export = "cart_lines_discounts_generate_run"
+  export = "cart-lines-discounts-generate-run"
 
   [[extensions.targeting]]
   target = "cart.delivery-options.discounts.generate.run"
   input_query = "src/cart_delivery_options_discounts_generate_run.graphql"
-  export = "cart_delivery_options_discounts_generate_run"
+  export = "cart-delivery-options-discounts-generate-run"
 
   [extensions.build]
   command = ""
