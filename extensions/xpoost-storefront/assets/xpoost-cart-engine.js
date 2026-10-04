@@ -1481,46 +1481,28 @@
   }
 
   // ── Audience targeting (show / hide the perk bar by visitor country) ──
-  var xpVisitorCountry = null;
-  var xpGeoPending = false;
-
-  function readMarketCountry() {
-    var el = document.getElementById("xpoost-cart-engine") || document.querySelector(".xpoost-shipping-bar-block");
-    var c = el && el.getAttribute ? el.getAttribute("data-country") : "";
+  // ── Audience targeting (show / hide the perk bar by the country picked on the site) ──
+  // The country selected in the store's country selector is the single source of truth.
+  // It is read fresh on every render, so the bar always follows the country the shopper picks.
+  function readActiveCountry() {
+    var c = "";
+    try {
+      var el = document.getElementById("xpoost-cart-engine") || document.querySelector(".xpoost-shipping-bar-block");
+      if (el && el.getAttribute) c = el.getAttribute("data-country") || "";
+    } catch (e) {}
     if (!c && window.Shopify && window.Shopify.country) c = window.Shopify.country;
+    if (!c) {
+      try {
+        var m = document.cookie.match(/(?:^|;\s*)localization=([A-Za-z]{2})(?:;|$)/);
+        if (m) c = m[1];
+      } catch (e) {}
+    }
     c = String(c || "").trim().toUpperCase();
     return /^[A-Z]{2}$/.test(c) ? c : "";
   }
 
-  // Resolves the visitor's country once per session: geo-IP via Shopify's own
-  // storefront endpoint, falling back to the market country the theme reports.
   function resolveVisitorCountry() {
-    if (xpVisitorCountry !== null) return xpVisitorCountry;
-    try {
-      var cached = sessionStorage.getItem("xp_geo_country");
-      if (cached !== null) { xpVisitorCountry = cached; return xpVisitorCountry; }
-    } catch (e) {}
-    if (xpGeoPending) return null;
-    xpGeoPending = true;
-    var finish = function (code) {
-      if (xpVisitorCountry !== null) return;
-      xpVisitorCountry = /^[A-Z]{2}$/.test(code || "") ? code : readMarketCountry();
-      try { sessionStorage.setItem("xp_geo_country", xpVisitorCountry); } catch (e) {}
-      xpGeoPending = false;
-      try { renderShippingBar(); } catch (e) {}
-    };
-    try {
-      var timer = setTimeout(function () { finish(""); }, 2000);
-      fetch("/browsing_context_suggestions.json?country[enabled]=true&country[exclude]=ZZ", { headers: { Accept: "application/json" } })
-        .then(function (r) { return r.json(); })
-        .then(function (j) {
-          clearTimeout(timer);
-          var h = j && j.detected_values && j.detected_values.country && j.detected_values.country.handle;
-          finish(String(h || "").toUpperCase());
-        })
-        .catch(function () { clearTimeout(timer); finish(""); });
-    } catch (e) { finish(""); }
-    return null;
+    return readActiveCountry();
   }
 
   // false = hide the bar for this visitor (or while the country is still resolving)
@@ -1531,7 +1513,6 @@
     var hasOverrides = t.overrides && t.overrides.length;
     if (!hasVisibility && !hasOverrides) return true;
     var country = resolveVisitorCountry();
-    if (country === null) return false;
     if (!hasVisibility) return true;
     var inList = t.countries.indexOf(country) !== -1;
     return t.mode === "include" ? inList : !inList;

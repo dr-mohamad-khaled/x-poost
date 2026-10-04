@@ -647,7 +647,7 @@ export default function ShippingBarSettings() {
             <div className="xp-section-card">
               <h3 className="xp-section-title">5. Audience Targeting</h3>
               <p className="xp-sub" style={{ margin: "0 0 12px" }}>
-                Choose which visitors see the perk bar, based on the country they are browsing from.
+                Choose which visitors see the perk bar. Rules always follow the country your customer picks in your store&apos;s country selector (Markets): the bar updates whenever they change it, and checkout uses the same country.
               </p>
               <input type="hidden" name="targetMode" value={targetCountries.length === 0 ? "all" : targetMode} />
               <input type="hidden" name="targetCountries" value={targetCountries.join(",")} />

@@ -15,14 +15,17 @@ export function readConfig(input) {
   return raw;
 }
 
+// The country picked on the storefront (the market) always wins, matching the bar.
+// The delivery address is only a fallback when no market country is available.
 export function readCountry(input) {
+  const l = input && input.localization && input.localization.country && input.localization.country.isoCode;
+  if (l) return String(l).toUpperCase();
   const groups = (input && input.cart && input.cart.deliveryGroups) || [];
   for (const g of groups) {
     const c = g && g.deliveryAddress && g.deliveryAddress.countryCode;
     if (c) return String(c).toUpperCase();
   }
-  const l = input && input.localization && input.localization.country && input.localization.country.isoCode;
-  return l ? String(l).toUpperCase() : "";
+  return "";
 }
 
 // Same visibility rule as the storefront bar (include / exclude by country).
