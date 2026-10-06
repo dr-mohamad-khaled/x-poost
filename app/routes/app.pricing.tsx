@@ -1,3 +1,4 @@
+﻿import { Translate } from "../components/Translate";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { useEffect } from "react";
 import { Form, useActionData, useLoaderData, useNavigation } from "react-router";
@@ -40,7 +41,7 @@ export default function Pricing() {
   return (
     <s-page heading="Plans & Pricing">
       <style>{`
-        /* ── Reset & Base ── */
+        /* â”€â”€ Reset & Base â”€â”€ */
         .xpp-container {
           max-width: 1080px;
           margin: 0 auto;
@@ -55,7 +56,7 @@ export default function Pricing() {
           -webkit-font-smoothing: antialiased;
         }
 
-        /* ── Highlight Badges & Accents ── */
+        /* â”€â”€ Highlight Badges & Accents â”€â”€ */
         .xpp-hl-gold {
           color: #FFD700 !important;
           font-weight: 800;
@@ -101,7 +102,7 @@ export default function Pricing() {
           vertical-align: middle;
         }
 
-        /* ── Hero ── */
+        /* â”€â”€ Hero â”€â”€ */
         .xpp-hero {
           background: linear-gradient(145deg, #111111 0%, #1e1910 50%, #111111 100%);
           border: 1.5px solid rgba(212, 175, 55, 0.4);
@@ -146,7 +147,7 @@ export default function Pricing() {
           font-weight: 400;
         }
 
-        /* ── Stat Proof Bar ── */
+        /* â”€â”€ Stat Proof Bar â”€â”€ */
         .xpp-proof-bar {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
@@ -174,7 +175,7 @@ export default function Pricing() {
           font-weight: 600;
         }
 
-        /* ── Unlimited Banner ── */
+        /* â”€â”€ Unlimited Banner â”€â”€ */
         .xpp-unlimited-banner {
           background: #18150f;
           border: 2px solid #D4AF37;
@@ -210,7 +211,7 @@ export default function Pricing() {
           line-height: 1.7;
         }
 
-        /* ── Status Banner ── */
+        /* â”€â”€ Status Banner â”€â”€ */
         .xpp-status-banner {
           background: #141414;
           border-left: 5px solid #D4AF37;
@@ -238,7 +239,7 @@ export default function Pricing() {
           line-height: 1.5;
         }
 
-        /* ── Plans Grid ── */
+        /* â”€â”€ Plans Grid â”€â”€ */
         .xpp-plans-grid {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
@@ -358,7 +359,7 @@ export default function Pricing() {
           margin-top: -1px;
         }
 
-        /* ── CTAs ── */
+        /* â”€â”€ CTAs â”€â”€ */
         .xpp-btn {
           display: block;
           width: 100%;
@@ -409,7 +410,7 @@ export default function Pricing() {
           font-weight: 500;
         }
 
-        /* ── Competitor vs XPoost Grid ── */
+        /* â”€â”€ Competitor vs XPoost Grid â”€â”€ */
         .xpp-vs-section {
           margin-bottom: 34px;
         }
@@ -472,7 +473,7 @@ export default function Pricing() {
           font-weight: 500;
         }
 
-        /* ── Cost Breakdown Table ── */
+        /* â”€â”€ Cost Breakdown Table â”€â”€ */
         .xpp-compare-card {
           background: #141414;
           border: 1.5px solid #2d2d2d;
@@ -520,7 +521,7 @@ export default function Pricing() {
           color: #ffffff;
         }
 
-        /* ── FAQ Section ── */
+        /* â”€â”€ FAQ Section â”€â”€ */
         .xpp-faq-section {
           margin-bottom: 34px;
         }
@@ -555,7 +556,7 @@ export default function Pricing() {
           line-height: 1.65;
         }
 
-        /* ── Final CTA ── */
+        /* â”€â”€ Final CTA â”€â”€ */
         .xpp-final-cta {
           background: linear-gradient(135deg, #141414 0%, #1e1910 100%);
           border: 2px solid rgba(212, 175, 55, 0.4);
@@ -612,7 +613,7 @@ export default function Pricing() {
         {actionData?.error && (
           <div className="xpp-status-banner" style={{ borderLeftColor: "#ff4d4d", borderColor: "#ff4d4d" }}>
             <div>
-              <div className="xpp-status-title" style={{ color: "#ff4d4d" }}>Billing Notice</div>
+              <div className="xpp-status-title" style={{ color: "#ff4d4d" }}><Translate text='Billing Notice' /></div>
               <p className="xpp-status-desc">{actionData.error}</p>
             </div>
           </div>
@@ -621,7 +622,7 @@ export default function Pricing() {
         {actionData?.message && (
           <div className="xpp-status-banner" style={{ borderLeftColor: "#4ade80", borderColor: "#4ade80" }}>
             <div>
-              <div className="xpp-status-title" style={{ color: "#4ade80" }}>Status Updated</div>
+              <div className="xpp-status-title" style={{ color: "#4ade80" }}><Translate text='Status Updated' /></div>
               <p className="xpp-status-desc">{actionData.message}</p>
             </div>
           </div>
@@ -649,47 +650,50 @@ export default function Pricing() {
                 style={{ padding: "8px 16px", fontSize: "12px", color: "#ff5252", borderColor: "#ff5252" }}
                 disabled={isSubmitting}
               >
-                Cancel Subscription
-              </button>
+                
+                                              <Translate text='Cancel Subscription' />
+                                            </button>
             </Form>
           )}
         </div>
 
-        {/* ────────────────────────────────────────────────────────────────
+        {/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
             HERO SECTION
-            ──────────────────────────────────────────────────────────────── */}
+            â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <div className="xpp-hero">
-          <span className="xpp-hero-badge">The Conversion Engine Built for Scale</span>
+          <span className="xpp-hero-badge"><Translate text='The Conversion Engine Built for Scale' /></span>
           <h1 className="xpp-hero-title">
-            One App to Replace Them All.<br />
-            <em>Unlimited Impressions. Zero Quotas. Ever.</em>
+            
+                                  <Translate text='One App to Replace Them All.' /><br />
+            <em><Translate text='Unlimited Impressions. Zero Quotas. Ever.' /></em>
           </h1>
           <p className="xpp-hero-subtitle">
-            Other apps charge you more as you grow. XPoost gives you <span className="xpp-hl-gold">6 revenue-driving engines</span> with <span className="xpp-badge-green">zero impression caps</span>, <span className="xpp-badge-green">no order limits</span>, and <span className="xpp-badge-green">no hidden fees</span>. Your growth should never come with a penalty.
-          </p>
+            
+                                  <Translate text='Other apps charge you more as you grow. XPoost gives you' /> <span className="xpp-hl-gold"><Translate text='6 revenue-driving engines' /></span>  <Translate text='with' /> <span className="xpp-badge-green"><Translate text='zero impression caps' /></span>, <span className="xpp-badge-green"><Translate text='no order limits' /></span><Translate text=', and' /> <span className="xpp-badge-green"><Translate text='no hidden fees' /></span><Translate text='. Your growth should never come with a penalty.' />
+                                </p>
         </div>
 
-        {/* ────────────────────────────────────────────────────────────────
+        {/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
             SOCIAL PROOF STATS
-            ──────────────────────────────────────────────────────────────── */}
+            â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <div className="xpp-proof-bar">
           <div className="xpp-proof-stat">
-            <div className="xpp-proof-num">1.8x</div>
-            <div className="xpp-proof-label">Average <span className="xpp-hl-gold">Revenue Lift</span><br />for Active Stores</div>
+            <div className="xpp-proof-num"><Translate text='1.8x' /></div>
+            <div className="xpp-proof-label"><Translate text='Average' /> <span className="xpp-hl-gold"><Translate text='Revenue Lift' /></span><br /><Translate text='for Active Stores' /></div>
           </div>
           <div className="xpp-proof-stat">
-            <div className="xpp-proof-num" style={{ fontSize: "28px" }}>UNLIMITED</div>
-            <div className="xpp-proof-label">Impressions, Orders &<br /><span className="xpp-badge-green">Zero Quotas</span> Guaranteed</div>
+            <div className="xpp-proof-num" style={{ fontSize: "28px" }}><Translate text='UNLIMITED' /></div>
+            <div className="xpp-proof-label"><Translate text='Impressions, Orders &' /><br /><span className="xpp-badge-green"><Translate text='Zero Quotas' /></span>  <Translate text='Guaranteed' /></div>
           </div>
           <div className="xpp-proof-stat">
-            <div className="xpp-proof-num">6-in-1</div>
-            <div className="xpp-proof-label">Conversion Tools<br /><span className="xpp-hl-gold">Replaces 5+ Separate Apps</span></div>
+            <div className="xpp-proof-num"><Translate text='6-in-1' /></div>
+            <div className="xpp-proof-label"><Translate text='Conversion Tools' /><br /><span className="xpp-hl-gold"><Translate text='Replaces 5+ Separate Apps' /></span></div>
           </div>
         </div>
 
-        {/* ────────────────────────────────────────────────────────────────
+        {/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
             UNLIMITED IMPRESSIONS CALLOUT
-            ──────────────────────────────────────────────────────────────── */}
+            â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <div className="xpp-unlimited-banner">
           <div className="xpp-unlimited-icon">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FFD700" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -697,78 +701,82 @@ export default function Pricing() {
             </svg>
           </div>
           <div className="xpp-unlimited-content">
-            <h3>Truly Unlimited. Not "Up To 1,000 Views."</h3>
+            <h3><Translate text='Truly Unlimited. Not "Up To 1,000 Views."' /></h3>
             <p>
-              Competitor apps gate their features behind aggressive quotas:{" "}
-              <span className="xpp-badge-red">500 views for $10</span>,{" "}
-              <span className="xpp-badge-red">5,000 views for $30</span>,{" "}
-              <span className="xpp-badge-red">"unlimited" for $100+/mo</span>.{" "}
-              XPoost gives you <span className="xpp-hl-gold">no quotas</span>,{" "}
-              <span className="xpp-hl-gold">no throttling</span>, and{" "}
-              <span className="xpp-hl-gold">no impression meters</span>. Every plan is{" "}
-              <span className="xpp-badge-green">100% unlimited from Day 1</span> -- whether you get 100 visitors or 100,000.
-            </p>
+              
+                                        <Translate text='Competitor apps gate their features behind aggressive quotas:' />{" "}
+              <span className="xpp-badge-red"><Translate text='500 views for $10' /></span>,{" "}
+              <span className="xpp-badge-red"><Translate text='5,000 views for $30' /></span>,{" "}
+              <span className="xpp-badge-red"><Translate text='"unlimited" for $100+/mo' /></span>.{" "}
+              
+                                        <Translate text='XPoost gives you' /> <span className="xpp-hl-gold"><Translate text='no quotas' /></span>,{" "}
+              <span className="xpp-hl-gold"><Translate text='no throttling' /></span><Translate text=', and' />{" "}
+              <span className="xpp-hl-gold"><Translate text='no impression meters' /></span><Translate text='. Every plan is' />{" "}
+              <span className="xpp-badge-green"><Translate text='100% unlimited from Day 1' /></span>  <Translate text='-- whether you get 100 visitors or 100,000.' />
+                                      </p>
           </div>
         </div>
 
-        {/* ────────────────────────────────────────────────────────────────
+        {/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
             PLANS GRID
-            ──────────────────────────────────────────────────────────────── */}
+            â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <div className="xpp-plans-grid">
           {/* Plan 1: Monthly Suite */}
           <div className="xpp-plan-card">
-            <h2 className="xpp-plan-name">Monthly Conversion Suite</h2>
+            <h2 className="xpp-plan-name"><Translate text='Monthly Conversion Suite' /></h2>
             <p className="xpp-plan-desc">
-              The full 6-in-1 engine. <span className="xpp-hl-gold">No feature locks</span>. <span className="xpp-hl-gold">No usage caps</span>. Start free for 7 days.
-            </p>
+              
+                                        <Translate text='The full 6-in-1 engine.' /> <span className="xpp-hl-gold"><Translate text='No feature locks' /></span>. <span className="xpp-hl-gold"><Translate text='No usage caps' /></span><Translate text='. Start free for 7 days.' />
+                                      </p>
             <div className="xpp-plan-price-box">
               <span className="xpp-plan-price">$20</span>
-              <span className="xpp-plan-period">/ month</span>
+              <span className="xpp-plan-period"><Translate text='/ month' /></span>
               <div className="xpp-plan-note">
-                First 7 Days <span className="xpp-badge-green">100% Free</span> -- Cancel in <span className="xpp-hl-gold">1 Click</span>
+                
+                                              <Translate text='First 7 Days' /> <span className="xpp-badge-green"><Translate text='100% Free' /></span>  <Translate text='-- Cancel in' /> <span className="xpp-hl-gold"><Translate text='1 Click' /></span>
               </div>
             </div>
-            <div className="xpp-plan-divider-label">Everything Included:</div>
+            <div className="xpp-plan-divider-label"><Translate text='Everything Included:' /></div>
             <ul className="xpp-features-list">
               <li className="xpp-feature-item">
                 <span className="xpp-infinity-icon">&#8734;</span>
-                <span><span className="xpp-badge-green">Unlimited Impressions</span> -- no caps, no tiers, no throttling</span>
+                <span><span className="xpp-badge-green"><Translate text='Unlimited Impressions' /></span>  <Translate text='-- no caps, no tiers, no throttling' /></span>
               </li>
               <li className="xpp-feature-item">
                 <span className="xpp-infinity-icon">&#8734;</span>
-                <span><span className="xpp-badge-green">Unlimited Products & Orders</span> -- scale without penalties</span>
+                <span><span className="xpp-badge-green"><Translate text='Unlimited Products & Orders' /></span>  <Translate text='-- scale without penalties' /></span>
               </li>
               <li className="xpp-feature-item">
                 <span className="xpp-check-icon">&#10003;</span>
-                <span><strong>Pre-Purchase</strong> One-Click Upsell Modal</span>
+                <span><strong><Translate text='Pre-Purchase' /></strong>  <Translate text='One-Click Upsell Modal' /></span>
               </li>
               <li className="xpp-feature-item">
                 <span className="xpp-check-icon">&#10003;</span>
-                <span><strong>In-Cart Drawer</strong> Smart Recommendations</span>
+                <span><strong><Translate text='In-Cart Drawer' /></strong>  <Translate text='Smart Recommendations' /></span>
               </li>
               <li className="xpp-feature-item">
                 <span className="xpp-check-icon">&#10003;</span>
-                <span><strong>Tiered Free Shipping</strong> & Milestone Progress Bar</span>
+                <span><strong><Translate text='Tiered Free Shipping' /></strong>  <Translate text='& Milestone Progress Bar' /></span>
               </li>
               <li className="xpp-feature-item">
                 <span className="xpp-check-icon">&#10003;</span>
-                <span><strong>Social Proof & Scarcity</strong> Urgency Corner Toasts</span>
+                <span><strong><Translate text='Social Proof & Scarcity' /></strong>  <Translate text='Urgency Corner Toasts' /></span>
               </li>
               <li className="xpp-feature-item">
                 <span className="xpp-check-icon">&#10003;</span>
-                <span><strong>Exit-Intent Countdown</strong> Cart Recovery Modal</span>
+                <span><strong><Translate text='Exit-Intent Countdown' /></strong>  <Translate text='Cart Recovery Modal' /></span>
               </li>
               <li className="xpp-feature-item">
                 <span className="xpp-check-icon">&#10003;</span>
-                <span><strong>Customer Support</strong> & VIP WhatsApp Floating Bar</span>
+                <span><strong><Translate text='Customer Support' /></strong>  <Translate text='& VIP WhatsApp Floating Bar' /></span>
               </li>
               <li className="xpp-feature-item">
                 <span className="xpp-check-icon">&#10003;</span>
-                <span><strong>Native Shopify Functions</strong> Automatic Discounts</span>
+                <span><strong><Translate text='Native Shopify Functions' /></strong>  <Translate text='Automatic Discounts' /></span>
               </li>
               <li className="xpp-feature-item">
                 <span className="xpp-check-icon">&#10003;</span>
-                <span><strong>Full Color & Style Customizer</strong> per Feature</span>
+                <span><strong><Translate text='Full Color & Style Customizer' /></strong>  <Translate text='per Feature' /></span>
               </li>
             </ul>
 
@@ -782,56 +790,57 @@ export default function Pricing() {
                 {hasActivePayment && !isLifetime ? "Current Active Plan" : "Start 7-Day Free Trial"}
               </button>
             </Form>
-            <span className="xpp-btn-sub"><span className="xpp-hl-gold">Zero charge</span> until trial ends -- 1-click cancellation</span>
+            <span className="xpp-btn-sub"><span className="xpp-hl-gold"><Translate text='Zero charge' /></span>  <Translate text='until trial ends -- 1-click cancellation' /></span>
           </div>
 
           {/* Plan 2: Founder's Lifetime Pass */}
           <div className="xpp-plan-card xpp-plan-card--featured">
-            <span className="xpp-plan-tag">Best Value -- Limited Offer</span>
-            <h2 className="xpp-plan-name">Founder's Lifetime Pass</h2>
+            <span className="xpp-plan-tag"><Translate text='Best Value -- Limited Offer' /></span>
+            <h2 className="xpp-plan-name"><Translate text='Founder&apos;s Lifetime Pass' /></h2>
             <p className="xpp-plan-desc">
-              Pay once. <span className="xpp-hl-gold">Own XPoost forever</span>. Every future feature and update included at no extra cost.
-            </p>
+              
+                                        <Translate text='Pay once.' /> <span className="xpp-hl-gold"><Translate text='Own XPoost forever' /></span><Translate text='. Every future feature and update included at no extra cost.' />
+                                      </p>
             <div className="xpp-plan-price-box">
               <span className="xpp-plan-price">$249</span>
-              <span className="xpp-plan-period">one-time investment</span>
+              <span className="xpp-plan-period"><Translate text='one-time investment' /></span>
               <div className="xpp-plan-note">
-                <span className="xpp-badge-gold">Pays for itself</span> after just <span className="xpp-hl-gold">1 extra order</span> per month
-              </div>
+                <span className="xpp-badge-gold"><Translate text='Pays for itself' /></span>  <Translate text='after just' /> <span className="xpp-hl-gold"><Translate text='1 extra order' /></span>  <Translate text='per month' />
+                                            </div>
             </div>
-            <div className="xpp-plan-divider-label">Everything in Monthly, Plus:</div>
+            <div className="xpp-plan-divider-label"><Translate text='Everything in Monthly, Plus:' /></div>
             <ul className="xpp-features-list">
               <li className="xpp-feature-item">
                 <span className="xpp-infinity-icon">&#8734;</span>
-                <span><span className="xpp-badge-gold">Lifetime Access</span> -- <span className="xpp-hl-gold">Zero Recurring Charges Forever</span></span>
+                <span><span className="xpp-badge-gold"><Translate text='Lifetime Access' /></span> -- <span className="xpp-hl-gold"><Translate text='Zero Recurring Charges Forever' /></span></span>
               </li>
               <li className="xpp-feature-item">
                 <span className="xpp-infinity-icon">&#8734;</span>
-                <span><span className="xpp-hl-gold">All Future Updates & New Features</span> Included for Life</span>
+                <span><span className="xpp-hl-gold"><Translate text='All Future Updates & New Features' /></span>  <Translate text='Included for Life' /></span>
               </li>
               <li className="xpp-feature-item">
                 <span className="xpp-check-icon">&#10003;</span>
-                <span><span className="xpp-badge-green">Saves $960+</span> in subscription fees over 4 years</span>
+                <span><span className="xpp-badge-green"><Translate text='Saves $960+' /></span>  <Translate text='in subscription fees over 4 years' /></span>
               </li>
               <li className="xpp-feature-item">
                 <span className="xpp-check-icon">&#10003;</span>
-                <span><strong>Never worry</strong> about another monthly bill or price increase</span>
+                <span><strong><Translate text='Never worry' /></strong>  <Translate text='about another monthly bill or price increase' /></span>
               </li>
               <li className="xpp-feature-item">
                 <span className="xpp-infinity-icon">&#8734;</span>
-                <span><span className="xpp-badge-green">Unlimited</span> impressions, products, orders & revenue</span>
+                <span><span className="xpp-badge-green"><Translate text='Unlimited' /></span>  <Translate text='impressions, products, orders & revenue' /></span>
               </li>
               <li className="xpp-feature-item">
                 <span className="xpp-check-icon">&#10003;</span>
-                <span><strong>Priority VIP Developer Support</strong> directly from the team</span>
+                <span><strong><Translate text='Priority VIP Developer Support' /></strong>  <Translate text='directly from the team' /></span>
               </li>
               <li className="xpp-feature-item">
                 <span className="xpp-check-icon">&#10003;</span>
-                <span>Hosted on Shopify Global CDN -- <span className="xpp-hl-gold">zero speed penalty</span></span>
+                <span><Translate text='Hosted on Shopify Global CDN --' /> <span className="xpp-hl-gold"><Translate text='zero speed penalty' /></span></span>
               </li>
               <li className="xpp-feature-item">
                 <span className="xpp-check-icon">&#10003;</span>
-                <span>Founder pricing locked -- <span className="xpp-hl-gold">rate will increase soon</span></span>
+                <span><Translate text='Founder pricing locked --' /> <span className="xpp-hl-gold"><Translate text='rate will increase soon' /></span></span>
               </li>
             </ul>
 
@@ -845,188 +854,197 @@ export default function Pricing() {
                 {isLifetime ? "Lifetime Access Active" : "Claim Lifetime Access Now"}
               </button>
             </Form>
-            <span className="xpp-btn-sub">One payment. <span className="xpp-hl-gold">Yours forever</span>. No recurring charges.</span>
+            <span className="xpp-btn-sub"><Translate text='One payment.' /> <span className="xpp-hl-gold"><Translate text='Yours forever' /></span><Translate text='. No recurring charges.' /></span>
           </div>
         </div>
 
-        {/* ────────────────────────────────────────────────────────────────
+        {/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
             COMPETITORS vs XPOOST
-            ──────────────────────────────────────────────────────────────── */}
+            â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <div className="xpp-vs-section">
-          <h2 className="xpp-vs-title">Why Merchants Switch to XPoost</h2>
+          <h2 className="xpp-vs-title"><Translate text='Why Merchants Switch to XPoost' /></h2>
           <p className="xpp-vs-subtitle">
-            The real cost of competitor apps is not on the pricing page. It is on the invoice after you scale.
-          </p>
+            
+                                  <Translate text='The real cost of competitor apps is not on the pricing page. It is on the invoice after you scale.' />
+                                </p>
           <div className="xpp-vs-grid">
             <div className="xpp-vs-card xpp-vs-card--them">
-              <div className="xpp-vs-card-label xpp-vs-card-label--them">TYPICAL UPSELL APPS</div>
+              <div className="xpp-vs-card-label xpp-vs-card-label--them"><Translate text='TYPICAL UPSELL APPS' /></div>
               <div className="xpp-vs-row">
-                <span className="xpp-vs-row-label">Free Plan Impressions</span>
-                <span className="xpp-badge-red">100 - 500 views</span>
+                <span className="xpp-vs-row-label"><Translate text='Free Plan Impressions' /></span>
+                <span className="xpp-badge-red"><Translate text='100 - 500 views' /></span>
               </div>
               <div className="xpp-vs-row">
-                <span className="xpp-vs-row-label">Mid-Tier Plan</span>
-                <span className="xpp-badge-red">$30/mo for 5,000 views</span>
+                <span className="xpp-vs-row-label"><Translate text='Mid-Tier Plan' /></span>
+                <span className="xpp-badge-red"><Translate text='$30/mo for 5,000 views' /></span>
               </div>
               <div className="xpp-vs-row">
-                <span className="xpp-vs-row-label">"Unlimited" Plan</span>
-                <span className="xpp-badge-red">$100 - $200/mo</span>
+                <span className="xpp-vs-row-label"><Translate text='"Unlimited" Plan' /></span>
+                <span className="xpp-badge-red"><Translate text='$100 - $200/mo' /></span>
               </div>
               <div className="xpp-vs-row">
-                <span className="xpp-vs-row-label">Features Included</span>
-                <span className="xpp-badge-red">1 - 2 tools only</span>
+                <span className="xpp-vs-row-label"><Translate text='Features Included' /></span>
+                <span className="xpp-badge-red"><Translate text='1 - 2 tools only' /></span>
               </div>
               <div className="xpp-vs-row">
-                <span className="xpp-vs-row-label">Apps Needed for Full Stack</span>
-                <span className="xpp-badge-red">4 - 6 separate apps</span>
+                <span className="xpp-vs-row-label"><Translate text='Apps Needed for Full Stack' /></span>
+                <span className="xpp-badge-red"><Translate text='4 - 6 separate apps' /></span>
               </div>
               <div className="xpp-vs-row">
-                <span className="xpp-vs-row-label">Store Speed Impact</span>
-                <span className="xpp-badge-red">Heavy (slows site)</span>
+                <span className="xpp-vs-row-label"><Translate text='Store Speed Impact' /></span>
+                <span className="xpp-badge-red"><Translate text='Heavy (slows site)' /></span>
               </div>
             </div>
             <div className="xpp-vs-card xpp-vs-card--us">
-              <div className="xpp-vs-card-label xpp-vs-card-label--us">XPOOST</div>
+              <div className="xpp-vs-card-label xpp-vs-card-label--us"><Translate text='XPOOST' /></div>
               <div className="xpp-vs-row">
-                <span className="xpp-vs-row-label">Impressions on All Plans</span>
-                <span className="xpp-badge-green">UNLIMITED</span>
+                <span className="xpp-vs-row-label"><Translate text='Impressions on All Plans' /></span>
+                <span className="xpp-badge-green"><Translate text='UNLIMITED' /></span>
               </div>
               <div className="xpp-vs-row">
-                <span className="xpp-vs-row-label">Monthly Plan</span>
-                <span className="xpp-badge-green">$20/mo -- everything included</span>
+                <span className="xpp-vs-row-label"><Translate text='Monthly Plan' /></span>
+                <span className="xpp-badge-green"><Translate text='$20/mo -- everything included' /></span>
               </div>
               <div className="xpp-vs-row">
-                <span className="xpp-vs-row-label">Lifetime Option</span>
-                <span className="xpp-badge-gold">$249 once -- own it forever</span>
+                <span className="xpp-vs-row-label"><Translate text='Lifetime Option' /></span>
+                <span className="xpp-badge-gold"><Translate text='$249 once -- own it forever' /></span>
               </div>
               <div className="xpp-vs-row">
-                <span className="xpp-vs-row-label">Features Included</span>
-                <span className="xpp-badge-green">All 6 tools</span>
+                <span className="xpp-vs-row-label"><Translate text='Features Included' /></span>
+                <span className="xpp-badge-green"><Translate text='All 6 tools' /></span>
               </div>
               <div className="xpp-vs-row">
-                <span className="xpp-vs-row-label">Apps Needed</span>
-                <span className="xpp-badge-green">Just 1 single app</span>
+                <span className="xpp-vs-row-label"><Translate text='Apps Needed' /></span>
+                <span className="xpp-badge-green"><Translate text='Just 1 single app' /></span>
               </div>
               <div className="xpp-vs-row">
-                <span className="xpp-vs-row-label">Store Speed Impact</span>
-                <span className="xpp-badge-green">Ultra-light (&lt;15KB script)</span>
+                <span className="xpp-vs-row-label"><Translate text='Store Speed Impact' /></span>
+                <span className="xpp-badge-green"><Translate text='Ultra-light (&lt;15KB script)' /></span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* ────────────────────────────────────────────────────────────────
+        {/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
             COST BREAKDOWN TABLE
-            ──────────────────────────────────────────────────────────────── */}
+            â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <div className="xpp-compare-card">
-          <h3 className="xpp-compare-title">The Real Cost of App Bloat</h3>
+          <h3 className="xpp-compare-title"><Translate text='The Real Cost of App Bloat' /></h3>
           <p className="xpp-compare-desc">
-            Most merchants install 5 to 6 separate apps that conflict with each other, slow down their store,
-            and charge escalating fees as traffic grows. This is exactly what that looks like:
-          </p>
+            
+                                  <Translate text='Most merchants install 5 to 6 separate apps that conflict with each other, slow down their store,
+                                  and charge escalating fees as traffic grows. This is exactly what that looks like:' />
+                                </p>
           <table className="xpp-table">
             <thead>
               <tr>
-                <th>Feature / App Needed</th>
-                <th>Typical Standalone Cost</th>
-                <th>With XPoost</th>
+                <th><Translate text='Feature / App Needed' /></th>
+                <th><Translate text='Typical Standalone Cost' /></th>
+                <th><Translate text='With XPoost' /></th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>Pre-Purchase & In-Cart Upsells</td>
-                <td><span className="xpp-badge-red">~$30/mo</span> (with impression caps)</td>
-                <td><span className="xpp-badge-green">Included -- Unlimited</span></td>
+                <td><Translate text='Pre-Purchase & In-Cart Upsells' /></td>
+                <td><span className="xpp-badge-red"><Translate text='~$30/mo' /></span>  <Translate text='(with impression caps)' /></td>
+                <td><span className="xpp-badge-green"><Translate text='Included -- Unlimited' /></span></td>
               </tr>
               <tr>
-                <td>Urgency & Scarcity Proof Notifications</td>
-                <td><span className="xpp-badge-red">~$15/mo</span> (capped at 1,000 views)</td>
-                <td><span className="xpp-badge-green">Included -- Unlimited</span></td>
+                <td><Translate text='Urgency & Scarcity Proof Notifications' /></td>
+                <td><span className="xpp-badge-red"><Translate text='~$15/mo' /></span>  <Translate text='(capped at 1,000 views)' /></td>
+                <td><span className="xpp-badge-green"><Translate text='Included -- Unlimited' /></span></td>
               </tr>
               <tr>
-                <td>Tiered Free Shipping Goal Bar</td>
-                <td><span className="xpp-badge-red">~$10/mo</span></td>
-                <td><span className="xpp-badge-green">Included -- Unlimited</span></td>
+                <td><Translate text='Tiered Free Shipping Goal Bar' /></td>
+                <td><span className="xpp-badge-red"><Translate text='~$10/mo' /></span></td>
+                <td><span className="xpp-badge-green"><Translate text='Included -- Unlimited' /></span></td>
               </tr>
               <tr>
-                <td>WhatsApp & Social Support Widget</td>
-                <td><span className="xpp-badge-red">~$10/mo</span></td>
-                <td><span className="xpp-badge-green">Included -- Unlimited</span></td>
+                <td><Translate text='WhatsApp & Social Support Widget' /></td>
+                <td><span className="xpp-badge-red"><Translate text='~$10/mo' /></span></td>
+                <td><span className="xpp-badge-green"><Translate text='Included -- Unlimited' /></span></td>
               </tr>
               <tr>
-                <td>Exit-Intent Cart Saver Popup</td>
-                <td><span className="xpp-badge-red">~$15/mo</span> (often capped)</td>
-                <td><span className="xpp-badge-green">Included -- Unlimited</span></td>
+                <td><Translate text='Exit-Intent Cart Saver Popup' /></td>
+                <td><span className="xpp-badge-red"><Translate text='~$15/mo' /></span>  <Translate text='(often capped)' /></td>
+                <td><span className="xpp-badge-green"><Translate text='Included -- Unlimited' /></span></td>
               </tr>
               <tr>
-                <td>Total Annual Cost</td>
-                <td><span className="xpp-badge-red">$960+ / year</span> (and rising with traffic)</td>
-                <td><span className="xpp-badge-green">$240/yr</span> or <span className="xpp-badge-gold">$249 lifetime</span></td>
+                <td><Translate text='Total Annual Cost' /></td>
+                <td><span className="xpp-badge-red"><Translate text='$960+ / year' /></span>  <Translate text='(and rising with traffic)' /></td>
+                <td><span className="xpp-badge-green"><Translate text='$240/yr' /></span>  <Translate text='or' /> <span className="xpp-badge-gold"><Translate text='$249 lifetime' /></span></td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        {/* ────────────────────────────────────────────────────────────────
+        {/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
             FAQ
-            ──────────────────────────────────────────────────────────────── */}
+            â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <div className="xpp-faq-section">
-          <h2 className="xpp-faq-title">Common Questions</h2>
+          <h2 className="xpp-faq-title"><Translate text='Common Questions' /></h2>
           <div className="xpp-faq-grid">
             <div className="xpp-faq-item">
-              <div className="xpp-faq-q">What does "unlimited impressions" really mean?</div>
+              <div className="xpp-faq-q"><Translate text='What does "unlimited impressions" really mean?' /></div>
               <p className="xpp-faq-a">
-                It means exactly what it says. There is <span className="xpp-hl-gold">no impression counter</span>, <span className="xpp-hl-gold">no view quota</span>, and <span className="xpp-hl-gold">no throttling</span>.
-                Whether your store gets 50 visitors a day or 50,000, every upsell modal, every scarcity toast,
-                and every shipping bar fires on every visit. <span className="xpp-badge-green">No exceptions</span>.
+                
+                                              <Translate text='It means exactly what it says. There is' /> <span className="xpp-hl-gold"><Translate text='no impression counter' /></span>, <span className="xpp-hl-gold"><Translate text='no view quota' /></span><Translate text=', and' /> <span className="xpp-hl-gold"><Translate text='no throttling' /></span><Translate text='.
+                                              Whether your store gets 50 visitors a day or 50,000, every upsell modal, every scarcity toast,
+                                              and every shipping bar fires on every visit.' /> <span className="xpp-badge-green"><Translate text='No exceptions' /></span>.
               </p>
             </div>
             <div className="xpp-faq-item">
-              <div className="xpp-faq-q">Will XPoost slow down my store?</div>
+              <div className="xpp-faq-q"><Translate text='Will XPoost slow down my store?' /></div>
               <p className="xpp-faq-a">
-                No. XPoost loads a single ultra-lightweight script hosted on Shopify's global CDN.
-                It adds <span className="xpp-hl-gold">less than 15KB</span> to your page weight -- lighter than a single product thumbnail.
-                Replacing 5 separate apps with XPoost will actually <span className="xpp-badge-green">make your store faster</span>.
+                
+                                              <Translate text='No. XPoost loads a single ultra-lightweight script hosted on Shopify&apos;s global CDN.
+                                              It adds' /> <span className="xpp-hl-gold"><Translate text='less than 15KB' /></span>  <Translate text='to your page weight -- lighter than a single product thumbnail.
+                                              Replacing 5 separate apps with XPoost will actually' /> <span className="xpp-badge-green"><Translate text='make your store faster' /></span>.
               </p>
             </div>
             <div className="xpp-faq-item">
-              <div className="xpp-faq-q">What happens after my 7-day trial?</div>
+              <div className="xpp-faq-q"><Translate text='What happens after my 7-day trial?' /></div>
               <p className="xpp-faq-a">
-                If you love it, you continue at $20/month or upgrade to lifetime. If not, cancel
-                with <span className="xpp-hl-gold">1 click</span> before the trial ends and you pay <span className="xpp-badge-green">$0.00</span>. No hoops, no support emails required.
-              </p>
+                
+                                              <Translate text='If you love it, you continue at $20/month or upgrade to lifetime. If not, cancel
+                                              with' /> <span className="xpp-hl-gold"><Translate text='1 click' /></span>  <Translate text='before the trial ends and you pay' /> <span className="xpp-badge-green">$0.00</span><Translate text='. No hoops, no support emails required.' />
+                                            </p>
             </div>
             <div className="xpp-faq-item">
-              <div className="xpp-faq-q">Does the Lifetime Pass include future features?</div>
+              <div className="xpp-faq-q"><Translate text='Does the Lifetime Pass include future features?' /></div>
               <p className="xpp-faq-a">
-                Yes. <span className="xpp-hl-gold">Every new feature and update</span> we ship is automatically included
-                in your Lifetime Pass at <span className="xpp-badge-gold">no additional cost</span>. You are locked in at today's price forever.
-              </p>
+                
+                                              <Translate text='Yes.' /> <span className="xpp-hl-gold"><Translate text='Every new feature and update' /></span>  <Translate text='we ship is automatically included
+                                              in your Lifetime Pass at' /> <span className="xpp-badge-gold"><Translate text='no additional cost' /></span><Translate text='. You are locked in at today&apos;s price forever.' />
+                                            </p>
             </div>
             <div className="xpp-faq-item">
-              <div className="xpp-faq-q">Can I use XPoost with my existing theme?</div>
+              <div className="xpp-faq-q"><Translate text='Can I use XPoost with my existing theme?' /></div>
               <p className="xpp-faq-a">
-                Absolutely. XPoost works with <span className="xpp-hl-gold">every Shopify theme</span> (Dawn, Debut, Prestige, custom themes, and everything in between). <span className="xpp-badge-green">Zero code changes</span> required.
-              </p>
+                
+                                              <Translate text='Absolutely. XPoost works with' /> <span className="xpp-hl-gold"><Translate text='every Shopify theme' /></span>  <Translate text='(Dawn, Debut, Prestige, custom themes, and everything in between).' /> <span className="xpp-badge-green"><Translate text='Zero code changes' /></span>  <Translate text='required.' />
+                                            </p>
             </div>
             <div className="xpp-faq-item">
-              <div className="xpp-faq-q">Why is XPoost so much cheaper than alternatives?</div>
+              <div className="xpp-faq-q"><Translate text='Why is XPoost so much cheaper than alternatives?' /></div>
               <p className="xpp-faq-a">
-                Because we built <span className="xpp-hl-gold">one unified modern codebase</span> instead of 6 separate bloated apps.
-                Lower infrastructure overhead means we pass the savings directly to you.
-              </p>
+                
+                                              <Translate text='Because we built' /> <span className="xpp-hl-gold"><Translate text='one unified modern codebase' /></span>  <Translate text='instead of 6 separate bloated apps.
+                                              Lower infrastructure overhead means we pass the savings directly to you.' />
+                                            </p>
             </div>
           </div>
         </div>
 
-        {/* ────────────────────────────────────────────────────────────────
+        {/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
             FINAL CTA
-            ──────────────────────────────────────────────────────────────── */}
+            â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <div className="xpp-final-cta">
-          <h2>Stop Paying Per Impression. Start Growing.</h2>
+          <h2><Translate text='Stop Paying Per Impression. Start Growing.' /></h2>
           <p>
-            Every day without XPoost is revenue left on the table. <span className="xpp-hl-gold">Replace your app stack</span>, <span className="xpp-badge-green">eliminate impression quotas</span>, and keep more of what you earn.
-          </p>
+            
+                                  <Translate text='Every day without XPoost is revenue left on the table.' /> <span className="xpp-hl-gold"><Translate text='Replace your app stack' /></span>, <span className="xpp-badge-green"><Translate text='eliminate impression quotas' /></span><Translate text=', and keep more of what you earn.' />
+                                </p>
           <div className="xpp-final-cta-btns">
             {!hasActivePayment && (
               <Form method="post">
@@ -1036,8 +1054,9 @@ export default function Pricing() {
                   className="xpp-btn xpp-btn--secondary"
                   disabled={isSubmitting}
                 >
-                  Start Free 7-Day Trial
-                </button>
+                  
+                                                    <Translate text='Start Free 7-Day Trial' />
+                                                  </button>
               </Form>
             )}
             {!isLifetime && (
@@ -1048,8 +1067,9 @@ export default function Pricing() {
                   className="xpp-btn xpp-btn--primary"
                   disabled={isSubmitting}
                 >
-                  Claim Lifetime Access -- $249
-                </button>
+                  
+                                                    <Translate text='Claim Lifetime Access -- $249' />
+                                                  </button>
               </Form>
             )}
           </div>
@@ -1059,3 +1079,4 @@ export default function Pricing() {
     </s-page>
   );
 }
+

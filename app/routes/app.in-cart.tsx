@@ -1,3 +1,4 @@
+﻿import { Translate } from "../components/Translate";
 import { useState, useEffect, useMemo } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Form, useActionData, useLoaderData, useNavigation } from "react-router";
@@ -864,11 +865,12 @@ export default function InCartUpsellSettings() {
         <div className="xp-global-info">
           <div className="xp-status-indicator">
             <span className={`xp-status-dot ${enabled ? "is-active" : "is-disabled"}`} />
-            <strong>In-Cart Drawer Add-Ons: {enabled ? "Active" : "Disabled"}</strong>
+            <strong><Translate text='In-Cart Drawer Add-Ons:' /> {enabled ? "Active" : "Disabled"}</strong>
           </div>
           <p className="xp-sub">
-            Injects high-converting add-on products directly inside customer slide-out cart drawers.
-          </p>
+            
+                                  <Translate text='Injects high-converting add-on products directly inside customer slide-out cart drawers.' />
+                                </p>
         </div>
         <div className="xp-global-actions">
           <Form method="post" className="xp-inline">
@@ -888,26 +890,28 @@ export default function InCartUpsellSettings() {
               className="xp-btn-gold-primary"
               onClick={openCreateMode}
             >
-              <span>+</span> Create In-Cart Offer
-            </button>
+              <span>+</span>  <Translate text='Create In-Cart Offer' />
+                                      </button>
           )}
         </div>
       </div>
 
-      {/* ─────────────────────────────────────────────────────────────
+      {/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
           VIEW 1: IN-CART OFFERS INDEX TABLE
-          ───────────────────────────────────────────────────────────── */}
+          â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       {viewMode === "index" ? (
         <>
           <div className="xp-index-card" style={{ marginBottom: "20px", padding: "18px 22px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
               <div>
                 <h3 style={{ fontSize: "16px", fontWeight: "700", color: "#D4AF37", margin: "0 0 4px 0", borderBottom: "1px solid #282828", paddingBottom: "8px" }}>
-                  In-Cart Drawer Appearance & Colors
-                </h3>
+                  
+                                                    <Translate text='In-Cart Drawer Appearance & Colors' />
+                                                  </h3>
                 <p style={{ fontSize: "12px", color: "#8C9196", margin: 0 }}>
-                  Customize the background, accent, and text colors of in-cart drawer recommendations.
-                </p>
+                  
+                                                    <Translate text='Customize the background, accent, and text colors of in-cart drawer recommendations.' />
+                                                  </p>
               </div>
             </div>
             <Form method="post">
@@ -915,8 +919,9 @@ export default function InCartUpsellSettings() {
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px" }}>
                 <div className="xp-color-control">
                   <label style={{ display: "block", fontSize: "12px", fontWeight: "600", color: "#bbb", marginBottom: "6px" }}>
-                    Background Color
-                  </label>
+                    
+                                                          <Translate text='Background Color' />
+                                                        </label>
                   <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                     <input
                       type="color"
@@ -931,8 +936,9 @@ export default function InCartUpsellSettings() {
 
                 <div className="xp-color-control">
                   <label style={{ display: "block", fontSize: "12px", fontWeight: "600", color: "#bbb", marginBottom: "6px" }}>
-                    Accent Highlight Color
-                  </label>
+                    
+                                                          <Translate text='Accent Highlight Color' />
+                                                        </label>
                   <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                     <input
                       type="color"
@@ -947,8 +953,9 @@ export default function InCartUpsellSettings() {
 
                 <div className="xp-color-control">
                   <label style={{ display: "block", fontSize: "12px", fontWeight: "600", color: "#bbb", marginBottom: "6px" }}>
-                    Text Color
-                  </label>
+                    
+                                                          <Translate text='Text Color' />
+                                                        </label>
                   <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                     <input
                       type="color"
@@ -969,8 +976,9 @@ export default function InCartUpsellSettings() {
                   className="xp-btn-gold-primary"
                   style={{ padding: "8px 18px", fontSize: "13px" }}
                 >
-                  Save Colors
-                </button>
+                  
+                                                    <Translate text='Save Colors' />
+                                                  </button>
               </div>
             </Form>
           </div>
@@ -1019,7 +1027,8 @@ export default function InCartUpsellSettings() {
                   setCurrentPage(1);
                 }}
               >
-                All ({rules.length})
+                
+                                                  <Translate text='All (' />{rules.length})
               </button>
               <button
                 type="button"
@@ -1029,7 +1038,8 @@ export default function InCartUpsellSettings() {
                   setCurrentPage(1);
                 }}
               >
-                Active ({rules.filter((r) => r.active).length})
+                
+                                                  <Translate text='Active (' />{rules.filter((r) => r.active).length})
               </button>
               <button
                 type="button"
@@ -1039,7 +1049,8 @@ export default function InCartUpsellSettings() {
                   setCurrentPage(1);
                 }}
               >
-                Paused ({rules.filter((r) => !r.active).length})
+                
+                                                  <Translate text='Paused (' />{rules.filter((r) => !r.active).length})
               </button>
             </div>
           </div>
@@ -1053,7 +1064,7 @@ export default function InCartUpsellSettings() {
                   <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
                 </svg>
               </div>
-              <h3>No in-cart drawer offers found</h3>
+              <h3><Translate text='No in-cart drawer offers found' /></h3>
               <p className="xp-sub">
                 {tableSearch || statusFilter !== "all"
                   ? "Try clearing your search query or filters."
@@ -1064,8 +1075,9 @@ export default function InCartUpsellSettings() {
                 className="xp-btn-gold-primary xp-empty-btn"
                 onClick={openCreateMode}
               >
-                + Create In-Cart Offer
-              </button>
+                
+                                                  <Translate text='+ Create In-Cart Offer' />
+                                                </button>
             </div>
           ) : (
             <div className="xp-table-wrapper">
@@ -1083,12 +1095,12 @@ export default function InCartUpsellSettings() {
                         onChange={toggleSelectAllOffers}
                       />
                     </th>
-                    <th>Title</th>
-                    <th>Status</th>
-                    <th>Cart Trigger</th>
-                    <th>Add-On Product</th>
-                    <th>Discount</th>
-                    <th style={{ textAlign: "right" }}>Actions</th>
+                    <th><Translate text='Title' /></th>
+                    <th><Translate text='Status' /></th>
+                    <th><Translate text='Cart Trigger' /></th>
+                    <th><Translate text='Add-On Product' /></th>
+                    <th><Translate text='Discount' /></th>
+                    <th style={{ textAlign: "right" }}><Translate text='Actions' /></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1166,10 +1178,10 @@ export default function InCartUpsellSettings() {
                         <td>
                           {rule.discountPercent ? (
                             <span className="xp-discount-tag">
-                              {rule.discountPercent}% OFF
-                            </span>
+                              {rule.discountPercent}<Translate text='% OFF' />
+                                                                    </span>
                           ) : (
-                            <span className="xp-text-muted">Regular Price</span>
+                            <span className="xp-text-muted"><Translate text='Regular Price' /></span>
                           )}
                         </td>
                         <td style={{ textAlign: "right" }}>
@@ -1179,8 +1191,9 @@ export default function InCartUpsellSettings() {
                               className="xp-action-btn xp-action-edit"
                               onClick={() => openEditMode(rule)}
                             >
-                              Edit
-                            </button>
+                              
+                                                                      <Translate text='Edit' />
+                                                                    </button>
                             <Form method="post" className="xp-inline">
                               <input type="hidden" name="intent" value="toggle_rule" />
                               <input type="hidden" name="ruleId" value={rule.id} />
@@ -1214,8 +1227,9 @@ export default function InCartUpsellSettings() {
                                   }
                                 }}
                               >
-                                Delete
-                              </button>
+                                
+                                                                            <Translate text='Delete' />
+                                                                          </button>
                             </Form>
                           </div>
                         </td>
@@ -1227,10 +1241,11 @@ export default function InCartUpsellSettings() {
 
               <div className="xp-pagination-bar">
                 <div className="xp-pagination-info">
-                  Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
-                  {Math.min(currentPage * itemsPerPage, filteredRules.length)} of{" "}
-                  {filteredRules.length} offers
-                </div>
+                  
+                                                            <Translate text='Showing' /> {(currentPage - 1) * itemsPerPage + 1}  <Translate text='to' />{" "}
+                  {Math.min(currentPage * itemsPerPage, filteredRules.length)}  <Translate text='of' />{" "}
+                  {filteredRules.length}  <Translate text='offers' />
+                                                          </div>
                 <div className="xp-pagination-controls">
                   <button
                     type="button"
@@ -1242,7 +1257,8 @@ export default function InCartUpsellSettings() {
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
                   </button>
                   <span className="xp-page-indicator">
-                    Page {currentPage}/{totalPages}
+                    
+                                                                  <Translate text='Page' /> {currentPage}/{totalPages}
                   </span>
                   <button
                     type="button"
@@ -1260,9 +1276,9 @@ export default function InCartUpsellSettings() {
         </div>
         </>
       ) : (
-        /* ─────────────────────────────────────────────────────────────
+        /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
            VIEW 2: IN-CART OFFER EDITOR (Create or Edit Mode)
-           ───────────────────────────────────────────────────────────── */
+           â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
         <div className="xp-editor-card">
           <div className="xp-editor-breadcrumb">
             <button
@@ -1271,8 +1287,9 @@ export default function InCartUpsellSettings() {
               onClick={() => setViewMode("index")}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: "middle", marginRight: "4px" }}><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-              Back to All Offers
-            </button>
+              
+                                            <Translate text='Back to All Offers' />
+                                          </button>
             <h2>{viewMode === "edit" ? `Edit In-Cart Offer: ${headline}` : "Create In-Cart Drawer Offer"}</h2>
           </div>
 
@@ -1293,11 +1310,13 @@ export default function InCartUpsellSettings() {
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
                     <div>
                       <h3 style={{ margin: 0, fontSize: "14px", fontWeight: "700" }}>
-                        Offer Language &amp; Localized Content
-                      </h3>
+                        
+                                                                          <Translate text='Offer Language &amp; Localized Content' />
+                                                                        </h3>
                       <p className="xp-sub" style={{ margin: 0, fontSize: "12px" }}>
-                        Select a language to customize this specific offer's headline, button, and badge for international buyers.
-                      </p>
+                        
+                                                                          <Translate text='Select a language to customize this specific offer&apos;s headline, button, and badge for international buyers.' />
+                                                                        </p>
                     </div>
                   </div>
 
@@ -1311,10 +1330,10 @@ export default function InCartUpsellSettings() {
 
                 {/* Section 1: Localized Headline & Text */}
                 <div className="xp-editor-section">
-                  <h3>1. Offer Headline &amp; Button Copy ({selectedLang.toUpperCase()})</h3>
+                  <h3><Translate text='1. Offer Headline &amp; Button Copy (' />{selectedLang.toUpperCase()})</h3>
                   
                   <div className="xp-field" style={{ marginBottom: "14px" }}>
-                    <label>Header / Section Title ({selectedLang.toUpperCase()})</label>
+                    <label><Translate text='Header / Section Title (' />{selectedLang.toUpperCase()})</label>
                     <input
                       type="text"
                       className="xp-input"
@@ -1327,12 +1346,12 @@ export default function InCartUpsellSettings() {
                       }}
                       required
                     />
-                    <small>Appears above the add-on card inside the cart drawer.</small>
+                    <small><Translate text='Appears above the add-on card inside the cart drawer.' /></small>
                   </div>
 
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
                     <div className="xp-field">
-                      <label>Quick-Add Button Label ({selectedLang.toUpperCase()})</label>
+                      <label><Translate text='Quick-Add Button Label (' />{selectedLang.toUpperCase()})</label>
                       <input
                         type="text"
                         className="xp-input"
@@ -1344,7 +1363,7 @@ export default function InCartUpsellSettings() {
                     </div>
 
                     <div className="xp-field">
-                      <label>Discount Badge Format ({selectedLang.toUpperCase()})</label>
+                      <label><Translate text='Discount Badge Format (' />{selectedLang.toUpperCase()})</label>
                       <input
                         type="text"
                         className="xp-input"
@@ -1353,7 +1372,7 @@ export default function InCartUpsellSettings() {
                         placeholder="e.g. SAVE {discount}%"
                         onChange={(e) => updateOfferCopy("saveBadge", e.target.value)}
                       />
-                      <small>Use {"{discount}"} as placeholder for percentage</small>
+                      <small><Translate text='Use' /> {"{discount}"}  <Translate text='as placeholder for percentage' /></small>
                     </div>
                   </div>
 
@@ -1363,10 +1382,11 @@ export default function InCartUpsellSettings() {
 
                 {/* Trigger Condition */}
                 <div className="xp-editor-section">
-                  <h3>2. Cart Trigger Condition</h3>
+                  <h3><Translate text='2. Cart Trigger Condition' /></h3>
                   <p className="xp-sub" style={{ marginBottom: "12px" }}>
-                    Choose whether this add-on shows on any cart or only when specific products are in the cart.
-                  </p>
+                    
+                                                              <Translate text='Choose whether this add-on shows on any cart or only when specific products are in the cart.' />
+                                                            </p>
 
                   <div className="xp-radio-card-group">
                     <label
@@ -1379,8 +1399,8 @@ export default function InCartUpsellSettings() {
                         onChange={() => {}}
                       />
                       <div className="xp-radio-card-content">
-                        <strong>Always Show (Any Cart Items)</strong>
-                        <p className="xp-sub">Renders whenever the customer's cart contains any product.</p>
+                        <strong><Translate text='Always Show (Any Cart Items)' /></strong>
+                        <p className="xp-sub"><Translate text='Renders whenever the customer&apos;s cart contains any product.' /></p>
                       </div>
                     </label>
 
@@ -1394,8 +1414,8 @@ export default function InCartUpsellSettings() {
                         onChange={() => {}}
                       />
                       <div className="xp-radio-card-content">
-                        <strong>When Cart Contains Specific Products (Multi-select)</strong>
-                        <p className="xp-sub">Only renders when any of these products are in the customer's cart.</p>
+                        <strong><Translate text='When Cart Contains Specific Products (Multi-select)' /></strong>
+                        <p className="xp-sub"><Translate text='Only renders when any of these products are in the customer&apos;s cart.' /></p>
                       </div>
                     </label>
                   </div>
@@ -1414,8 +1434,9 @@ export default function InCartUpsellSettings() {
                           />
                           {isSearchingTrigger && (
                             <span style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", fontSize: "11px", color: "#8c9196" }}>
-                              Searching store...
-                            </span>
+                              
+                                                                                            <Translate text='Searching store...' />
+                                                                                          </span>
                           )}
                         </div>
                         <div className="xp-trigger-actions">
@@ -1425,29 +1446,31 @@ export default function InCartUpsellSettings() {
                             style={{ fontSize: "11px", padding: "5px 10px", borderRadius: "4px" }}
                             onClick={selectAllFilteredTriggers}
                           >
-                            Select All Filtered
-                          </button>
+                            
+                                                                                      <Translate text='Select All Filtered' />
+                                                                                    </button>
                           <button
                             type="button"
                             className="xp-btn-text"
                             style={{ fontSize: "11px", color: "#6d7175" }}
                             onClick={clearTriggerSelection}
                           >
-                            Clear Selection
-                          </button>
+                            
+                                                                                      <Translate text='Clear Selection' />
+                                                                                    </button>
                         </div>
                       </div>
 
                       {/* Selected Products Chips Area */}
                       {selectedTriggerProductsList.length === 0 ? (
                         <div className="xp-trigger-empty-notice">
-                          <strong>No trigger products selected.</strong> Please check one or more products below to trigger this in-cart add-on.
-                        </div>
+                          <strong><Translate text='No trigger products selected.' /></strong>  <Translate text='Please check one or more products below to trigger this in-cart add-on.' />
+                                                                              </div>
                       ) : (
                         <div className="xp-trigger-selected-wrap">
                           <div className="xp-trigger-count-bar">
-                            <span>{selectedTriggerProductsList.length} Trigger Product{selectedTriggerProductsList.length > 1 ? "s" : ""} Selected:</span>
-                            <span style={{ fontSize: "11px", color: "#6d7175" }}>Shows when ANY of these are in the cart</span>
+                            <span>{selectedTriggerProductsList.length}  <Translate text='Trigger Product' />{selectedTriggerProductsList.length > 1 ? "s" : ""}  <Translate text='Selected:' /></span>
+                            <span style={{ fontSize: "11px", color: "#6d7175" }}><Translate text='Shows when ANY of these are in the cart' /></span>
                           </div>
                           <div className="xp-trigger-chips-list">
                             {selectedTriggerProductsList.map((p) => (
@@ -1537,10 +1560,11 @@ export default function InCartUpsellSettings() {
 
                 {/* Add-On Product Picker */}
                 <div className="xp-editor-section">
-                  <h3>3. Promoted Add-on Product</h3>
+                  <h3><Translate text='3. Promoted Add-on Product' /></h3>
                   <p className="xp-sub" style={{ marginBottom: "10px" }}>
-                    Select the product that appears as a one-click add-on inside the drawer.
-                  </p>
+                    
+                                                              <Translate text='Select the product that appears as a one-click add-on inside the drawer.' />
+                                                            </p>
 
                   <div className="xp-selected-trigger-card" style={{ background: "#181818", padding: "10px", border: "1px solid #282828", borderRadius: "6px" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -1582,8 +1606,9 @@ export default function InCartUpsellSettings() {
                         />
                         {isSearchingTarget && (
                           <span style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", fontSize: "11px", color: "#8c9196" }}>
-                            Searching store...
-                          </span>
+                            
+                                                                                      <Translate text='Searching store...' />
+                                                                                    </span>
                         )}
                       </div>
                       <div className="xp-picker-list">
@@ -1642,11 +1667,13 @@ export default function InCartUpsellSettings() {
                   {/* Extra add-ons: up to 3 products total in the cart widget */}
                   <div style={{ marginTop: "16px", paddingTop: "14px", borderTop: "1px solid #282828" }}>
                     <strong style={{ color: "#ffffff", fontSize: "13px" }}>
-                      Additional add-ons ({extraProducts.length}/2)
+                      
+                                                                    <Translate text='Additional add-ons (' />{extraProducts.length}/2)
                     </strong>
                     <p className="xp-sub" style={{ marginBottom: "10px" }}>
-                      Show up to 3 products in the cart widget. Each one gets its own Add button.
-                    </p>
+                      
+                                                                    <Translate text='Show up to 3 products in the cart widget. Each one gets its own Add button.' />
+                                                                  </p>
 
                     {extraProducts.map((p) => (
                       <div
@@ -1670,8 +1697,9 @@ export default function InCartUpsellSettings() {
                           className="xp-btn-text"
                           onClick={() => setExtraTargetIds((prev) => prev.filter((id) => id !== p.id))}
                         >
-                          Remove
-                        </button>
+                          
+                                                          <Translate text='Remove' />
+                                                        </button>
                       </div>
                     ))}
 
@@ -1698,8 +1726,9 @@ export default function InCartUpsellSettings() {
                         <div className="xp-picker-list">
                           {filteredExtraProducts.length === 0 ? (
                             <div style={{ padding: "20px", textAlign: "center", color: "#8c9196", fontSize: "12px" }}>
-                              No products found
-                            </div>
+                              
+                                                                                            <Translate text='No products found' />
+                                                                                          </div>
                           ) : (
                             filteredExtraProducts.map((p) => (
                               <div
@@ -1731,7 +1760,7 @@ export default function InCartUpsellSettings() {
 
                 {/* Promotional Discount */}
                 <div className="xp-editor-section">
-                  <h3>4. Promotional Discount</h3>
+                  <h3><Translate text='4. Promotional Discount' /></h3>
                   <label className="xp-check-label" style={{ marginBottom: "12px" }}>
                     <input
                       type="checkbox"
@@ -1740,14 +1769,14 @@ export default function InCartUpsellSettings() {
                       checked={hasDiscount}
                       onChange={(e) => setHasDiscount(e.target.checked)}
                     />
-                    <span>Apply promotional discount to this offer</span>
+                    <span><Translate text='Apply promotional discount to this offer' /></span>
                   </label>
 
                   {hasDiscount && (
                     <div className="xp-discount-box">
                       <div className="xp-grid-2">
                         <div className="xp-field">
-                          <label>Discount Percentage (%)</label>
+                          <label><Translate text='Discount Percentage (%)' /></label>
                           <input
                             type="number"
                             name="discountPercent"
@@ -1760,7 +1789,7 @@ export default function InCartUpsellSettings() {
                           />
                         </div>
                         <div className="xp-field">
-                          <label>Discount Title / Coupon Code</label>
+                          <label><Translate text='Discount Title / Coupon Code' /></label>
                           <input
                             type="text"
                             name="discountCode"
@@ -1775,8 +1804,9 @@ export default function InCartUpsellSettings() {
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="#D4AF37" style={{ verticalAlign: "middle", marginRight: "6px" }}>
                           <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
                         </svg>
-                        A Shopify Automatic Discount will be generated and applied directly to customer cart drawer and checkout.
-                      </div>
+                        
+                                                                          <Translate text='A Shopify Automatic Discount will be generated and applied directly to customer cart drawer and checkout.' />
+                                                                        </div>
                     </div>
                   )}
                 </div>
@@ -1799,8 +1829,9 @@ export default function InCartUpsellSettings() {
                     className="xp-btn-cancel"
                     onClick={() => setViewMode("index")}
                   >
-                    Cancel
-                  </button>
+                    
+                                                              <Translate text='Cancel' />
+                                                            </button>
                 </div>
               </Form>
             </div>
@@ -1808,8 +1839,8 @@ export default function InCartUpsellSettings() {
             {/* Cart Drawer Live Preview */}
             <div className="xp-cart-preview-wrap">
               <div className="xp-preview-sticky">
-                <h3>Cart Drawer Preview</h3>
-                <p className="xp-sub">Embedded add-on card rendered inside cart drawers.</p>
+                <h3><Translate text='Cart Drawer Preview' /></h3>
+                <p className="xp-sub"><Translate text='Embedded add-on card rendered inside cart drawers.' /></p>
 
                 <div className="xp-drawer-mock" dir={selectedLang === "ar" ? "rtl" : "ltr"}>
                   <div className="xp-drawer-title">{activeOfferCopy.headline || headline || "Frequently Bought Together"}</div>
@@ -1839,7 +1870,7 @@ export default function InCartUpsellSettings() {
                           style={{ color: "#ffffff", textDecoration: "none", fontWeight: "600" }}
                           onClick={(e) => e.stopPropagation()}
                         >
-                          {selectedProduct?.title || (selectedLang === "ar" ? "منتج مميز إضافي" : "Exclusive Add-on")}
+                          {selectedProduct?.title || (selectedLang === "ar" ? "Ù…Ù†ØªØ¬ Ù…Ù…ÙŠØ² Ø¥Ø¶Ø§ÙÙŠ" : "Exclusive Add-on")}
                         </a>
                       </div>
                       <div className="xp-addon-pricing">
@@ -1848,11 +1879,11 @@ export default function InCartUpsellSettings() {
                           <span className="xp-addon-orig">${originalPrice.toFixed(2)}</span>
                         )}
                         {isDiscounted && (
-                          <span className="xp-addon-badge">{(activeOfferCopy.saveBadge || (selectedLang === "ar" ? "وفر {discount}%" : "SAVE {discount}%")).replace("{discount}", discountPercent)}</span>
+                          <span className="xp-addon-badge">{(activeOfferCopy.saveBadge || (selectedLang === "ar" ? "ÙˆÙØ± {discount}%" : "SAVE {discount}%")).replace("{discount}", discountPercent)}</span>
                         )}
                       </div>
                       <button type="button" className="xp-addon-quickadd">
-                        {activeOfferCopy.addButton || (selectedLang === "ar" ? "+ أضف للسلة" : "+ Add to Cart")}
+                        {activeOfferCopy.addButton || (selectedLang === "ar" ? "+ Ø£Ø¶Ù Ù„Ù„Ø³Ù„Ø©" : "+ Add to Cart")}
                       </button>
                     </div>
                   </div>
@@ -1873,11 +1904,11 @@ export default function InCartUpsellSettings() {
                             <span className="xp-addon-sale">${pSale}</span>
                             {isDiscounted && <span className="xp-addon-orig">${pPrice.toFixed(2)}</span>}
                             {isDiscounted && (
-                              <span className="xp-addon-badge">{(activeOfferCopy.saveBadge || (selectedLang === "ar" ? "وفر {discount}%" : "SAVE {discount}%")).replace("{discount}", discountPercent)}</span>
+                              <span className="xp-addon-badge">{(activeOfferCopy.saveBadge || (selectedLang === "ar" ? "ÙˆÙØ± {discount}%" : "SAVE {discount}%")).replace("{discount}", discountPercent)}</span>
                             )}
                           </div>
                           <button type="button" className="xp-addon-quickadd">
-                            {activeOfferCopy.addButton || (selectedLang === "ar" ? "+ أضف للسلة" : "+ Add to Cart")}
+                            {activeOfferCopy.addButton || (selectedLang === "ar" ? "+ Ø£Ø¶Ù Ù„Ù„Ø³Ù„Ø©" : "+ Add to Cart")}
                           </button>
                         </div>
                       </div>
@@ -2820,4 +2851,5 @@ const IN_CART_STYLES = `
     border-radius: 3px;
   }
 `;
+
 

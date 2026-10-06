@@ -1,3 +1,4 @@
+﻿import { Translate } from "../components/Translate";
 import { useState, useMemo, useEffect } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Form, useActionData, useLoaderData, useNavigation } from "react-router";
@@ -770,14 +771,14 @@ export default function QuantityBreaksPage() {
       <div className="xpp-qb-admin">
         {actionData?.error && (
           <div style={{ background: "#3d1414", borderLeft: "4px solid #ff5252", padding: "14px 18px", borderRadius: 8, marginBottom: 20 }}>
-            <div style={{ fontWeight: 800, color: "#ff5252" }}>Notice</div>
+            <div style={{ fontWeight: 800, color: "#ff5252" }}><Translate text='Notice' /></div>
             <p style={{ margin: "4px 0 0", color: "#ffffff", fontSize: 13 }}>{actionData.error}</p>
           </div>
         )}
 
         {actionData?.message && (
           <div style={{ background: "#143d1a", borderLeft: "4px solid #4ade80", padding: "14px 18px", borderRadius: 8, marginBottom: 20 }}>
-            <div style={{ fontWeight: 800, color: "#4ade80" }}>Updated</div>
+            <div style={{ fontWeight: 800, color: "#4ade80" }}><Translate text='Updated' /></div>
             <p style={{ margin: "4px 0 0", color: "#ffffff", fontSize: 13 }}>{actionData.message}</p>
           </div>
         )}
@@ -795,11 +796,13 @@ export default function QuantityBreaksPage() {
                     <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
                     <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
                   </svg>
-                  Quantity Breaks & Volume Discounts
-                </h2>
+                  
+                                                    <Translate text='Quantity Breaks & Volume Discounts' />
+                                                  </h2>
                 <p className="xpp-card-desc" style={{ margin: 0 }}>
-                  Incentivize shoppers to purchase multiple items with attractive tiered pricing and volume discounts.
-                </p>
+                  
+                                                    <Translate text='Incentivize shoppers to purchase multiple items with attractive tiered pricing and volume discounts.' />
+                                                  </p>
               </div>
 
               <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
@@ -812,8 +815,9 @@ export default function QuantityBreaksPage() {
                 </Form>
 
                 <button onClick={handleOpenCreate} className="xpp-btn xpp-btn--primary">
-                  + Create New Offer
-                </button>
+                  
+                                                    <Translate text='+ Create New Offer' />
+                                                  </button>
               </div>
             </div>
 
@@ -822,10 +826,12 @@ export default function QuantityBreaksPage() {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
                 <div>
                   <h3 style={{ fontSize: 15, fontWeight: 800, color: "#D4AF37", margin: "0 0 6px" }}>
-                    How to Display this Block on Your Product Page
-                  </h3>
+                    
+                                                          <Translate text='How to Display this Block on Your Product Page' />
+                                                        </h3>
                   <p style={{ fontSize: 13, color: "#d4d4d8", margin: 0, lineHeight: 1.5 }}>
-                    Open your <strong>Shopify Theme Editor</strong>, navigate to any Product template, click <strong>"Add block"</strong> under Product information, and select <strong>"XPoost: Quantity Breaks"</strong>.
+                    
+                                                          <Translate text='Open your' /> <strong><Translate text='Shopify Theme Editor' /></strong><Translate text=', navigate to any Product template, click' /> <strong><Translate text='"Add block"' /></strong>  <Translate text='under Product information, and select' /> <strong><Translate text='"XPoost: Quantity Breaks"' /></strong>.
                   </p>
                 </div>
                 <a
@@ -834,8 +840,9 @@ export default function QuantityBreaksPage() {
                   rel="noreferrer"
                   className="xpp-btn xpp-btn--secondary"
                 >
-                  Open Theme Editor &rarr;
-                </a>
+                  
+                                                    <Translate text='Open Theme Editor &rarr;' />
+                                                  </a>
               </div>
             </div>
 
@@ -843,7 +850,8 @@ export default function QuantityBreaksPage() {
             <div className="xpp-card">
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
                 <h3 className="xpp-card-title" style={{ margin: 0 }}>
-                  Configured Offers ({offers.length})
+                  
+                                                    <Translate text='Configured Offers (' />{offers.length})
                 </h3>
               </div>
 
@@ -855,25 +863,27 @@ export default function QuantityBreaksPage() {
                       <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
                     </svg>
                   </div>
-                  <h4 style={{ fontSize: 16, fontWeight: 700, margin: "0 0 6px", color: "#fff" }}>No quantity break offers yet</h4>
+                  <h4 style={{ fontSize: 16, fontWeight: 700, margin: "0 0 6px", color: "#fff" }}><Translate text='No quantity break offers yet' /></h4>
                   <p style={{ fontSize: 13, color: "#a1a1aa", maxWidth: 420, margin: "0 auto 20px" }}>
-                    Create your first volume discount offer to reward customers who buy 2, 3, or more items together.
-                  </p>
+                    
+                                                          <Translate text='Create your first volume discount offer to reward customers who buy 2, 3, or more items together.' />
+                                                        </p>
                   <button onClick={handleOpenCreate} className="xpp-btn xpp-btn--primary">
-                    + Create First Offer
-                  </button>
+                    
+                                                          <Translate text='+ Create First Offer' />
+                                                        </button>
                 </div>
               ) : (
                 <div style={{ overflowX: "auto" }}>
                   <table className="xpp-table">
                     <thead>
                       <tr>
-                        <th>Offer Title</th>
-                        <th>Targeting</th>
-                        <th>Discount Type</th>
-                        <th>Tiers</th>
-                        <th>Status</th>
-                        <th style={{ textAlign: "right" }}>Actions</th>
+                        <th><Translate text='Offer Title' /></th>
+                        <th><Translate text='Targeting' /></th>
+                        <th><Translate text='Discount Type' /></th>
+                        <th><Translate text='Tiers' /></th>
+                        <th><Translate text='Status' /></th>
+                        <th style={{ textAlign: "right" }}><Translate text='Actions' /></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -891,13 +901,13 @@ export default function QuantityBreaksPage() {
                           <tr key={offer.id}>
                             <td>
                               <div style={{ fontWeight: 700, color: "#ffffff" }}>{offer.title}</div>
-                              <div style={{ fontSize: 11, color: "#71717a" }}>Preset: {offer.designPreset}</div>
+                              <div style={{ fontSize: 11, color: "#71717a" }}><Translate text='Preset:' /> {offer.designPreset}</div>
                             </td>
                             <td>
                               {offer.targetMode === "ALL" ? (
-                                <span style={{ color: "#D4AF37", fontWeight: 700 }}>All Products</span>
+                                <span style={{ color: "#D4AF37", fontWeight: 700 }}><Translate text='All Products' /></span>
                               ) : (
-                                <span>{productIds.length} Targeted Product{productIds.length === 1 ? "" : "s"}</span>
+                                <span>{productIds.length}  <Translate text='Targeted Product' />{productIds.length === 1 ? "" : "s"}</span>
                               )}
                             </td>
                             <td>
@@ -909,7 +919,7 @@ export default function QuantityBreaksPage() {
                               <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                                 {parsedTiers.map((t: any, idx: number) => (
                                   <span key={idx} style={{ background: "#222", padding: "2px 6px", borderRadius: 4, fontSize: 11 }}>
-                                    {t.quantity}x ({t.discountValue}{offer.discountType === "FIXED_PER_ITEM" ? "$" : "%"})
+                                    {t.quantity}<Translate text='x (' />{t.discountValue}{offer.discountType === "FIXED_PER_ITEM" ? "$" : "%"})
                                   </span>
                                 ))}
                               </div>
@@ -932,21 +942,24 @@ export default function QuantityBreaksPage() {
                             <td style={{ textAlign: "right" }}>
                               <div style={{ display: "inline-flex", gap: 8 }}>
                                 <button onClick={() => handleOpenEdit(offer)} className="xpp-btn xpp-btn--secondary xpp-btn--sm">
-                                  Edit
-                                </button>
+                                  
+                                                                              <Translate text='Edit' />
+                                                                            </button>
                                 <Form method="post" style={{ display: "inline" }}>
                                   <input type="hidden" name="actionType" value="duplicateOffer" />
                                   <input type="hidden" name="offerId" value={offer.id} />
                                   <button type="submit" className="xpp-btn xpp-btn--secondary xpp-btn--sm">
-                                    Copy
-                                  </button>
+                                    
+                                                                                    <Translate text='Copy' />
+                                                                                  </button>
                                 </Form>
                                 <Form method="post" style={{ display: "inline" }} onSubmit={(e) => { if (!confirm("Delete this offer?")) e.preventDefault(); }}>
                                   <input type="hidden" name="actionType" value="deleteOffer" />
                                   <input type="hidden" name="offerId" value={offer.id} />
                                   <button type="submit" className="xpp-btn xpp-btn--danger xpp-btn--sm">
-                                    Delete
-                                  </button>
+                                    
+                                                                                    <Translate text='Delete' />
+                                                                                  </button>
                                 </Form>
                               </div>
                             </td>
@@ -987,8 +1000,9 @@ export default function QuantityBreaksPage() {
                 onClick={() => setViewMode("list")}
                 className="xpp-btn xpp-btn--secondary"
               >
-                &larr; Back to Offers List
-              </button>
+                
+                                              <Translate text='&larr; Back to Offers List' />
+                                            </button>
               <div style={{ display: "flex", gap: 12 }}>
                 <button
                   type="submit"
@@ -1005,11 +1019,13 @@ export default function QuantityBreaksPage() {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
                 <div>
                   <h3 style={{ fontSize: 14, fontWeight: 800, color: "#D4AF37", margin: "0 0 4px" }}>
-                    Multi-Language Translation Customization
-                  </h3>
+                    
+                                                          <Translate text='Multi-Language Translation Customization' />
+                                                        </h3>
                   <p style={{ fontSize: 12, color: "#a1a1aa", margin: 0 }}>
-                    Customize the widget's copy for each storefront language.
-                  </p>
+                    
+                                                          <Translate text='Customize the widget&apos;s copy for each storefront language.' />
+                                                        </p>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <FeatureLanguageSwitcher
@@ -1021,7 +1037,8 @@ export default function QuantityBreaksPage() {
                     onClick={handleLoadPredefined}
                     className="xpp-btn xpp-btn--secondary xpp-btn--sm"
                   >
-                    Load Predefined ({selectedLang.toUpperCase()})
+                    
+                                                          <Translate text='Load Predefined (' />{selectedLang.toUpperCase()})
                   </button>
                 </div>
               </div>
@@ -1029,12 +1046,12 @@ export default function QuantityBreaksPage() {
 
             {/* Section 1: Offer Basics */}
             <div className="xpp-card">
-              <h3 className="xpp-card-title">1. Offer Basics</h3>
-              <p className="xpp-card-desc">Set an internal name and define whether this offer is active on your store.</p>
+              <h3 className="xpp-card-title"><Translate text='1. Offer Basics' /></h3>
+              <p className="xpp-card-desc"><Translate text='Set an internal name and define whether this offer is active on your store.' /></p>
 
               <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 16 }}>
                 <div>
-                  <label className="xpp-label">Internal Offer Name</label>
+                  <label className="xpp-label"><Translate text='Internal Offer Name' /></label>
                   <input
                     type="text"
                     name="title"
@@ -1044,19 +1061,19 @@ export default function QuantityBreaksPage() {
                     placeholder="e.g. Summer T-Shirt Tiered Savings"
                     required
                   />
-                  <div className="xpp-hint">For your reference in the admin dashboard.</div>
+                  <div className="xpp-hint"><Translate text='For your reference in the admin dashboard.' /></div>
                 </div>
 
                 <div>
-                  <label className="xpp-label">Status</label>
+                  <label className="xpp-label"><Translate text='Status' /></label>
                   <select
                     name="status"
                     value={status}
                     onChange={(e) => setStatus(e.target.value)}
                     className="xpp-input"
                   >
-                    <option value="ACTIVE">Active (Live on store)</option>
-                    <option value="DRAFT">Draft (Hidden)</option>
+                    <option value="ACTIVE"><Translate text='Active (Live on store)' /></option>
+                    <option value="DRAFT"><Translate text='Draft (Hidden)' /></option>
                   </select>
                 </div>
               </div>
@@ -1064,8 +1081,8 @@ export default function QuantityBreaksPage() {
 
             {/* Section 2: Product Targeting */}
             <div className="xpp-card">
-              <h3 className="xpp-card-title">2. Product Targeting</h3>
-              <p className="xpp-card-desc">Select whether this quantity break offer applies to specific products or all products.</p>
+              <h3 className="xpp-card-title"><Translate text='2. Product Targeting' /></h3>
+              <p className="xpp-card-desc"><Translate text='Select whether this quantity break offer applies to specific products or all products.' /></p>
 
               <div style={{ display: "flex", gap: 16, marginBottom: 16 }}>
                 <label
@@ -1085,10 +1102,11 @@ export default function QuantityBreaksPage() {
                     onChange={() => setTargetMode("SPECIFIC")}
                     style={{ marginRight: 8 }}
                   />
-                  <span style={{ fontWeight: 800, color: "#fff" }}>Specific Products</span>
+                  <span style={{ fontWeight: 800, color: "#fff" }}><Translate text='Specific Products' /></span>
                   <p style={{ margin: "4px 0 0 22px", fontSize: 12, color: "#a1a1aa" }}>
-                    Apply terms only to chosen products (single product or multiple).
-                  </p>
+                    
+                                                          <Translate text='Apply terms only to chosen products (single product or multiple).' />
+                                                        </p>
                 </label>
 
                 <label
@@ -1108,16 +1126,17 @@ export default function QuantityBreaksPage() {
                     onChange={() => setTargetMode("ALL")}
                     style={{ marginRight: 8 }}
                   />
-                  <span style={{ fontWeight: 800, color: "#fff" }}>All Store Products</span>
+                  <span style={{ fontWeight: 800, color: "#fff" }}><Translate text='All Store Products' /></span>
                   <p style={{ margin: "4px 0 0 22px", fontSize: 12, color: "#a1a1aa" }}>
-                    Enable this volume tier structure across your entire catalog.
-                  </p>
+                    
+                                                          <Translate text='Enable this volume tier structure across your entire catalog.' />
+                                                        </p>
                 </label>
               </div>
 
               {targetMode === "SPECIFIC" && (
                 <div style={{ background: "#181818", padding: 16, borderRadius: 10, border: "1px solid #333" }}>
-                  <label className="xpp-label">Search & Select Products</label>
+                  <label className="xpp-label"><Translate text='Search & Select Products' /></label>
                   <input
                     type="text"
                     value={searchQuery}
@@ -1126,7 +1145,7 @@ export default function QuantityBreaksPage() {
                     className="xpp-input"
                     style={{ marginBottom: 10 }}
                   />
-                  {isSearching && <div style={{ fontSize: 12, color: "#D4AF37" }}>Searching store catalog...</div>}
+                  {isSearching && <div style={{ fontSize: 12, color: "#D4AF37" }}><Translate text='Searching store catalog...' /></div>}
 
                   {/* Search Results Dropdown */}
                   {filteredSearchResults.length > 0 && (
@@ -1158,21 +1177,24 @@ export default function QuantityBreaksPage() {
                   {/* Selected Products Chips */}
                   <div>
                     <span style={{ fontSize: 12, fontWeight: 700, color: "#a1a1aa" }}>
-                      Selected Products ({selectedProductIds.length}):
+                      
+                                                                <Translate text='Selected Products (' />{selectedProductIds.length}):
                     </span>
                     <div style={{ display: "flex", flexWrap: "wrap", marginTop: 6 }}>
                       {selectedProductsList.map((prod) => (
                         <div key={prod.id} className="xpp-product-chip">
                           <span>{prod.title}</span>
                           <button type="button" onClick={() => toggleProductSelection(prod.id)}>
-                            &times;
-                          </button>
+                            
+                                                              <Translate text='&times;' />
+                                                            </button>
                         </div>
                       ))}
                       {selectedProductIds.length === 0 && (
                         <span style={{ fontSize: 12, color: "#888", fontStyle: "italic", marginLeft: 4 }}>
-                          No products selected yet. Search above to add items.
-                        </span>
+                          
+                                                                            <Translate text='No products selected yet. Search above to add items.' />
+                                                                          </span>
                       )}
                     </div>
                   </div>
@@ -1182,8 +1204,8 @@ export default function QuantityBreaksPage() {
 
             {/* Section 3: Discount Type */}
             <div className="xpp-card">
-              <h3 className="xpp-card-title">3. Discount Calculation Mode</h3>
-              <p className="xpp-card-desc">Choose whether volume savings are calculated as a percentage discount or a fixed deduction per item.</p>
+              <h3 className="xpp-card-title"><Translate text='3. Discount Calculation Mode' /></h3>
+              <p className="xpp-card-desc"><Translate text='Choose whether volume savings are calculated as a percentage discount or a fixed deduction per item.' /></p>
 
               <div style={{ display: "flex", gap: 16 }}>
                 <label
@@ -1203,10 +1225,11 @@ export default function QuantityBreaksPage() {
                     onChange={() => setDiscountType("PERCENTAGE")}
                     style={{ marginRight: 8 }}
                   />
-                  <span style={{ fontWeight: 800, color: "#fff" }}>Percentage Discount (%)</span>
+                  <span style={{ fontWeight: 800, color: "#fff" }}><Translate text='Percentage Discount (%)' /></span>
                   <p style={{ margin: "4px 0 0 22px", fontSize: 12, color: "#a1a1aa" }}>
-                    e.g. Buy 2 get 10% off each, Buy 3 get 20% off each.
-                  </p>
+                    
+                                                          <Translate text='e.g. Buy 2 get 10% off each, Buy 3 get 20% off each.' />
+                                                        </p>
                 </label>
 
                 <label
@@ -1226,10 +1249,11 @@ export default function QuantityBreaksPage() {
                     onChange={() => setDiscountType("FIXED_PER_ITEM")}
                     style={{ marginRight: 8 }}
                   />
-                  <span style={{ fontWeight: 800, color: "#fff" }}>Fixed Amount Deducted Per Item ($)</span>
+                  <span style={{ fontWeight: 800, color: "#fff" }}><Translate text='Fixed Amount Deducted Per Item ($)' /></span>
                   <p style={{ margin: "4px 0 0 22px", fontSize: 12, color: "#a1a1aa" }}>
-                    e.g. Buy 2 save $5.00 each, Buy 3 save $10.00 each.
-                  </p>
+                    
+                                                          <Translate text='e.g. Buy 2 save $5.00 each, Buy 3 save $10.00 each.' />
+                                                        </p>
                 </label>
               </div>
             </div>
@@ -1238,19 +1262,21 @@ export default function QuantityBreaksPage() {
             <div className="xpp-card">
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
                 <div>
-                  <h3 className="xpp-card-title" style={{ margin: 0 }}>4. Quantity Tiers Configuration</h3>
-                  <p className="xpp-card-desc" style={{ margin: 0 }}>Define the quantities, discount amounts, titles, and highlight badges for each tier.</p>
+                  <h3 className="xpp-card-title" style={{ margin: 0 }}><Translate text='4. Quantity Tiers Configuration' /></h3>
+                  <p className="xpp-card-desc" style={{ margin: 0 }}><Translate text='Define the quantities, discount amounts, titles, and highlight badges for each tier.' /></p>
                 </div>
                 <button type="button" onClick={handleAddTier} className="xpp-btn xpp-btn--secondary xpp-btn--sm">
-                  + Add Another Tier
-                </button>
+                  
+                                                    <Translate text='+ Add Another Tier' />
+                                                  </button>
               </div>
 
               {tiers.map((tier, idx) => (
                 <div key={idx} className="xpp-tier-item">
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                     <span style={{ fontSize: 14, fontWeight: 800, color: "#D4AF37" }}>
-                      Tier #{idx + 1}
+                      
+                                                    <Translate text='Tier #' />{idx + 1}
                     </span>
                     {tiers.length > 1 && (
                       <button
@@ -1258,14 +1284,15 @@ export default function QuantityBreaksPage() {
                         onClick={() => handleRemoveTier(idx)}
                         style={{ background: "none", border: "none", color: "#ef4444", fontSize: 12, cursor: "pointer", fontWeight: 700 }}
                       >
-                        Remove Tier &times;
-                      </button>
+                        
+                                                          <Translate text='Remove Tier &times;' />
+                                                        </button>
                     )}
                   </div>
 
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 2fr 2fr 2fr", gap: 12 }}>
                     <div>
-                      <label className="xpp-label">Min Quantity</label>
+                      <label className="xpp-label"><Translate text='Min Quantity' /></label>
                       <input
                         type="number"
                         min="1"
@@ -1292,7 +1319,7 @@ export default function QuantityBreaksPage() {
                     </div>
 
                     <div>
-                      <label className="xpp-label">Tier Title</label>
+                      <label className="xpp-label"><Translate text='Tier Title' /></label>
                       <input
                         type="text"
                         value={tier.title}
@@ -1303,7 +1330,7 @@ export default function QuantityBreaksPage() {
                     </div>
 
                     <div>
-                      <label className="xpp-label">Subtitle Note</label>
+                      <label className="xpp-label"><Translate text='Subtitle Note' /></label>
                       <input
                         type="text"
                         value={tier.subtitle}
@@ -1314,7 +1341,7 @@ export default function QuantityBreaksPage() {
                     </div>
 
                     <div>
-                      <label className="xpp-label">Pill Badge (Optional)</label>
+                      <label className="xpp-label"><Translate text='Pill Badge (Optional)' /></label>
                       <input
                         type="text"
                         value={tier.badge}
@@ -1330,53 +1357,57 @@ export default function QuantityBreaksPage() {
 
             {/* Section 5: Design Presets & Unique Animations */}
             <div className="xpp-card">
-              <h3 className="xpp-card-title">5. Design Layout & Animations</h3>
-              <p className="xpp-card-desc">Choose from 4 creative visual layouts and eye-catching animations.</p>
+              <h3 className="xpp-card-title"><Translate text='5. Design Layout & Animations' /></h3>
+              <p className="xpp-card-desc"><Translate text='Choose from 4 creative visual layouts and eye-catching animations.' /></p>
 
               <div className="xpp-preset-grid">
                 <div
                   className={`xpp-preset-card ${designPreset === "modern_cards" ? "xpp-preset-card--active" : ""}`}
                   onClick={() => setDesignPreset("modern_cards")}
                 >
-                  <div style={{ fontWeight: 800, color: "#fff", marginBottom: 4 }}>Modern Stacked Cards</div>
+                  <div style={{ fontWeight: 800, color: "#fff", marginBottom: 4 }}><Translate text='Modern Stacked Cards' /></div>
                   <p style={{ fontSize: 12, color: "#a1a1aa", margin: 0 }}>
-                    Vertical stacked tiles with custom radio selectors, subtle gradient borders, and highlight badge.
-                  </p>
+                    
+                                                          <Translate text='Vertical stacked tiles with custom radio selectors, subtle gradient borders, and highlight badge.' />
+                                                        </p>
                 </div>
 
                 <div
                   className={`xpp-preset-card ${designPreset === "grid_boxes" ? "xpp-preset-card--active" : ""}`}
                   onClick={() => setDesignPreset("grid_boxes")}
                 >
-                  <div style={{ fontWeight: 800, color: "#fff", marginBottom: 4 }}>Compact Grid Boxes</div>
+                  <div style={{ fontWeight: 800, color: "#fff", marginBottom: 4 }}><Translate text='Compact Grid Boxes' /></div>
                   <p style={{ fontSize: 12, color: "#a1a1aa", margin: 0 }}>
-                    Horizontal side-by-side cards with prominent quantity count and top banner discount tags.
-                  </p>
+                    
+                                                          <Translate text='Horizontal side-by-side cards with prominent quantity count and top banner discount tags.' />
+                                                        </p>
                 </div>
 
                 <div
                   className={`xpp-preset-card ${designPreset === "minimal_table" ? "xpp-preset-card--active" : ""}`}
                   onClick={() => setDesignPreset("minimal_table")}
                 >
-                  <div style={{ fontWeight: 800, color: "#fff", marginBottom: 4 }}>Minimalist Sleek Rows</div>
+                  <div style={{ fontWeight: 800, color: "#fff", marginBottom: 4 }}><Translate text='Minimalist Sleek Rows' /></div>
                   <p style={{ fontSize: 12, color: "#a1a1aa", margin: 0 }}>
-                    Clean compact rows with circular indicator, aligned pricing, and subtle outline hover.
-                  </p>
+                    
+                                                          <Translate text='Clean compact rows with circular indicator, aligned pricing, and subtle outline hover.' />
+                                                        </p>
                 </div>
 
                 <div
                   className={`xpp-preset-card ${designPreset === "luxury_gold" ? "xpp-preset-card--active" : ""}`}
                   onClick={() => setDesignPreset("luxury_gold")}
                 >
-                  <div style={{ fontWeight: 800, color: "#fff", marginBottom: 4 }}>Luxury Gold Vault</div>
+                  <div style={{ fontWeight: 800, color: "#fff", marginBottom: 4 }}><Translate text='Luxury Gold Vault' /></div>
                   <p style={{ fontSize: 12, color: "#a1a1aa", margin: 0 }}>
-                    Deep obsidian card framing with gleaming gold accents, metallic badges, and live savings indicator.
-                  </p>
+                    
+                                                          <Translate text='Deep obsidian card framing with gleaming gold accents, metallic badges, and live savings indicator.' />
+                                                        </p>
                 </div>
               </div>
 
               <div style={{ marginTop: 20 }}>
-                <label className="xpp-label">Creative Animation Effect</label>
+                <label className="xpp-label"><Translate text='Creative Animation Effect' /></label>
                 <div style={{ display: "flex", gap: 14 }}>
                   <label
                     style={{
@@ -1395,10 +1426,11 @@ export default function QuantityBreaksPage() {
                       onChange={() => setAnimationStyle("shimmer")}
                       style={{ marginRight: 6 }}
                     />
-                    <span style={{ fontWeight: 700, color: "#fff", fontSize: 13 }}>Shimmer Light Sweep</span>
+                    <span style={{ fontWeight: 700, color: "#fff", fontSize: 13 }}><Translate text='Shimmer Light Sweep' /></span>
                     <p style={{ margin: "2px 0 0 20px", fontSize: 11, color: "#a1a1aa" }}>
-                      A continuous smooth light reflection gliding across the popular tier.
-                    </p>
+                      
+                                                                <Translate text='A continuous smooth light reflection gliding across the popular tier.' />
+                                                              </p>
                   </label>
 
                   <label
@@ -1418,10 +1450,11 @@ export default function QuantityBreaksPage() {
                       onChange={() => setAnimationStyle("shine_glow")}
                       style={{ marginRight: 6 }}
                     />
-                    <span style={{ fontWeight: 700, color: "#fff", fontSize: 13 }}>Glowing Pulse</span>
+                    <span style={{ fontWeight: 700, color: "#fff", fontSize: 13 }}><Translate text='Glowing Pulse' /></span>
                     <p style={{ margin: "2px 0 0 20px", fontSize: 11, color: "#a1a1aa" }}>
-                      A soft breathing neon ambient glow around the selected tier.
-                    </p>
+                      
+                                                                <Translate text='A soft breathing neon ambient glow around the selected tier.' />
+                                                              </p>
                   </label>
 
                   <label
@@ -1441,10 +1474,11 @@ export default function QuantityBreaksPage() {
                       onChange={() => setAnimationStyle("floating_badge")}
                       style={{ marginRight: 6 }}
                     />
-                    <span style={{ fontWeight: 700, color: "#fff", fontSize: 13 }}>Floating Badge</span>
+                    <span style={{ fontWeight: 700, color: "#fff", fontSize: 13 }}><Translate text='Floating Badge' /></span>
                     <p style={{ margin: "2px 0 0 20px", fontSize: 11, color: "#a1a1aa" }}>
-                      An animated floating bob effect on highlight badges.
-                    </p>
+                      
+                                                                <Translate text='An animated floating bob effect on highlight badges.' />
+                                                              </p>
                   </label>
                 </div>
               </div>
@@ -1452,12 +1486,12 @@ export default function QuantityBreaksPage() {
 
             {/* Section 6: Custom Appearance Colors */}
             <div className="xpp-card">
-              <h3 className="xpp-card-title">6. Custom Appearance Colors</h3>
-              <p className="xpp-card-desc">Fine-tune the palette to match your store's brand guidelines.</p>
+              <h3 className="xpp-card-title"><Translate text='6. Custom Appearance Colors' /></h3>
+              <p className="xpp-card-desc"><Translate text='Fine-tune the palette to match your store&apos;s brand guidelines.' /></p>
 
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 16 }}>
                 <div>
-                  <label className="xpp-label">Accent / Highlight</label>
+                  <label className="xpp-label"><Translate text='Accent / Highlight' /></label>
                   <div className="xpp-color-picker">
                     <input type="color" name="accentColor" value={accentColor} onChange={(e) => setAccentColor(e.target.value)} />
                     <span style={{ fontSize: 13, fontFamily: "monospace" }}>{accentColor}</span>
@@ -1465,7 +1499,7 @@ export default function QuantityBreaksPage() {
                 </div>
 
                 <div>
-                  <label className="xpp-label">Card Background</label>
+                  <label className="xpp-label"><Translate text='Card Background' /></label>
                   <div className="xpp-color-picker">
                     <input type="color" name="backgroundColor" value={backgroundColor} onChange={(e) => setBackgroundColor(e.target.value)} />
                     <span style={{ fontSize: 13, fontFamily: "monospace" }}>{backgroundColor}</span>
@@ -1473,7 +1507,7 @@ export default function QuantityBreaksPage() {
                 </div>
 
                 <div>
-                  <label className="xpp-label">Border Outline</label>
+                  <label className="xpp-label"><Translate text='Border Outline' /></label>
                   <div className="xpp-color-picker">
                     <input type="color" name="borderColor" value={borderColor} onChange={(e) => setBorderColor(e.target.value)} />
                     <span style={{ fontSize: 13, fontFamily: "monospace" }}>{borderColor}</span>
@@ -1481,7 +1515,7 @@ export default function QuantityBreaksPage() {
                 </div>
 
                 <div>
-                  <label className="xpp-label">Primary Text</label>
+                  <label className="xpp-label"><Translate text='Primary Text' /></label>
                   <div className="xpp-color-picker">
                     <input type="color" name="textColor" value={textColor} onChange={(e) => setTextColor(e.target.value)} />
                     <span style={{ fontSize: 13, fontFamily: "monospace" }}>{textColor}</span>
@@ -1489,7 +1523,7 @@ export default function QuantityBreaksPage() {
                 </div>
 
                 <div>
-                  <label className="xpp-label">Badge Background</label>
+                  <label className="xpp-label"><Translate text='Badge Background' /></label>
                   <div className="xpp-color-picker">
                     <input type="color" name="badgeBgColor" value={badgeBgColor} onChange={(e) => setBadgeBgColor(e.target.value)} />
                     <span style={{ fontSize: 13, fontFamily: "monospace" }}>{badgeBgColor}</span>
@@ -1497,7 +1531,7 @@ export default function QuantityBreaksPage() {
                 </div>
 
                 <div>
-                  <label className="xpp-label">Badge Text</label>
+                  <label className="xpp-label"><Translate text='Badge Text' /></label>
                   <div className="xpp-color-picker">
                     <input type="color" name="badgeTextColor" value={badgeTextColor} onChange={(e) => setBadgeTextColor(e.target.value)} />
                     <span style={{ fontSize: 13, fontFamily: "monospace" }}>{badgeTextColor}</span>
@@ -1510,8 +1544,8 @@ export default function QuantityBreaksPage() {
             <div className="xpp-card">
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                 <div>
-                  <h3 className="xpp-card-title" style={{ margin: 0 }}>Integrated "Add to Cart" Button</h3>
-                  <p className="xpp-card-desc" style={{ margin: "4px 0 0" }}>Display a direct 1-click Add to Cart button inside the Quantity Breaks widget.</p>
+                  <h3 className="xpp-card-title" style={{ margin: 0 }}><Translate text='Integrated "Add to Cart" Button' /></h3>
+                  <p className="xpp-card-desc" style={{ margin: "4px 0 0" }}><Translate text='Display a direct 1-click Add to Cart button inside the Quantity Breaks widget.' /></p>
                 </div>
                 <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
                   <input
@@ -1529,7 +1563,7 @@ export default function QuantityBreaksPage() {
               {showAddToCartBtn && (
                 <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: 16, marginTop: 14 }}>
                   <div>
-                    <label className="xpp-label">Button Label</label>
+                    <label className="xpp-label"><Translate text='Button Label' /></label>
                     <input
                       type="text"
                       className="xpp-input"
@@ -1539,14 +1573,14 @@ export default function QuantityBreaksPage() {
                     />
                   </div>
                   <div>
-                    <label className="xpp-label">Button Background</label>
+                    <label className="xpp-label"><Translate text='Button Background' /></label>
                     <div className="xpp-color-picker">
                       <input type="color" value={btnBgColor} onChange={(e) => setBtnBgColor(e.target.value)} />
                       <span style={{ fontSize: 13, fontFamily: "monospace" }}>{btnBgColor}</span>
                     </div>
                   </div>
                   <div>
-                    <label className="xpp-label">Button Text Color</label>
+                    <label className="xpp-label"><Translate text='Button Text Color' /></label>
                     <div className="xpp-color-picker">
                       <input type="color" value={btnTextColor} onChange={(e) => setBtnTextColor(e.target.value)} />
                       <span style={{ fontSize: 13, fontFamily: "monospace" }}>{btnTextColor}</span>
@@ -1558,12 +1592,12 @@ export default function QuantityBreaksPage() {
 
             {/* Section 7: Translations Copy */}
             <div className="xpp-card">
-              <h3 className="xpp-card-title">7. Copy & Translation ({selectedLang.toUpperCase()})</h3>
-              <p className="xpp-card-desc">Texts shown on the storefront for this offer in {selectedLang.toUpperCase()}.</p>
+              <h3 className="xpp-card-title"><Translate text='7. Copy & Translation (' />{selectedLang.toUpperCase()})</h3>
+              <p className="xpp-card-desc"><Translate text='Texts shown on the storefront for this offer in' /> {selectedLang.toUpperCase()}.</p>
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 14 }}>
                 <div>
-                  <label className="xpp-label">Section Header Title</label>
+                  <label className="xpp-label"><Translate text='Section Header Title' /></label>
                   <input
                     type="text"
                     value={currentTranslations.sectionTitle}
@@ -1573,7 +1607,7 @@ export default function QuantityBreaksPage() {
                 </div>
 
                 <div>
-                  <label className="xpp-label">Section Subtitle Note</label>
+                  <label className="xpp-label"><Translate text='Section Subtitle Note' /></label>
                   <input
                     type="text"
                     value={currentTranslations.subtitle}
@@ -1585,7 +1619,7 @@ export default function QuantityBreaksPage() {
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}>
                 <div>
-                  <label className="xpp-label">"each" Label</label>
+                  <label className="xpp-label"><Translate text='"each" Label' /></label>
                   <input
                     type="text"
                     value={currentTranslations.eachLabel}
@@ -1595,7 +1629,7 @@ export default function QuantityBreaksPage() {
                 </div>
 
                 <div>
-                  <label className="xpp-label">"Total" Label</label>
+                  <label className="xpp-label"><Translate text='"Total" Label' /></label>
                   <input
                     type="text"
                     value={currentTranslations.totalLabel}
@@ -1605,7 +1639,7 @@ export default function QuantityBreaksPage() {
                 </div>
 
                 <div>
-                  <label className="xpp-label">"Save" Label</label>
+                  <label className="xpp-label"><Translate text='"Save" Label' /></label>
                   <input
                     type="text"
                     value={currentTranslations.saveLabel}
@@ -1620,10 +1654,12 @@ export default function QuantityBreaksPage() {
             <div className="xpp-card" style={{ background: "#0a0a0c", border: "2px dashed rgba(212, 175, 55, 0.4)" }} dir={isPreviewRtl ? "rtl" : "ltr"}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
                 <span style={{ fontSize: 12, fontWeight: 800, color: "#FFD700", textTransform: "uppercase", letterSpacing: 1 }}>
-                  Real-Time Storefront Interactive Preview ({selectedLang.toUpperCase()})
+                  
+                                                    <Translate text='Real-Time Storefront Interactive Preview (' />{selectedLang.toUpperCase()})
                 </span>
                 <span style={{ fontSize: 12, color: "#888" }}>
-                  Layout: {designPreset} | Effect: {animationStyle}
+                  
+                                                    <Translate text='Layout:' /> {designPreset}  <Translate text='| Effect:' /> {animationStyle}
                 </span>
               </div>
 
@@ -1800,8 +1836,8 @@ export default function QuantityBreaksPage() {
                             ${totalPrice.toFixed(2)}
                           </div>
                           <div style={{ fontSize: 11, color: "rgba(255,255,255,0.6)" }}>
-                            ${discountedUnit.toFixed(2)}/ea
-                          </div>
+                            ${discountedUnit.toFixed(2)}<Translate text='/ea' />
+                                                            </div>
                         </div>
                       );
                     })}
@@ -1961,3 +1997,4 @@ export default function QuantityBreaksPage() {
     </s-page>
   );
 }
+

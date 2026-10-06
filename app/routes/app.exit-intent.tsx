@@ -1,3 +1,4 @@
+import { Translate } from "../components/Translate";
 import { useEffect, useState } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Form, useActionData, useLoaderData, useNavigation } from "react-router";
@@ -214,17 +215,17 @@ export default function ExitIntentSettings() {
             <input type="hidden" name="bodyText" value={currentCopy.bodyText} />
             <input type="hidden" name="buttonText" value={currentCopy.buttonText} />
 
-            <div className="xp-section-card"><h3 className="xp-section-title">General & Trigger Logic</h3>
+            <div className="xp-section-card"><h3 className="xp-section-title"><Translate text='General & Trigger Logic' /></h3>
               <div className="xp-row">
                 <label className="xp-toggle">
                   <input type="checkbox" name="active" defaultChecked={config.active} />
-                  <span>Enabled on storefront</span>
+                  <span><Translate text='Enabled on storefront' /></span>
                 </label>
               </div>
 
               <div className="xp-grid-2">
                 <div className="xp-field">
-                  <label>Countdown Duration (seconds)</label>
+                  <label><Translate text='Countdown Duration (seconds)' /></label>
                   <input
                     type="number"
                     name="countdownSeconds"
@@ -233,10 +234,10 @@ export default function ExitIntentSettings() {
                     step="30"
                     min="30"
                   />
-                  <small>Default: 600 seconds (10 minutes)</small>
+                  <small><Translate text='Default: 600 seconds (10 minutes)' /></small>
                 </div>
                 <div className="xp-field">
-                  <label>Suppression Window (Days)</label>
+                  <label><Translate text='Suppression Window (Days)' /></label>
                   <input
                     type="number"
                     name="suppressionDays"
@@ -244,12 +245,12 @@ export default function ExitIntentSettings() {
                     defaultValue={config.suppressionDays}
                     min="1"
                   />
-                  <small>Days before a dismissed modal shows again to the same visitor.</small>
+                  <small><Translate text='Days before a dismissed modal shows again to the same visitor.' /></small>
                 </div>
               </div>
             </div>
 
-            <div className="xp-section-card"><h3 className="xp-section-title">Offer & Multi-Language Copy</h3>
+            <div className="xp-section-card"><h3 className="xp-section-title"><Translate text='Offer & Multi-Language Copy' /></h3>
               <FeatureLanguageSwitcher
                 selectedLang={selectedLang}
                 onSelectLang={setSelectedLang}
@@ -259,7 +260,7 @@ export default function ExitIntentSettings() {
 
               <div className="xp-grid-2">
                 <div className="xp-field">
-                  <label>Discount Coupon Code</label>
+                  <label><Translate text='Discount Coupon Code' /></label>
                   <input
                     type="text"
                     name="discountCode"
@@ -269,7 +270,7 @@ export default function ExitIntentSettings() {
                   />
                 </div>
                 <div className="xp-field">
-                  <label>Call to Action Button ({selectedLang.toUpperCase()})</label>
+                  <label><Translate text='Call to Action Button (' />{selectedLang.toUpperCase()})</label>
                   <input
                     type="text"
                     className="xp-input"
@@ -281,7 +282,7 @@ export default function ExitIntentSettings() {
               </div>
 
               <div className="xp-field">
-                <label>Headline ({selectedLang.toUpperCase()})</label>
+                <label><Translate text='Headline (' />{selectedLang.toUpperCase()})</label>
                 <input
                   type="text"
                   className="xp-input"
@@ -292,7 +293,7 @@ export default function ExitIntentSettings() {
               </div>
 
               <div className="xp-field">
-                <label>Body Text ({selectedLang.toUpperCase()})</label>
+                <label><Translate text='Body Text (' />{selectedLang.toUpperCase()})</label>
                 <textarea
                   className="xp-input"
                   rows={3}
@@ -303,7 +304,7 @@ export default function ExitIntentSettings() {
               </div>
 
               <div className="xp-field">
-                <label>Dismiss Button / Text ({selectedLang.toUpperCase()})</label>
+                <label><Translate text='Dismiss Button / Text (' />{selectedLang.toUpperCase()})</label>
                 <input
                   type="text"
                   className="xp-input"
@@ -314,10 +315,10 @@ export default function ExitIntentSettings() {
               </div>
             </div>
 
-            <div className="xp-section-card"><h3 className="xp-section-title">Appearance</h3>
+            <div className="xp-section-card"><h3 className="xp-section-title"><Translate text='Appearance' /></h3>
               <div className="xp-grid-3">
                 <div className="xp-field">
-                  <label>Background</label>
+                  <label><Translate text='Background' /></label>
                   <div className="xp-color-wrap">
                     <input
                       type="color"
@@ -329,7 +330,7 @@ export default function ExitIntentSettings() {
                   </div>
                 </div>
                 <div className="xp-field">
-                  <label>Accent Gold</label>
+                  <label><Translate text='Accent Gold' /></label>
                   <div className="xp-color-wrap">
                     <input
                       type="color"
@@ -341,7 +342,7 @@ export default function ExitIntentSettings() {
                   </div>
                 </div>
                 <div className="xp-field">
-                  <label>Text Color</label>
+                  <label><Translate text='Text Color' /></label>
                   <div className="xp-color-wrap">
                     <input
                       type="color"
@@ -362,19 +363,19 @@ export default function ExitIntentSettings() {
 
         <div className="xp-exit-preview-wrap">
           <div className="xp-preview-sticky">
-            <h3>Live Exit-Intent Modal Preview ({selectedLang.toUpperCase()})</h3>
-            <p className="xp-sub">Triggers on top-viewport cursor breach or rapid upward mobile scroll.</p>
+            <h3><Translate text='Live Exit-Intent Modal Preview (' />{selectedLang.toUpperCase()})</h3>
+            <p className="xp-sub"><Translate text='Triggers on top-viewport cursor breach or rapid upward mobile scroll.' /></p>
 
             <div
               className="xp-exit-modal-box"
               dir={selectedLang === "ar" ? "rtl" : "ltr"}
               style={{ background: bgColor, borderColor: `${accentColor}55` }}
             >
-              <div className="xp-exit-close">&times;</div>
+              <div className="xp-exit-close"><Translate text='&times;' /></div>
               <div className="xp-exit-timer-pill" style={{ borderColor: accentColor, color: accentColor }}>
                 <span className="xp-timer-icon">&#9202;</span>
                 <span className="xp-timer-digits">{timeFormatted}</span>
-                <span className="xp-timer-label">EXPIRES</span>
+                <span className="xp-timer-label"><Translate text='EXPIRES' /></span>
               </div>
 
               <h4 className="xp-exit-title">{currentCopy.headline}</h4>
@@ -392,8 +393,8 @@ export default function ExitIntentSettings() {
                 className="xp-exit-cta-btn"
                 style={{ background: accentColor, color: "#0B0B0B" }}
               >
-                {currentCopy.buttonText} &rarr;
-              </button>
+                {currentCopy.buttonText}  <Translate text='&rarr;' />
+                                            </button>
               <div style={{ marginTop: 8, fontSize: 11, color: "#71717a", textAlign: "center", cursor: "pointer" }}>
                 {currentCopy.dismissText}
               </div>

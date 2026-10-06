@@ -1,3 +1,4 @@
+import { Translate } from "../components/Translate";
 import { useMemo, useState, type CSSProperties } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Form, useActionData, useLoaderData, useNavigation } from "react-router";
@@ -441,10 +442,11 @@ export default function ShippingBarSettings() {
             <input type="hidden" name="allUnlockedMessage" value={currentCopy.allUnlockedMessage} />
 
             {/* Layout Architecture Selection */}
-            <div className="xp-section-card"><h3 className="xp-section-title">1. Choose Progress Bar Layout</h3>
+            <div className="xp-section-card"><h3 className="xp-section-title"><Translate text='1. Choose Progress Bar Layout' /></h3>
               <p className="xp-section-intro">
-                Select the visual structure and reward format that appears in the cart drawer and cart page.
-              </p>
+                
+                                              <Translate text='Select the visual structure and reward format that appears in the cart drawer and cart page.' />
+                                            </p>
               <div className="xp-layouts-grid">
                 {SHIPPING_LAYOUTS.map((layout) => {
                   const isSelected = selectedLayout === layout.id;
@@ -468,22 +470,22 @@ export default function ShippingBarSettings() {
             </div>
 
             {/* General Settings */}
-            <div className="xp-section-card"><h3 className="xp-section-title">2. General & Multi-Language Messages</h3>
+            <div className="xp-section-card"><h3 className="xp-section-title"><Translate text='2. General & Multi-Language Messages' /></h3>
               <div className="xp-row">
                 <label className="xp-toggle">
                   <input type="checkbox" name="active" defaultChecked={config.active} />
-                  <span>Enable Tiered Shipping Bar on storefront</span>
+                  <span><Translate text='Enable Tiered Shipping Bar on storefront' /></span>
                 </label>
               </div>
 
               <div className="xp-field">
-                <label>Store Currency</label>
+                <label><Translate text='Store Currency' /></label>
                 <input type="hidden" name="currency" value={config.currency} />
                 <input type="hidden" name="currencySymbol" value={currencySymbol} />
                 <div className="xp-input" style={{ opacity: 0.85 }}>
-                  {config.currency} ({currencySymbol.trim()}) — taken automatically from your Shopify store settings.
-                  Shoppers who see another market currency get thresholds converted automatically.
-                </div>
+                  {config.currency} ({currencySymbol.trim()}<Translate text=') — taken automatically from your Shopify store settings.
+                                                    Shoppers who see another market currency get thresholds converted automatically.' />
+                                                  </div>
               </div>
 
               <FeatureLanguageSwitcher
@@ -494,7 +496,7 @@ export default function ShippingBarSettings() {
               />
 
               <div className="xp-field">
-                <label>Initial Message / Empty Cart ({selectedLang.toUpperCase()})</label>
+                <label><Translate text='Initial Message / Empty Cart (' />{selectedLang.toUpperCase()})</label>
                 <input
                   type="text"
                   className="xp-input"
@@ -505,7 +507,7 @@ export default function ShippingBarSettings() {
               </div>
 
               <div className="xp-field">
-                <label>Progress Toward Next Reward Message ({selectedLang.toUpperCase()})</label>
+                <label><Translate text='Progress Toward Next Reward Message (' />{selectedLang.toUpperCase()})</label>
                 <input
                   type="text"
                   className="xp-input"
@@ -513,11 +515,11 @@ export default function ShippingBarSettings() {
                   value={currentCopy.progressMessage}
                   onChange={(e) => handleTextChange("progressMessage", e.target.value)}
                 />
-                <small>Use &#123;amount&#125; variable for remaining distance to reward.</small>
+                <small><Translate text='Use &#123;amount&#125; variable for remaining distance to reward.' /></small>
               </div>
 
               <div className="xp-field">
-                <label>All Tiers Unlocked Message ({selectedLang.toUpperCase()})</label>
+                <label><Translate text='All Tiers Unlocked Message (' />{selectedLang.toUpperCase()})</label>
                 <input
                   type="text"
                   className="xp-input"
@@ -529,23 +531,24 @@ export default function ShippingBarSettings() {
             </div>
 
             {/* Milestone Tiers */}
-            <div className="xp-section-card"><h3 className="xp-section-title">3. Milestone Tiers</h3>
-              <p className="xp-sub">Set sequential order thresholds and unlockable incentives.</p>
+            <div className="xp-section-card"><h3 className="xp-section-title"><Translate text='3. Milestone Tiers' /></h3>
+              <p className="xp-sub"><Translate text='Set sequential order thresholds and unlockable incentives.' /></p>
 
               <div className="xp-tiers-list">
                 {tiers.map((tier, idx) => (
                   <div key={idx} className="xp-tier-card">
                     <div className="xp-tier-header">
-                      <span className="xp-tier-badge">Tier {idx + 1}</span>
+                      <span className="xp-tier-badge"><Translate text='Tier' /> {idx + 1}</span>
                       {tiers.length > 1 && (
                         <button type="button" onClick={() => removeTier(idx)} className="xp-tier-del">
-                          Remove
-                        </button>
+                          
+                                                              <Translate text='Remove' />
+                                                            </button>
                       )}
                     </div>
                     <div className="xp-grid-2">
                       <div className="xp-field">
-                        <label>Threshold Amount ({currencySymbol})</label>
+                        <label><Translate text='Threshold Amount (' />{currencySymbol})</label>
                         <input
                           type="number"
                           className="xp-input"
@@ -554,7 +557,7 @@ export default function ShippingBarSettings() {
                         />
                       </div>
                       <div className="xp-field">
-                        <label>Reward Name</label>
+                        <label><Translate text='Reward Name' /></label>
                         <input
                           type="text"
                           className="xp-input"
@@ -569,15 +572,16 @@ export default function ShippingBarSettings() {
               </div>
 
               <button type="button" onClick={addTier} className="xp-btn-secondary">
-                + Add Another Milestone
-              </button>
+                
+                                              <Translate text='+ Add Another Milestone' />
+                                            </button>
             </div>
 
             {/* Appearance */}
-            <div className="xp-section-card"><h3 className="xp-section-title">4. Palette Customization</h3>
+            <div className="xp-section-card"><h3 className="xp-section-title"><Translate text='4. Palette Customization' /></h3>
               <div className="xp-grid-3" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))" }}>
                 <div className="xp-field">
-                  <label>Progress Accent</label>
+                  <label><Translate text='Progress Accent' /></label>
                   <div className="xp-color-wrap">
                     <input
                       type="color"
@@ -589,7 +593,7 @@ export default function ShippingBarSettings() {
                   </div>
                 </div>
                 <div className="xp-field">
-                  <label>Background</label>
+                  <label><Translate text='Background' /></label>
                   <div className="xp-color-wrap">
                     <input
                       type="color"
@@ -601,7 +605,7 @@ export default function ShippingBarSettings() {
                   </div>
                 </div>
                 <div className="xp-field">
-                  <label>Track Background</label>
+                  <label><Translate text='Track Background' /></label>
                   <div className="xp-color-wrap">
                     <input
                       type="color"
@@ -613,7 +617,7 @@ export default function ShippingBarSettings() {
                   </div>
                 </div>
                 <div className="xp-field">
-                  <label>Text Color</label>
+                  <label><Translate text='Text Color' /></label>
                   <div className="xp-color-wrap">
                     <input
                       type="color"
@@ -631,24 +635,27 @@ export default function ShippingBarSettings() {
                   className="xp-btn-secondary"
                   onClick={() => { setBgColor("#0B0B0B"); setTextColor("#FFFFFF"); setTrackColor("#222222"); setProgressColor("#D4AF37"); }}
                 >
-                  Dark preset
-                </button>
+                  
+                                                    <Translate text='Dark preset' />
+                                                  </button>
                 <button
                   type="button"
                   className="xp-btn-secondary"
                   onClick={() => { setBgColor("#FFFFFF"); setTextColor("#1A1A1A"); setTrackColor("#E5E5E5"); setProgressColor("#B8860B"); }}
                 >
-                  Light preset
-                </button>
+                  
+                                                    <Translate text='Light preset' />
+                                                  </button>
               </div>
             </div>
 
             {/* Audience targeting */}
             <div className="xp-section-card">
-              <h3 className="xp-section-title">5. Audience Targeting</h3>
+              <h3 className="xp-section-title"><Translate text='5. Audience Targeting' /></h3>
               <p className="xp-sub" style={{ margin: "0 0 12px" }}>
-                Choose which visitors see the perk bar. Rules always follow the country your customer picks in your store&apos;s country selector (Markets): the bar updates whenever they change it, and checkout uses the same country.
-              </p>
+                
+                                              <Translate text='Choose which visitors see the perk bar. Rules always follow the country your customer picks in your store&apos;s country selector (Markets): the bar updates whenever they change it, and checkout uses the same country.' />
+                                            </p>
               <input type="hidden" name="targetMode" value={targetCountries.length === 0 ? "all" : targetMode} />
               <input type="hidden" name="targetCountries" value={targetCountries.join(",")} />
               <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 12 }}>
@@ -675,12 +682,13 @@ export default function ShippingBarSettings() {
 
             {/* Country-specific rewards */}
             <div className="xp-section-card">
-              <h3 className="xp-section-title">6. Country-Specific Rewards</h3>
+              <h3 className="xp-section-title"><Translate text='6. Country-Specific Rewards' /></h3>
               <p className="xp-sub" style={{ margin: "0 0 12px" }}>
-                Give selected countries their own reward ladder (different thresholds and rewards). Visitors from any other country
-                see the default milestones from section 3. Amounts are entered in your store currency ({config.currency}) and are
-                converted automatically for shoppers who see another currency. If a visitor matches several rules, the first one is used.
-              </p>
+                
+                                              <Translate text='Give selected countries their own reward ladder (different thresholds and rewards). Visitors from any other country
+                                              see the default milestones from section 3. Amounts are entered in your store currency (' />{config.currency}<Translate text=') and are
+                                              converted automatically for shoppers who see another currency. If a visitor matches several rules, the first one is used.' />
+                                            </p>
               <input type="hidden" name="targetOverrides" value={JSON.stringify(targetOverrides)} />
 
               {targetOverrides.map((ov, oi) => (
@@ -689,14 +697,15 @@ export default function ShippingBarSettings() {
                   style={{ border: "1px solid rgba(212,175,55,0.35)", borderRadius: 10, padding: 14, marginBottom: 14 }}
                 >
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-                    <strong>Rule {oi + 1}: {ov.countries.length ? ov.countries.join(", ") : "no countries yet"}</strong>
+                    <strong><Translate text='Rule' /> {oi + 1}: {ov.countries.length ? ov.countries.join(", ") : "no countries yet"}</strong>
                     <button
                       type="button"
                       className="xp-btn-secondary"
                       onClick={() => setTargetOverrides((prev) => prev.filter((_, i) => i !== oi))}
                     >
-                      Delete rule
-                    </button>
+                      
+                                                    <Translate text='Delete rule' />
+                                                  </button>
                   </div>
 
                   <CountryPicker
@@ -707,7 +716,7 @@ export default function ShippingBarSettings() {
                   />
 
                   <div style={{ marginTop: 12 }}>
-                    <label style={{ fontWeight: 600, display: "block", marginBottom: 6 }}>Rewards for these countries</label>
+                    <label style={{ fontWeight: 600, display: "block", marginBottom: 6 }}><Translate text='Rewards for these countries' /></label>
                     {ov.tiers.map((t, ti) => (
                       <div key={ti} style={{ marginBottom: 14, paddingBottom: 10, borderBottom: "1px dashed rgba(255,255,255,0.12)" }}>
                       <div
@@ -753,8 +762,9 @@ export default function ShippingBarSettings() {
                           disabled={ov.tiers.length <= 1}
                           onClick={() => updateOverride(oi, { tiers: ov.tiers.filter((_, i) => i !== ti) })}
                         >
-                          &times;
-                        </button>
+                          
+                                                              <Translate text='&times;' />
+                                                            </button>
                       </div>
                       <RewardFields tier={t} symbol={currencySymbol} onChange={(patch) => patchOverrideTier(oi, ti, patch)} />
                       </div>
@@ -778,15 +788,17 @@ export default function ShippingBarSettings() {
                           });
                         }}
                       >
-                        + Add reward
-                      </button>
+                        
+                                                          <Translate text='+ Add reward' />
+                                                        </button>
                       <button
                         type="button"
                         className="xp-btn-secondary"
                         onClick={() => updateOverride(oi, { tiers: tiers.map((t) => ({ ...t })) })}
                       >
-                        Copy default milestones
-                      </button>
+                        
+                                                          <Translate text='Copy default milestones' />
+                                                        </button>
                     </div>
                   </div>
                 </div>
@@ -800,94 +812,98 @@ export default function ShippingBarSettings() {
                   setTargetOverrides((prev) => [...prev, { countries: [], tiers: tiers.map((t) => ({ ...t })) }])
                 }
               >
-                + Add country rule
-              </button>
+                
+                                              <Translate text='+ Add country rule' />
+                                            </button>
             </div>
 
             {/* Checkout rewards (Shopify Function) */}
             <div className="xp-section-card">
-              <h3 className="xp-section-title">7. Checkout Rewards (applied automatically)</h3>
+              <h3 className="xp-section-title"><Translate text='7. Checkout Rewards (applied automatically)' /></h3>
               <p className="xp-sub" style={{ margin: "0 0 12px" }}>
-                Milestones with a reward type other than &quot;Display only&quot; are applied at checkout by a Shopify Function, so what the
-                bar promises is exactly what the customer gets &mdash; no discount codes needed. It appears in your Shopify admin under
-                Discounts as &quot;Tier Perks Rewards&quot;.
-              </p>
+                
+                                              <Translate text='Milestones with a reward type other than &quot;Display only&quot; are applied at checkout by a Shopify Function, so what the
+                                              bar promises is exactly what the customer gets &mdash; no discount codes needed. It appears in your Shopify admin under
+                                              Discounts as &quot;Tier Perks Rewards&quot;.' />
+                                            </p>
               <input type="hidden" name="perksJson" value={JSON.stringify(perks)} />
 
               <div className="xp-field">
-                <label>When a cart unlocks several rewards</label>
+                <label><Translate text='When a cart unlocks several rewards' /></label>
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                   <label style={{ display: "flex", gap: 8, alignItems: "center", cursor: "pointer" }}>
                     <input type="radio" name="perkStacking" checked={perks.stacking === "best"} onChange={() => setPerks({ ...perks, stacking: "best" })} />
-                    <span>Give only the best reward of each kind (recommended)</span>
+                    <span><Translate text='Give only the best reward of each kind (recommended)' /></span>
                   </label>
                   <label style={{ display: "flex", gap: 8, alignItems: "center", cursor: "pointer" }}>
                     <input type="radio" name="perkStacking" checked={perks.stacking === "all"} onChange={() => setPerks({ ...perks, stacking: "all" })} />
-                    <span>Stack every unlocked reward</span>
+                    <span><Translate text='Stack every unlocked reward' /></span>
                   </label>
                 </div>
               </div>
 
               <div className="xp-field">
-                <label>Can combine with your other Shopify discounts</label>
+                <label><Translate text='Can combine with your other Shopify discounts' /></label>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
                   <label style={{ display: "flex", gap: 6, alignItems: "center" }}>
                     <input type="checkbox" checked={perks.combineProduct} onChange={(e) => setPerks({ ...perks, combineProduct: e.target.checked })} />
-                    <span>Product discounts</span>
+                    <span><Translate text='Product discounts' /></span>
                   </label>
                   <label style={{ display: "flex", gap: 6, alignItems: "center" }}>
                     <input type="checkbox" checked={perks.combineOrder} onChange={(e) => setPerks({ ...perks, combineOrder: e.target.checked })} />
-                    <span>Order discounts</span>
+                    <span><Translate text='Order discounts' /></span>
                   </label>
                   <label style={{ display: "flex", gap: 6, alignItems: "center" }}>
                     <input type="checkbox" checked={perks.combineShipping} onChange={(e) => setPerks({ ...perks, combineShipping: e.target.checked })} />
-                    <span>Shipping discounts</span>
+                    <span><Translate text='Shipping discounts' /></span>
                   </label>
                 </div>
               </div>
 
               <div className="xp-grid-2">
                 <div className="xp-field">
-                  <label>Campaign starts (optional, UTC)</label>
+                  <label><Translate text='Campaign starts (optional, UTC)' /></label>
                   <input type="date" className="xp-input" value={perks.startsAt ? perks.startsAt.slice(0, 10) : ""} onChange={(e) => setPerks({ ...perks, startsAt: e.target.value })} />
                 </div>
                 <div className="xp-field">
-                  <label>Campaign ends (optional, UTC)</label>
+                  <label><Translate text='Campaign ends (optional, UTC)' /></label>
                   <input type="date" className="xp-input" value={perks.endsAt ? perks.endsAt.slice(0, 10) : ""} onChange={(e) => setPerks({ ...perks, endsAt: e.target.value })} />
                 </div>
               </div>
 
               <div className="xp-field">
-                <label>What will be applied</label>
+                <label><Translate text='What will be applied' /></label>
                 <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13, lineHeight: 1.7 }}>
                   {tiers.some(isFunctionalTier) ? (
                     [...tiers].sort((a, b) => a.targetAmount - b.targetAmount).filter(isFunctionalTier).map((t, i) => (
                       <li key={`d${i}`}>
-                        <strong>Everyone{targetCountries.length ? (targetMode === "include" ? " in the selected countries" : " outside the selected countries") : ""}:</strong>{" "}
-                        cart of {currencySymbol}{t.targetAmount}+ &rarr; {describeReward(t, currencySymbol)}
+                        <strong><Translate text='Everyone' />{targetCountries.length ? (targetMode === "include" ? " in the selected countries" : " outside the selected countries") : ""}:</strong>{" "}
+                        
+                                                    <Translate text='cart of' /> {currencySymbol}{t.targetAmount}<Translate text='+ &rarr;' /> {describeReward(t, currencySymbol)}
                       </li>
                     ))
                   ) : (
-                    <li>Nothing yet. Set a reward type on a milestone above.</li>
+                    <li><Translate text='Nothing yet. Set a reward type on a milestone above.' /></li>
                   )}
                   {targetOverrides.filter((o) => o.countries.length).map((o, oi) =>
                     [...o.tiers].sort((a, b) => a.targetAmount - b.targetAmount).filter(isFunctionalTier).map((t, i) => (
                       <li key={`o${oi}-${i}`}>
-                        <strong>{o.countries.join(", ")}:</strong> cart of {currencySymbol}{t.targetAmount}+ &rarr; {describeReward(t, currencySymbol)}
+                        <strong>{o.countries.join(", ")}:</strong>  <Translate text='cart of' /> {currencySymbol}{t.targetAmount}<Translate text='+ &rarr;' /> {describeReward(t, currencySymbol)}
                       </li>
                     )),
                   )}
                 </ul>
-                <small>Amounts are in {config.currency} and converted automatically for other currencies. Thresholds use the cart subtotal before shipping and tax.</small>
+                <small><Translate text='Amounts are in' /> {config.currency}  <Translate text='and converted automatically for other currencies. Thresholds use the cart subtotal before shipping and tax.' /></small>
               </div>
 
               {actionData && "perksState" in actionData && actionData.perksState === "not_deployed" && (
                 <s-banner tone="warning">
-                  The rewards engine has not been deployed yet. Run <code>shopify app deploy</code>, then save this page again.
-                </s-banner>
+                  
+                                                    <Translate text='The rewards engine has not been deployed yet. Run' /> <code><Translate text='shopify app deploy' /></code><Translate text=', then save this page again.' />
+                                                  </s-banner>
               )}
               {actionData && "perksState" in actionData && actionData.perksState === "error" && (
-                <s-banner tone="critical">Checkout rewards could not be synced. See the message above and try saving again.</s-banner>
+                <s-banner tone="critical"><Translate text='Checkout rewards could not be synced. See the message above and try saving again.' /></s-banner>
               )}
 
               <a
@@ -896,29 +912,32 @@ export default function ShippingBarSettings() {
                 className="xp-btn-secondary"
                 style={{ display: "inline-block", textDecoration: "none", marginTop: 10 }}
               >
-                View in Shopify Discounts &rarr;
-              </a>
+                
+                                              <Translate text='View in Shopify Discounts &rarr;' />
+                                            </a>
             </div>
 
             {/* Real free shipping note */}
             <div className="xp-section-card xp-ship-note">
-              <h3 className="xp-section-title">Free shipping and your store&apos;s shipping rates</h3>
+              <h3 className="xp-section-title"><Translate text='Free shipping and your store&apos;s shipping rates' /></h3>
               <p className="xp-sub" style={{ margin: "0 0 10px" }}>
-                The easiest way: set a milestone&apos;s reward to <strong>Free shipping</strong> (or a shipping discount) above. The rewards engine then
-                discounts your existing shipping rates automatically at checkout. It can only discount rates that exist, so make sure your
-                shipping profile has at least one rate for the countries you sell to.
-                Prefer to manage it yourself? Leave the reward as <strong>Display only</strong> and create a matching free-shipping rate with the same
-                minimum order price in your Shopify shipping settings (Shipping and delivery &rarr; your profile &rarr; Add rate &rarr; condition based on order price),
-                keeping the amount identical to the milestone here.
-              </p>
+                
+                                              <Translate text='The easiest way: set a milestone&apos;s reward to' /> <strong><Translate text='Free shipping' /></strong>  <Translate text='(or a shipping discount) above. The rewards engine then
+                                              discounts your existing shipping rates automatically at checkout. It can only discount rates that exist, so make sure your
+                                              shipping profile has at least one rate for the countries you sell to.
+                                              Prefer to manage it yourself? Leave the reward as' /> <strong><Translate text='Display only' /></strong>  <Translate text='and create a matching free-shipping rate with the same
+                                              minimum order price in your Shopify shipping settings (Shipping and delivery &rarr; your profile &rarr; Add rate &rarr; condition based on order price),
+                                              keeping the amount identical to the milestone here.' />
+                                            </p>
               <a
                 href="shopify:admin/settings/shipping"
                 target="_top"
                 className="xp-btn-secondary"
                 style={{ display: "inline-block", textDecoration: "none" }}
               >
-                Open Shipping &amp; delivery settings &rarr;
-              </a>
+                
+                                              <Translate text='Open Shipping &amp; delivery settings &rarr;' />
+                                            </a>
             </div>
 
             <button type="submit" className="xp-btn-submit" disabled={isSubmitting}>
@@ -931,16 +950,17 @@ export default function ShippingBarSettings() {
         <div className="xp-shipping-preview-wrap">
           <div className="xp-preview-sticky">
             <div className="xp-preview-card-header">
-              <h3>Interactive Cart Simulator</h3>
+              <h3><Translate text='Interactive Cart Simulator' /></h3>
               <span className="xp-preview-tag">
                 {SHIPPING_LAYOUTS.find((l) => l.id === selectedLayout)?.name.split(" ")[0]}
               </span>
             </div>
-            <p className="xp-sub">Drag the slider to test milestones and progress transitions.</p>
+            <p className="xp-sub"><Translate text='Drag the slider to test milestones and progress transitions.' /></p>
 
             <div className="xp-slider-control">
               <label>
-                Simulated Cart Total: <strong>{currencySymbol}{testCartValue.toFixed(2)}</strong>
+                
+                                              <Translate text='Simulated Cart Total:' /> <strong>{currencySymbol}{testCartValue.toFixed(2)}</strong>
               </label>
               <input
                 type="range"
@@ -1078,8 +1098,8 @@ export default function ShippingBarSettings() {
                 </div>
 
                 <div className="xp-luxury-footer">
-                  <span>Cart: {currencySymbol}{testCartValue.toFixed(2)}</span>
-                  <span>Goal: {currencySymbol}{maxTier}</span>
+                  <span><Translate text='Cart:' /> {currencySymbol}{testCartValue.toFixed(2)}</span>
+                  <span><Translate text='Goal:' /> {currencySymbol}{maxTier}</span>
                 </div>
               </div>
             )}
@@ -1093,7 +1113,7 @@ export default function ShippingBarSettings() {
               >
                 <div className="xp-split-ribbon-top">
                   <div className="xp-split-badge-achieved" style={{ borderColor: progressColor, color: progressColor }}>
-                    <span>Level {sortedTiers.filter((t) => testCartValue >= t.targetAmount).length} Unlocked</span>
+                    <span><Translate text='Level' /> {sortedTiers.filter((t) => testCartValue >= t.targetAmount).length}  <Translate text='Unlocked' /></span>
                   </div>
                   <div className="xp-split-next-target">
                     {nextTier ? `+${currencySymbol}${remaining} for ${nextTier.rewardTitle.split(" ")[0]}` : "All Unlocked"}
@@ -1180,7 +1200,7 @@ function RewardFields({
   return (
     <div style={{ marginTop: 10, padding: 10, borderRadius: 8, background: "rgba(212,175,55,0.06)", border: "1px dashed rgba(212,175,55,0.35)" }}>
       <div className="xp-field" style={{ marginBottom: 8 }}>
-        <label>Checkout reward</label>
+        <label><Translate text='Checkout reward' /></label>
         <select
           className="xp-input"
           value={type}
@@ -1219,7 +1239,7 @@ function RewardFields({
           )}
           {type === "order_percent" && (
             <div className="xp-field" style={{ marginBottom: 0 }}>
-              <label>Max discount ({symbol.trim()}, optional)</label>
+              <label><Translate text='Max discount (' />{symbol.trim()}<Translate text=', optional)' /></label>
               <input
                 type="number"
                 min="0"
@@ -1234,7 +1254,7 @@ function RewardFields({
             </div>
           )}
           <div className="xp-field" style={{ marginBottom: 0, gridColumn: "1 / -1" }}>
-            <label>Label shown at checkout (optional)</label>
+            <label><Translate text='Label shown at checkout (optional)' /></label>
             <input
               type="text"
               className="xp-input"
@@ -1320,7 +1340,7 @@ function CountryPicker({
       </div>
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: 6, margin: "10px 0" }}>
-        <span className="xp-sub" style={{ alignSelf: "center" }}>Quick add:</span>
+        <span className="xp-sub" style={{ alignSelf: "center" }}><Translate text='Quick add:' /></span>
         {COUNTRY_GROUPS.map((g) => (
           <button key={g.label} type="button" className="xp-btn-secondary" onClick={() => add(g.codes)}>
             {g.label}
@@ -1329,7 +1349,7 @@ function CountryPicker({
       </div>
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-        {value.length === 0 && <span className="xp-sub">No countries selected yet.</span>}
+        {value.length === 0 && <span className="xp-sub"><Translate text='No countries selected yet.' /></span>}
         {value.map((c) => (
           <span
             key={c}
@@ -1345,14 +1365,16 @@ function CountryPicker({
               onClick={() => onChange(value.filter((x) => x !== c))}
               style={{ background: "none", border: "none", cursor: "pointer", color: "inherit", fontSize: 14, lineHeight: 1, padding: 0 }}
             >
-              &times;
-            </button>
+              
+                                  <Translate text='&times;' />
+                                </button>
           </span>
         ))}
         {value.length > 0 && (
           <button type="button" className="xp-btn-secondary" onClick={() => onChange([])}>
-            Clear all
-          </button>
+            
+                                  <Translate text='Clear all' />
+                                </button>
         )}
       </div>
     </div>

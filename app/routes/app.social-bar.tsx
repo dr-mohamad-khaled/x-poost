@@ -1,3 +1,4 @@
+import { Translate } from "../components/Translate";
 import { useState } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Form, useActionData, useLoaderData, useNavigation } from "react-router";
@@ -421,9 +422,10 @@ export default function SocialBarSettings() {
       !config.tiktokUrl &&
       Object.keys(parsedPos.networks || {}).length === 0 ? (
         <s-banner tone="warning">
-          Nothing to show yet: add a WhatsApp number or at least one link below, then click Save. Until then the
-          widget stays hidden on your storefront.
-        </s-banner>
+          
+                                <Translate text='Nothing to show yet: add a WhatsApp number or at least one link below, then click Save. Until then the
+                                widget stays hidden on your storefront.' />
+                              </s-banner>
       ) : null}
 
       <div className="xp-social-layout">
@@ -437,10 +439,11 @@ export default function SocialBarSettings() {
             <input type="hidden" name="whatsappMessage" value={currentCopy.whatsappMessage} />
 
             {/* Layout Architecture Selection */}
-            <div className="xp-section-card"><h3 className="xp-section-title">1. Choose Layout Architecture</h3>
+            <div className="xp-section-card"><h3 className="xp-section-title"><Translate text='1. Choose Layout Architecture' /></h3>
               <p className="xp-section-intro">
-                Select the structural arrangement for your action bar. Each layout provides a completely different layout flow, button structure, and customer experience.
-              </p>
+                
+                                              <Translate text='Select the structural arrangement for your action bar. Each layout provides a completely different layout flow, button structure, and customer experience.' />
+                                            </p>
               <div className="xp-layouts-grid">
                 {LAYOUT_STYLES.map((layout) => {
                   const isSelected = selectedLayout === layout.id;
@@ -454,7 +457,7 @@ export default function SocialBarSettings() {
                     >
                       <div className="xp-layout-header">
                         <span className="xp-layout-badge">{layout.badge}</span>
-                        {isSelected && <span className="xp-theme-check">Selected</span>}
+                        {isSelected && <span className="xp-theme-check"><Translate text='Selected' /></span>}
                       </div>
                       <h4 className="xp-layout-title">{layout.name}</h4>
                       <p className="xp-layout-desc">{layout.description}</p>
@@ -465,10 +468,11 @@ export default function SocialBarSettings() {
             </div>
 
             {/* Design Theme Selection */}
-            <div className="xp-section-card"><h3 className="xp-section-title">2. Choose Color Theme</h3>
+            <div className="xp-section-card"><h3 className="xp-section-title"><Translate text='2. Choose Color Theme' /></h3>
               <p className="xp-section-intro">
-                Choose the visual surface material and color palette to match your store branding.
-              </p>
+                
+                                              <Translate text='Choose the visual surface material and color palette to match your store branding.' />
+                                            </p>
               <div className="xp-themes-grid">
                 {DESIGN_THEMES.map((theme) => {
                   const isSelected = selectedTheme === theme.id;
@@ -482,7 +486,7 @@ export default function SocialBarSettings() {
                     >
                       <div className="xp-theme-header">
                         <span className="xp-theme-badge">{theme.badge}</span>
-                        {isSelected && <span className="xp-theme-check">Selected</span>}
+                        {isSelected && <span className="xp-theme-check"><Translate text='Selected' /></span>}
                       </div>
                       <h4 className="xp-theme-title">{theme.name}</h4>
                       <p className="xp-theme-desc">{theme.description}</p>
@@ -498,7 +502,7 @@ export default function SocialBarSettings() {
             </div>
 
             {/* Multi-Language Copy Section */}
-            <div className="xp-section-card"><h3 className="xp-section-title">3. Multi-Language Copy & Action Labels</h3>
+            <div className="xp-section-card"><h3 className="xp-section-title"><Translate text='3. Multi-Language Copy & Action Labels' /></h3>
               <FeatureLanguageSwitcher
                 selectedLang={selectedLang}
                 onSelectLang={setSelectedLang}
@@ -507,7 +511,7 @@ export default function SocialBarSettings() {
               />
               <div className="xp-grid-2">
                 <div className="xp-field">
-                  <label>Collapsed Trigger Button Label ({selectedLang.toUpperCase()})</label>
+                  <label><Translate text='Collapsed Trigger Button Label (' />{selectedLang.toUpperCase()})</label>
                   <input
                     type="text"
                     className="xp-input"
@@ -517,7 +521,7 @@ export default function SocialBarSettings() {
                   />
                 </div>
                 <div className="xp-field">
-                  <label>VIP Community Label ({selectedLang.toUpperCase()})</label>
+                  <label><Translate text='VIP Community Label (' />{selectedLang.toUpperCase()})</label>
                   <input
                     type="text"
                     className="xp-input"
@@ -528,7 +532,7 @@ export default function SocialBarSettings() {
                 </div>
               </div>
               <div className="xp-field">
-                <label>WhatsApp Default Greeting Message ({selectedLang.toUpperCase()})</label>
+                <label><Translate text='WhatsApp Default Greeting Message (' />{selectedLang.toUpperCase()})</label>
                 <input
                   type="text"
                   className="xp-input"
@@ -540,21 +544,22 @@ export default function SocialBarSettings() {
             </div>
 
             {/* Placement & Vertical Offset Controls */}
-            <div className="xp-section-card"><h3 className="xp-section-title">4. Position & Vertical Offset Adjustments</h3>
+            <div className="xp-section-card"><h3 className="xp-section-title"><Translate text='4. Position & Vertical Offset Adjustments' /></h3>
               <p className="xp-section-intro">
-                Set exact vertical clearance on Desktop and Mobile to avoid overlapping sticky bottom bars, cart buttons, or navigation docks.
-              </p>
+                
+                                              <Translate text='Set exact vertical clearance on Desktop and Mobile to avoid overlapping sticky bottom bars, cart buttons, or navigation docks.' />
+                                            </p>
 
               <div className="xp-field">
-                <label>Screen Anchor Position</label>
+                <label><Translate text='Screen Anchor Position' /></label>
                 <select
                   name="side"
                   className="xp-input"
                   value={side}
                   onChange={(e) => setSide(e.target.value)}
                 >
-                  <option value="bottom-right">Bottom Right (Standard)</option>
-                  <option value="bottom-left">Bottom Left</option>
+                  <option value="bottom-right"><Translate text='Bottom Right (Standard)' /></option>
+                  <option value="bottom-left"><Translate text='Bottom Left' /></option>
                 </select>
               </div>
 
@@ -562,8 +567,8 @@ export default function SocialBarSettings() {
               <div className="xp-offset-box">
                 <div className="xp-offset-header">
                   <div>
-                    <label className="xp-offset-label">Desktop Bottom Distance</label>
-                    <small>Vertical distance from bottom edge of desktop screens</small>
+                    <label className="xp-offset-label"><Translate text='Desktop Bottom Distance' /></label>
+                    <small><Translate text='Vertical distance from bottom edge of desktop screens' /></small>
                   </div>
                   <div className="xp-offset-val-wrap">
                     <input
@@ -575,7 +580,7 @@ export default function SocialBarSettings() {
                       value={desktopOffset}
                       onChange={(e) => setDesktopOffset(Number(e.target.value))}
                     />
-                    <span>px</span>
+                    <span><Translate text='px' /></span>
                   </div>
                 </div>
                 <input
@@ -588,10 +593,10 @@ export default function SocialBarSettings() {
                   onChange={(e) => setDesktopOffset(Number(e.target.value))}
                 />
                 <div className="xp-offset-presets">
-                  <span className="xp-preset-label">Presets:</span>
-                  <button type="button" className="xp-preset-btn" onClick={() => setDesktopOffset(24)}>Default (24px)</button>
-                  <button type="button" className="xp-preset-btn" onClick={() => setDesktopOffset(70)}>Above Sticky Bar (70px)</button>
-                  <button type="button" className="xp-preset-btn" onClick={() => setDesktopOffset(120)}>Elevated (120px)</button>
+                  <span className="xp-preset-label"><Translate text='Presets:' /></span>
+                  <button type="button" className="xp-preset-btn" onClick={() => setDesktopOffset(24)}><Translate text='Default (24px)' /></button>
+                  <button type="button" className="xp-preset-btn" onClick={() => setDesktopOffset(70)}><Translate text='Above Sticky Bar (70px)' /></button>
+                  <button type="button" className="xp-preset-btn" onClick={() => setDesktopOffset(120)}><Translate text='Elevated (120px)' /></button>
                 </div>
               </div>
 
@@ -599,8 +604,8 @@ export default function SocialBarSettings() {
               <div className="xp-offset-box">
                 <div className="xp-offset-header">
                   <div>
-                    <label className="xp-offset-label">Mobile Bottom Distance</label>
-                    <small>Recommended 70px to 90px on stores with sticky add-to-cart bars</small>
+                    <label className="xp-offset-label"><Translate text='Mobile Bottom Distance' /></label>
+                    <small><Translate text='Recommended 70px to 90px on stores with sticky add-to-cart bars' /></small>
                   </div>
                   <div className="xp-offset-val-wrap">
                     <input
@@ -612,7 +617,7 @@ export default function SocialBarSettings() {
                       value={mobileOffset}
                       onChange={(e) => setMobileOffset(Number(e.target.value))}
                     />
-                    <span>px</span>
+                    <span><Translate text='px' /></span>
                   </div>
                 </div>
                 <input
@@ -625,29 +630,29 @@ export default function SocialBarSettings() {
                   onChange={(e) => setMobileOffset(Number(e.target.value))}
                 />
                 <div className="xp-offset-presets">
-                  <span className="xp-preset-label">Presets:</span>
-                  <button type="button" className="xp-preset-btn" onClick={() => setMobileOffset(24)}>Standard (24px)</button>
-                  <button type="button" className="xp-preset-btn" onClick={() => setMobileOffset(80)}>Above Cart Bar (80px)</button>
-                  <button type="button" className="xp-preset-btn" onClick={() => setMobileOffset(130)}>High Float (130px)</button>
+                  <span className="xp-preset-label"><Translate text='Presets:' /></span>
+                  <button type="button" className="xp-preset-btn" onClick={() => setMobileOffset(24)}><Translate text='Standard (24px)' /></button>
+                  <button type="button" className="xp-preset-btn" onClick={() => setMobileOffset(80)}><Translate text='Above Cart Bar (80px)' /></button>
+                  <button type="button" className="xp-preset-btn" onClick={() => setMobileOffset(130)}><Translate text='High Float (130px)' /></button>
                 </div>
               </div>
             </div>
 
             {/* General Status */}
-            <div className="xp-section-card"><h3 className="xp-section-title">4. Widget Status</h3>
+            <div className="xp-section-card"><h3 className="xp-section-title"><Translate text='4. Widget Status' /></h3>
               <div className="xp-row">
                 <label className="xp-toggle">
                   <input type="checkbox" name="active" defaultChecked={config.active} />
-                  <span>Enabled on storefront</span>
+                  <span><Translate text='Enabled on storefront' /></span>
                 </label>
               </div>
             </div>
 
             {/* WhatsApp Chat */}
-            <div className="xp-section-card"><h3 className="xp-section-title">5. WhatsApp Direct Chat</h3>
+            <div className="xp-section-card"><h3 className="xp-section-title"><Translate text='5. WhatsApp Direct Chat' /></h3>
               <div className="xp-grid-2">
                 <div className="xp-field">
-                  <label>WhatsApp Number (with country code)</label>
+                  <label><Translate text='WhatsApp Number (with country code)' /></label>
                   <input
                     type="text"
                     name="whatsappNumber"
@@ -656,10 +661,10 @@ export default function SocialBarSettings() {
                     onChange={(e) => setWaNumber(e.target.value)}
                     placeholder="+14155552671"
                   />
-                  <small>Digits only with country code (e.g. +1415...)</small>
+                  <small><Translate text='Digits only with country code (e.g. +1415...)' /></small>
                 </div>
                 <div className="xp-field">
-                  <label>Pre-filled Message</label>
+                  <label><Translate text='Pre-filled Message' /></label>
                   <input
                     type="text"
                     name="whatsappMessage"
@@ -670,15 +675,15 @@ export default function SocialBarSettings() {
                 </div>
               </div>
               <div className="xp-wa-preview">
-                <strong>Generated Link:</strong> <code>{waUrl}</code>
+                <strong><Translate text='Generated Link:' /></strong> <code>{waUrl}</code>
               </div>
             </div>
 
             {/* VIP Community */}
-            <div className="xp-section-card"><h3 className="xp-section-title">6. VIP Community Funnel</h3>
+            <div className="xp-section-card"><h3 className="xp-section-title"><Translate text='6. VIP Community Funnel' /></h3>
               <div className="xp-grid-2">
                 <div className="xp-field">
-                  <label>VIP Button Label</label>
+                  <label><Translate text='VIP Button Label' /></label>
                   <input
                     type="text"
                     name="vipCommunityLabel"
@@ -688,7 +693,7 @@ export default function SocialBarSettings() {
                   />
                 </div>
                 <div className="xp-field">
-                  <label>Community Link (Telegram / WhatsApp / Discord)</label>
+                  <label><Translate text='Community Link (Telegram / WhatsApp / Discord)' /></label>
                   <input
                     type="url"
                     name="vipCommunityUrl"
@@ -701,9 +706,9 @@ export default function SocialBarSettings() {
             </div>
 
             {/* Social Profiles */}
-            <div className="xp-section-card"><h3 className="xp-section-title">7. Social Profiles</h3>
+            <div className="xp-section-card"><h3 className="xp-section-title"><Translate text='7. Social Profiles' /></h3>
               <div className="xp-field">
-                <label>Instagram URL</label>
+                <label><Translate text='Instagram URL' /></label>
                 <input
                   type="url"
                   name="instagramUrl"
@@ -713,7 +718,7 @@ export default function SocialBarSettings() {
                 />
               </div>
               <div className="xp-field">
-                <label>Facebook URL</label>
+                <label><Translate text='Facebook URL' /></label>
                 <input
                   type="url"
                   name="facebookUrl"
@@ -723,7 +728,7 @@ export default function SocialBarSettings() {
                 />
               </div>
               <div className="xp-field">
-                <label>TikTok URL</label>
+                <label><Translate text='TikTok URL' /></label>
                 <input
                   type="url"
                   name="tiktokUrl"
@@ -745,19 +750,21 @@ export default function SocialBarSettings() {
                 </div>
               ))}
               <p className="xp-sub" style={{ marginTop: "8px" }}>
-                Only the networks with a link appear on your store. Leave a field empty to hide that network.
-              </p>
+                
+                                              <Translate text='Only the networks with a link appear on your store. Leave a field empty to hide that network.' />
+                                            </p>
             </div>
 
             {/* Appearance Overrides */}
-            <div className="xp-section-card"><h3 className="xp-section-title">8. Your Own Colors</h3>
+            <div className="xp-section-card"><h3 className="xp-section-title"><Translate text='8. Your Own Colors' /></h3>
               <p className="xp-sub" style={{ marginBottom: "12px" }}>
-                Not a fan of the preset colors? Pick any background, accent and text color. Your choices apply on top
-                of any theme, including light backgrounds. The preview updates instantly.
-              </p>
+                
+                                              <Translate text='Not a fan of the preset colors? Pick any background, accent and text color. Your choices apply on top
+                                              of any theme, including light backgrounds. The preview updates instantly.' />
+                                            </p>
               <div className="xp-grid-3">
                 <div className="xp-field">
-                  <label>Background Color</label>
+                  <label><Translate text='Background Color' /></label>
                   <div className="xp-color-wrap">
                     <input
                       type="color"
@@ -769,7 +776,7 @@ export default function SocialBarSettings() {
                   </div>
                 </div>
                 <div className="xp-field">
-                  <label>Accent Color</label>
+                  <label><Translate text='Accent Color' /></label>
                   <div className="xp-color-wrap">
                     <input
                       type="color"
@@ -781,7 +788,7 @@ export default function SocialBarSettings() {
                   </div>
                 </div>
                 <div className="xp-field">
-                  <label>Text Color</label>
+                  <label><Translate text='Text Color' /></label>
                   <div className="xp-color-wrap">
                     <input
                       type="color"
@@ -806,8 +813,9 @@ export default function SocialBarSettings() {
                   }
                 }}
               >
-                Reset to theme colors
-              </button>
+                
+                                              <Translate text='Reset to theme colors' />
+                                            </button>
             </div>
 
             <button type="submit" className="xp-btn-submit" disabled={isSubmitting}>
@@ -820,17 +828,17 @@ export default function SocialBarSettings() {
         <div className="xp-social-preview-wrap">
           <div className="xp-preview-sticky">
             <div className="xp-preview-card-header">
-              <h3>Live Interactive Preview</h3>
+              <h3><Translate text='Live Interactive Preview' /></h3>
               <span className="xp-preview-tag">
                 {LAYOUT_STYLES.find((l) => l.id === selectedLayout)?.name.split(" ")[0]} - {DESIGN_THEMES.find((t) => t.id === selectedTheme)?.name.split(" ")[0]}
               </span>
             </div>
-            <p className="xp-sub">Simulating actual appearance on storefront with selected layout and palette.</p>
+            <p className="xp-sub"><Translate text='Simulating actual appearance on storefront with selected layout and palette.' /></p>
 
             <div className="xp-offset-indicator-bar">
-              <span>Desktop: <strong>{desktopOffset}px</strong></span>
-              <span>Mobile: <strong>{mobileOffset}px</strong></span>
-              <span>Side: <strong>{side === "bottom-left" ? "Left" : "Right"}</strong></span>
+              <span><Translate text='Desktop:' /> <strong>{desktopOffset}<Translate text='px' /></strong></span>
+              <span><Translate text='Mobile:' /> <strong>{mobileOffset}<Translate text='px' /></strong></span>
+              <span><Translate text='Side:' /> <strong>{side === "bottom-left" ? "Left" : "Right"}</strong></span>
             </div>
 
             {/* RENDER LAYOUT 1: Action Stack */}
@@ -866,7 +874,7 @@ export default function SocialBarSettings() {
                     <strong>{currentCopy.vipCommunityLabel}</strong>
                     <small style={{ color: accentColor }}>{selectedLang === "ar" ? "عروض وتخفيضات حصرية" : "Exclusive VIP Drops & Offers"}</small>
                   </div>
-                  <span className="xp-stack-pill" style={{ background: accentColor, color: bgColor }}>VIP PASS</span>
+                  <span className="xp-stack-pill" style={{ background: accentColor, color: bgColor }}><Translate text='VIP PASS' /></span>
                 </div>
 
                 {/* Layer 3: Distinct Multi-Row Social Channels */}
@@ -875,21 +883,21 @@ export default function SocialBarSettings() {
                     <svg className="xp-svg-icon-sm" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
                     </svg>
-                    <span>Follow on Instagram</span>
+                    <span><Translate text='Follow on Instagram' /></span>
                     <span className="xp-row-arrow">{selectedLang === "ar" ? "\u2190" : "\u2192"}</span>
                   </div>
                   <div className="xp-social-row-btn">
                     <svg className="xp-svg-icon-sm" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-1.01-.02 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.24 1.07-.14 1.61.24 1.64 1.82 2.89 3.5 2.77 1.81-.05 3.25-1.57 3.32-3.38.07-2.87.03-5.75.04-8.62.01-3.21-.01-6.42.02-9.63z"/>
                     </svg>
-                    <span>Follow on TikTok</span>
+                    <span><Translate text='Follow on TikTok' /></span>
                     <span className="xp-row-arrow">{selectedLang === "ar" ? "\u2190" : "\u2192"}</span>
                   </div>
                   <div className="xp-social-row-btn">
                     <svg className="xp-svg-icon-sm" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/>
                     </svg>
-                    <span>Follow on Facebook</span>
+                    <span><Translate text='Follow on Facebook' /></span>
                     <span className="xp-row-arrow">{selectedLang === "ar" ? "\u2190" : "\u2192"}</span>
                   </div>
                 </div>
@@ -951,7 +959,7 @@ export default function SocialBarSettings() {
                 {/* VIP Pass Banner Card */}
                 <div className="xp-vip-card" style={{ borderColor: accentColor }}>
                   <div className="xp-vip-card-top">
-                    <span className="xp-vip-badge" style={{ background: accentColor, color: bgColor }}>VIP PASS</span>
+                    <span className="xp-vip-badge" style={{ background: accentColor, color: bgColor }}><Translate text='VIP PASS' /></span>
                     <svg className="xp-svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke={accentColor} strokeWidth="2">
                       <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                     </svg>
@@ -993,8 +1001,8 @@ export default function SocialBarSettings() {
               >
                 <div className="xp-vip-hero-card" style={{ borderColor: accentColor }}>
                   <div className="xp-vip-hero-header">
-                    <span className="xp-vip-badge" style={{ background: accentColor, color: bgColor }}>VIP CLUB</span>
-                    <span style={{ color: accentColor, fontSize: "11px", fontWeight: 700, letterSpacing: "0.5px" }}>MEMBERS ONLY</span>
+                    <span className="xp-vip-badge" style={{ background: accentColor, color: bgColor }}><Translate text='VIP CLUB' /></span>
+                    <span style={{ color: accentColor, fontSize: "11px", fontWeight: 700, letterSpacing: "0.5px" }}><Translate text='MEMBERS ONLY' /></span>
                   </div>
                   <h4 className="xp-vip-hero-title">{currentCopy.vipCommunityLabel}</h4>
                   <ul className="xp-vip-benefits">
@@ -1069,7 +1077,7 @@ export default function SocialBarSettings() {
                   <svg className="xp-svg-icon-sm" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm0 18.14c-1.52 0-3-.4-4.3-1.17l-.31-.18-3.19.84.85-3.11-.2-.32a8.16 8.16 0 0 1-1.25-4.29c0-4.51 3.67-8.18 8.18-8.18 2.19 0 4.24.85 5.79 2.4 1.54 1.55 2.4 3.61 2.4 5.79 0 4.51-3.67 8.19-8.17 8.19z"/>
                   </svg>
-                  <span>WhatsApp</span>
+                  <span><Translate text='WhatsApp' /></span>
                 </a>
                 <div className="xp-dock-divider" style={{ background: `${accentColor}44` }}></div>
                 <div className="xp-dock-pill xp-dock-pill-vip" style={{ color: accentColor }}>

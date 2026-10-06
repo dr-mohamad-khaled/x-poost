@@ -1,3 +1,4 @@
+import { Translate } from "../components/Translate";
 import { useMemo, useState } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Form, useActionData, useLoaderData, useNavigation } from "react-router";
@@ -270,92 +271,92 @@ export default function ScarcityToastSettings() {
       {actionData && "error" in actionData ? (
         <s-banner tone="critical">{actionData.error}</s-banner>
       ) : null}
-      {actionData && "ok" in actionData ? <s-banner tone="success">Saved.</s-banner> : null}
+      {actionData && "ok" in actionData ? <s-banner tone="success"><Translate text='Saved.' /></s-banner> : null}
 
       <Form method="post" className="xps-form">
         <input type="hidden" name="messagesJson" value={messagesJson} />
         <input type="hidden" name="translationsJson" value={JSON.stringify(translationsMap)} />
 
-        <div className="xp-section-card"><h3 className="xp-section-title">General</h3>
+        <div className="xp-section-card"><h3 className="xp-section-title"><Translate text='General' /></h3>
           <div className="xps-row">
             <label className="xps-toggle">
               <input type="checkbox" name="active" defaultChecked={config.active} />
-              <span>Enabled on storefront</span>
+              <span><Translate text='Enabled on storefront' /></span>
             </label>
           </div>
           <div className="xps-field">
-            <label htmlFor="showOn">Show on</label>
+            <label htmlFor="showOn"><Translate text='Show on' /></label>
             <select id="showOn" name="showOn" defaultValue={config.showOn} className="xps-input">
-              <option value="all">All pages</option>
-              <option value="home_product">Home &amp; product pages</option>
-              <option value="product_only">Product pages only</option>
+              <option value="all"><Translate text='All pages' /></option>
+              <option value="home_product"><Translate text='Home &amp; product pages' /></option>
+              <option value="product_only"><Translate text='Product pages only' /></option>
             </select>
           </div>
         </div>
 
-        <div className="xp-section-card"><h3 className="xp-section-title">Timing</h3>
+        <div className="xp-section-card"><h3 className="xp-section-title"><Translate text='Timing' /></h3>
           <div className="xps-grid">
             <div className="xps-field">
-              <label htmlFor="onsetDelayMs">First appearance delay (ms)</label>
+              <label htmlFor="onsetDelayMs"><Translate text='First appearance delay (ms)' /></label>
               <input id="onsetDelayMs" className="xps-input" type="number" name="onsetDelayMs" defaultValue={config.onsetDelayMs} min={0} step={500} />
             </div>
             <div className="xps-field">
-              <label htmlFor="displayDurationMs">Display duration (ms)</label>
+              <label htmlFor="displayDurationMs"><Translate text='Display duration (ms)' /></label>
               <input id="displayDurationMs" className="xps-input" type="number" name="displayDurationMs" defaultValue={config.displayDurationMs} min={1000} step={500} />
             </div>
             <div className="xps-field">
-              <label htmlFor="intervalDelayMs">Gap between messages (ms)</label>
+              <label htmlFor="intervalDelayMs"><Translate text='Gap between messages (ms)' /></label>
               <input id="intervalDelayMs" className="xps-input" type="number" name="intervalDelayMs" defaultValue={config.intervalDelayMs} min={0} step={500} />
             </div>
           </div>
         </div>
 
-        <div className="xp-section-card"><h3 className="xp-section-title">Position</h3>
+        <div className="xp-section-card"><h3 className="xp-section-title"><Translate text='Position' /></h3>
           <div className="xps-grid">
             <div className="xps-field">
-              <label htmlFor="position">Corner</label>
+              <label htmlFor="position"><Translate text='Corner' /></label>
               <select id="position" name="position" defaultValue={config.position} className="xps-input">
-                <option value="bottom-left">Bottom left</option>
-                <option value="bottom-right">Bottom right</option>
+                <option value="bottom-left"><Translate text='Bottom left' /></option>
+                <option value="bottom-right"><Translate text='Bottom right' /></option>
               </select>
             </div>
             <div className="xps-field">
-              <label htmlFor="desktopBottomOffsetPx">Desktop offset from bottom (px)</label>
+              <label htmlFor="desktopBottomOffsetPx"><Translate text='Desktop offset from bottom (px)' /></label>
               <input id="desktopBottomOffsetPx" className="xps-input" type="number" name="desktopBottomOffsetPx" defaultValue={config.desktopBottomOffsetPx} min={0} />
             </div>
             <div className="xps-field">
-              <label htmlFor="mobileBottomOffsetPx">Mobile offset from bottom (px)</label>
+              <label htmlFor="mobileBottomOffsetPx"><Translate text='Mobile offset from bottom (px)' /></label>
               <input id="mobileBottomOffsetPx" className="xps-input" type="number" name="mobileBottomOffsetPx" defaultValue={config.mobileBottomOffsetPx} min={0} />
-              <small>Raise this if it overlaps a sticky mobile nav or the social bar.</small>
+              <small><Translate text='Raise this if it overlaps a sticky mobile nav or the social bar.' /></small>
             </div>
           </div>
         </div>
 
-        <div className="xp-section-card"><h3 className="xp-section-title">Appearance</h3>
+        <div className="xp-section-card"><h3 className="xp-section-title"><Translate text='Appearance' /></h3>
           <div className="xps-grid">
             <div className="xps-field">
-              <label htmlFor="backgroundColor">Background</label>
+              <label htmlFor="backgroundColor"><Translate text='Background' /></label>
               <div className="xps-color">
                 <input id="backgroundColor" type="color" name="backgroundColor" value={backgroundColor} onChange={(e) => setBackgroundColor(e.target.value)} />
                 <span>{backgroundColor}</span>
               </div>
             </div>
             <div className="xps-field">
-              <label htmlFor="accentColor">Accent</label>
+              <label htmlFor="accentColor"><Translate text='Accent' /></label>
               <div className="xps-color">
                 <input id="accentColor" type="color" name="accentColor" value={accentColor} onChange={(e) => setAccentColor(e.target.value)} />
                 <span>{accentColor}</span>
               </div>
             </div>
             <div className="xps-field">
-              <label htmlFor="textColor">Text</label>
+              <label htmlFor="textColor"><Translate text='Text' /></label>
               <div className="xps-color">
                 <input id="textColor" type="color" name="textColor" value={textColor} onChange={(e) => setTextColor(e.target.value)} />
                 <span>{textColor}</span>
               </div>
             </div>
             <div className="xps-field">
-              <label htmlFor="borderRadiusPx">Corner roundness (px)</label>
+              <label htmlFor="borderRadiusPx"><Translate text='Corner roundness (px)' /></label>
               <input
                 id="borderRadiusPx"
                 className="xps-input"
@@ -366,28 +367,28 @@ export default function ScarcityToastSettings() {
                 value={borderRadiusPx}
                 onChange={(e) => setBorderRadiusPx(Number(e.target.value))}
               />
-              <small>{borderRadiusPx}px</small>
+              <small>{borderRadiusPx}<Translate text='px' /></small>
             </div>
           </div>
 
           <div className="xps-row xps-row--wrap">
             <label className="xps-toggle">
               <input type="checkbox" name="showCloseButton" defaultChecked={config.showCloseButton} />
-              <span>Show close button</span>
+              <span><Translate text='Show close button' /></span>
             </label>
             <label className="xps-toggle">
               <input type="checkbox" name="showProgressBar" defaultChecked={config.showProgressBar} />
-              <span>Show timer progress bar</span>
+              <span><Translate text='Show timer progress bar' /></span>
             </label>
             <label className="xps-toggle">
               <input type="checkbox" name="pauseOnHover" defaultChecked={config.pauseOnHover} />
-              <span>Pause on hover (desktop)</span>
+              <span><Translate text='Pause on hover (desktop)' /></span>
             </label>
           </div>
         </div>
 
         {/* Multi-Language Copy & Toast Templates */}
-        <div className="xp-section-card"><h3 className="xp-section-title">Multi-Language Toast Templates & Copy</h3>
+        <div className="xp-section-card"><h3 className="xp-section-title"><Translate text='Multi-Language Toast Templates & Copy' /></h3>
           <FeatureLanguageSwitcher
             selectedLang={selectedLang}
             onSelectLang={handleSelectLang}
@@ -397,7 +398,7 @@ export default function ScarcityToastSettings() {
 
           <div className="xps-grid">
             <div className="xps-field">
-              <label>Discount Badge ({selectedLang.toUpperCase()})</label>
+              <label><Translate text='Discount Badge (' />{selectedLang.toUpperCase()})</label>
               <input
                 className="xps-input"
                 dir={selectedLang === "ar" ? "rtl" : "ltr"}
@@ -406,7 +407,7 @@ export default function ScarcityToastSettings() {
               />
             </div>
             <div className="xps-field">
-              <label>Discount Toast Message ({selectedLang.toUpperCase()})</label>
+              <label><Translate text='Discount Toast Message (' />{selectedLang.toUpperCase()})</label>
               <input
                 className="xps-input"
                 dir={selectedLang === "ar" ? "rtl" : "ltr"}
@@ -417,7 +418,7 @@ export default function ScarcityToastSettings() {
           </div>
           <div className="xps-grid">
             <div className="xps-field">
-              <label>Low Stock Badge ({selectedLang.toUpperCase()})</label>
+              <label><Translate text='Low Stock Badge (' />{selectedLang.toUpperCase()})</label>
               <input
                 className="xps-input"
                 dir={selectedLang === "ar" ? "rtl" : "ltr"}
@@ -426,7 +427,7 @@ export default function ScarcityToastSettings() {
               />
             </div>
             <div className="xps-field">
-              <label>Low Stock Toast Message ({selectedLang.toUpperCase()})</label>
+              <label><Translate text='Low Stock Toast Message (' />{selectedLang.toUpperCase()})</label>
               <input
                 className="xps-input"
                 dir={selectedLang === "ar" ? "rtl" : "ltr"}
@@ -437,7 +438,7 @@ export default function ScarcityToastSettings() {
           </div>
           <div className="xps-grid">
             <div className="xps-field">
-              <label>Trending Badge ({selectedLang.toUpperCase()})</label>
+              <label><Translate text='Trending Badge (' />{selectedLang.toUpperCase()})</label>
               <input
                 className="xps-input"
                 dir={selectedLang === "ar" ? "rtl" : "ltr"}
@@ -446,7 +447,7 @@ export default function ScarcityToastSettings() {
               />
             </div>
             <div className="xps-field">
-              <label>Trending Toast Message ({selectedLang.toUpperCase()})</label>
+              <label><Translate text='Trending Toast Message (' />{selectedLang.toUpperCase()})</label>
               <input
                 className="xps-input"
                 dir={selectedLang === "ar" ? "rtl" : "ltr"}
@@ -457,7 +458,7 @@ export default function ScarcityToastSettings() {
           </div>
           <div className="xps-grid">
             <div className="xps-field">
-              <label>Shipping Badge ({selectedLang.toUpperCase()})</label>
+              <label><Translate text='Shipping Badge (' />{selectedLang.toUpperCase()})</label>
               <input
                 className="xps-input"
                 dir={selectedLang === "ar" ? "rtl" : "ltr"}
@@ -466,7 +467,7 @@ export default function ScarcityToastSettings() {
               />
             </div>
             <div className="xps-field">
-              <label>Shipping Toast Message ({selectedLang.toUpperCase()})</label>
+              <label><Translate text='Shipping Toast Message (' />{selectedLang.toUpperCase()})</label>
               <input
                 className="xps-input"
                 dir={selectedLang === "ar" ? "rtl" : "ltr"}
@@ -477,12 +478,12 @@ export default function ScarcityToastSettings() {
           </div>
         </div>
 
-        <div className="xp-section-card"><h3 className="xp-section-title">Messages</h3>
+        <div className="xp-section-card"><h3 className="xp-section-title"><Translate text='Messages' /></h3>
           <div className="xps-messages">
             {messages.map((msg, i) => (
               <div className="xps-message-card" key={i}>
                 <div className="xps-message-card__head">
-                  <strong>Message {i + 1}</strong>
+                  <strong><Translate text='Message' /> {i + 1}</strong>
                   <div className="xps-message-card__actions">
                     <button type="button" className="xps-icon-btn" onClick={() => moveMessage(i, -1)} disabled={i === 0} aria-label="Move up">↑</button>
                     <button type="button" className="xps-icon-btn" onClick={() => moveMessage(i, 1)} disabled={i === messages.length - 1} aria-label="Move down">↓</button>
@@ -491,7 +492,7 @@ export default function ScarcityToastSettings() {
                 </div>
                 <div className="xps-grid">
                   <div className="xps-field">
-                    <label>Icon</label>
+                    <label><Translate text='Icon' /></label>
                     <select className="xps-input" value={msg.icon} onChange={(e) => updateMessage(i, { icon: e.target.value })}>
                       {ICON_OPTIONS.map((opt) => (
                         <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -499,27 +500,27 @@ export default function ScarcityToastSettings() {
                     </select>
                   </div>
                   <div className="xps-field">
-                    <label>Small label (optional)</label>
+                    <label><Translate text='Small label (optional)' /></label>
                     <input className="xps-input" dir={selectedLang === "ar" ? "rtl" : "ltr"} value={msg.badge ?? ""} onChange={(e) => updateMessage(i, { badge: e.target.value })} placeholder="e.g. Exclusive code:" />
                   </div>
                   <div className="xps-field">
-                    <label>Highlight pill (optional)</label>
+                    <label><Translate text='Highlight pill (optional)' /></label>
                     <input className="xps-input" dir={selectedLang === "ar" ? "rtl" : "ltr"} value={msg.pill ?? ""} onChange={(e) => updateMessage(i, { pill: e.target.value })} placeholder="e.g. SAVE15" />
                   </div>
                 </div>
                 <div className="xps-field">
-                  <label>Message text</label>
+                  <label><Translate text='Message text' /></label>
                   <input className="xps-input" dir={selectedLang === "ar" ? "rtl" : "ltr"} value={msg.text} onChange={(e) => updateMessage(i, { text: e.target.value })} placeholder="What the customer sees" />
                 </div>
                 <div className="xps-field">
-                  <label>Link on click (optional)</label>
+                  <label><Translate text='Link on click (optional)' /></label>
                   <input className="xps-input" value={msg.url ?? ""} onChange={(e) => updateMessage(i, { url: e.target.value })} placeholder="https://…" />
                 </div>
-                <button type="button" className="xps-link-btn" onClick={() => setPreviewIndex(i)}>Preview this message →</button>
+                <button type="button" className="xps-link-btn" onClick={() => setPreviewIndex(i)}><Translate text='Preview this message →' /></button>
               </div>
             ))}
           </div>
-          <button type="button" className="xps-secondary-btn" onClick={addMessage}>+ Add message</button>
+          <button type="button" className="xps-secondary-btn" onClick={addMessage}><Translate text='+ Add message' /></button>
         </div>
 
         <div className="xps-save-bar">
@@ -530,7 +531,7 @@ export default function ScarcityToastSettings() {
       </Form>
 
       <div slot="aside" className="xp-section-card">
-        <h3 className="xp-section-title">Live preview</h3>
+        <h3 className="xp-section-title"><Translate text='Live preview' /></h3>
         <TogglePreview
           message={preview}
           backgroundColor={backgroundColor}
@@ -540,9 +541,10 @@ export default function ScarcityToastSettings() {
           dir={selectedLang === "ar" ? "rtl" : "ltr"}
         />
         <p className="xps-preview-hint">
-          Actual on-site behavior (cycling, sheen animation, progress bar) plays out live once the
-          XPoost app embed is enabled in the theme editor — this is a static look at the styling.
-        </p>
+          
+                            <Translate text='Actual on-site behavior (cycling, sheen animation, progress bar) plays out live once the
+                            XPoost app embed is enabled in the theme editor — this is a static look at the styling.' />
+                          </p>
       </div>
     </s-page>
   );

@@ -1,3 +1,4 @@
+import { Translate } from "../components/Translate";
 import { useEffect, useState } from "react";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
@@ -150,17 +151,17 @@ export default function XPoostDashboard() {
       <style>{DASHBOARD_STYLES}</style>
 
       {actionData && "ok" in actionData ? (
-        <s-banner tone="success">Feature status updated successfully.</s-banner>
+        <s-banner tone="success"><Translate text='Feature status updated successfully.' /></s-banner>
       ) : null}
 
       <div className="xp-hero">
         <div className="xp-hero-main">
           <div className="xp-hero-content">
-            <div className="xp-hero-tag">Storefront Conversion Suite</div>
-            <h1 className="xp-hero-title">Boost Sales &amp; Average Order Value</h1>
+            <div className="xp-hero-tag"><Translate text='Storefront Conversion Suite' /></div>
+            <h1 className="xp-hero-title"><Translate text='Boost Sales &amp; Average Order Value' /></h1>
             <p className="xp-hero-subtitle">
-              {featureList.length} coordinated conversion features designed to increase revenue, engage shoppers, and recover lost carts.
-            </p>
+              {featureList.length}  <Translate text='coordinated conversion features designed to increase revenue, engage shoppers, and recover lost carts.' />
+                                      </p>
             <FeatureSlider features={featureList} />
           </div>
 
@@ -169,19 +170,19 @@ export default function XPoostDashboard() {
               <span className="xp-stat-number">
                 {activeCount} / {featureList.length}
               </span>
-              <span className="xp-stat-label">Features Active</span>
+              <span className="xp-stat-label"><Translate text='Features Active' /></span>
             </div>
             <Link to="/app/analytics" className="xp-stat-box xp-stat-box--link xp-stat-box--analytics">
-              <span className="xp-stat-new">New</span>
+              <span className="xp-stat-new"><Translate text='New' /></span>
               <span className="xp-stat-icon" aria-hidden="true">
                 <FeatureIcon id="analytics" />
               </span>
-              <span className="xp-stat-number xp-stat-number--sm">Analytics</span>
-              <span className="xp-stat-label">View Insights &rarr;</span>
+              <span className="xp-stat-number xp-stat-number--sm"><Translate text='Analytics' /></span>
+              <span className="xp-stat-label"><Translate text='View Insights &rarr;' /></span>
             </Link>
             <Link to="/app/pricing" className="xp-stat-box xp-stat-box--link">
-              <span className="xp-stat-number xp-stat-number--sm">Plans</span>
-              <span className="xp-stat-label">Manage Billing &rarr;</span>
+              <span className="xp-stat-number xp-stat-number--sm"><Translate text='Plans' /></span>
+              <span className="xp-stat-label"><Translate text='Manage Billing &rarr;' /></span>
             </Link>
           </div>
         </div>
@@ -190,7 +191,7 @@ export default function XPoostDashboard() {
       </div>
 
       <section className="xp-panel">
-        <h2 className="xp-panel-title">Conversion Features</h2>
+        <h2 className="xp-panel-title"><Translate text='Conversion Features' /></h2>
         <div className="xp-grid">
           {featureList.map((f) => (
             <div key={f.id} className={`xp-card ${f.enabled ? "is-enabled" : ""}`}>
@@ -207,8 +208,9 @@ export default function XPoostDashboard() {
               <div className="xp-card-actions">
                 <button className={`xp-toggle-btn ${f.enabled ? "xp-toggle-btn--off" : "xp-toggle-btn--on"}`} disabled={isSubmitting} onClick={async (e) => { const btn = e.currentTarget; btn.disabled = true; btn.innerText = "Saving..."; try { const token = await shopify.idToken(); const res = await fetch("/api/toggle", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded", "Authorization": `Bearer ${token}` }, body: new URLSearchParams({ featureKey: f.id, enable: f.enabled ? "false" : "true" }) }); if (!res.ok) { shopify.toast.show("Network Error: " + res.status); btn.disabled = false; btn.innerText = f.enabled ? "Disable" : "Enable"; return; } const json = await res.json(); if (!json.ok) { shopify.toast.show("Action Error: " + (json.error || "Unknown error")); btn.disabled = false; btn.innerText = f.enabled ? "Disable" : "Enable"; return; } window.location.reload(); } catch (err) { shopify.toast.show("Error: " + err.message); btn.disabled = false; btn.innerText = f.enabled ? "Disable" : "Enable"; } }}>{f.enabled ? "Disable" : "Enable"}</button>
                 <Link to={f.route} className="xp-config-link">
-                  Configure Settings &rarr;
-                </Link>
+                  
+                                            <Translate text='Configure Settings &rarr;' />
+                                          </Link>
               </div>
             </div>
           ))}
@@ -216,27 +218,27 @@ export default function XPoostDashboard() {
       </section>
 
       <section className="xp-panel">
-        <h2 className="xp-panel-title">Theme App Extension Setup</h2>
+        <h2 className="xp-panel-title"><Translate text='Theme App Extension Setup' /></h2>
         <div className="xp-setup-guide">
           <div className="xp-step">
             <div className="xp-step-num">1</div>
             <div>
-              <strong>Open Theme Editor</strong>
-              <p>In your Shopify Admin, navigate to <em>Online Store &gt; Themes &gt; Customize</em>.</p>
+              <strong><Translate text='Open Theme Editor' /></strong>
+              <p><Translate text='In your Shopify Admin, navigate to' /> <em><Translate text='Online Store &gt; Themes &gt; Customize' /></em>.</p>
             </div>
           </div>
           <div className="xp-step">
             <div className="xp-step-num">2</div>
             <div>
-              <strong>Turn on App Embeds</strong>
-              <p>Click the <strong>App embeds</strong> tab on the left sidebar and toggle on the XPoost blocks (Scarcity Toast, Social Bar, Cart Engine, Retention Triggers).</p>
+              <strong><Translate text='Turn on App Embeds' /></strong>
+              <p><Translate text='Click the' /> <strong><Translate text='App embeds' /></strong>  <Translate text='tab on the left sidebar and toggle on the XPoost blocks (Scarcity Toast, Social Bar, Cart Engine, Retention Triggers).' /></p>
             </div>
           </div>
           <div className="xp-step">
             <div className="xp-step-num">3</div>
             <div>
-              <strong>Zero Theme Edits Required</strong>
-              <p>XPoost never modifies theme liquid files directly. Everything renders cleanly inside sandboxed containers with deferred loading.</p>
+              <strong><Translate text='Zero Theme Edits Required' /></strong>
+              <p><Translate text='XPoost never modifies theme liquid files directly. Everything renders cleanly inside sandboxed containers with deferred loading.' /></p>
             </div>
           </div>
         </div>
@@ -333,8 +335,8 @@ function FeatureSlider({ features }: { features: SliderFeature[] }) {
                 <p className="xp-slide-pitch">{meta.pitch}</p>
               </div>
               <Link to={f.route} className="xp-slide-link" tabIndex={isActive ? 0 : -1}>
-                {f.enabled ? "Configure" : "Set up"} &rarr;
-              </Link>
+                {f.enabled ? "Configure" : "Set up"}  <Translate text='&rarr;' />
+                                    </Link>
             </div>
           );
         })}
@@ -494,7 +496,7 @@ function CaseStudyStrip() {
   return (
     <div className={`xp-case ${index === null ? "is-pending" : ""}`} aria-live="polite">
       <div className="xp-case-head">
-        <span className="xp-case-tag">Case Study</span>
+        <span className="xp-case-tag"><Translate text='Case Study' /></span>
         <span className="xp-case-feature">{study.feature}</span>
         <span className="xp-case-count">
           {shown + 1} / {total}
@@ -505,19 +507,22 @@ function CaseStudyStrip() {
           onClick={() => setIndex((i) => ((i ?? 0) + 1) % total)}
           aria-label="Next case study"
         >
-          Next &rarr;
-        </button>
+          
+                            <Translate text='Next &rarr;' />
+                          </button>
       </div>
       <div key={shown} className="xp-case-body">
         <p className="xp-case-headline">{study.headline}</p>
         <p className="xp-case-detail">
           {study.detail}{" "}
           <Link to={study.route} className="xp-case-apply">
-            Apply to my store &rarr;
-          </Link>
+            
+                                  <Translate text='Apply to my store &rarr;' />
+                                </Link>
         </p>
         <p className="xp-case-source">
-          Source:{" "}
+          
+                            <Translate text='Source:' />{" "}
           <a href={study.url} target="_blank" rel="noreferrer">
             {study.source}
           </a>

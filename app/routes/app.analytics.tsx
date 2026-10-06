@@ -1,3 +1,4 @@
+import { Translate } from "../components/Translate";
 import { useEffect, useRef, useState } from "react";
 import type { LoaderFunctionArgs } from "react-router";
 import { Link, useLoaderData, useNavigation } from "react-router";
@@ -244,8 +245,9 @@ export default function Analytics() {
           </div>
           <div className="xpa-chips" role="group" aria-label="Feature">
             <Link to={qs(report.rangeDays)} className={`xpa-chip ${!f ? "is-active" : ""}`} preventScrollReset>
-              All features
-            </Link>
+              
+                                        <Translate text='All features' />
+                                      </Link>
             {FEATURE_KEYS.map((k) => {
               const row = report.overview.features.find((x) => x.key === k);
               return (
@@ -315,7 +317,7 @@ function Overview({ report, money }: { report: Report; money: (n: number) => str
     <>
       <section className="xpa-hero" aria-label="XPoost revenue">
         <div>
-          <div className="xpa-eyebrow">XPoost direct revenue · last {report.rangeDays} days</div>
+          <div className="xpa-eyebrow"><Translate text='XPoost direct revenue · last' /> {report.rangeDays}  <Translate text='days' /></div>
           <div className="xpa-hero-row">
             <span className="xpa-hero-num">{money(o.directRevenue)}</span>
             <Delta d={delta(o.directRevenue, o.prevDirectRevenue)} suffix="vs previous period" />
@@ -327,9 +329,9 @@ function Overview({ report, money }: { report: Report; money: (n: number) => str
           </p>
         </div>
         <div className="xpa-hero-side">
-          <div className="xpa-hero-side-label">Influenced revenue</div>
+          <div className="xpa-hero-side-label"><Translate text='Influenced revenue' /></div>
           <div className="xpa-hero-side-num">{money(o.influencedRevenue)}</div>
-          <p>Orders from shoppers who saw an XPoost feature in the 7 days before buying.</p>
+          <p><Translate text='Orders from shoppers who saw an XPoost feature in the 7 days before buying.' /></p>
         </div>
       </section>
 
@@ -351,7 +353,7 @@ function Overview({ report, money }: { report: Report; money: (n: number) => str
 
       <section className="xpa-card">
         <div className="xpa-card-head">
-          <h2>Direct revenue per day</h2>
+          <h2><Translate text='Direct revenue per day' /></h2>
         </div>
         <ColumnChart days={report.days} values={o.daily} format={money} seriesLabel="Direct revenue" />
       </section>
@@ -359,7 +361,7 @@ function Overview({ report, money }: { report: Report; money: (n: number) => str
       {highlights.length > 0 && (
         <section className="xpa-card">
           <div className="xpa-card-head">
-            <h2>Highlights</h2>
+            <h2><Translate text='Highlights' /></h2>
           </div>
           <ul className="xpa-highlights">
             {highlights.map((h, i) => (
@@ -369,8 +371,8 @@ function Overview({ report, money }: { report: Report; money: (n: number) => str
                   {h.text}{" "}
                   {h.link ? (
                     <Link to={h.link} className="xpa-link">
-                      {h.linkText} &rarr;
-                    </Link>
+                      {h.linkText}  <Translate text='&rarr;' />
+                                                    </Link>
                   ) : null}
                 </span>
               </li>
@@ -381,19 +383,19 @@ function Overview({ report, money }: { report: Report; money: (n: number) => str
 
       <section className="xpa-card">
         <div className="xpa-card-head">
-          <h2>Feature performance</h2>
-          <span className="xpa-muted">Rates appear after {MIN_VIEWS_FOR_RATE} views</span>
+          <h2><Translate text='Feature performance' /></h2>
+          <span className="xpa-muted"><Translate text='Rates appear after' /> {MIN_VIEWS_FOR_RATE}  <Translate text='views' /></span>
         </div>
         <div className="xpa-table-wrap">
           <table className="xpa-table">
             <thead>
               <tr>
-                <th scope="col">Feature</th>
-                <th scope="col" className="num">Views</th>
-                <th scope="col" className="num">Actions</th>
-                <th scope="col" className="num">Action rate</th>
-                <th scope="col" className="num">Direct revenue</th>
-                <th scope="col" className="num">Influenced</th>
+                <th scope="col"><Translate text='Feature' /></th>
+                <th scope="col" className="num"><Translate text='Views' /></th>
+                <th scope="col" className="num"><Translate text='Actions' /></th>
+                <th scope="col" className="num"><Translate text='Action rate' /></th>
+                <th scope="col" className="num"><Translate text='Direct revenue' /></th>
+                <th scope="col" className="num"><Translate text='Influenced' /></th>
               </tr>
             </thead>
             <tbody>
@@ -404,9 +406,10 @@ function Overview({ report, money }: { report: Report; money: (n: number) => str
           </table>
         </div>
         <p className="xpa-footnote">
-          Direct revenue counts items XPoost added (tagged on the order line) after discounts, plus orders that used your exit-intent code.
-          Influenced revenue can count one order under several features.
-        </p>
+          
+                            <Translate text='Direct revenue counts items XPoost added (tagged on the order line) after discounts, plus orders that used your exit-intent code.
+                            Influenced revenue can count one order under several features.' />
+                          </p>
       </section>
     </>
   );
@@ -424,7 +427,7 @@ function FeatureTableRow({ row, range, money }: { row: FeatureRow; range: number
           <Link to={`?range=${range}&f=${row.key}`} className="xpa-feature-cell xpa-link-plain">
             <span className={`xpa-dot ${row.enabled ? "is-on" : ""}`} aria-hidden="true" />
             {row.label}
-            {!row.enabled && <span className="xpa-off">Off</span>}
+            {!row.enabled && <span className="xpa-off"><Translate text='Off' /></span>}
           </Link>
         )}
       </th>
@@ -494,16 +497,18 @@ function FeatureView({ report, f, money }: { report: Report; f: FeatureDetail; m
       <div className="xpa-feature-head">
         <div>
           <Link to={`?range=${report.rangeDays}`} className="xpa-link" preventScrollReset>
-            &larr; All features
-          </Link>
+            
+                                  <Translate text='&larr; All features' />
+                                </Link>
           <h2 className="xpa-feature-title">
             {f.label}
             <span className={`xpa-status ${f.enabled ? "is-on" : ""}`}>{f.enabled ? "Active" : "Off"}</span>
           </h2>
         </div>
         <Link to={FEATURE_ROUTES[f.key]} className="xpa-btn">
-          Feature settings
-        </Link>
+          
+                            <Translate text='Feature settings' />
+                          </Link>
       </div>
 
       <div className="xpa-tiles">
@@ -523,19 +528,20 @@ function FeatureView({ report, f, money }: { report: Report; f: FeatureDetail; m
       {bench && (
         <section className="xpa-bench">
           <div>
-            <div className="xpa-eyebrow">Benchmark</div>
+            <div className="xpa-eyebrow"><Translate text='Benchmark' /></div>
             <p>
               <strong>{bench.label}:</strong> {bench.low === bench.high ? `${bench.low}%` : `${bench.low}–${bench.high}%`} {bench.note}.
             </p>
             <p className="xpa-source">
-              Source:{" "}
+              
+                                        <Translate text='Source:' />{" "}
               <a href={bench.url} target="_blank" rel="noreferrer">
                 {bench.source}
               </a>
             </p>
           </div>
           <div className="xpa-bench-you">
-            <span className="xpa-bench-you-label">Your rate</span>
+            <span className="xpa-bench-you-label"><Translate text='Your rate' /></span>
             <span className="xpa-bench-you-num">{actionRate === null ? "—" : fmtPct(actionRate)}</span>
             <span className="xpa-bench-you-note">
               {actionRate === null
@@ -563,7 +569,7 @@ function FeatureView({ report, f, money }: { report: Report; f: FeatureDetail; m
             <table className="xpa-table">
               <thead>
                 <tr>
-                  <th scope="col">Day</th>
+                  <th scope="col"><Translate text='Day' /></th>
                   <th scope="col" className="num">{earns ? "Direct revenue" : "Views"}</th>
                 </tr>
               </thead>
@@ -584,7 +590,7 @@ function FeatureView({ report, f, money }: { report: Report; f: FeatureDetail; m
       {f.exitIntent && (
         <section className="xpa-card">
           <div className="xpa-card-head">
-            <h2>Recovered orders</h2>
+            <h2><Translate text='Recovered orders' /></h2>
           </div>
           <div className="xpa-tiles xpa-tiles--inline">
             <Tile label="Orders that used your exit code" value={fmtInt(f.exitIntent.redemptions)} />
@@ -604,9 +610,9 @@ function FeatureView({ report, f, money }: { report: Report; f: FeatureDetail; m
                 <thead>
                   <tr>
                     <th scope="col">{f.key === "scarcity" ? "Message" : f.key === "prePurchase" ? "Product" : "Offer"}</th>
-                    <th scope="col" className="num">Views</th>
+                    <th scope="col" className="num"><Translate text='Views' /></th>
                     <th scope="col" className="num">{f.key === "scarcity" ? "Clicks" : "Adds"}</th>
-                    <th scope="col" className="num">Rate</th>
+                    <th scope="col" className="num"><Translate text='Rate' /></th>
                     <th scope="col" className="num">{f.key === "scarcity" ? "Closed" : "Revenue"}</th>
                   </tr>
                 </thead>
@@ -635,13 +641,13 @@ function FeatureView({ report, f, money }: { report: Report; f: FeatureDetail; m
             <div className="xpa-card-head">
               <h2>{f.dims.title}</h2>
             </div>
-            {f.dims.rows.length === 0 ? <p className="xpa-muted">No data in this period yet.</p> : <BarList rows={f.dims.rows} unit={f.dims.valueLabel} />}
+            {f.dims.rows.length === 0 ? <p className="xpa-muted"><Translate text='No data in this period yet.' /></p> : <BarList rows={f.dims.rows} unit={f.dims.valueLabel} />}
           </section>
         )}
 
         <section className="xpa-card">
           <div className="xpa-card-head">
-            <h2>Mobile vs desktop</h2>
+            <h2><Translate text='Mobile vs desktop' /></h2>
           </div>
           <DeviceSplit f={f} />
         </section>
@@ -649,7 +655,7 @@ function FeatureView({ report, f, money }: { report: Report; f: FeatureDetail; m
 
       <section className="xpa-card xpa-tips">
         <div className="xpa-card-head">
-          <h2>Tips to improve {f.label}</h2>
+          <h2><Translate text='Tips to improve' /> {f.label}</h2>
         </div>
         <ol>
           {(TIPS[f.key] || []).map((t, i) => (
@@ -657,7 +663,8 @@ function FeatureView({ report, f, money }: { report: Report; f: FeatureDetail; m
               <p>{t.text}</p>
               {t.source && (
                 <p className="xpa-source">
-                  Source:{" "}
+                  
+                                            <Translate text='Source:' />{" "}
                   <a href={t.url} target="_blank" rel="noreferrer">
                     {t.source}
                   </a>
@@ -679,8 +686,8 @@ function ShippingCard({ s, money }: { s: NonNullable<FeatureDetail["shipping"]>;
   return (
     <section className="xpa-card">
       <div className="xpa-card-head">
-        <h2>Is your free-shipping threshold right?</h2>
-        <span className="xpa-muted">Based on {fmtInt(s.ordersCounted)} orders</span>
+        <h2><Translate text='Is your free-shipping threshold right?' /></h2>
+        <span className="xpa-muted"><Translate text='Based on' /> {fmtInt(s.ordersCounted)}  <Translate text='orders' /></span>
       </div>
       <div className="xpa-tiles xpa-tiles--inline">
         <Tile label="Average order" value={money(s.aov)} />
@@ -708,7 +715,7 @@ function DeviceSplit({ f }: { f: FeatureDetail }) {
             <div className="xpa-device-top">
               <span>{r.label}</span>
               <span className="xpa-device-val">
-                {fmtInt(r.views)} views · {rt === null ? `rate after ${MIN_VIEWS_FOR_RATE} views` : `${fmtPct(rt)} ${f.actionLabel.toLowerCase()}`}
+                {fmtInt(r.views)}  <Translate text='views ·' /> {rt === null ? `rate after ${MIN_VIEWS_FOR_RATE} views` : `${fmtPct(rt)} ${f.actionLabel.toLowerCase()}`}
               </span>
             </div>
             <div className="xpa-bar-track" aria-hidden="true">
@@ -807,8 +814,9 @@ function ColumnChart({ days, values, format, seriesLabel }: { days: string[]; va
   if (total === 0) {
     return (
       <div ref={boxRef} className="xpa-empty-chart">
-        No {seriesLabel.toLowerCase()} in this period yet.
-      </div>
+        
+                    <Translate text='No' /> {seriesLabel.toLowerCase()}  <Translate text='in this period yet.' />
+                  </div>
     );
   }
 

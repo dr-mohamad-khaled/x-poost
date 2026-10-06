@@ -1,3 +1,4 @@
+﻿import { Translate } from "../components/Translate";
 import { useState, useEffect, useMemo, Fragment } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Form, useActionData, useLoaderData, useNavigation } from "react-router";
@@ -39,9 +40,9 @@ export function getDefaultOfferI18n(): Record<SupportedLanguage, OfferI18nCopy> 
       declineButton: d.declineButton,
       urgencyLabel: d.urgencyLabel,
       scarcityNotice: d.scarcityNotice,
-      feature1: l === "ar" ? "إضافة مميزة وموصى بها لطلبك" : "Recommended addition to your selection",
-      feature2: l === "ar" ? "تركيبة أصلية معتمدة ومضمونة" : "Premium dermatologically evaluated formula",
-      feature3: l === "ar" ? "سعر ترويجي حصري لهذا الطلب فقط" : "Exclusive single-order promotion price",
+      feature1: l === "ar" ? "Ø¥Ø¶Ø§ÙØ© Ù…Ù…ÙŠØ²Ø© ÙˆÙ…ÙˆØµÙ‰ Ø¨Ù‡Ø§ Ù„Ø·Ù„Ø¨Ùƒ" : "Recommended addition to your selection",
+      feature2: l === "ar" ? "ØªØ±ÙƒÙŠØ¨Ø© Ø£ØµÙ„ÙŠØ© Ù…Ø¹ØªÙ…Ø¯Ø© ÙˆÙ…Ø¶Ù…ÙˆÙ†Ø©" : "Premium dermatologically evaluated formula",
+      feature3: l === "ar" ? "Ø³Ø¹Ø± ØªØ±ÙˆÙŠØ¬ÙŠ Ø­ØµØ±ÙŠ Ù„Ù‡Ø°Ø§ Ø§Ù„Ø·Ù„Ø¨ ÙÙ‚Ø·" : "Exclusive single-order promotion price",
     };
   }
   return res;
@@ -604,17 +605,17 @@ const PREVIEW_I18N: Record<SupportedLanguage, {
   additionalUpgrades: string;
 }> = {
   ar: {
-    stepPrimary: "المنتج الأساسي",
-    stepComp: "الخطوة التكميلية {n}",
-    savePill: "وفر {discount}%",
-    added: "تمت الإضافة",
-    selected: "محدد",
-    add: "+ إضافة",
-    bundleTotal: "إجمالي المجموعة ({count} منتجات):",
-    bundleTotal1: "إجمالي المجموعة (منتج واحد):",
-    bundleSavings: "أنت توفر {amount} (تم تطبيق خصم المجموعة {discount}%)",
-    rating: "تقييم 4.9 / 5.0",
-    additionalUpgrades: "ترقيات إضافية:",
+    stepPrimary: "Ø§Ù„Ù…Ù†ØªØ¬ Ø§Ù„Ø£Ø³Ø§Ø³ÙŠ",
+    stepComp: "Ø§Ù„Ø®Ø·ÙˆØ© Ø§Ù„ØªÙƒÙ…ÙŠÙ„ÙŠØ© {n}",
+    savePill: "ÙˆÙØ± {discount}%",
+    added: "ØªÙ…Øª Ø§Ù„Ø¥Ø¶Ø§ÙØ©",
+    selected: "Ù…Ø­Ø¯Ø¯",
+    add: "+ Ø¥Ø¶Ø§ÙØ©",
+    bundleTotal: "Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹Ø© ({count} Ù…Ù†ØªØ¬Ø§Øª):",
+    bundleTotal1: "Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹Ø© (Ù…Ù†ØªØ¬ ÙˆØ§Ø­Ø¯):",
+    bundleSavings: "Ø£Ù†Øª ØªÙˆÙØ± {amount} (ØªÙ… ØªØ·Ø¨ÙŠÙ‚ Ø®ØµÙ… Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹Ø© {discount}%)",
+    rating: "ØªÙ‚ÙŠÙŠÙ… 4.9 / 5.0",
+    additionalUpgrades: "ØªØ±Ù‚ÙŠØ§Øª Ø¥Ø¶Ø§ÙÙŠØ©:",
   },
   en: {
     stepPrimary: "PRIMARY ESSENTIAL",
@@ -631,41 +632,41 @@ const PREVIEW_I18N: Record<SupportedLanguage, {
   },
   fr: {
     stepPrimary: "PRODUIT PRINCIPAL",
-    stepComp: "ÉTAPE COMPLÉMENTAIRE {n}",
-    savePill: "ÉCONOMISEZ {discount}%",
-    added: "Ajouté",
-    selected: "Sélectionné",
+    stepComp: "Ã‰TAPE COMPLÃ‰MENTAIRE {n}",
+    savePill: "Ã‰CONOMISEZ {discount}%",
+    added: "AjoutÃ©",
+    selected: "SÃ©lectionnÃ©",
     add: "+ Ajouter",
     bundleTotal: "Total du lot ({count} articles) :",
     bundleTotal1: "Total du lot (1 article) :",
-    bundleSavings: "Vous économisez {amount} (remise de lot de {discount}% appliquée)",
-    rating: "Évaluation 4,9 / 5,0",
-    additionalUpgrades: "Améliorations supplémentaires :",
+    bundleSavings: "Vous Ã©conomisez {amount} (remise de lot de {discount}% appliquÃ©e)",
+    rating: "Ã‰valuation 4,9 / 5,0",
+    additionalUpgrades: "AmÃ©liorations supplÃ©mentaires :",
   },
   de: {
     stepPrimary: "HAUPTPRODUKT",
-    stepComp: "ERGÄNZENDE STUFE {n}",
+    stepComp: "ERGÃ„NZENDE STUFE {n}",
     savePill: "SPAREN SIE {discount}%",
-    added: "Hinzugefügt",
-    selected: "Ausgewählt",
-    add: "+ Hinzufügen",
+    added: "HinzugefÃ¼gt",
+    selected: "AusgewÃ¤hlt",
+    add: "+ HinzufÃ¼gen",
     bundleTotal: "Set-Gesamtbetrag ({count} Artikel):",
     bundleTotal1: "Set-Gesamtbetrag (1 Artikel):",
     bundleSavings: "Sie sparen {amount} ({discount}% Paket-Rabatt angewendet)",
     rating: "4.9 / 5.0 Bewertung",
-    additionalUpgrades: "Zusätzliche Upgrades:",
+    additionalUpgrades: "ZusÃ¤tzliche Upgrades:",
   },
   es: {
     stepPrimary: "PRODUCTO PRINCIPAL",
     stepComp: "PASO COMPLEMENTARIO {n}",
     savePill: "AHORRA {discount}%",
-    added: "Añadido",
+    added: "AÃ±adido",
     selected: "Seleccionado",
-    add: "+ Añadir",
-    bundleTotal: "Total del paquete ({count} artículos):",
-    bundleTotal1: "Total del paquete (1 artículo):",
+    add: "+ AÃ±adir",
+    bundleTotal: "Total del paquete ({count} artÃ­culos):",
+    bundleTotal1: "Total del paquete (1 artÃ­culo):",
     bundleSavings: "Ahorras {amount} ({discount}% de descuento aplicado)",
-    rating: "Calificación 4.9 / 5.0",
+    rating: "CalificaciÃ³n 4.9 / 5.0",
     additionalUpgrades: "Mejoras adicionales:",
   },
   it: {
@@ -690,8 +691,8 @@ const PREVIEW_I18N: Record<SupportedLanguage, {
     add: "+ Adicionar",
     bundleTotal: "Total do pacote ({count} itens):",
     bundleTotal1: "Total do pacote (1 item):",
-    bundleSavings: "Você economiza {amount} ({discount}% de desconto aplicado)",
-    rating: "Avaliação 4.9 / 5.0",
+    bundleSavings: "VocÃª economiza {amount} ({discount}% de desconto aplicado)",
+    rating: "AvaliaÃ§Ã£o 4.9 / 5.0",
     additionalUpgrades: "Upgrades adicionais:",
   },
 };
@@ -772,9 +773,9 @@ export default function PrePurchaseSettings() {
       declineButton: def.declineButton,
       urgencyLabel: def.urgencyLabel,
       scarcityNotice: def.scarcityNotice,
-      feature1: lang === "ar" ? "إضافة مميزة وموصى بها لطلبك" : "Recommended addition to your selection",
-      feature2: lang === "ar" ? "تركيبة أصلية معتمدة ومضمونة" : "Premium dermatologically evaluated formula",
-      feature3: lang === "ar" ? "سعر ترويجي حصري لهذا الطلب فقط" : "Exclusive single-order promotion price",
+      feature1: lang === "ar" ? "Ø¥Ø¶Ø§ÙØ© Ù…Ù…ÙŠØ²Ø© ÙˆÙ…ÙˆØµÙ‰ Ø¨Ù‡Ø§ Ù„Ø·Ù„Ø¨Ùƒ" : "Recommended addition to your selection",
+      feature2: lang === "ar" ? "ØªØ±ÙƒÙŠØ¨Ø© Ø£ØµÙ„ÙŠØ© Ù…Ø¹ØªÙ…Ø¯Ø© ÙˆÙ…Ø¶Ù…ÙˆÙ†Ø©" : "Premium dermatologically evaluated formula",
+      feature3: lang === "ar" ? "Ø³Ø¹Ø± ØªØ±ÙˆÙŠØ¬ÙŠ Ø­ØµØ±ÙŠ Ù„Ù‡Ø°Ø§ Ø§Ù„Ø·Ù„Ø¨ ÙÙ‚Ø·" : "Exclusive single-order promotion price",
     };
     setOfferI18n((prev) => ({
       ...prev,
@@ -1244,11 +1245,12 @@ export default function PrePurchaseSettings() {
         <div className="xp-global-info">
           <div className="xp-status-indicator">
             <span className={`xp-status-dot ${enabled ? "is-active" : "is-disabled"}`} />
-            <strong>Pre-Purchase Interceptor: {enabled ? "Active" : "Disabled"}</strong>
+            <strong><Translate text='Pre-Purchase Interceptor:' /> {enabled ? "Active" : "Disabled"}</strong>
           </div>
           <p className="xp-sub">
-            Intercepts Add-to-Cart clicks and presents high-converting complementary bundles in a slide-out cart drawer.
-          </p>
+            
+                                  <Translate text='Intercepts Add-to-Cart clicks and presents high-converting complementary bundles in a slide-out cart drawer.' />
+                                </p>
         </div>
         <div className="xp-global-actions">
           <Form method="post" className="xp-inline">
@@ -1268,26 +1270,28 @@ export default function PrePurchaseSettings() {
               className="xp-btn-gold-primary"
               onClick={openCreateMode}
             >
-              <span>+</span> Create New Offer
-            </button>
+              <span>+</span>  <Translate text='Create New Offer' />
+                                      </button>
           )}
         </div>
       </div>
 
-      {/* ─────────────────────────────────────────────────────────────
+      {/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
           VIEW 1: OFFERS INDEX LIST (Matches user screenshot)
-          ───────────────────────────────────────────────────────────── */}
+          â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       {viewMode === "index" ? (
         <>
           <div className="xp-index-card" style={{ marginBottom: "20px", padding: "18px 22px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
               <div>
                 <h3 style={{ fontSize: "16px", fontWeight: "700", color: "#D4AF37", margin: "0 0 4px 0", borderBottom: "1px solid #282828", paddingBottom: "8px" }}>
-                  Popup Appearance & Colors
-                </h3>
+                  
+                                                    <Translate text='Popup Appearance & Colors' />
+                                                  </h3>
                 <p style={{ fontSize: "12px", color: "#8C9196", margin: 0 }}>
-                  Customize the background, accent highlight, and text colors of your pre-purchase upsell modal.
-                </p>
+                  
+                                                    <Translate text='Customize the background, accent highlight, and text colors of your pre-purchase upsell modal.' />
+                                                  </p>
               </div>
             </div>
             <Form method="post">
@@ -1295,8 +1299,9 @@ export default function PrePurchaseSettings() {
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px" }}>
                 <div className="xp-color-control">
                   <label style={{ display: "block", fontSize: "12px", fontWeight: "600", color: "#bbb", marginBottom: "6px" }}>
-                    Background Color
-                  </label>
+                    
+                                                          <Translate text='Background Color' />
+                                                        </label>
                   <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                     <input
                       type="color"
@@ -1311,8 +1316,9 @@ export default function PrePurchaseSettings() {
 
                 <div className="xp-color-control">
                   <label style={{ display: "block", fontSize: "12px", fontWeight: "600", color: "#bbb", marginBottom: "6px" }}>
-                    Accent Highlight Color
-                  </label>
+                    
+                                                          <Translate text='Accent Highlight Color' />
+                                                        </label>
                   <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                     <input
                       type="color"
@@ -1327,8 +1333,9 @@ export default function PrePurchaseSettings() {
 
                 <div className="xp-color-control">
                   <label style={{ display: "block", fontSize: "12px", fontWeight: "600", color: "#bbb", marginBottom: "6px" }}>
-                    Text Color
-                  </label>
+                    
+                                                          <Translate text='Text Color' />
+                                                        </label>
                   <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                     <input
                       type="color"
@@ -1349,8 +1356,9 @@ export default function PrePurchaseSettings() {
                   className="xp-btn-gold-primary"
                   style={{ padding: "8px 18px", fontSize: "13px" }}
                 >
-                  Save Colors
-                </button>
+                  
+                                                    <Translate text='Save Colors' />
+                                                  </button>
               </div>
             </Form>
           </div>
@@ -1398,7 +1406,8 @@ export default function PrePurchaseSettings() {
                   setCurrentPage(1);
                 }}
               >
-                All ({offerGroups.length})
+                
+                                                  <Translate text='All (' />{offerGroups.length})
               </button>
               <button
                 type="button"
@@ -1408,7 +1417,8 @@ export default function PrePurchaseSettings() {
                   setCurrentPage(1);
                 }}
               >
-                Active ({offerGroups.filter((o) => o.active).length})
+                
+                                                  <Translate text='Active (' />{offerGroups.filter((o) => o.active).length})
               </button>
               <button
                 type="button"
@@ -1418,7 +1428,8 @@ export default function PrePurchaseSettings() {
                   setCurrentPage(1);
                 }}
               >
-                Paused ({offerGroups.filter((o) => !o.active).length})
+                
+                                                  <Translate text='Paused (' />{offerGroups.filter((o) => !o.active).length})
               </button>
             </div>
           </div>
@@ -1433,7 +1444,7 @@ export default function PrePurchaseSettings() {
                   <path d="M16 10a4 4 0 0 1-8 0"/>
                 </svg>
               </div>
-              <h3>No upsell offers found</h3>
+              <h3><Translate text='No upsell offers found' /></h3>
               <p className="xp-sub">
                 {tableSearch || statusFilter !== "all"
                   ? "Try clearing your search query or filters."
@@ -1444,8 +1455,9 @@ export default function PrePurchaseSettings() {
                 className="xp-btn-gold-primary xp-empty-btn"
                 onClick={openCreateMode}
               >
-                + Create Your First Offer
-              </button>
+                
+                                                  <Translate text='+ Create Your First Offer' />
+                                                </button>
             </div>
           ) : (
             <div className="xp-table-wrapper">
@@ -1463,12 +1475,12 @@ export default function PrePurchaseSettings() {
                         onChange={toggleSelectAllOffers}
                       />
                     </th>
-                    <th>Title</th>
-                    <th>Status</th>
-                    <th>Trigger</th>
-                    <th>Promoted Products</th>
-                    <th>Discount</th>
-                    <th style={{ textAlign: "right" }}>Actions</th>
+                    <th><Translate text='Title' /></th>
+                    <th><Translate text='Status' /></th>
+                    <th><Translate text='Trigger' /></th>
+                    <th><Translate text='Promoted Products' /></th>
+                    <th><Translate text='Discount' /></th>
+                    <th style={{ textAlign: "right" }}><Translate text='Actions' /></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1508,7 +1520,7 @@ export default function PrePurchaseSettings() {
                             >
                               <strong>{offer.headline}</strong>
                               <span className="xp-table-sub">
-                                {offer.products.length} product{offer.products.length > 1 ? "s" : ""}
+                                {offer.products.length}  <Translate text='product' />{offer.products.length > 1 ? "s" : ""}
                               </span>
                             </button>
                           </div>
@@ -1534,8 +1546,8 @@ export default function PrePurchaseSettings() {
                         <td>
                           <div className="xp-promoted-cell">
                             <span className="xp-promoted-count">
-                              {offer.products.length} items
-                            </span>
+                              {offer.products.length}  <Translate text='items' />
+                                                                    </span>
                             <span className="xp-promoted-names">
                               {offer.products.map((p) => p.title).join(", ")}
                             </span>
@@ -1544,10 +1556,10 @@ export default function PrePurchaseSettings() {
                         <td>
                           {offer.discountPercent ? (
                             <span className="xp-discount-tag">
-                              {offer.discountPercent}% OFF
-                            </span>
+                              {offer.discountPercent}<Translate text='% OFF' />
+                                                                    </span>
                           ) : (
-                            <span className="xp-text-muted">Regular Price</span>
+                            <span className="xp-text-muted"><Translate text='Regular Price' /></span>
                           )}
                         </td>
                         <td style={{ textAlign: "right" }}>
@@ -1557,8 +1569,9 @@ export default function PrePurchaseSettings() {
                               className="xp-action-btn xp-action-edit"
                               onClick={() => openEditMode(offer)}
                             >
-                              Edit
-                            </button>
+                              
+                                                                      <Translate text='Edit' />
+                                                                    </button>
                             <Form method="post" className="xp-inline">
                               <input type="hidden" name="intent" value="toggle_offer" />
                               <input
@@ -1600,8 +1613,9 @@ export default function PrePurchaseSettings() {
                                   }
                                 }}
                               >
-                                Delete
-                              </button>
+                                
+                                                                            <Translate text='Delete' />
+                                                                          </button>
                             </Form>
                           </div>
                         </td>
@@ -1614,10 +1628,11 @@ export default function PrePurchaseSettings() {
               {/* Table Footer & Pagination */}
               <div className="xp-pagination-bar">
                 <div className="xp-pagination-info">
-                  Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
-                  {Math.min(currentPage * itemsPerPage, filteredOffers.length)} of{" "}
-                  {filteredOffers.length} offers
-                </div>
+                  
+                                                            <Translate text='Showing' /> {(currentPage - 1) * itemsPerPage + 1}  <Translate text='to' />{" "}
+                  {Math.min(currentPage * itemsPerPage, filteredOffers.length)}  <Translate text='of' />{" "}
+                  {filteredOffers.length}  <Translate text='offers' />
+                                                          </div>
                 <div className="xp-pagination-controls">
                   <button
                     type="button"
@@ -1630,7 +1645,8 @@ export default function PrePurchaseSettings() {
                     </svg>
                   </button>
                   <span className="xp-page-indicator">
-                    Page {currentPage}/{totalPages}
+                    
+                                                                  <Translate text='Page' /> {currentPage}/{totalPages}
                   </span>
                   <button
                     type="button"
@@ -1649,9 +1665,9 @@ export default function PrePurchaseSettings() {
         </div>
         </>
       ) : (
-        /* ─────────────────────────────────────────────────────────────
+        /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
            VIEW 2: OFFER EDITOR (Create or Edit Mode)
-           ───────────────────────────────────────────────────────────── */
+           â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
         <div className="xp-editor-card">
           {/* Breadcrumb Navigation */}
           <div className="xp-editor-breadcrumb">
@@ -1665,8 +1681,9 @@ export default function PrePurchaseSettings() {
                 <line x1="19" y1="12" x2="5" y2="12"/>
                 <polyline points="12 19 5 12 12 5"/>
               </svg>
-              Back to All Offers
-            </button>
+              
+                                            <Translate text='Back to All Offers' />
+                                          </button>
             <h2>{viewMode === "edit" ? `Edit Offer: ${headline}` : "Create New Upsell Offer"}</h2>
           </div>
 
@@ -1690,10 +1707,11 @@ export default function PrePurchaseSettings() {
                 <div className="xp-editor-section">
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px", marginBottom: "12px" }}>
                     <div>
-                      <h3 style={{ margin: "0 0 4px 0" }}>1. Offer Details &amp; Multi-Language Copy</h3>
+                      <h3 style={{ margin: "0 0 4px 0" }}><Translate text='1. Offer Details &amp; Multi-Language Copy' /></h3>
                       <p className="xp-sub" style={{ margin: 0 }}>
-                        Configure this offer's title, subtitle, buttons, badges, and features for each language.
-                      </p>
+                        
+                                                                          <Translate text='Configure this offer&apos;s title, subtitle, buttons, badges, and features for each language.' />
+                                                                        </p>
                     </div>
                   </div>
 
@@ -1709,7 +1727,7 @@ export default function PrePurchaseSettings() {
 
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "12px" }}>
                     <div className="xp-field">
-                      <label>Offer Headline ({offerLang.toUpperCase()})</label>
+                      <label><Translate text='Offer Headline (' />{offerLang.toUpperCase()})</label>
                       <input
                         type="text"
                         name="offerHeadline"
@@ -1721,7 +1739,7 @@ export default function PrePurchaseSettings() {
                       />
                     </div>
                     <div className="xp-field">
-                      <label>Special Offer Tag ({offerLang.toUpperCase()})</label>
+                      <label><Translate text='Special Offer Tag (' />{offerLang.toUpperCase()})</label>
                       <input
                         type="text"
                         name="offerTag"
@@ -1734,7 +1752,7 @@ export default function PrePurchaseSettings() {
                   </div>
 
                   <div className="xp-field" style={{ marginBottom: "12px" }}>
-                    <label>Offer Subtitle / Description ({offerLang.toUpperCase()})</label>
+                    <label><Translate text='Offer Subtitle / Description (' />{offerLang.toUpperCase()})</label>
                     <textarea
                       name="offerDescription"
                       className="xp-input"
@@ -1747,7 +1765,7 @@ export default function PrePurchaseSettings() {
 
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "12px" }}>
                     <div className="xp-field">
-                      <label>Accept Button Label ({offerLang.toUpperCase()})</label>
+                      <label><Translate text='Accept Button Label (' />{offerLang.toUpperCase()})</label>
                       <input
                         type="text"
                         name="acceptButton"
@@ -1758,7 +1776,7 @@ export default function PrePurchaseSettings() {
                       />
                     </div>
                     <div className="xp-field">
-                      <label>Decline Button Label ({offerLang.toUpperCase()})</label>
+                      <label><Translate text='Decline Button Label (' />{offerLang.toUpperCase()})</label>
                       <input
                         type="text"
                         name="declineButton"
@@ -1772,7 +1790,7 @@ export default function PrePurchaseSettings() {
 
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "12px" }}>
                     <div className="xp-field">
-                      <label>Urgency Countdown Label ({offerLang.toUpperCase()})</label>
+                      <label><Translate text='Urgency Countdown Label (' />{offerLang.toUpperCase()})</label>
                       <input
                         type="text"
                         name="urgencyLabel"
@@ -1783,7 +1801,7 @@ export default function PrePurchaseSettings() {
                       />
                     </div>
                     <div className="xp-field">
-                      <label>Scarcity Notice ({offerLang.toUpperCase()})</label>
+                      <label><Translate text='Scarcity Notice (' />{offerLang.toUpperCase()})</label>
                       <input
                         type="text"
                         name="scarcityNotice"
@@ -1798,10 +1816,11 @@ export default function PrePurchaseSettings() {
 
                 {/* Trigger Product Selection */}
                 <div className="xp-editor-section">
-                  <h3>2. Trigger Condition</h3>
+                  <h3><Translate text='2. Trigger Condition' /></h3>
                   <p className="xp-sub" style={{ marginBottom: "12px" }}>
-                    Choose which product triggers this upsell when a customer clicks "Add to Cart".
-                  </p>
+                    
+                                                              <Translate text='Choose which product triggers this upsell when a customer clicks "Add to Cart".' />
+                                                            </p>
 
                   <div className="xp-radio-card-group">
                     <label
@@ -1814,8 +1833,8 @@ export default function PrePurchaseSettings() {
                         onChange={() => {}}
                       />
                       <div className="xp-radio-card-content">
-                        <strong>Storewide (All Products)</strong>
-                        <p className="xp-sub">Triggers when a customer adds any product from your store.</p>
+                        <strong><Translate text='Storewide (All Products)' /></strong>
+                        <p className="xp-sub"><Translate text='Triggers when a customer adds any product from your store.' /></p>
                       </div>
                     </label>
 
@@ -1829,8 +1848,8 @@ export default function PrePurchaseSettings() {
                         onChange={() => {}}
                       />
                       <div className="xp-radio-card-content">
-                        <strong>Specific Trigger Products (Multi-select)</strong>
-                        <p className="xp-sub">Triggers only when any of the chosen products are added to the cart.</p>
+                        <strong><Translate text='Specific Trigger Products (Multi-select)' /></strong>
+                        <p className="xp-sub"><Translate text='Triggers only when any of the chosen products are added to the cart.' /></p>
                       </div>
                     </label>
                   </div>
@@ -1849,8 +1868,9 @@ export default function PrePurchaseSettings() {
                           />
                           {isSearchingTrigger && (
                             <span style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", fontSize: "11px", color: "#8c9196" }}>
-                              Searching store...
-                            </span>
+                              
+                                                                                            <Translate text='Searching store...' />
+                                                                                          </span>
                           )}
                         </div>
                         <div className="xp-trigger-actions">
@@ -1860,29 +1880,31 @@ export default function PrePurchaseSettings() {
                             style={{ fontSize: "11px", padding: "5px 10px", borderRadius: "4px" }}
                             onClick={selectAllFilteredTriggers}
                           >
-                            Select All Filtered
-                          </button>
+                            
+                                                                                      <Translate text='Select All Filtered' />
+                                                                                    </button>
                           <button
                             type="button"
                             className="xp-btn-text"
                             style={{ fontSize: "11px", color: "#6d7175" }}
                             onClick={clearTriggerSelection}
                           >
-                            Clear Selection
-                          </button>
+                            
+                                                                                      <Translate text='Clear Selection' />
+                                                                                    </button>
                         </div>
                       </div>
 
                       {/* Selected Products Chips Area */}
                       {selectedTriggerProductsList.length === 0 ? (
                         <div className="xp-trigger-empty-notice">
-                          <strong>No trigger products selected.</strong> Please check one or more products below to trigger this upsell.
-                        </div>
+                          <strong><Translate text='No trigger products selected.' /></strong>  <Translate text='Please check one or more products below to trigger this upsell.' />
+                                                                              </div>
                       ) : (
                         <div className="xp-trigger-selected-wrap">
                           <div className="xp-trigger-count-bar">
-                            <span>{selectedTriggerProductsList.length} Trigger Product{selectedTriggerProductsList.length > 1 ? "s" : ""} Selected:</span>
-                            <span style={{ fontSize: "11px", color: "#6d7175" }}>Triggers when customer adds ANY of these</span>
+                            <span>{selectedTriggerProductsList.length}  <Translate text='Trigger Product' />{selectedTriggerProductsList.length > 1 ? "s" : ""}  <Translate text='Selected:' /></span>
+                            <span style={{ fontSize: "11px", color: "#6d7175" }}><Translate text='Triggers when customer adds ANY of these' /></span>
                           </div>
                           <div className="xp-trigger-chips-list">
                             {selectedTriggerProductsList.map((p) => (
@@ -1972,10 +1994,11 @@ export default function PrePurchaseSettings() {
 
                 {/* 3. Modal Presentation Layout */}
                 <div className="xp-editor-section">
-                  <h3>3. Modal Presentation Layout</h3>
+                  <h3><Translate text='3. Modal Presentation Layout' /></h3>
                   <p className="xp-sub" style={{ marginBottom: "14px" }}>
-                    Select the visual architecture and style of the pre-purchase modal displayed to shoppers.
-                  </p>
+                    
+                                                              <Translate text='Select the visual architecture and style of the pre-purchase modal displayed to shoppers.' />
+                                                            </p>
                   <div className="xp-layout-cards-grid">
                     {PRE_PURCHASE_LAYOUTS.map((layout) => {
                       const isSelected = modalLayout === layout.id;
@@ -2008,15 +2031,17 @@ export default function PrePurchaseSettings() {
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                           <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                         </svg>
-                        <strong style={{ fontSize: "13px", color: "#ffffff" }}>Spotlight Hero Value Highlights (3 Bullets)</strong>
+                        <strong style={{ fontSize: "13px", color: "#ffffff" }}><Translate text='Spotlight Hero Value Highlights (3 Bullets)' /></strong>
                       </div>
                       <p className="xp-sub" style={{ marginBottom: "12px", fontSize: "12px" }}>
-                        Customize the 3 feature highlight bullet points shown inside the primary spotlight hero card.
-                      </p>
+                        
+                                                                          <Translate text='Customize the 3 feature highlight bullet points shown inside the primary spotlight hero card.' />
+                                                                        </p>
                       <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                         <div>
                           <label className="xp-label" style={{ fontSize: "12px", marginBottom: "4px" }}>
-                            Highlight 1 ({offerLang.toUpperCase()})
+                            
+                                                                                      <Translate text='Highlight 1 (' />{offerLang.toUpperCase()})
                           </label>
                           <input
                             type="text"
@@ -2030,7 +2055,8 @@ export default function PrePurchaseSettings() {
                         </div>
                         <div>
                           <label className="xp-label" style={{ fontSize: "12px", marginBottom: "4px" }}>
-                            Highlight 2 ({offerLang.toUpperCase()})
+                            
+                                                                                      <Translate text='Highlight 2 (' />{offerLang.toUpperCase()})
                           </label>
                           <input
                             type="text"
@@ -2044,7 +2070,8 @@ export default function PrePurchaseSettings() {
                         </div>
                         <div>
                           <label className="xp-label" style={{ fontSize: "12px", marginBottom: "4px" }}>
-                            Highlight 3 ({offerLang.toUpperCase()})
+                            
+                                                                                      <Translate text='Highlight 3 (' />{offerLang.toUpperCase()})
                           </label>
                           <input
                             type="text"
@@ -2070,27 +2097,30 @@ export default function PrePurchaseSettings() {
                 {/* Promoted Products Multi-Picker */}
                 <div className="xp-editor-section">
                   <div className="xp-picker-header">
-                    <h3>4. Promoted Upsell Products ({selectedProductIds.length} Selected)</h3>
+                    <h3><Translate text='4. Promoted Upsell Products (' />{selectedProductIds.length}  <Translate text='Selected)' /></h3>
                     <div className="xp-picker-quickactions">
                       <button
                         type="button"
                         onClick={selectAllFiltered}
                         className="xp-btn-text"
                       >
-                        Select All Filtered
-                      </button>
+                        
+                                                                          <Translate text='Select All Filtered' />
+                                                                        </button>
                       <button
                         type="button"
                         onClick={clearSelection}
                         className="xp-btn-text"
                       >
-                        Clear All
-                      </button>
+                        
+                                                                          <Translate text='Clear All' />
+                                                                        </button>
                     </div>
                   </div>
                   <p className="xp-sub" style={{ marginBottom: "10px" }}>
-                    Select the products you want to offer in this bundle. Customers can check or uncheck individual items.
-                  </p>
+                    
+                                                              <Translate text='Select the products you want to offer in this bundle. Customers can check or uncheck individual items.' />
+                                                            </p>
 
                   <div style={{ position: "relative" }}>
                     <input
@@ -2102,8 +2132,9 @@ export default function PrePurchaseSettings() {
                     />
                     {isSearchingPromoted && (
                       <span style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", fontSize: "11px", color: "#8c9196" }}>
-                        Searching store...
-                      </span>
+                        
+                                                                          <Translate text='Searching store...' />
+                                                                        </span>
                     )}
                   </div>
 
@@ -2157,7 +2188,7 @@ export default function PrePurchaseSettings() {
 
                 {/* Item Selection Option */}
                 <div className="xp-editor-section">
-                  <h3>5. Modal Selection Behavior</h3>
+                  <h3><Translate text='5. Modal Selection Behavior' /></h3>
                   <div className="xp-radio-card-group">
                     <label className={`xp-radio-card ${preselectItems ? "is-selected" : ""}`}>
                       <input
@@ -2168,10 +2199,11 @@ export default function PrePurchaseSettings() {
                         onChange={() => setPreselectItems(true)}
                       />
                       <div className="xp-radio-card-content">
-                        <strong>Pre-select all items (Recommended)</strong>
+                        <strong><Translate text='Pre-select all items (Recommended)' /></strong>
                         <p className="xp-sub">
-                          Items start checked when the modal opens. Maximizes bundle conversion.
-                        </p>
+                          
+                                                                                <Translate text='Items start checked when the modal opens. Maximizes bundle conversion.' />
+                                                                              </p>
                       </div>
                     </label>
                     <label className={`xp-radio-card ${!preselectItems ? "is-selected" : ""}`}>
@@ -2183,10 +2215,11 @@ export default function PrePurchaseSettings() {
                         onChange={() => setPreselectItems(false)}
                       />
                       <div className="xp-radio-card-content">
-                        <strong>Let customer select items manually</strong>
+                        <strong><Translate text='Let customer select items manually' /></strong>
                         <p className="xp-sub">
-                          Items start unchecked. Customer taps checkboxes to choose items.
-                        </p>
+                          
+                                                                                <Translate text='Items start unchecked. Customer taps checkboxes to choose items.' />
+                                                                              </p>
                       </div>
                     </label>
                   </div>
@@ -2194,7 +2227,7 @@ export default function PrePurchaseSettings() {
 
                 {/* Promotional Discount */}
                 <div className="xp-editor-section">
-                  <h3>6. Promotional Discount</h3>
+                  <h3><Translate text='6. Promotional Discount' /></h3>
                   <label className="xp-check-label" style={{ marginBottom: "12px" }}>
                     <input
                       type="checkbox"
@@ -2203,14 +2236,14 @@ export default function PrePurchaseSettings() {
                       checked={hasDiscount}
                       onChange={(e) => setHasDiscount(e.target.checked)}
                     />
-                    <span>Apply promotional discount to this offer</span>
+                    <span><Translate text='Apply promotional discount to this offer' /></span>
                   </label>
 
                   {hasDiscount && (
                     <div className="xp-discount-box">
                       <div className="xp-grid-2">
                         <div className="xp-field">
-                          <label>Discount Percentage (%)</label>
+                          <label><Translate text='Discount Percentage (%)' /></label>
                           <input
                             type="number"
                             name="discountPercent"
@@ -2223,7 +2256,7 @@ export default function PrePurchaseSettings() {
                           />
                         </div>
                         <div className="xp-field">
-                          <label>Discount Title / Coupon Code</label>
+                          <label><Translate text='Discount Title / Coupon Code' /></label>
                           <input
                             type="text"
                             name="discountCode"
@@ -2238,8 +2271,9 @@ export default function PrePurchaseSettings() {
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#108043" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: "-1px", marginRight: 5 }}>
                           <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
                         </svg>
-                        A Shopify Automatic Discount will be generated and applied directly to customer cart drawer and checkout.
-                      </div>
+                        
+                                                                          <Translate text='A Shopify Automatic Discount will be generated and applied directly to customer cart drawer and checkout.' />
+                                                                        </div>
                     </div>
                   )}
                 </div>
@@ -2262,8 +2296,9 @@ export default function PrePurchaseSettings() {
                     className="xp-btn-cancel"
                     onClick={() => setViewMode("index")}
                   >
-                    Cancel
-                  </button>
+                    
+                                                              <Translate text='Cancel' />
+                                                            </button>
                 </div>
               </Form>
             </div>
@@ -2273,8 +2308,8 @@ export default function PrePurchaseSettings() {
               <div className="xp-preview-sticky">
                 <div className="xp-preview-meta-bar">
                   <div>
-                    <h3>Storefront Live Preview</h3>
-                    <p className="xp-sub">Interactive preview of the selected pre-purchase modal architecture.</p>
+                    <h3><Translate text='Storefront Live Preview' /></h3>
+                    <p className="xp-sub"><Translate text='Interactive preview of the selected pre-purchase modal architecture.' /></p>
                   </div>
                   <span className="xp-preview-layout-badge">
                     {PRE_PURCHASE_LAYOUTS.find((l) => l.id === modalLayout)?.name || "Spotlight Hero"}
@@ -2315,7 +2350,7 @@ export default function PrePurchaseSettings() {
 
                   {/* Empty state */}
                   {selectedProductsList.length === 0 ? (
-                    <div className="xp-preview-none">Select promoted products in step 4 to preview the modal.</div>
+                    <div className="xp-preview-none"><Translate text='Select promoted products in step 4 to preview the modal.' /></div>
                   ) : (
                     <>
                       {/* LAYOUT 1: Spotlight Hero */}
@@ -2417,7 +2452,7 @@ export default function PrePurchaseSettings() {
 
                           {selectedProductsList.length > 1 && (
                             <div className="xp-spotlight-secondary-wrap">
-                              <div className="xp-spotlight-secondary-title">Complementary Upgrades:</div>
+                              <div className="xp-spotlight-secondary-title"><Translate text='Complementary Upgrades:' /></div>
                               <div className="xp-modal-scroll-list" style={{ maxHeight: "150px" }}>
                                 {selectedProductsList.slice(1).map((p) => {
                                   const isChecked = previewCheckedIds.includes(p.id);
@@ -2542,7 +2577,7 @@ export default function PrePurchaseSettings() {
                                             <span>{pI18n.added}</span>
                                           </>
                                         ) : (
-                                          <span>+ Add</span>
+                                          <span><Translate text='+ Add' /></span>
                                         )}
                                       </button>
                                     </div>
@@ -2677,7 +2712,7 @@ export default function PrePurchaseSettings() {
                                           {p.title}
                                         </a>
                                       </strong>
-                                      <span className="xp-flash-item-badge">LIMITED</span>
+                                      <span className="xp-flash-item-badge"><Translate text='LIMITED' /></span>
                                     </div>
                                     <div className="xp-modal-pricing">
                                       <span className="xp-price-sale">${isDiscounted ? sale : orig.toFixed(2)}</span>
@@ -4304,4 +4339,5 @@ const PRE_PURCHASE_STYLES = `
     100% { box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3); }
   }
 `;
+
 

@@ -1,3 +1,4 @@
+﻿import { Translate } from "../components/Translate";
 import { useEffect, useMemo, useState } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Link, useFetcher, useLoaderData, useNavigate, useSearchParams } from "react-router";
@@ -33,9 +34,9 @@ import { PREVIEW_CSS, ThankYouPreview } from "../components/ty/ThankYouPreview";
 
 const MAX_OFFERS = 20;
 
-// ─────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Loader
-// ─────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { session, admin } = await authenticate.admin(request);
@@ -113,9 +114,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   };
 };
 
-// ─────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Action
-// ─────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const { session } = await authenticate.admin(request);
@@ -227,9 +228,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   return { ok: false, message: "Unknown action." };
 };
 
-// ─────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Page
-// ─────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 type LoaderData = ReturnType<typeof useLoaderData<typeof loader>>;
 
@@ -246,11 +247,11 @@ export default function ThankYouPage() {
   );
 }
 
-// ─────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // List view
-// ─────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-const pct = (n: number, d: number) => (d > 0 ? `${((n / d) * 100).toFixed(1)}%` : "–");
+const pct = (n: number, d: number) => (d > 0 ? `${((n / d) * 100).toFixed(1)}%` : "â€“");
 
 function ListView({ data }: { data: LoaderData }) {
   const fetcher = useFetcher<typeof action>();
@@ -274,10 +275,11 @@ function ListView({ data }: { data: LoaderData }) {
 
       <div className="ty-card ty-hero">
         <div>
-          <h2>Turn the thank-you page into your best extra sales page</h2>
+          <h2><Translate text='Turn the thank-you page into your best extra sales page' /></h2>
           <p>
-            Customers are most open to your brand right after they pay. Give them a unique code for next time, offer matching products, or open a short window where anything they add ships in the same box.
-          </p>
+            
+                                  <Translate text='Customers are most open to your brand right after they pay. Give them a unique code for next time, offer matching products, or open a short window where anything they add ships in the same box.' />
+                                </p>
         </div>
         <label className="ty-switch" title="Turn the whole feature on or off">
           <input type="checkbox" checked={data.enabled} disabled={busy} onChange={(e) => send({ intent: "toggleFeature", enable: String(e.target.checked) })} />
@@ -287,50 +289,55 @@ function ListView({ data }: { data: LoaderData }) {
       </div>
 
       <div className="ty-card">
-        <h3 className="ty-title">Set up in 2 steps</h3>
+        <h3 className="ty-title"><Translate text='Set up in 2 steps' /></h3>
         <ol className="ty-steps">
           <li>
-            <b>Add the block to your Thank-you page.</b>{" "}
+            <b><Translate text='Add the block to your Thank-you page.' /></b>{" "}
             <a href={data.checkoutEditorUrl} target="_blank" rel="noreferrer">
-              Open the checkout editor → Thank-you page → Add app block → “XPoost Thank-you Upsell”
-            </a>
-            . Drag it where you like (under the order summary works well), then save.
-          </li>
+              
+                                        <Translate text='Open the checkout editor â†’ Thank-you page â†’ Add app block â†’ â€œXPoost Thank-you Upsellâ€' />
+                                      </a>
+            
+                                  <Translate text='. Drag it where you like (under the order summary works well), then save.' />
+                                </li>
           <li>
-            <b>Create an offer below and switch it on.</b> Place a test order to see it live.
-          </li>
+            <b><Translate text='Create an offer below and switch it on.' /></b>  <Translate text='Place a test order to see it live.' />
+                                </li>
         </ol>
       </div>
 
       <div className="ty-card">
         <div className="ty-row-between">
-          <h3 className="ty-title">Your offers</h3>
+          <h3 className="ty-title"><Translate text='Your offers' /></h3>
           <Link to="/app/thank-you?offer=new" className="ty-btn gold">
-            + New offer
-          </Link>
+            
+                                  <Translate text='+ New offer' />
+                                </Link>
         </div>
         {offers.length === 0 ? (
           <div className="ty-empty">
-            No offers yet. Start from a proven template below, or{" "}
-            <Link to="/app/thank-you?offer=new">build one from scratch</Link>.
+            
+                                  <Translate text='No offers yet. Start from a proven template below, or' />{" "}
+            <Link to="/app/thank-you?offer=new"><Translate text='build one from scratch' /></Link>.
           </div>
         ) : (
           <>
             <p className="ty-muted">
-              For each order, XPoost shows the <b>first offer from the top whose conditions match</b>. Put specific offers first and a catch-all last.
-            </p>
+              
+                                            <Translate text='For each order, XPoost shows the' /> <b><Translate text='first offer from the top whose conditions match' /></b><Translate text='. Put specific offers first and a catch-all last.' />
+                                          </p>
             <div className="ty-table-wrap">
               <table className="ty-table">
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Offer</th>
-                    <th>Shown when</th>
-                    <th className="r">Views</th>
-                    <th className="r">Click rate</th>
-                    <th className="r">Codes</th>
-                    <th className="r">Revenue</th>
-                    <th>Status</th>
+                    <th><Translate text='Offer' /></th>
+                    <th><Translate text='Shown when' /></th>
+                    <th className="r"><Translate text='Views' /></th>
+                    <th className="r"><Translate text='Click rate' /></th>
+                    <th className="r"><Translate text='Codes' /></th>
+                    <th className="r"><Translate text='Revenue' /></th>
+                    <th><Translate text='Status' /></th>
                     <th />
                   </tr>
                 </thead>
@@ -340,23 +347,23 @@ function ListView({ data }: { data: LoaderData }) {
                     return (
                       <tr key={o.id}>
                         <td className="mv">
-                          <button className="ty-icon" disabled={i === 0 || busy} onClick={() => send({ intent: "moveOffer", id: o.id, dir: "up" })} aria-label="Move up">↑</button>
-                          <button className="ty-icon" disabled={i === offers.length - 1 || busy} onClick={() => send({ intent: "moveOffer", id: o.id, dir: "down" })} aria-label="Move down">↓</button>
+                          <button className="ty-icon" disabled={i === 0 || busy} onClick={() => send({ intent: "moveOffer", id: o.id, dir: "up" })} aria-label="Move up">â†‘</button>
+                          <button className="ty-icon" disabled={i === offers.length - 1 || busy} onClick={() => send({ intent: "moveOffer", id: o.id, dir: "down" })} aria-label="Move down">â†“</button>
                         </td>
                         <td>
                           <Link to={`/app/thank-you?offer=${o.id}`} className="ty-name">{o.name}</Link>
                           <div className="ty-muted sm">
-                            {TY_KIND_META[o.kind].name} · {TY_DESIGN_META[o.design].name}
+                            {TY_KIND_META[o.kind].name} Â· {TY_DESIGN_META[o.design].name}
                           </div>
                         </td>
                         <td className="ty-muted sm">{describeConditions(o.conditions, money)}</td>
                         <td className="r">{s.views.toLocaleString()}</td>
-                        <td className="r">{s.views >= 50 ? pct(s.clicks, s.views) : "–"}</td>
+                        <td className="r">{s.views >= 50 ? pct(s.clicks, s.views) : "â€“"}</td>
                         <td className="r">
-                          {s.issued ? `${s.redeemed}/${s.issued}` : "–"}
-                          {s.issued ? <div className="ty-muted sm">used</div> : null}
+                          {s.issued ? `${s.redeemed}/${s.issued}` : "â€“"}
+                          {s.issued ? <div className="ty-muted sm"><Translate text='used' /></div> : null}
                         </td>
-                        <td className="r">{s.revenue ? money(s.revenue) : "–"}</td>
+                        <td className="r">{s.revenue ? money(s.revenue) : "â€“"}</td>
                         <td>
                           <label className="ty-switch sm">
                             <input type="checkbox" checked={o.enabled} disabled={busy} onChange={(e) => send({ intent: "toggleOffer", id: o.id, enable: String(e.target.checked) })} />
@@ -364,17 +371,18 @@ function ListView({ data }: { data: LoaderData }) {
                           </label>
                         </td>
                         <td className="act">
-                          <Link to={`/app/thank-you?offer=${o.id}`} className="ty-btn ghost sm">Edit</Link>
-                          <button className="ty-btn ghost sm" disabled={busy} onClick={() => send({ intent: "duplicateOffer", id: o.id })}>Duplicate</button>
+                          <Link to={`/app/thank-you?offer=${o.id}`} className="ty-btn ghost sm"><Translate text='Edit' /></Link>
+                          <button className="ty-btn ghost sm" disabled={busy} onClick={() => send({ intent: "duplicateOffer", id: o.id })}><Translate text='Duplicate' /></button>
                           <button
                             className="ty-btn ghost sm danger"
                             disabled={busy}
                             onClick={() => {
-                              if (window.confirm(`Delete “${o.name}”? Codes already issued keep working until they expire.`)) send({ intent: "deleteOffer", id: o.id });
+                              if (window.confirm(`Delete â€œ${o.name}â€? Codes already issued keep working until they expire.`)) send({ intent: "deleteOffer", id: o.id });
                             }}
                           >
-                            Delete
-                          </button>
+                            
+                                                                <Translate text='Delete' />
+                                                              </button>
                         </td>
                       </tr>
                     );
@@ -382,13 +390,13 @@ function ListView({ data }: { data: LoaderData }) {
                 </tbody>
               </table>
             </div>
-            <p className="ty-muted sm">Last 30 days. “Codes” shows issued codes and how many were used. Full revenue breakdown is in the Analytics tab.</p>
+            <p className="ty-muted sm"><Translate text='Last 30 days. â€œCodesâ€ shows issued codes and how many were used. Full revenue breakdown is in the Analytics tab.' /></p>
           </>
         )}
       </div>
 
       <div className="ty-card">
-        <h3 className="ty-title">Start from a proven template</h3>
+        <h3 className="ty-title"><Translate text='Start from a proven template' /></h3>
         <div className="ty-tpl-grid">
           {TEMPLATES.map((t) => (
             <Link key={t.key} to={`/app/thank-you?offer=new&tpl=${t.key}`} className="ty-tpl">
@@ -402,38 +410,39 @@ function ListView({ data }: { data: LoaderData }) {
       </div>
 
       <div className="ty-card">
-        <h3 className="ty-title">What works best (from real store data)</h3>
+        <h3 className="ty-title"><Translate text='What works best (from real store data)' /></h3>
         <ul className="ty-insights">
           <li>
-            <b>Treat this page as a bonus channel.</b> Across 218.6 million offer views in 3,199 Shopify stores, thank-you page offers were taken about 0.7% of the time, compared with 2.4% for product-page pop-ups. The <b>next-order reward</b> is where this page earns most, because it brings the customer back.
-          </li>
+            <b><Translate text='Treat this page as a bonus channel.' /></b>  <Translate text='Across 218.6 million offer views in 3,199 Shopify stores, thank-you page offers were taken about 0.7% of the time, compared with 2.4% for product-page pop-ups. The' /> <b><Translate text='next-order reward' /></b>  <Translate text='is where this page earns most, because it brings the customer back.' />
+                                </li>
           <li>
-            <b>Show 3 products, not 1.</b> The same study found offers with 3 products were taken about 2.9% of the time versus 1.5% for a single product.
-          </li>
+            <b><Translate text='Show 3 products, not 1.' /></b>  <Translate text='The same study found offers with 3 products were taken about 2.9% of the time versus 1.5% for a single product.' />
+                                </li>
           <li>
-            <b>Keep the timer honest and short.</b> XPoost makes the code really expire when the timer ends. 15–30 minutes is enough to feel urgent while your team can still pack one box.
-          </li>
+            <b><Translate text='Keep the timer honest and short.' /></b>  <Translate text='XPoost makes the code really expire when the timer ends. 15â€“30 minutes is enough to feel urgent while your team can still pack one box.' />
+                                </li>
           <li>
-            <b>Use conditions.</b> Different offers for first-time and returning customers, and a product-specific add-on for what was just bought, are the two highest-value splits.
-          </li>
+            <b><Translate text='Use conditions.' /></b>  <Translate text='Different offers for first-time and returning customers, and a product-specific add-on for what was just bought, are the two highest-value splits.' />
+                                </li>
           <li>
-            <b>Small add-ons win after checkout.</b> Refills, minis and accessories at 10–20% off sell better than another full-price item.
-          </li>
+            <b><Translate text='Small add-ons win after checkout.' /></b>  <Translate text='Refills, minis and accessories at 10â€“20% off sell better than another full-price item.' />
+                                </li>
           <li>
-            <b>Make codes single-use and unique.</b> XPoost creates a one-time code per order, so codes can't leak to coupon sites.
-          </li>
+            <b><Translate text='Make codes single-use and unique.' /></b>  <Translate text='XPoost creates a one-time code per order, so codes can&apos;t leak to coupon sites.' />
+                                </li>
         </ul>
         <p className="ty-muted sm">
-          Source: Digismoothie Upsell Benchmarks 2026. Results vary by store; use the Analytics tab to see yours.
-        </p>
+          
+                            <Translate text='Source: Digismoothie Upsell Benchmarks 2026. Results vary by store; use the Analytics tab to see yours.' />
+                          </p>
       </div>
     </div>
   );
 }
 
-// ─────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Editor
-// ─────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 type Draft = {
   id?: string;
@@ -556,17 +565,18 @@ function Editor({ data, offerParam, tpl }: { data: LoaderData; offerParam: strin
     <div className="ty-wrap">
       <div className="ty-topbar">
         <Link to="/app/thank-you" className="ty-btn ghost" onClick={(e) => { if (dirty && !window.confirm("Discard unsaved changes?")) e.preventDefault(); }}>
-          ← All offers
-        </Link>
+          
+                            <Translate text='â† All offers' />
+                          </Link>
         <div className="ty-topbar-r">
-          {result?.message ? <span className={`ty-flash ${result.ok ? "ok" : "bad"}`}>{result.message}</span> : dirty ? <span className="ty-flash">Unsaved changes</span> : null}
+          {result?.message ? <span className={`ty-flash ${result.ok ? "ok" : "bad"}`}>{result.message}</span> : dirty ? <span className="ty-flash"><Translate text='Unsaved changes' /></span> : null}
           <label className="ty-switch" title="Offer on/off">
             <input type="checkbox" checked={draft.enabled} onChange={(e) => patch({ enabled: e.target.checked })} />
             <span className="knob" />
             <b>{draft.enabled ? "On" : "Paused"}</b>
           </label>
           <button type="button" className="ty-btn gold" onClick={save} disabled={saving}>
-            {saving ? "Saving…" : "Save offer"}
+            {saving ? "Savingâ€¦" : "Save offer"}
           </button>
         </div>
       </div>
@@ -574,9 +584,9 @@ function Editor({ data, offerParam, tpl }: { data: LoaderData; offerParam: strin
       <div className="ty-layout">
         <div className="ty-main">
           <div className="ty-card">
-            <h3 className="ty-title">1 · Name & type</h3>
+            <h3 className="ty-title"><Translate text='1 Â· Name & type' /></h3>
             <div className="ty-field">
-              <label>Offer name (only you see this)</label>
+              <label><Translate text='Offer name (only you see this)' /></label>
               <input className="ty-input" value={draft.name} maxLength={80} onChange={(e) => patch({ name: e.target.value })} />
             </div>
             <div className="ty-kinds">
@@ -590,46 +600,48 @@ function Editor({ data, offerParam, tpl }: { data: LoaderData; offerParam: strin
           </div>
 
           <div className="ty-card">
-            <h3 className="ty-title">2 · Design</h3>
+            <h3 className="ty-title"><Translate text='2 Â· Design' /></h3>
             <DesignPicker kind={draft.kind} value={draft.design} onChange={(design) => patch({ design })} />
-            <p className="ty-muted sm">Colors, fonts and corners come from your checkout branding (Shopify's rule for checkout extensions), so every design matches your store.</p>
+            <p className="ty-muted sm"><Translate text='Colors, fonts and corners come from your checkout branding (Shopify&apos;s rule for checkout extensions), so every design matches your store.' /></p>
           </div>
 
           {isReward ? (
             <div className="ty-card">
-              <h3 className="ty-title">3 · The reward</h3>
+              <h3 className="ty-title"><Translate text='3 Â· The reward' /></h3>
               <div className="ty-field">
-                <label>Reward type</label>
+                <label><Translate text='Reward type' /></label>
                 <div className="ty-seg">
                   <button type="button" className={draft.config.reward.kind === "code" ? "on" : ""} onClick={() => setConfig((c) => ({ ...c, reward: { ...c.reward, kind: "code" } }))}>
-                    Discount code
-                  </button>
+                    
+                                                          <Translate text='Discount code' />
+                                                        </button>
                   <button
                     type="button"
                     className={draft.config.reward.kind === "giftcard" ? "on" : ""}
                     onClick={() => setConfig((c) => ({ ...c, reward: { ...c.reward, kind: "giftcard" } }))}
                   >
-                    Gift card
-                  </button>
+                    
+                                                          <Translate text='Gift card' />
+                                                        </button>
                 </div>
                 {draft.config.reward.kind === "code" ? (
-                  <small>Costs you nothing until the customer comes back and uses it, and then only the discount on that order.</small>
+                  <small><Translate text='Costs you nothing until the customer comes back and uses it, and then only the discount on that order.' /></small>
                 ) : data.giftCardsEnabled ? (
-                  <small>A gift card is stored value you owe the customer. It uses a fixed amount (a percentage is converted using the order subtotal).</small>
+                  <small><Translate text='A gift card is stored value you owe the customer. It uses a fixed amount (a percentage is converted using the order subtotal).' /></small>
                 ) : (
-                  <small className="warn">Gift cards need Shopify's gift card permission, which isn't enabled for this app yet. Until it is, XPoost automatically issues an equivalent discount code instead.</small>
+                  <small className="warn"><Translate text='Gift cards need Shopify&apos;s gift card permission, which isn&apos;t enabled for this app yet. Until it is, XPoost automatically issues an equivalent discount code instead.' /></small>
                 )}
               </div>
 
               {rewardTiers.slice(0, tierCount).map((t, i) => (
                 <div key={i} className="ty-tier">
-                  {tierCount > 1 ? <div className="ty-tier-n">Step {i + 1}</div> : null}
+                  {tierCount > 1 ? <div className="ty-tier-n"><Translate text='Step' /> {i + 1}</div> : null}
                   <div className="ty-grid3">
                     <div className="ty-field">
-                      <label>Discount</label>
+                      <label><Translate text='Discount' /></label>
                       <select className="ty-input" value={t.valueType} onChange={(e) => setTier(i, { valueType: e.target.value === "fixed" ? "fixed" : "percent" })}>
-                        <option value="percent">Percentage off</option>
-                        <option value="fixed">Fixed amount off</option>
+                        <option value="percent"><Translate text='Percentage off' /></option>
+                        <option value="fixed"><Translate text='Fixed amount off' /></option>
                       </select>
                     </div>
                     <div className="ty-field">
@@ -637,9 +649,9 @@ function Editor({ data, offerParam, tpl }: { data: LoaderData; offerParam: strin
                       <input className="ty-input" type="number" min={1} max={t.valueType === "percent" ? 100 : 100000} value={t.value} onChange={(e) => setTier(i, { value: Number(e.target.value) })} />
                     </div>
                     <div className="ty-field">
-                      <label>Minimum spend ({data.currency})</label>
+                      <label><Translate text='Minimum spend (' />{data.currency})</label>
                       <input className="ty-input" type="number" min={0} value={t.minSpend} onChange={(e) => setTier(i, { minSpend: Number(e.target.value) })} />
-                      <small>0 = no minimum</small>
+                      <small><Translate text='0 = no minimum' /></small>
                     </div>
                   </div>
                 </div>
@@ -647,91 +659,96 @@ function Editor({ data, offerParam, tpl }: { data: LoaderData; offerParam: strin
 
               <div className="ty-grid2">
                 <div className="ty-field">
-                  <label>Valid for (days)</label>
+                  <label><Translate text='Valid for (days)' /></label>
                   <input className="ty-input" type="number" min={1} max={365} value={draft.config.reward.expiryDays} onChange={(e) => setConfig((c) => ({ ...c, reward: { ...c.reward, expiryDays: Number(e.target.value) } }))} />
                 </div>
                 <div className="ty-field">
-                  <label>Code prefix</label>
+                  <label><Translate text='Code prefix' /></label>
                   <input className="ty-input" maxLength={12} value={draft.config.reward.codePrefix} onChange={(e) => setConfig((c) => ({ ...c, reward: { ...c.reward, codePrefix: e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "") } }))} />
-                  <small>Codes look like {draft.config.reward.codePrefix || "THANKS"}-7K4Q-9XMD. Each is unique and single-use.</small>
+                  <small><Translate text='Codes look like' /> {draft.config.reward.codePrefix || "THANKS"}<Translate text='-7K4Q-9XMD. Each is unique and single-use.' /></small>
                 </div>
               </div>
             </div>
           ) : (
             <div className="ty-card">
-              <h3 className="ty-title">3 · Products & benefit</h3>
+              <h3 className="ty-title"><Translate text='3 Â· Products & benefit' /></h3>
               <div className="ty-field">
                 <label>
-                  Products to offer ({draft.config.addon.products.length}/{Math.max(1, designMeta.maxProducts)})
+                  
+                                                        <Translate text='Products to offer (' />{draft.config.addon.products.length}/{Math.max(1, designMeta.maxProducts)})
                 </label>
                 <ProductPicker
                   value={draft.config.addon.products}
                   max={Math.max(1, designMeta.maxProducts)}
                   onChange={(products) => setConfig((c) => ({ ...c, addon: { ...c.addon, products } }))}
                 />
-                <small>Items the customer just bought are skipped automatically, and sold-out products are hidden.</small>
+                <small><Translate text='Items the customer just bought are skipped automatically, and sold-out products are hidden.' /></small>
               </div>
 
               <div className="ty-field">
-                <label>What does the customer get for the added items?</label>
+                <label><Translate text='What does the customer get for the added items?' /></label>
                 <div className="ty-seg">
                   <button type="button" className={draft.config.addon.benefit === "percent" ? "on" : ""} onClick={() => setConfig((c) => ({ ...c, addon: { ...c.addon, benefit: "percent" } }))}>
-                    Discount on added items
-                  </button>
+                    
+                                                              <Translate text='Discount on added items' />
+                                                            </button>
                   <button type="button" className={draft.config.addon.benefit === "free_shipping" ? "on" : ""} onClick={() => setConfig((c) => ({ ...c, addon: { ...c.addon, benefit: "free_shipping" } }))}>
-                    Free shipping on added items
-                  </button>
+                    
+                                                              <Translate text='Free shipping on added items' />
+                                                            </button>
                 </div>
               </div>
 
               <div className="ty-grid3">
                 {draft.config.addon.benefit === "percent" ? (
                   <div className="ty-field">
-                    <label>Discount (%)</label>
+                    <label><Translate text='Discount (%)' /></label>
                     <input className="ty-input" type="number" min={1} max={100} value={draft.config.addon.percent} onChange={(e) => setConfig((c) => ({ ...c, addon: { ...c.addon, percent: Number(e.target.value) } }))} />
                   </div>
                 ) : null}
                 <div className="ty-field">
-                  <label>Time limit (minutes)</label>
+                  <label><Translate text='Time limit (minutes)' /></label>
                   <input className="ty-input" type="number" min={2} max={1440} value={draft.config.addon.windowMinutes} onChange={(e) => setConfig((c) => ({ ...c, addon: { ...c.addon, windowMinutes: Number(e.target.value) } }))} />
-                  <small>The code really expires after this long.</small>
+                  <small><Translate text='The code really expires after this long.' /></small>
                 </div>
                 {draft.kind === "addon" ? (
                   <div className="ty-field">
-                    <label>Countdown</label>
+                    <label><Translate text='Countdown' /></label>
                     <label className="ty-check">
                       <input type="checkbox" checked={draft.config.addon.showTimer} onChange={(e) => setConfig((c) => ({ ...c, addon: { ...c.addon, showTimer: e.target.checked } }))} />
-                      Show the timer to the customer
-                    </label>
+                      
+                                                                    <Translate text='Show the timer to the customer' />
+                                                                  </label>
                   </div>
                 ) : null}
               </div>
               {draft.kind === "shiptogether" ? (
                 <div className="ty-note">
-                  How it works: added items open a new checkout with the code applied. XPoost links that order to the original (an additional-details line “Ship together with #1042”), so you can pack both in one box and the customer pays no extra shipping.
-                </div>
+                  
+                                                        <Translate text='How it works: added items open a new checkout with the code applied. XPoost links that order to the original (an additional-details line â€œShip together with #1042â€), so you can pack both in one box and the customer pays no extra shipping.' />
+                                                      </div>
               ) : null}
             </div>
           )}
 
           <div className="ty-card">
-            <h3 className="ty-title">4 · Who sees it</h3>
-            <p className="ty-muted sm">Leave empty to show to every order. Example: subtotal at least {money(Math.round((data.aov || 60) * 1.3))} AND customer is a first-time customer.</p>
+            <h3 className="ty-title"><Translate text='4 Â· Who sees it' /></h3>
+            <p className="ty-muted sm"><Translate text='Leave empty to show to every order. Example: subtotal at least' /> {money(Math.round((data.aov || 60) * 1.3))}  <Translate text='AND customer is a first-time customer.' /></p>
             <ConditionBuilder value={draft.conditions} onChange={(conditions) => patch({ conditions })} currency={data.currency} />
-            <p className="ty-muted sm">Shown to: <b>{describeConditions(draft.conditions, money)}</b></p>
+            <p className="ty-muted sm"><Translate text='Shown to:' /> <b>{describeConditions(draft.conditions, money)}</b></p>
           </div>
 
           <div className="ty-card">
-            <h3 className="ty-title">5 · Text & translations</h3>
+            <h3 className="ty-title"><Translate text='5 Â· Text & translations' /></h3>
             <TextsEditor kind={draft.kind} texts={draft.texts} onChange={(texts) => patch({ texts })} lang={lang} onLang={setLang} />
           </div>
 
           <div className="ty-card">
-            <h3 className="ty-title">Suggestions for this offer</h3>
+            <h3 className="ty-title"><Translate text='Suggestions for this offer' /></h3>
             <ul className="ty-tips">
               {tips.map((t, i) => (
                 <li key={i} className={t.level}>
-                  <span className="ico">{t.level === "good" ? "✓" : t.level === "warn" ? "!" : "→"}</span>
+                  <span className="ico">{t.level === "good" ? "âœ“" : t.level === "warn" ? "!" : "â†’"}</span>
                   {t.text}
                 </li>
               ))}
@@ -743,10 +760,10 @@ function Editor({ data, offerParam, tpl }: { data: LoaderData; offerParam: strin
           <div className="ty-sticky">
             <div className="ty-card">
               <div className="ty-row-between">
-                <h3 className="ty-title nb">Live preview</h3>
+                <h3 className="ty-title nb"><Translate text='Live preview' /></h3>
                 <div className="ty-seg sm">
-                  <button type="button" className={!mobile ? "on" : ""} onClick={() => setMobile(false)}>Desktop</button>
-                  <button type="button" className={mobile ? "on" : ""} onClick={() => setMobile(true)}>Mobile</button>
+                  <button type="button" className={!mobile ? "on" : ""} onClick={() => setMobile(false)}><Translate text='Desktop' /></button>
+                  <button type="button" className={mobile ? "on" : ""} onClick={() => setMobile(true)}><Translate text='Mobile' /></button>
                 </div>
               </div>
               <div className="ty-langbar">
@@ -758,8 +775,9 @@ function Editor({ data, offerParam, tpl }: { data: LoaderData; offerParam: strin
                 <ThankYouPreview payload={previewPayload} mobile={mobile} />
               </div>
               <p className="ty-muted sm">
-                An approximation: on your real thank-you page the layout uses your checkout's fonts and colors. The code, dates and links shown are samples.
-              </p>
+                
+                                              <Translate text='An approximation: on your real thank-you page the layout uses your checkout&apos;s fonts and colors. The code, dates and links shown are samples.' />
+                                            </p>
             </div>
           </div>
         </aside>
@@ -768,9 +786,9 @@ function Editor({ data, offerParam, tpl }: { data: LoaderData; offerParam: strin
   );
 }
 
-// ─────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Styles
-// ─────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const TY_CSS = `
 .ty-wrap{display:flex;flex-direction:column;gap:16px;padding:16px 8px 48px;color:#fff}
@@ -873,3 +891,4 @@ textarea.ty-input{resize:vertical}
 .ty-langbar button.on{background:#D4AF37;color:#111;border-color:#D4AF37;font-weight:800}
 .ty-stage{margin:0 auto 10px;background:#e9eaec;border-radius:14px;padding:14px;transition:max-width .2s}
 `;
+

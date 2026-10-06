@@ -1,3 +1,4 @@
+import { Translate } from "../components/Translate";
 import { useState, useMemo, useEffect } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Form, useActionData, useLoaderData, useNavigation } from "react-router";
@@ -530,14 +531,14 @@ export default function ProductScarcityPage() {
       <div className="xpp-ps-admin">
         {actionData?.error && (
           <div style={{ background: "#3d1414", borderLeft: "4px solid #ff5252", padding: "14px 18px", borderRadius: 8, marginBottom: 20 }}>
-            <div style={{ fontWeight: 800, color: "#ff5252" }}>Notice</div>
+            <div style={{ fontWeight: 800, color: "#ff5252" }}><Translate text='Notice' /></div>
             <p style={{ margin: "4px 0 0", color: "#ffffff", fontSize: 13 }}>{actionData.error}</p>
           </div>
         )}
 
         {actionData?.message && (
           <div style={{ background: "#143d1a", borderLeft: "4px solid #4ade80", padding: "14px 18px", borderRadius: 8, marginBottom: 20 }}>
-            <div style={{ fontWeight: 800, color: "#4ade80" }}>Updated</div>
+            <div style={{ fontWeight: 800, color: "#4ade80" }}><Translate text='Updated' /></div>
             <p style={{ margin: "4px 0 0", color: "#ffffff", fontSize: 13 }}>{actionData.message}</p>
           </div>
         )}
@@ -546,10 +547,12 @@ export default function ProductScarcityPage() {
         <div className="xpp-live-preview-box" dir={isPreviewRtl ? "rtl" : "ltr"}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
             <span style={{ fontSize: 12, fontWeight: 800, color: "#FFD700", textTransform: "uppercase", letterSpacing: 1 }}>
-              Real-Time Storefront Preview ({selectedLang.toUpperCase()})
+              
+                                        <Translate text='Real-Time Storefront Preview (' />{selectedLang.toUpperCase()})
             </span>
             <span style={{ fontSize: 12, color: "#888888" }}>
-              Preset: {designPreset}
+              
+                                        <Translate text='Preset:' /> {designPreset}
             </span>
           </div>
 
@@ -683,9 +686,10 @@ export default function ProductScarcityPage() {
         <div className="xpp-card" style={{ border: "1.5px solid rgba(212, 175, 55, 0.4)", background: "linear-gradient(135deg, #18150f 0%, #141414 100%)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
             <div>
-              <h2 className="xpp-card-title">How to Place this Block on Your Store</h2>
+              <h2 className="xpp-card-title"><Translate text='How to Place this Block on Your Store' /></h2>
               <p className="xpp-card-desc" style={{ margin: 0 }}>
-                This is a native Shopify <strong>Product Information Block</strong>. Open your Theme Editor, go to any Product template, click <strong>"Add block"</strong> under Product information, and select <strong>"XPoost: Product Scarcity"</strong>.
+                
+                                              <Translate text='This is a native Shopify' /> <strong><Translate text='Product Information Block' /></strong><Translate text='. Open your Theme Editor, go to any Product template, click' /> <strong><Translate text='"Add block"' /></strong>  <Translate text='under Product information, and select' /> <strong><Translate text='"XPoost: Product Scarcity"' /></strong>.
               </p>
             </div>
             <a
@@ -694,8 +698,9 @@ export default function ProductScarcityPage() {
               rel="noreferrer"
               className="xpp-btn xpp-btn--primary"
             >
-              Open Theme Editor &rarr;
-            </a>
+              
+                                        <Translate text='Open Theme Editor &rarr;' />
+                                      </a>
           </div>
         </div>
 
@@ -712,10 +717,11 @@ export default function ProductScarcityPage() {
           <div className="xpp-card">
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <div>
-                <h2 className="xpp-card-title">Feature Activation</h2>
+                <h2 className="xpp-card-title"><Translate text='Feature Activation' /></h2>
                 <p className="xpp-card-desc" style={{ margin: 0 }}>
-                  Enable or disable the Product Scarcity block globally across your store.
-                </p>
+                  
+                                                    <Translate text='Enable or disable the Product Scarcity block globally across your store.' />
+                                                  </p>
               </div>
               <label style={{ display: "inline-flex", alignItems: "center", gap: 10, cursor: "pointer", fontSize: 15, fontWeight: 700 }}>
                 <input
@@ -732,52 +738,54 @@ export default function ProductScarcityPage() {
 
           {/* 1. Design Presets */}
           <div className="xpp-card">
-            <h2 className="xpp-card-title">1. Choose a Design Layout</h2>
+            <h2 className="xpp-card-title"><Translate text='1. Choose a Design Layout' /></h2>
             <p className="xpp-card-desc">
-              Select the visual style that matches your brand and conversion strategy.
-            </p>
+              
+                                        <Translate text='Select the visual style that matches your brand and conversion strategy.' />
+                                      </p>
 
             <div className="xpp-preset-grid">
               <div
                 className={`xpp-preset-card ${designPreset === "pulse_meter" ? "xpp-preset-card--active" : ""}`}
                 onClick={() => setDesignPreset("pulse_meter")}
               >
-                <div className="xpp-preset-name">Fire Pulse & Meter</div>
-                <p className="xpp-preset-desc">Animated gradient progress bar with flickering flame icon.</p>
+                <div className="xpp-preset-name"><Translate text='Fire Pulse & Meter' /></div>
+                <p className="xpp-preset-desc"><Translate text='Animated gradient progress bar with flickering flame icon.' /></p>
               </div>
 
               <div
                 className={`xpp-preset-card ${designPreset === "urgency_badge" ? "xpp-preset-card--active" : ""}`}
                 onClick={() => setDesignPreset("urgency_badge")}
               >
-                <div className="xpp-preset-name">Live Radar Pill</div>
-                <p className="xpp-preset-desc">Compact badge with a pulsing radar beacon dot.</p>
+                <div className="xpp-preset-name"><Translate text='Live Radar Pill' /></div>
+                <p className="xpp-preset-desc"><Translate text='Compact badge with a pulsing radar beacon dot.' /></p>
               </div>
 
               <div
                 className={`xpp-preset-card ${designPreset === "luxury_card" ? "xpp-preset-card--active" : ""}`}
                 onClick={() => setDesignPreset("luxury_card")}
               >
-                <div className="xpp-preset-name">Luxury Minimalist Box</div>
-                <p className="xpp-preset-desc">Framed gold accent card showing stock and live viewers.</p>
+                <div className="xpp-preset-name"><Translate text='Luxury Minimalist Box' /></div>
+                <p className="xpp-preset-desc"><Translate text='Framed gold accent card showing stock and live viewers.' /></p>
               </div>
 
               <div
                 className={`xpp-preset-card ${designPreset === "flash_demand" ? "xpp-preset-card--active" : ""}`}
                 onClick={() => setDesignPreset("flash_demand")}
               >
-                <div className="xpp-preset-name">Flash Warehouse Banner</div>
-                <p className="xpp-preset-desc">High-urgency warehouse stock level bar with demand tag.</p>
+                <div className="xpp-preset-name"><Translate text='Flash Warehouse Banner' /></div>
+                <p className="xpp-preset-desc"><Translate text='High-urgency warehouse stock level bar with demand tag.' /></p>
               </div>
             </div>
           </div>
 
           {/* 2. Stock Source & Quantity Logic */}
           <div className="xpp-card">
-            <h2 className="xpp-card-title">2. Stock & Quantity Logic</h2>
+            <h2 className="xpp-card-title"><Translate text='2. Stock & Quantity Logic' /></h2>
             <p className="xpp-card-desc">
-              Choose whether to display actual Shopify inventory or a simulated low-stock range.
-            </p>
+              
+                                        <Translate text='Choose whether to display actual Shopify inventory or a simulated low-stock range.' />
+                                      </p>
 
             <div style={{ display: "flex", gap: 16, marginBottom: 20 }}>
               <label
@@ -797,10 +805,11 @@ export default function ProductScarcityPage() {
                   onChange={() => setStockSource("shopify")}
                   style={{ marginRight: 8 }}
                 />
-                <span style={{ fontWeight: 800, color: "#fff" }}>Real Shopify Inventory</span>
+                <span style={{ fontWeight: 800, color: "#fff" }}><Translate text='Real Shopify Inventory' /></span>
                 <p style={{ margin: "4px 0 0", fontSize: 12, color: "#aaa" }}>
-                  Reads the actual inventory quantity of the product or selected variant.
-                </p>
+                  
+                                                    <Translate text='Reads the actual inventory quantity of the product or selected variant.' />
+                                                  </p>
               </label>
 
               <label
@@ -820,16 +829,17 @@ export default function ProductScarcityPage() {
                   onChange={() => setStockSource("manual_range")}
                   style={{ marginRight: 8 }}
                 />
-                <span style={{ fontWeight: 800, color: "#fff" }}>Simulated Stock Range</span>
+                <span style={{ fontWeight: 800, color: "#fff" }}><Translate text='Simulated Stock Range' /></span>
                 <p style={{ margin: "4px 0 0", fontSize: 12, color: "#aaa" }}>
-                  Generates an enticing low quantity (e.g. between 3 and 12) per product.
-                </p>
+                  
+                                                    <Translate text='Generates an enticing low quantity (e.g. between 3 and 12) per product.' />
+                                                  </p>
               </label>
             </div>
 
             {stockSource === "shopify" ? (
               <div className="xpp-field-group">
-                <label className="xpp-label">Low Stock Cutoff Threshold</label>
+                <label className="xpp-label"><Translate text='Low Stock Cutoff Threshold' /></label>
                 <input
                   type="number"
                   name="lowStockThreshold"
@@ -839,14 +849,15 @@ export default function ProductScarcityPage() {
                   onChange={(e) => setLowStockThreshold(Number(e.target.value))}
                 />
                 <div className="xpp-hint">
-                  Only show the scarcity block when Shopify inventory is at or below this number. Set to 0 to show for all inventory quantities.
-                </div>
+                  
+                                                    <Translate text='Only show the scarcity block when Shopify inventory is at or below this number. Set to 0 to show for all inventory quantities.' />
+                                                  </div>
               </div>
             ) : (
               <div className="xpp-row">
                 <div className="xpp-field-group" style={{ flex: 1 }}>
                   <input type="hidden" name="lowStockThreshold" value={lowStockThreshold || 0} />
-                  <label className="xpp-label">Minimum Stock (Min)</label>
+                  <label className="xpp-label"><Translate text='Minimum Stock (Min)' /></label>
                   <input
                     type="number"
                     name="minStock"
@@ -856,7 +867,7 @@ export default function ProductScarcityPage() {
                   />
                 </div>
                 <div className="xpp-field-group" style={{ flex: 1 }}>
-                  <label className="xpp-label">Maximum Stock (Max)</label>
+                  <label className="xpp-label"><Translate text='Maximum Stock (Max)' /></label>
                   <input
                     type="number"
                     name="maxStock"
@@ -871,10 +882,11 @@ export default function ProductScarcityPage() {
 
           {/* 3. Text & Copy */}
           <div className="xpp-card">
-            <h2 className="xpp-card-title">3. Copy & Multi-Language Settings</h2>
+            <h2 className="xpp-card-title"><Translate text='3. Copy & Multi-Language Settings' /></h2>
             <p className="xpp-card-desc">
-              Customize the scarcity block message for each of the 7 supported languages. Select a language to edit or click &quot;Load Predefined Values&quot; for instant high-converting copy.
-            </p>
+              
+                                        <Translate text='Customize the scarcity block message for each of the 7 supported languages. Select a language to edit or click &quot;Load Predefined Values&quot; for instant high-converting copy.' />
+                                      </p>
 
             <FeatureLanguageSwitcher
               selectedLang={selectedLang}
@@ -884,23 +896,25 @@ export default function ProductScarcityPage() {
             />
 
             <div style={{ marginBottom: 14 }}>
-              <span style={{ fontSize: 12, color: "#888888", marginRight: 8 }}>Available Variables:</span>
+              <span style={{ fontSize: 12, color: "#888888", marginRight: 8 }}><Translate text='Available Variables:' /></span>
               <span
                 className="xpp-var-chip"
                 onClick={() => handleTextChange("headlineText", `${currentCopy.headlineText} {stock}`)}
               >
-                + &#123;stock&#125;
-              </span>
+                
+                                              <Translate text='+ &#123;stock&#125;' />
+                                            </span>
               <span
                 className="xpp-var-chip"
                 onClick={() => handleTextChange("headlineText", `${currentCopy.headlineText} {viewers}`)}
               >
-                + &#123;viewers&#125;
-              </span>
+                
+                                              <Translate text='+ &#123;viewers&#125;' />
+                                            </span>
             </div>
 
             <div className="xpp-field-group">
-              <label className="xpp-label">Headline Template ({selectedLang.toUpperCase()})</label>
+              <label className="xpp-label"><Translate text='Headline Template (' />{selectedLang.toUpperCase()})</label>
               <input
                 type="text"
                 className="xpp-input"
@@ -911,7 +925,7 @@ export default function ProductScarcityPage() {
             </div>
 
             <div className="xpp-field-group">
-              <label className="xpp-label">Subtitle / Reassurance Note ({selectedLang.toUpperCase()})</label>
+              <label className="xpp-label"><Translate text='Subtitle / Reassurance Note (' />{selectedLang.toUpperCase()})</label>
               <input
                 type="text"
                 className="xpp-input"
@@ -923,7 +937,7 @@ export default function ProductScarcityPage() {
 
             <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
               <div className="xpp-field-group" style={{ flex: "1 1 220px" }}>
-                <label className="xpp-label">Badge Tag Text ({selectedLang.toUpperCase()})</label>
+                <label className="xpp-label"><Translate text='Badge Tag Text (' />{selectedLang.toUpperCase()})</label>
                 <input
                   type="text"
                   className="xpp-input"
@@ -933,7 +947,7 @@ export default function ProductScarcityPage() {
                 />
               </div>
               <div className="xpp-field-group" style={{ flex: "1 1 220px" }}>
-                <label className="xpp-label">Viewing Counter Suffix ({selectedLang.toUpperCase()})</label>
+                <label className="xpp-label"><Translate text='Viewing Counter Suffix (' />{selectedLang.toUpperCase()})</label>
                 <input
                   type="text"
                   className="xpp-input"
@@ -947,10 +961,11 @@ export default function ProductScarcityPage() {
 
           {/* 4. Product Targeting */}
           <div className="xpp-card">
-            <h2 className="xpp-card-title">4. Product Inclusion & Exclusion Filters</h2>
+            <h2 className="xpp-card-title"><Translate text='4. Product Inclusion & Exclusion Filters' /></h2>
             <p className="xpp-card-desc">
-              Control exactly which products display this scarcity block.
-            </p>
+              
+                                        <Translate text='Control exactly which products display this scarcity block.' />
+                                      </p>
 
             <div style={{ display: "flex", gap: 14, marginBottom: 16 }}>
               {[
@@ -985,7 +1000,8 @@ export default function ProductScarcityPage() {
             {targetMode !== "ALL" && (
               <div>
                 <label className="xpp-label">
-                  Search & Select Products {targetMode === "EXCLUDE" ? "to Exclude" : "to Target"}
+                  
+                                                    <Translate text='Search & Select Products' /> {targetMode === "EXCLUDE" ? "to Exclude" : "to Target"}
                 </label>
                 <div style={{ position: "relative", marginBottom: 12 }}>
                   <input
@@ -997,8 +1013,9 @@ export default function ProductScarcityPage() {
                   />
                   {isSearching && (
                     <span style={{ position: "absolute", right: 12, top: 10, fontSize: 12, color: "#D4AF37" }}>
-                      Searching store...
-                    </span>
+                      
+                                                                <Translate text='Searching store...' />
+                                                              </span>
                   )}
                 </div>
 
@@ -1034,7 +1051,8 @@ export default function ProductScarcityPage() {
                 {/* Selected Products Badges */}
                 <div style={{ marginTop: 10 }}>
                   <span style={{ fontSize: 12, color: "#888888", display: "block", marginBottom: 6 }}>
-                    Currently Selected ({selectedProductIds.length}):
+                    
+                                                          <Translate text='Currently Selected (' />{selectedProductIds.length}):
                   </span>
                   {selectedProductsList.length > 0 ? (
                     <div style={{ display: "flex", flexWrap: "wrap" }}>
@@ -1042,13 +1060,14 @@ export default function ProductScarcityPage() {
                         <div key={p.id} className="xpp-product-chip">
                           <span>{p.title}</span>
                           <button type="button" onClick={() => toggleProductSelection(p.id)}>
-                            &times;
-                          </button>
+                            
+                                                              <Translate text='&times;' />
+                                                            </button>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <span style={{ fontSize: 12, color: "#666" }}>No products selected yet. Search above to add products.</span>
+                    <span style={{ fontSize: 12, color: "#666" }}><Translate text='No products selected yet. Search above to add products.' /></span>
                   )}
                 </div>
               </div>
@@ -1057,14 +1076,15 @@ export default function ProductScarcityPage() {
 
           {/* 5. Colors & Styling */}
           <div className="xpp-card">
-            <h2 className="xpp-card-title">5. Colors & Appearance</h2>
+            <h2 className="xpp-card-title"><Translate text='5. Colors & Appearance' /></h2>
             <p className="xpp-card-desc">
-              Match the scarcity badge colors to your theme.
-            </p>
+              
+                                        <Translate text='Match the scarcity badge colors to your theme.' />
+                                      </p>
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16 }}>
               <div className="xpp-field-group">
-                <label className="xpp-label">Accent / Highlight</label>
+                <label className="xpp-label"><Translate text='Accent / Highlight' /></label>
                 <div className="xpp-color-picker">
                   <input
                     type="color"
@@ -1077,7 +1097,7 @@ export default function ProductScarcityPage() {
               </div>
 
               <div className="xpp-field-group">
-                <label className="xpp-label">Card Background</label>
+                <label className="xpp-label"><Translate text='Card Background' /></label>
                 <div className="xpp-color-picker">
                   <input
                     type="color"
@@ -1090,7 +1110,7 @@ export default function ProductScarcityPage() {
               </div>
 
               <div className="xpp-field-group">
-                <label className="xpp-label">Text Color</label>
+                <label className="xpp-label"><Translate text='Text Color' /></label>
                 <div className="xpp-color-picker">
                   <input
                     type="color"
@@ -1103,7 +1123,7 @@ export default function ProductScarcityPage() {
               </div>
 
               <div className="xpp-field-group">
-                <label className="xpp-label">Border Color</label>
+                <label className="xpp-label"><Translate text='Border Color' /></label>
                 <div className="xpp-color-picker">
                   <input
                     type="color"
