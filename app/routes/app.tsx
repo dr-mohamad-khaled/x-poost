@@ -155,7 +155,7 @@ export default function App() {
         <a href="/app/product-scarcity">{i18n.navProductScarcity || "Product Stock Scarcity"}</a>
         <a href="/app/social-bar">{i18n.navSocialBar || "Support & Social Bar"}</a>
         <a href="/app/scarcity">{i18n.navUrgency || "Urgency Notifications"}</a>
-        <a href="/app/help">{isAr ? "المساعدة والدليل" : "Help & Guide"}</a>
+        <a href="/app/help">{i18n.navHelp || "Help & Guide"}</a>
         {EXIT_INTENT_AVAILABLE ? <a href="/app/exit-intent">{i18n.navExitIntent || "Exit-Intent Recovery"}</a> : null}
       </NavMenu>
 
@@ -267,10 +267,10 @@ export default function App() {
             <Link
               to="/app/help"
               className={`xp-help-link${pathname.startsWith("/app/help") ? " is-active" : ""}`}
-              aria-label={isAr ? "المساعدة والدليل" : "Help & Guide"}
+              aria-label={i18n.navHelp || "Help & Guide"}
             >
               <span className="xp-help-q">?</span>
-              {isAr ? "المساعدة والدليل" : "Help & Guide"}
+              {i18n.navHelp || "Help & Guide"}
             </Link>
             <select
               id="top-dashboard-lang-select"
