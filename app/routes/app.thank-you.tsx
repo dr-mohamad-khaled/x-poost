@@ -400,10 +400,10 @@ function ListView({ data }: { data: LoaderData }) {
         <div className="ty-tpl-grid">
           {TEMPLATES.map((t) => (
             <Link key={t.key} to={`/app/thank-you?offer=new&tpl=${t.key}`} className="ty-tpl">
-              <div className="ty-tpl-kind">{TY_KIND_META[t.kind].name}</div>
-              <div className="ty-tpl-name">{t.name}</div>
-              <div className="ty-tpl-tag">{t.tagline}</div>
-              <div className="ty-tpl-why">{t.why}</div>
+              <div className="ty-tpl-kind"><Translate text={TY_KIND_META[t.kind].name} /></div>
+              <div className="ty-tpl-name"><Translate text={t.name} /></div>
+              <div className="ty-tpl-tag"><Translate text={t.tagline} /></div>
+              <div className="ty-tpl-why"><Translate text={t.why} /></div>
             </Link>
           ))}
         </div>
@@ -592,8 +592,8 @@ function Editor({ data, offerParam, tpl }: { data: LoaderData; offerParam: strin
             <div className="ty-kinds">
               {TY_KINDS.map((k) => (
                 <button key={k} type="button" className={`ty-kind ${draft.kind === k ? "on" : ""}`} onClick={() => changeKind(k)}>
-                  <b>{TY_KIND_META[k].name}</b>
-                  <span>{TY_KIND_META[k].blurb}</span>
+                  <b><Translate text={TY_KIND_META[k].name} /></b>
+                  <span><Translate text={TY_KIND_META[k].blurb} /></span>
                 </button>
               ))}
             </div>
