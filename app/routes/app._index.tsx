@@ -197,14 +197,14 @@ export default function XPoostDashboard() {
             <div key={f.id} className={`xp-card ${f.enabled ? "is-enabled" : ""}`}>
               <div className="xp-card-header">
                 <div className="xp-card-meta">
-                  <h3 className="xp-card-title">{f.title}</h3>
+                  <h3 className="xp-card-title"><Translate text={f.title} /></h3>
                   <span className={`xp-pill ${f.enabled ? "xp-pill--active" : "xp-pill--inactive"}`}>
-                    {f.enabled ? "Active" : "Disabled"}
+                    {f.enabled ? <Translate text="Active" /> : <Translate text={f.badge} />}
                   </span>
                 </div>
               </div>
               <FeatureDemo id={f.id as DemoId} size="sm" />
-              <p className="xp-card-desc">{f.description}</p>
+              <p className="xp-card-desc"><Translate text={f.description} /></p>
               <div className="xp-card-actions">
                 <button className={`xp-toggle-btn ${f.enabled ? "xp-toggle-btn--off" : "xp-toggle-btn--on"}`} disabled={isSubmitting} onClick={async (e) => { const btn = e.currentTarget; btn.disabled = true; btn.innerText = "Saving..."; try { const token = await shopify.idToken(); const res = await fetch("/api/toggle", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded", "Authorization": `Bearer ${token}` }, body: new URLSearchParams({ featureKey: f.id, enable: f.enabled ? "false" : "true" }) }); if (!res.ok) { shopify.toast.show("Network Error: " + res.status); btn.disabled = false; btn.innerText = f.enabled ? "Disable" : "Enable"; return; } const json = await res.json(); if (!json.ok) { shopify.toast.show("Action Error: " + (json.error || "Unknown error")); btn.disabled = false; btn.innerText = f.enabled ? "Disable" : "Enable"; return; } window.location.reload(); } catch (err) { shopify.toast.show("Error: " + err.message); btn.disabled = false; btn.innerText = f.enabled ? "Disable" : "Enable"; } }}>{f.enabled ? "Disable" : "Enable"}</button>
                 <Link to={f.route} className="xp-config-link">
@@ -332,7 +332,7 @@ function FeatureSlider({ features }: { features: SliderFeature[] }) {
                     {f.enabled ? "Active" : "Off"}
                   </span>
                 </div>
-                <p className="xp-slide-pitch">{meta.pitch}</p>
+                <p className="xp-slide-pitch"><Translate text={meta.pitch} /></p>
               </div>
               <Link to={f.route} className="xp-slide-link" tabIndex={isActive ? 0 : -1}>
                 {f.enabled ? "Configure" : "Set up"}  <Translate text='&rarr;' />
@@ -497,7 +497,7 @@ function CaseStudyStrip() {
     <div className={`xp-case ${index === null ? "is-pending" : ""}`} aria-live="polite">
       <div className="xp-case-head">
         <span className="xp-case-tag"><Translate text='Case Study' /></span>
-        <span className="xp-case-feature">{study.feature}</span>
+        <span className="xp-case-feature"><Translate text={study.feature} /></span>
         <span className="xp-case-count">
           {shown + 1} / {total}
         </span>
@@ -514,7 +514,7 @@ function CaseStudyStrip() {
       <div key={shown} className="xp-case-body">
         <p className="xp-case-headline">{study.headline}</p>
         <p className="xp-case-detail">
-          {study.detail}{" "}
+          <Translate text={study.detail} />{" "}
           <Link to={study.route} className="xp-case-apply">
             
                                   <Translate text='Apply to my store &rarr;' />
