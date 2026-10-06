@@ -669,7 +669,7 @@ export default function Pricing() {
           </h1>
           <p className="xpp-hero-subtitle">
             
-                                  <Translate text='Other apps charge you more as you grow. XPoost gives you' /> <span className="xpp-hl-gold"><Translate text='6 revenue-driving engines' /></span>  <Translate text='with' /> <span className="xpp-badge-green"><Translate text='zero impression caps' /></span>, <span className="xpp-badge-green"><Translate text='no order limits' /></span><Translate text=', and' /> <span className="xpp-badge-green"><Translate text='no hidden fees' /></span><Translate text='. Your growth should never come with a penalty.' />
+                                  <Translate text='Other apps charge you more as you grow. XPoost gives you' /> <span className="xpp-hl-gold"><Translate text='8 revenue-driving engines' /></span>  <Translate text='with' /> <span className="xpp-badge-green"><Translate text='zero impression caps' /></span>, <span className="xpp-badge-green"><Translate text='no order limits' /></span><Translate text=', and' /> <span className="xpp-badge-green"><Translate text='no hidden fees' /></span><Translate text='. Your growth should never come with a penalty.' />
                                 </p>
         </div>
 
@@ -686,7 +686,7 @@ export default function Pricing() {
             <div className="xpp-proof-label"><Translate text='Impressions, Orders &' /><br /><span className="xpp-badge-green"><Translate text='Zero Quotas' /></span>  <Translate text='Guaranteed' /></div>
           </div>
           <div className="xpp-proof-stat">
-            <div className="xpp-proof-num"><Translate text='6-in-1' /></div>
+            <div className="xpp-proof-num"><Translate text='8-in-1' /></div>
             <div className="xpp-proof-label"><Translate text='Conversion Tools' /><br /><span className="xpp-hl-gold"><Translate text='Replaces 5+ Separate Apps' /></span></div>
           </div>
         </div>
@@ -726,7 +726,7 @@ export default function Pricing() {
             <h2 className="xpp-plan-name"><Translate text='Monthly Conversion Suite' /></h2>
             <p className="xpp-plan-desc">
               
-                                        <Translate text='The full 6-in-1 engine.' /> <span className="xpp-hl-gold"><Translate text='No feature locks' /></span>. <span className="xpp-hl-gold"><Translate text='No usage caps' /></span><Translate text='. Start free for 7 days.' />
+                                        <Translate text='The full 8-in-1 engine.' /> <span className="xpp-hl-gold"><Translate text='No feature locks' /></span>. <span className="xpp-hl-gold"><Translate text='No usage caps' /></span><Translate text='. Start free for 7 days.' />
                                       </p>
             <div className="xpp-plan-price-box">
               <span className="xpp-plan-price">$20</span>
@@ -888,7 +888,7 @@ export default function Pricing() {
               </div>
               <div className="xpp-vs-row">
                 <span className="xpp-vs-row-label"><Translate text='Apps Needed for Full Stack' /></span>
-                <span className="xpp-badge-red"><Translate text='4 - 6 separate apps' /></span>
+                <span className="xpp-badge-red"><Translate text='6 - 8 separate apps' /></span>
               </div>
               <div className="xpp-vs-row">
                 <span className="xpp-vs-row-label"><Translate text='Store Speed Impact' /></span>
@@ -911,7 +911,7 @@ export default function Pricing() {
               </div>
               <div className="xpp-vs-row">
                 <span className="xpp-vs-row-label"><Translate text='Features Included' /></span>
-                <span className="xpp-badge-green"><Translate text='All 6 tools' /></span>
+                <span className="xpp-badge-green"><Translate text='All 8 tools' /></span>
               </div>
               <div className="xpp-vs-row">
                 <span className="xpp-vs-row-label"><Translate text='Apps Needed' /></span>
@@ -932,7 +932,7 @@ export default function Pricing() {
           <h3 className="xpp-compare-title"><Translate text='The Real Cost of App Bloat' /></h3>
           <p className="xpp-compare-desc">
             
-                                  <Translate text='Most merchants install 5 to 6 separate apps that conflict with each other, slow down their store,
+                                  <Translate text='Most merchants install 6 to 8 separate apps that conflict with each other, slow down their store,
                                   and charge escalating fees as traffic grows. This is exactly what that looks like:' />
                                 </p>
           <table className="xpp-table">
@@ -999,7 +999,7 @@ export default function Pricing() {
                 
                                               <Translate text='No. XPoost loads a single ultra-lightweight script hosted on Shopify&apos;s global CDN.
                                               It adds' /> <span className="xpp-hl-gold"><Translate text='less than 15KB' /></span>  <Translate text='to your page weight -- lighter than a single product thumbnail.
-                                              Replacing 5 separate apps with XPoost will actually' /> <span className="xpp-badge-green"><Translate text='make your store faster' /></span>.
+                                              Replacing 8 separate apps with XPoost will actually' /> <span className="xpp-badge-green"><Translate text='make your store faster' /></span>.
               </p>
             </div>
             <div className="xpp-faq-item">
@@ -1029,7 +1029,7 @@ export default function Pricing() {
               <div className="xpp-faq-q"><Translate text='Why is XPoost so much cheaper than alternatives?' /></div>
               <p className="xpp-faq-a">
                 
-                                              <Translate text='Because we built' /> <span className="xpp-hl-gold"><Translate text='one unified modern codebase' /></span>  <Translate text='instead of 6 separate bloated apps.
+                                              <Translate text='Because we built' /> <span className="xpp-hl-gold"><Translate text='one unified modern codebase' /></span>  <Translate text='instead of 8 separate bloated apps.
                                               Lower infrastructure overhead means we pass the savings directly to you.' />
                                             </p>
             </div>
