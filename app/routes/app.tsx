@@ -136,7 +136,7 @@ export default function App() {
   const handleLanguageChange = (newLang: SupportedLanguage) => {
     fetcher.submit(
       { actionType: "setDashboardLocale", locale: newLang },
-      { method: "post" }
+      { method: "post", action: "/app" }
     );
   };
 
