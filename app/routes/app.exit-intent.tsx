@@ -35,9 +35,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         bodyText: "Take an extra 10% off your entire order right now before this VIP deal expires.",
         buttonText: "Claim 10% Off & Checkout",
         suppressionDays: 1,
-        backgroundColor: "#2E2823",
-        accentColor: "#D9C9A8",
-        textColor: "#F6F1E7",
+        backgroundColor: "#141414",
+        accentColor: "#F2F2F2",
+        textColor: "#FFFFFF",
       },
     });
   }
@@ -80,9 +80,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const bodyText = String(formData.get("bodyText") || "Take an extra 10% off your entire order right now.");
   const buttonText = String(formData.get("buttonText") || "Claim 10% Off & Checkout");
   const suppressionDays = Math.max(1, parseInt(String(formData.get("suppressionDays") || "1"), 10));
-  const backgroundColor = String(formData.get("backgroundColor") || "#2E2823");
-  const accentColor = String(formData.get("accentColor") || "#D9C9A8");
-  const textColor = String(formData.get("textColor") || "#F6F1E7");
+  const backgroundColor = String(formData.get("backgroundColor") || "#141414");
+  const accentColor = String(formData.get("accentColor") || "#F2F2F2");
+  const textColor = String(formData.get("textColor") || "#FFFFFF");
   const translationsJsonRaw = String(formData.get("translationsJson") || "");
 
   await prisma.exitIntentConfig.upsert({
@@ -177,8 +177,8 @@ export default function ExitIntentSettings() {
   };
 
   const [code, setCode] = useState(config.discountCode || "SAVE10");
-  const [accentColor, setAccentColor] = useState(config.accentColor || "#D9C9A8");
-  const [bgColor, setBgColor] = useState(config.backgroundColor || "#2E2823");
+  const [accentColor, setAccentColor] = useState(config.accentColor || "#F2F2F2");
+  const [bgColor, setBgColor] = useState(config.backgroundColor || "#141414");
   const [copied, setCopied] = useState(false);
 
   // Live countdown timer in preview
@@ -347,9 +347,9 @@ export default function ExitIntentSettings() {
                     <input
                       type="color"
                       name="textColor"
-                      defaultValue={config.textColor || "#F6F1E7"}
+                      defaultValue={config.textColor || "#FFFFFF"}
                     />
-                    <span>{config.textColor || "#F6F1E7"}</span>
+                    <span>{config.textColor || "#FFFFFF"}</span>
                   </div>
                 </div>
               </div>
@@ -383,7 +383,7 @@ export default function ExitIntentSettings() {
 
               <div className="xp-exit-coupon-box" onClick={handleCopy} style={{ borderColor: accentColor }}>
                 <span className="xp-coupon-code">{code}</span>
-                <span className="xp-copy-badge" style={{ background: accentColor, color: "#D9C9A8" }}>
+                <span className="xp-copy-badge" style={{ background: accentColor, color: "#F2F2F2" }}>
                   {copied ? "COPIED! ✓" : "CLICK TO COPY"}
                 </span>
               </div>
@@ -391,11 +391,11 @@ export default function ExitIntentSettings() {
               <button
                 type="button"
                 className="xp-exit-cta-btn"
-                style={{ background: accentColor, color: "#D9C9A8" }}
+                style={{ background: accentColor, color: "#F2F2F2" }}
               >
                 {currentCopy.buttonText}  <Translate text='&rarr;' />
                                             </button>
-              <div style={{ marginTop: 8, fontSize: 11, color: "#857f72", textAlign: "center", cursor: "pointer" }}>
+              <div style={{ marginTop: 8, fontSize: 11, color: "#7f7f7f", textAlign: "center", cursor: "pointer" }}>
                 {currentCopy.dismissText}
               </div>
             </div>
@@ -410,8 +410,8 @@ const EXIT_INTENT_STYLES = `
 
   /* Native Luxury Dark Section Cards */
   .xp-section-card {
-    background: #16140F !important;
-    border: 1px solid #2E2A22 !important;
+    background: #0F0E0C !important;
+    border: 1px solid #2A2A2A !important;
     border-radius: 12px !important;
     padding: 24px !important;
     margin-bottom: 20px !important;
@@ -421,7 +421,7 @@ const EXIT_INTENT_STYLES = `
   .xp-section-title {
     font-size: 16px !important;
     font-weight: 700 !important;
-    color: #C9B78F !important; margin: 0 0 16px 0 !important; border-bottom: 1px solid #2E2A22 !important; padding-bottom: 12px !important;
+    color: #FFB000 !important; margin: 0 0 16px 0 !important; border-bottom: 1px solid #2A2A2A !important; padding-bottom: 12px !important;
     display: flex !important;
     align-items: center !important;
     gap: 8px !important;
@@ -440,7 +440,7 @@ const EXIT_INTENT_STYLES = `
   }
   .xp-sub {
     font-size: 12px;
-    color: #8F8A7E;
+    color: #8A8A8A;
     margin: 4px 0 12px;
   }
   .xp-row {
@@ -471,14 +471,14 @@ const EXIT_INTENT_STYLES = `
   }
   .xp-field small {
     font-size: 11px;
-    color: #8F8A7E;
+    color: #8A8A8A;
   }
   .xp-input {
     padding: 8px 12px;
-    border: 1px solid #3A352B;
+    border: 1px solid #353535;
     border-radius: 6px;
     font-size: 13px;
-    background: #16140F;
+    background: #0F0E0C;
   }
   .xp-grid-2 {
     display: grid;
@@ -498,15 +498,15 @@ const EXIT_INTENT_STYLES = `
   .xp-color-wrap input[type="color"] {
     width: 38px;
     height: 34px;
-    border: 1px solid #3A352B;
+    border: 1px solid #353535;
     border-radius: 4px;
     cursor: pointer;
     padding: 0;
   }
   .xp-btn-gold {
-    background: #0E0D0B;
-    color: #C9B78F;
-    border: 1px solid #C9B78F;
+    background: #060605;
+    color: #FFB000;
+    border: 1px solid #FFB000;
     padding: 12px 20px;
     border-radius: 6px;
     font-weight: 700;
@@ -531,7 +531,7 @@ const EXIT_INTENT_STYLES = `
     position: absolute;
     top: 14px;
     right: 16px;
-    color: #8F8A7E;
+    color: #8A8A8A;
     font-size: 20px;
     cursor: pointer;
   }
@@ -561,7 +561,7 @@ const EXIT_INTENT_STYLES = `
   }
   .xp-exit-desc {
     font-size: 12px;
-    color: #A39E91;
+    color: #9E9E9E;
     margin: 0 0 16px;
     line-height: 1.4;
   }

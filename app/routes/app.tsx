@@ -159,7 +159,7 @@ export default function App() {
         {EXIT_INTENT_AVAILABLE ? <a href="/app/exit-intent">{i18n.navExitIntent || "Exit-Intent Recovery"}</a> : null}
       </NavMenu>
 
-      <div dir={isAr ? "rtl" : "ltr"} style={{ width: "100%", minHeight: "100vh", background: "#0e0d0b" }}>
+      <div dir={isAr ? "rtl" : "ltr"} style={{ width: "100%", minHeight: "100vh", background: "#060605" }}>
         <style>{`
           /* GLOBAL DARK THEME RESETS */
           
@@ -167,56 +167,56 @@ export default function App() {
           .xp-section-title {
             font-size: 16px !important;
             font-weight: 700 !important;
-            color: #C9B78F !important;
+            color: #FFB000 !important;
             margin: 0 0 16px 0 !important;
             display: flex !important;
             align-items: center !important;
             gap: 8px !important;
-                        border-bottom: 1px solid #2E2A22 !important;
+                        border-bottom: 1px solid #2A2A2A !important;
             padding-bottom: 12px !important;
           }
 
           .xp-help-link {
             display: inline-flex; align-items: center; gap: 7px;
             padding: 6px 14px; border-radius: 999px;
-            border: 1px solid rgba(201,183,143,0.4);
+            border: 1px solid rgba(255,176,0,0.4);
             background: transparent;
-            color: #E9DFC8 !important; font-size: 12px; font-weight: 700;
+            color: #FFD985 !important; font-size: 12px; font-weight: 700;
             text-decoration: none !important; cursor: pointer;
             transition: background .2s, border-color .2s;
           }
           .xp-help-link:hover, .xp-help-link.is-active {
-            background: rgba(201,183,143,0.14); border-color: rgba(201,183,143,0.7);
+            background: rgba(255,176,0,0.14); border-color: rgba(255,176,0,0.7);
           }
           .xp-help-q {
             display: inline-grid; place-items: center; width: 18px; height: 18px;
-            border-radius: 50%; background: #C9B78F; color: #0E0D0B;
+            border-radius: 50%; background: #FFB000; color: #060605;
             font-size: 11px; font-weight: 900;
           }
 
           :root {
-            --p-color-bg-surface: #16140F;
-            --p-color-bg-surface-secondary: #1d1a14;
+            --p-color-bg-surface: #0F0E0C;
+            --p-color-bg-surface-secondary: #171614;
             --p-color-text: #ffffff;
-            --p-color-text-secondary: #a39e91;
-            --p-color-border: #2E2A22;
+            --p-color-text-secondary: #9e9e9e;
+            --p-color-border: #2A2A2A;
             color-scheme: dark;
           }
           body, html {
-            background-color: #0e0d0b !important;
+            background-color: #060605 !important;
             color: #ffffff !important;
           }
           s-page, s-section, s-card {
-            --p-color-bg-surface: #16140F !important;
-            --p-color-bg-surface-secondary: #1d1a14 !important;
+            --p-color-bg-surface: #0F0E0C !important;
+            --p-color-bg-surface-secondary: #171614 !important;
             --p-color-text: #ffffff !important;
-            --p-color-text-secondary: #a39e91 !important;
-            --p-color-border: #2E2A22 !important;
+            --p-color-text-secondary: #9e9e9e !important;
+            --p-color-border: #2A2A2A !important;
             color: #ffffff !important;
           }
           s-section, s-card {
-            background: #16140F !important;
-            border: 1px solid #2E2A22 !important;
+            background: #0F0E0C !important;
+            border: 1px solid #2A2A2A !important;
             border-radius: 12px !important;
           }
         `}</style>
@@ -229,8 +229,8 @@ export default function App() {
             flexWrap: "wrap",
             gap: "12px",
             padding: "10px 20px",
-            background: "#13110D",
-            borderBottom: "1px solid #26231A",
+            background: "#0B0A08",
+            borderBottom: "1px solid #232323",
             position: "sticky",
             top: 0,
             zIndex: 50,
@@ -242,13 +242,13 @@ export default function App() {
                 fontFamily: 'Georgia, "Iowan Old Style", "Times New Roman", serif',
                 fontSize: "16px",
                 fontWeight: 600,
-                color: "#C9B78F",
+                color: "#FFB000",
               }}
             >
               XPoost
             </span>
-            <span style={{ fontSize: "12px", color: "#857f72" }}>|</span>
-            <span style={{ fontSize: "12px", color: "#a39e91", fontWeight: 500 }}>
+            <span style={{ fontSize: "12px", color: "#7f7f7f" }}>|</span>
+            <span style={{ fontSize: "12px", color: "#9e9e9e", fontWeight: 500 }}>
               {i18n.dashboardLangTitle || "Dashboard Language"}:
             </span>
           </div>
@@ -268,9 +268,9 @@ export default function App() {
               value={dashboardLocale}
               onChange={(e) => handleLanguageChange(e.target.value as SupportedLanguage)}
               style={{
-                background: "#1d1a14",
-                color: "#E9DFC8",
-                border: "1px solid #444138",
+                background: "#171614",
+                color: "#FFD985",
+                border: "1px solid #414141",
                 borderRadius: "6px",
                 padding: "6px 14px",
                 fontSize: "12px",
@@ -284,7 +284,7 @@ export default function App() {
                 <option
                   key={lang.code}
                   value={lang.code}
-                  style={{ background: "#1d1a14", color: "#f4f4f5" }}
+                  style={{ background: "#171614", color: "#f4f4f5" }}
                 >
                   {lang.nativeName} ({lang.label}) {lang.dir === "rtl" ? "[RTL]" : ""}
                 </option>

@@ -5,8 +5,8 @@
 
 .xpoost-scarcity-toast,
 #xpoost-root .xpoost-scarcity-toast {
-  --xps-bg: #2E2823;
-  --xps-gold: #D9C9A8;
+  --xps-bg: #141414;
+  --xps-gold: #F2F2F2;
   --xps-text: #FFFFFF;
   --xps-radius: 12px;
   --xps-bottom-desktop: 24px;
@@ -55,8 +55,8 @@ body:has(.drawer--active) .xpoost-scarcity-toast {
   flex-direction: column;
   width: 300px;
   max-width: calc(100vw - 32px);
-  background: var(--xps-bg, #2E2823);
-  border: 1px solid color-mix(in srgb, var(--xps-gold, #D9C9A8) 45%, transparent);
+  background: var(--xps-bg, #141414);
+  border: 1px solid color-mix(in srgb, var(--xps-gold, #F2F2F2) 45%, transparent);
   border-radius: var(--xps-radius, 12px);
   box-shadow: 0 10px 28px -4px rgba(0, 0, 0, 0.8);
   overflow: hidden;
@@ -250,7 +250,7 @@ body:has(.drawer--active) .xpoost-scarcity-toast {
   padding: 1px 7px;
   border-radius: 999px;
   background: var(--xps-gold);
-  color: #2e2823;
+  color: #141414;
   font-size: 9.5px;
   font-weight: 800;
   line-height: 1.2;

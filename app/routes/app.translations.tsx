@@ -278,8 +278,8 @@ export default function TranslationsPage() {
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
         .xpp-card {
-          background: #16140F;
-          border: 1px solid #2E2A22;
+          background: #0F0E0C;
+          border: 1px solid #2A2A2A;
           border-radius: 12px;
           padding: 24px;
           margin-bottom: 22px;
@@ -292,7 +292,7 @@ export default function TranslationsPage() {
         }
         .xpp-card-desc {
           font-size: 13px;
-          color: #b8b2a3;
+          color: #b2b2b2;
           margin: 0 0 16px;
           line-height: 1.5;
         }
@@ -308,13 +308,13 @@ export default function TranslationsPage() {
         }
         .xpp-hint {
           font-size: 12px;
-          color: #8F8A7E;
+          color: #8A8A8A;
           margin-top: 4px;
         }
         .xpp-input {
           width: 100%;
-          background: #1d1a14;
-          border: 1px solid #3B382F;
+          background: #171614;
+          border: 1px solid #383838;
           border-radius: 8px;
           padding: 10px 14px;
           color: #ffffff;
@@ -323,7 +323,7 @@ export default function TranslationsPage() {
           transition: border-color 0.2s;
         }
         .xpp-input:focus {
-          border-color: #C9B78F;
+          border-color: #FFB000;
           outline: none;
         }
         .xpp-row {
@@ -346,7 +346,7 @@ export default function TranslationsPage() {
           text-decoration: none;
         }
         .xpp-btn--primary {
-          background: #C9B78F;
+          background: #FFB000;
           color: #000000;
         }
         .xpp-btn--primary:hover {
@@ -354,25 +354,25 @@ export default function TranslationsPage() {
           transform: translateY(-1px);
         }
         .xpp-btn--secondary {
-          background: #2A261E;
+          background: #262626;
           color: #ffffff;
-          border: 1px solid #3a352b;
+          border: 1px solid #353535;
         }
         .xpp-btn--secondary:hover {
-          background: #2e2a22;
+          background: #2a2a2a;
         }
         .xpp-tabs-bar {
           display: flex;
           flex-wrap: wrap;
           gap: 8px;
           margin-bottom: 20px;
-          border-bottom: 1px solid #2E2A22;
+          border-bottom: 1px solid #2A2A2A;
           padding-bottom: 12px;
         }
         .xpp-tab-btn {
-          background: #1d1a14;
-          border: 1px solid #3A352B;
-          color: #CFCCC3;
+          background: #171614;
+          border: 1px solid #353535;
+          color: #CCCCCC;
           padding: 8px 14px;
           border-radius: 8px;
           font-size: 13px;
@@ -381,15 +381,15 @@ export default function TranslationsPage() {
           transition: all 0.2s;
         }
         .xpp-tab-btn.is-active {
-          background: #C9B78F;
+          background: #FFB000;
           color: #000000;
-          border-color: #C9B78F;
+          border-color: #FFB000;
         }
         .xpp-chip {
           display: inline-block;
-          background: rgba(201,183,143, 0.15);
-          border: 1px solid rgba(201,183,143, 0.4);
-          color: #C9B78F;
+          background: rgba(255,176,0, 0.15);
+          border: 1px solid rgba(255,176,0, 0.4);
+          color: #FFB000;
           padding: 2px 7px;
           border-radius: 4px;
           font-size: 11px;
@@ -404,15 +404,15 @@ export default function TranslationsPage() {
           font-size: 12px;
           font-weight: 600;
           cursor: pointer;
-          border: 1px solid #3B382F;
-          background: #211E15;
-          color: #d8d5cc;
+          border: 1px solid #383838;
+          background: #1E1E1E;
+          color: #d5d5d5;
           transition: all 0.15s ease;
         }
         .xpp-pill-btn.active {
-          background: #C9B78F;
+          background: #FFB000;
           color: #000000;
-          border-color: #C9B78F;
+          border-color: #FFB000;
         }
       `}</style>
 
@@ -440,9 +440,9 @@ export default function TranslationsPage() {
         {feedbackNotice && (
           <div
             style={{
-              background: "#262312",
-              borderLeft: isRtl ? "none" : "4px solid #C9B78F",
-              borderRight: isRtl ? "4px solid #C9B78F" : "none",
+              background: "#232323",
+              borderLeft: isRtl ? "none" : "4px solid #FFB000",
+              borderRight: isRtl ? "4px solid #FFB000" : "none",
               padding: "12px 16px",
               borderRadius: 8,
               marginBottom: 20,
@@ -481,8 +481,8 @@ export default function TranslationsPage() {
               {/* Dashboard Language */}
               <div
                 style={{
-                  background: "#1d1a14",
-                  border: "1px solid #3A352B",
+                  background: "#171614",
+                  border: "1px solid #353535",
                   borderRadius: 10,
                   padding: 16,
                 }}
@@ -496,10 +496,10 @@ export default function TranslationsPage() {
                     className="xpp-input"
                     value={dashboardLocale}
                     onChange={(e) => setDashboardLocale(e.target.value as SupportedLanguage)}
-                    style={{ cursor: "pointer", fontWeight: 600, color: "#E9DFC8" }}
+                    style={{ cursor: "pointer", fontWeight: 600, color: "#FFD985" }}
                   >
                     {supportedLanguages.map((lang) => (
-                      <option key={lang.code} value={lang.code} style={{ background: "#1d1a14", color: "#f4f4f5" }}>
+                      <option key={lang.code} value={lang.code} style={{ background: "#171614", color: "#f4f4f5" }}>
                         {lang.nativeName} ({lang.label}) {lang.dir === "rtl" ? "[RTL]" : "[LTR]"}
                       </option>
                     ))}
@@ -510,8 +510,8 @@ export default function TranslationsPage() {
               {/* Default Storefront Language */}
               <div
                 style={{
-                  background: "#1d1a14",
-                  border: "1px solid #3A352B",
+                  background: "#171614",
+                  border: "1px solid #353535",
                   borderRadius: 10,
                   padding: 16,
                 }}
@@ -525,10 +525,10 @@ export default function TranslationsPage() {
                     className="xpp-input"
                     value={storefrontLocale}
                     onChange={(e) => setStorefrontLocale(e.target.value as SupportedLanguage)}
-                    style={{ cursor: "pointer", fontWeight: 600, color: "#E9DFC8" }}
+                    style={{ cursor: "pointer", fontWeight: 600, color: "#FFD985" }}
                   >
                     {supportedLanguages.map((lang) => (
-                      <option key={lang.code} value={lang.code} style={{ background: "#1d1a14", color: "#f4f4f5" }}>
+                      <option key={lang.code} value={lang.code} style={{ background: "#171614", color: "#f4f4f5" }}>
                         {lang.nativeName} ({lang.label}) {lang.dir === "rtl" ? "[RTL]" : "[LTR]"}
                       </option>
                     ))}
@@ -624,7 +624,7 @@ export default function TranslationsPage() {
             {activeTab === "productScarcity" && (
               <div dir={isEditRtl ? "rtl" : "ltr"}>
                 <div style={{ marginBottom: 12 }}>
-                  <span style={{ fontSize: 12, color: "#A39E91" }}>
+                  <span style={{ fontSize: 12, color: "#9E9E9E" }}>
                     {isRtl ? "المتغيرات المتاحة:" : "Available Placeholders:"}
                   </span>
                   <span
@@ -1317,8 +1317,8 @@ export default function TranslationsPage() {
           <div
             className="xpp-card"
             style={{
-              background: "#18150f",
-              border: "1px solid rgba(201,183,143, 0.4)",
+              background: "#0f0e0c",
+              border: "1px solid rgba(255,176,0, 0.4)",
             }}
           >
             <div

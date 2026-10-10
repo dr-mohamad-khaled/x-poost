@@ -1599,7 +1599,7 @@
       }).join("");
 
       barInnerHtml =
-        '<div class="xpc-shipping-bar xpc-shipping-bar--stepper" style="--xpc-bg:' + (config.backgroundColor || "#2E2823") + ';--xpc-gold:' + (config.progressColor || "#D9C9A8") + ';--xpc-track:' + (config.trackColor || "#4A4238") + ';--xpc-text:' + (config.textColor || "#F6F1E7") + ';">' +
+        '<div class="xpc-shipping-bar xpc-shipping-bar--stepper" style="--xpc-bg:' + (config.backgroundColor || "#141414") + ';--xpc-gold:' + (config.progressColor || "#F2F2F2") + ';--xpc-track:' + (config.trackColor || "#3A3A3A") + ';--xpc-text:' + (config.textColor || "#FFFFFF") + ';">' +
         '<div class="xpc-shipping-headline">' + headline + '</div>' +
         '<div class="xpc-stepper-track-wrap">' +
         '<div class="xpc-stepper-line-bg"><div class="xpc-stepper-line-fill" style="width:' + progressPercent + '%;"></div></div>' +
@@ -1625,7 +1625,7 @@
       }).join("");
 
       barInnerHtml =
-        '<div class="xpc-shipping-bar xpc-shipping-bar--cards" style="--xpc-bg:' + (config.backgroundColor || "#2E2823") + ';--xpc-gold:' + (config.progressColor || "#D9C9A8") + ';--xpc-track:' + (config.trackColor || "#4A4238") + ';--xpc-text:' + (config.textColor || "#F6F1E7") + ';">' +
+        '<div class="xpc-shipping-bar xpc-shipping-bar--cards" style="--xpc-bg:' + (config.backgroundColor || "#141414") + ';--xpc-gold:' + (config.progressColor || "#F2F2F2") + ';--xpc-track:' + (config.trackColor || "#3A3A3A") + ';--xpc-text:' + (config.textColor || "#FFFFFF") + ';">' +
         '<div class="xpc-shipping-headline">' + cardsHeadline + '</div>' +
         '<div class="xpc-cards-progress-bar"><div class="xpc-cards-progress-fill" style="width:' + progressPercent + '%;"></div></div>' +
         '<div class="xpc-reward-cards-row">' + cardsHtml + '</div>' +
@@ -1638,7 +1638,7 @@
         : escapeHtml(config.allUnlockedMessage || "All VIP rewards unlocked");
 
       barInnerHtml =
-        '<div class="xpc-shipping-bar xpc-shipping-bar--luxury" style="--xpc-bg:' + (config.backgroundColor || "#2E2823") + ';--xpc-gold:' + (config.progressColor || "#D9C9A8") + ';--xpc-track:' + (config.trackColor || "#4A4238") + ';--xpc-text:' + (config.textColor || "#F6F1E7") + ';">' +
+        '<div class="xpc-shipping-bar xpc-shipping-bar--luxury" style="--xpc-bg:' + (config.backgroundColor || "#141414") + ';--xpc-gold:' + (config.progressColor || "#F2F2F2") + ';--xpc-track:' + (config.trackColor || "#3A3A3A") + ';--xpc-text:' + (config.textColor || "#FFFFFF") + ';">' +
         '<div class="xpc-luxury-headline">' + luxHeadline + '</div>' +
         '<div class="xpc-luxury-bar-track"><div class="xpc-luxury-bar-fill" style="width:' + progressPercent + '%;"><div class="xpc-luxury-shimmer"></div></div></div>' +
         '<div class="xpc-luxury-footer"><span>Cart: ' + symbol + currentTotal.toFixed(2) + '</span><span>Goal: ' + symbol + highestTarget + '</span></div>' +
@@ -1650,7 +1650,7 @@
       var targetNotice = nextTier ? "+" + symbol + remaining + " for " + escapeHtml(nextTier.rewardTitle.split(" ")[0]) : "All Unlocked";
 
       barInnerHtml =
-        '<div class="xpc-shipping-bar xpc-shipping-bar--split" style="--xpc-bg:' + (config.backgroundColor || "#2E2823") + ';--xpc-gold:' + (config.progressColor || "#D9C9A8") + ';--xpc-track:' + (config.trackColor || "#4A4238") + ';--xpc-text:' + (config.textColor || "#F6F1E7") + ';">' +
+        '<div class="xpc-shipping-bar xpc-shipping-bar--split" style="--xpc-bg:' + (config.backgroundColor || "#141414") + ';--xpc-gold:' + (config.progressColor || "#F2F2F2") + ';--xpc-track:' + (config.trackColor || "#3A3A3A") + ';--xpc-text:' + (config.textColor || "#FFFFFF") + ';">' +
         '<div class="xpc-split-ribbon-top">' +
         '<div class="xpc-split-badge-achieved">Level ' + reachedCount + ' Unlocked</div>' +
         '<div class="xpc-split-next-target">' + targetNotice + '</div>' +
@@ -1946,9 +1946,9 @@
     }).join(",");
 
     var inCartConf = configStore.inCart || {};
-    var inCartBg = inCartConf.backgroundColor || "#2E2823";
-    var inCartAccent = inCartConf.accentColor || "#D9C9A8";
-    var inCartText = inCartConf.textColor || "#F6F1E7";
+    var inCartBg = inCartConf.backgroundColor || "#141414";
+    var inCartAccent = inCartConf.accentColor || "#F2F2F2";
+    var inCartText = inCartConf.textColor || "#FFFFFF";
     var tInCart = (configStore.translations && configStore.translations.inCart) || {};
     var inCartTitle = activeRule.offerHeadline || tInCart.sectionTitle || getUiString('recommendedAddOn');
     var inCartBtnText = activeRule.addButton || tInCart.addButton || getUiString('add');

@@ -199,8 +199,8 @@ class Kf {
 /* Tiny layout helpers                                                 */
 /* ------------------------------------------------------------------ */
 
-const GOLD = "#C9B78F";
-const DARK = "#17140B";
+const GOLD = "#FFB000";
+const DARK = "#141414";
 
 type BProps = {
   l?: number;
@@ -290,12 +290,12 @@ const Thumb = ({ l, t, size, tone = 0 }: { l: number; t: number; size: number; t
 /** Plain product page backdrop (nav + image + title lines). */
 const PageBg = () => (
   <>
-    <B l={0} t={0} w={40} h={2.8} s={{ background: "#fff", borderBottom: ".1em solid #e8e3d6" }} />
-    <B l={1.5} t={1} w={6} h={0.9} s={{ background: "#d9d4c5", borderRadius: ".5em" }} />
-    <B l={10} t={1.1} w={3} h={0.7} s={{ background: "#e3dfd2", borderRadius: ".4em" }} />
-    <B l={14} t={1.1} w={3} h={0.7} s={{ background: "#e3dfd2", borderRadius: ".4em" }} />
-    <B l={18} t={1.1} w={3} h={0.7} s={{ background: "#e3dfd2", borderRadius: ".4em" }} />
-    <B l={35.6} t={0.8} w={2} h={1.4} s={{ background: "#d9d4c5", borderRadius: ".4em" }} />
+    <B l={0} t={0} w={40} h={2.8} s={{ background: "#fff", borderBottom: ".1em solid #e3e3e3" }} />
+    <B l={1.5} t={1} w={6} h={0.9} s={{ background: "#d4d4d4", borderRadius: ".5em" }} />
+    <B l={10} t={1.1} w={3} h={0.7} s={{ background: "#dfdfdf", borderRadius: ".4em" }} />
+    <B l={14} t={1.1} w={3} h={0.7} s={{ background: "#dfdfdf", borderRadius: ".4em" }} />
+    <B l={18} t={1.1} w={3} h={0.7} s={{ background: "#dfdfdf", borderRadius: ".4em" }} />
+    <B l={35.6} t={0.8} w={2} h={1.4} s={{ background: "#d4d4d4", borderRadius: ".4em" }} />
     <B
       l={3}
       t={5}
@@ -305,9 +305,9 @@ const PageBg = () => (
     >
       <B l={4.6} t={3} w={4.8} h={10} s={{ background: "rgba(255,255,255,.6)", borderRadius: "1.2em" }} />
     </B>
-    <B l={20} t={5.2} w={12} h={1.2} s={{ background: "#2A261E", borderRadius: ".4em" }} />
-    <B l={20} t={7.4} w={16} h={0.7} s={{ background: "#d6d1c3", borderRadius: ".4em" }} />
-    <B l={20} t={8.9} w={11} h={0.7} s={{ background: "#d6d1c3", borderRadius: ".4em" }} />
+    <B l={20} t={5.2} w={12} h={1.2} s={{ background: "#262626", borderRadius: ".4em" }} />
+    <B l={20} t={7.4} w={16} h={0.7} s={{ background: "#d1d1d1", borderRadius: ".4em" }} />
+    <B l={20} t={8.9} w={11} h={0.7} s={{ background: "#d1d1d1", borderRadius: ".4em" }} />
   </>
 );
 
@@ -324,7 +324,7 @@ const AtcBtn = ({ t = 16, style, label = "Add to cart" }: { t?: number; style?: 
     w={17}
     h={3.6}
     s={{
-      background: "#1d1a14",
+      background: "#171614",
       color: "#fff",
       borderRadius: ".6em",
       fontSize: "1.5em",
@@ -359,7 +359,7 @@ function prePurchase(): Scene {
     [100, 37, 23.5],
   ]);
   const row = (top: number, name: string, price: string, tone: number, check: CSSProperties) => (
-    <B l={1.5} t={top} w={25} h={4.4} s={{ background: "#211e15", border: ".1em solid #39362d", borderRadius: ".7em" }}>
+    <B l={1.5} t={top} w={25} h={4.4} s={{ background: "#1e1e1e", border: ".1em solid #363636", borderRadius: ".7em" }}>
       <Thumb l={0.5} t={0.5} size={3.2} tone={tone} />
       <B l={4.5} t={0.55} s={{ fontSize: "1.45em", fontWeight: 700, color: "#fff" }}>{name}</B>
       <B l={4.5} t={2.4} s={{ fontSize: "1.3em", fontWeight: 700, color: GOLD }}>{price}</B>
@@ -411,8 +411,8 @@ function inCart(): Scene {
   const item = (top: number, name: string, price: string, tone: number, style: CSSProperties) => (
     <B l={1.2} t={top} w={15.6} h={4.2} s={style}>
       <Thumb l={0} t={0} size={4.2} tone={tone} />
-      <B l={5.2} t={0.3} s={{ fontSize: "1.3em", fontWeight: 700, color: "#2A261E" }}>{name}</B>
-      <B l={5.2} t={2.4} s={{ fontSize: "1.3em", color: "#5A5448" }}>{price}</B>
+      <B l={5.2} t={0.3} s={{ fontSize: "1.3em", fontWeight: 700, color: "#262626" }}>{name}</B>
+      <B l={5.2} t={2.4} s={{ fontSize: "1.3em", color: "#545454" }}>{price}</B>
     </B>
   );
   const node = (
@@ -430,12 +430,12 @@ function inCart(): Scene {
           <Thumb l={1} t={3} size={3.4} tone={2} />
           <B l={4.8} t={3} s={{ fontSize: "1.25em", fontWeight: 700, color: "#fff" }}>Gel Cleanser</B>
           <B l={4.8} t={4.9} s={{ fontSize: "1.15em", fontWeight: 700, color: GOLD }}>
-            <span style={{ color: "#8F8A7E", textDecoration: "line-through", marginRight: ".4em", fontWeight: 400 }}>$22</span>$18
+            <span style={{ color: "#8A8A8A", textDecoration: "line-through", marginRight: ".4em", fontWeight: 400 }}>$22</span>$18
           </B>
           <B l={10.8} t={4.6} w={4.2} h={2.2} s={{ background: GOLD, color: "#111", borderRadius: ".5em", fontSize: "1.3em", fontWeight: 800, ...center, ...k.press(56) }}>Add</B>
         </B>
         {item(9, "Gel Cleanser", "$18.00", 2, k.win(60, 66, 92, 96))}
-        <B l={1.2} t={17.4} s={{ fontSize: "1.3em", color: "#6F6A5F" }}>Subtotal</B>
+        <B l={1.2} t={17.4} s={{ fontSize: "1.3em", color: "#6A6A6A" }}>Subtotal</B>
         <B l={9.8} t={17.3} w={7} s={{ fontSize: "1.5em", fontWeight: 800, color: "#111", textAlign: "right", ...k.until(58, 62) }}>$49.00</B>
         <B l={9.8} t={17.3} w={7} s={{ fontSize: "1.5em", fontWeight: 800, color: "#111", textAlign: "right", opacity: 0, ...k.win(58, 62, 92, 96) }}>$67.00</B>
         <B l={1.2} t={20} w={15.6} h={3} s={{ background: "#111", color: "#fff", borderRadius: ".6em", fontSize: "1.4em", fontWeight: 700, ...center }}>Checkout</B>
@@ -460,10 +460,10 @@ function shippingBar(): Scene {
     [100, 36, 22],
   ]);
   const msg = (text: ReactNode, style: CSSProperties) => (
-    <B l={9.5} t={6} w={21} s={{ fontSize: "1.25em", fontWeight: 700, color: "#2A261E", ...style }}>{text}</B>
+    <B l={9.5} t={6} w={21} s={{ fontSize: "1.25em", fontWeight: 700, color: "#262626", ...style }}>{text}</B>
   );
   const dot = (x: number, style: CSSProperties) => (
-    <B l={x} t={8.25} w={1.8} h={1.8} s={{ borderRadius: "50%", background: "#fff", border: ".18em solid #cfc9b6" }}>
+    <B l={x} t={8.25} w={1.8} h={1.8} s={{ borderRadius: "50%", background: "#fff", border: ".18em solid #c9c9c9" }}>
       <B l={-0.18} t={-0.18} w={1.8} h={1.8} s={{ borderRadius: "50%", background: GOLD, border: `.18em solid ${GOLD}`, color: "#111", fontSize: "1.1em", fontWeight: 900, ...center, ...style }}>✓</B>
     </B>
   );
@@ -480,24 +480,24 @@ function shippingBar(): Scene {
       {msg("Add $50 more for 10% off", k.until(26, 30))}
       {msg("Add $25 more for free shipping", { opacity: 0, ...k.track([[0, "opacity:0"], [27, "opacity:0"], [31, "opacity:1"], [52, "opacity:1"], [56, "opacity:0"], [100, "opacity:0"]]) })}
       {msg(<span style={{ color: "#1d7a3f" }}>Free shipping unlocked!</span>, { opacity: 0, ...k.win(57, 61, 90, 95) })}
-      <B l={9.5} t={8.6} w={21} h={1.1} s={{ background: "#ece8db", borderRadius: ".6em", overflow: "hidden" }}>
+      <B l={9.5} t={8.6} w={21} h={1.1} s={{ background: "#e8e8e8", borderRadius: ".6em", overflow: "hidden" }}>
         <B l={0} t={0} h={1.1} s={{ background: `${GOLD}`, borderRadius: ".6em", ...k.track([[0, "width:8%"], [22, "width:8%"], [30, "width:50%"], [52, "width:50%"], [60, "width:100%"], [92, "width:100%"], [100, "width:8%"]]) }} />
       </B>
       {dot(19.6, k.track([[0, "opacity:0"], [29, "opacity:0"], [31, "opacity:1"], [94, "opacity:1"], [98, "opacity:0"], [100, "opacity:0"]]))}
       {dot(29.6, k.track([[0, "opacity:0"], [59, "opacity:0"], [61, "opacity:1"], [94, "opacity:1"], [98, "opacity:0"], [100, "opacity:0"]]))}
-      <B l={16.5} t={10.5} s={{ fontSize: "1.1em", color: "#7A7569" }}>10% off</B>
-      <B l={26.5} t={10.5} s={{ fontSize: "1.1em", color: "#7A7569" }}>Free ship</B>
+      <B l={16.5} t={10.5} s={{ fontSize: "1.1em", color: "#757575" }}>10% off</B>
+      <B l={26.5} t={10.5} s={{ fontSize: "1.1em", color: "#757575" }}>Free ship</B>
       <B l={9.5} t={12.4} w={21} h={4.6} s={{ border: ".1em solid #eee", borderRadius: ".7em" }}>
         <Thumb l={0.4} t={0.4} size={3.8} tone={0} />
-        <B l={5} t={0.5} s={{ fontSize: "1.4em", fontWeight: 700, color: "#2A261E" }}>Face Serum</B>
-        <B l={5} t={2.5} s={{ fontSize: "1.2em", color: "#6F6A5F" }}>$25.00</B>
-        <B l={14.6} t={1.1} w={1.9} h={1.9} s={{ border: ".1em solid #C9C4B6", borderRadius: ".4em", fontSize: "1.4em", ...center }}>–</B>
-        <B l={18.2} t={1.1} w={1.9} h={1.9} s={{ border: ".1em solid #C9C4B6", borderRadius: ".4em", fontSize: "1.4em", ...center, ...k.press(20) }}>+</B>
+        <B l={5} t={0.5} s={{ fontSize: "1.4em", fontWeight: 700, color: "#262626" }}>Face Serum</B>
+        <B l={5} t={2.5} s={{ fontSize: "1.2em", color: "#6A6A6A" }}>$25.00</B>
+        <B l={14.6} t={1.1} w={1.9} h={1.9} s={{ border: ".1em solid #C4C4C4", borderRadius: ".4em", fontSize: "1.4em", ...center }}>–</B>
+        <B l={18.2} t={1.1} w={1.9} h={1.9} s={{ border: ".1em solid #C4C4C4", borderRadius: ".4em", fontSize: "1.4em", ...center, ...k.press(20) }}>+</B>
       </B>
       {qty("1", { left: "25.75em", color: "#111", ...k.until(22, 24) })}
       {qty("2", { left: "25.75em", color: "#111", opacity: 0, ...k.track([[0, "opacity:0"], [22, "opacity:0"], [24, "opacity:1"], [52, "opacity:1"], [54, "opacity:0"], [100, "opacity:0"]]) })}
       {qty("3", { left: "25.75em", color: "#111", opacity: 0, ...k.win(54, 56, 94, 97) })}
-      <B l={9.5} t={18.2} s={{ fontSize: "1.3em", color: "#6F6A5F" }}>Total</B>
+      <B l={9.5} t={18.2} s={{ fontSize: "1.3em", color: "#6A6A6A" }}>Total</B>
       {[
         ["$25.00", k.until(22, 24)],
         ["$50.00", k.track([[0, "opacity:0"], [22, "opacity:0"], [24, "opacity:1"], [52, "opacity:1"], [54, "opacity:0"], [100, "opacity:0"]])],
@@ -520,9 +520,9 @@ function scarcity(): Scene {
   const k = new Kf("sc", 9);
   const toast = (icon: string, line1: string, line2: string, style: CSSProperties) => (
     <B l={2} t={19.6} w={27} h={4.4} s={{ background: DARK, borderLeft: `.4em solid ${GOLD}`, borderRadius: ".8em", boxShadow: "0 .6em 2em rgba(0,0,0,.35)", ...style }}>
-      <B l={1} t={0.9} w={2.6} h={2.6} s={{ borderRadius: "50%", background: "rgba(201,183,143,.18)", color: GOLD, fontSize: "1.4em", fontWeight: 900, ...center }}>{icon}</B>
+      <B l={1} t={0.9} w={2.6} h={2.6} s={{ borderRadius: "50%", background: "rgba(255,176,0,.18)", color: GOLD, fontSize: "1.4em", fontWeight: 900, ...center }}>{icon}</B>
       <B l={4.4} t={0.7} s={{ fontSize: "1.3em", fontWeight: 700, color: "#fff" }}>{line1}</B>
-      <B l={4.4} t={2.5} s={{ fontSize: "1.1em", color: "#a39e91" }}>{line2}</B>
+      <B l={4.4} t={2.5} s={{ fontSize: "1.1em", color: "#9e9e9e" }}>{line2}</B>
     </B>
   );
   const node = (
@@ -550,11 +550,11 @@ function socialBar(): Scene {
     [100, 30, 14],
   ]);
   const row = (top: number, label: string, sub: string, color: string, hl?: CSSProperties) => (
-    <B l={1} t={top} w={13.5} h={3.2} s={{ background: "#211e15", borderRadius: ".7em", border: ".1em solid #39362d" }}>
-      {hl ? <B l={-0.1} t={-0.1} w={13.5} h={3.2} s={{ border: `.15em solid ${GOLD}`, borderRadius: ".7em", background: "rgba(201,183,143,.15)", ...hl }} /> : null}
+    <B l={1} t={top} w={13.5} h={3.2} s={{ background: "#1e1e1e", borderRadius: ".7em", border: ".1em solid #363636" }}>
+      {hl ? <B l={-0.1} t={-0.1} w={13.5} h={3.2} s={{ border: `.15em solid ${GOLD}`, borderRadius: ".7em", background: "rgba(255,176,0,.15)", ...hl }} /> : null}
       <B l={0.7} t={0.6} w={2} h={2} s={{ background: color, borderRadius: "50%" }} />
       <B l={3.3} t={0.35} s={{ fontSize: "1.3em", fontWeight: 700, color: "#fff" }}>{label}</B>
-      <B l={3.3} t={1.85} s={{ fontSize: "1em", color: "#a39e91" }}>{sub}</B>
+      <B l={3.3} t={1.85} s={{ fontSize: "1em", color: "#9e9e9e" }}>{sub}</B>
     </B>
   );
   const node = (
@@ -593,8 +593,8 @@ function productScarcity(): Scene {
       {label("12 left in stock", { color: "#6b5a1c", ...k.until(30, 34) })}
       {label("Only 7 left", { color: "#b3501a", opacity: 0, ...k.track([[0, "opacity:0"], [32, "opacity:0"], [36, "opacity:1"], [58, "opacity:1"], [62, "opacity:0"], [100, "opacity:0"]]) })}
       {label("Only 4 left — hurry!", { color: "#c0392b", opacity: 0, ...k.win(60, 64, 92, 96) })}
-      <B l={20} t={15.1} w={17} h={1.1} s={{ background: "#e6e1d2", borderRadius: ".6em", overflow: "hidden" }}>
-        <B l={0} t={0} h={1.1} s={{ borderRadius: ".6em", ...k.track([[0, "width:80%;background:#C9B78F"], [30, "width:80%;background:#C9B78F"], [40, "width:46%;background:#e07b2a"], [58, "width:46%;background:#e07b2a"], [68, "width:24%;background:#c0392b"], [92, "width:24%;background:#c0392b"], [100, "width:80%;background:#C9B78F"]]) }} />
+      <B l={20} t={15.1} w={17} h={1.1} s={{ background: "#e1e1e1", borderRadius: ".6em", overflow: "hidden" }}>
+        <B l={0} t={0} h={1.1} s={{ borderRadius: ".6em", ...k.track([[0, "width:80%;background:#FFB000"], [30, "width:80%;background:#FFB000"], [40, "width:46%;background:#e07b2a"], [58, "width:46%;background:#e07b2a"], [68, "width:24%;background:#c0392b"], [92, "width:24%;background:#c0392b"], [100, "width:80%;background:#FFB000"]]) }} />
       </B>
       <AtcBtn t={17.4} style={k.track([[0, "transform:none"], [72, "transform:none"], [78, "transform:scale(1.04)"], [84, "transform:none"], [90, "transform:scale(1.04)"], [96, "transform:none"], [100, "transform:none"]])} />
       <B l={3.6} t={5.6} w={7.4} h={2.4} s={{ background: "#c0392b", color: "#fff", borderRadius: "1.2em", fontSize: "1.2em", fontWeight: 800, ...center, ...k.win(64, 68, 92, 96, "transform:scale(.6)", "transform:none") }}>Low stock</B>
@@ -616,22 +616,22 @@ function thankYou(): Scene {
   const node = (
     <>
       <B l={0} t={0} w={40} h={25} s={{ background: "#fff" }} />
-      <B l={0} t={0} w={40} h={2.8} s={{ background: "#f6f4ee", borderBottom: ".1em solid #e8e3d6" }} />
-      <B l={1.5} t={1} w={6} h={0.9} s={{ background: "#d9d4c5", borderRadius: ".5em" }} />
+      <B l={0} t={0} w={40} h={2.8} s={{ background: "#f4f4f4", borderBottom: ".1em solid #e3e3e3" }} />
+      <B l={1.5} t={1} w={6} h={0.9} s={{ background: "#d4d4d4", borderRadius: ".5em" }} />
       <B l={3} t={4.6} w={3.4} h={3.4} s={{ background: "#1d7a3f", color: "#fff", borderRadius: "50%", fontSize: "1.8em", fontWeight: 900, ...center }}>✓</B>
       <B l={7.4} t={4.5} s={{ fontSize: "1.25em", fontWeight: 800, color: "#111" }}>Order confirmed</B>
-      <B l={7.4} t={6.6} s={{ fontSize: "1.1em", color: "#7A7569" }}>Thank you!</B>
+      <B l={7.4} t={6.6} s={{ fontSize: "1.1em", color: "#757575" }}>Thank you!</B>
       {[10.5, 12.7, 14.9, 17.1].map((y, i) => (
-        <B key={y} l={3} t={y} w={i === 3 ? 9 : 13} h={1} s={{ background: "#ece8db", borderRadius: ".5em" }} />
+        <B key={y} l={3} t={y} w={i === 3 ? 9 : 13} h={1} s={{ background: "#e8e8e8", borderRadius: ".5em" }} />
       ))}
       <B l={19.5} t={3.2} w={18.5} h={18.4} s={{ background: DARK, border: `.12em solid ${GOLD}`, borderRadius: "1em", boxShadow: "0 1em 2.5em rgba(0,0,0,.25)", ...k.win(12, 20, 94, 98, "transform:translateY(1.2em)", "transform:none") }}>
         <B l={1.3} t={1.3} s={{ fontSize: "1.3em", fontWeight: 800, color: GOLD }}>Add to your shipment</B>
-        <B l={1.3} t={3.4} s={{ fontSize: "1.1em", color: "#a39e91" }}>Ships with your order</B>
-        <B l={1.3} t={5.4} w={15.9} h={4.6} s={{ background: "#211e15", border: ".1em solid #39362d", borderRadius: ".7em" }}>
+        <B l={1.3} t={3.4} s={{ fontSize: "1.1em", color: "#9e9e9e" }}>Ships with your order</B>
+        <B l={1.3} t={5.4} w={15.9} h={4.6} s={{ background: "#1e1e1e", border: ".1em solid #363636", borderRadius: ".7em" }}>
           <Thumb l={0.5} t={0.5} size={3.6} tone={2} />
           <B l={4.9} t={0.6} s={{ fontSize: "1.4em", fontWeight: 700, color: "#fff" }}>Gel Cleanser</B>
           <B l={4.9} t={2.5} s={{ fontSize: "1.3em", fontWeight: 700, color: GOLD }}>
-            <span style={{ color: "#8F8A7E", textDecoration: "line-through", marginRight: ".4em", fontWeight: 400 }}>$22</span>$14
+            <span style={{ color: "#8A8A8A", textDecoration: "line-through", marginRight: ".4em", fontWeight: 400 }}>$22</span>$14
           </B>
         </B>
         <B l={1.3} t={10.9} w={15.9} h={2.2} s={{ background: "rgba(192,57,43,.18)", color: "#ff8a7a", borderRadius: "1.1em", fontSize: "1.2em", fontWeight: 700, ...center }}>
@@ -669,8 +669,8 @@ function quantityBreaks(): Scene {
 
 function QtyBreaksScene({ k, cur }: { k: Kf; cur: CSSProperties }) {
   const tier = (top: number, a: string, b: string, price: string, sel: CSSProperties, badge?: string) => (
-    <B l={20} t={top} w={17.5} h={2.9} s={{ background: "#fff", border: ".12em solid #ddd7c6", borderRadius: ".8em" }}>
-      <B l={-0.12} t={-0.12} w={17.5} h={2.9} s={{ background: "rgba(201,183,143,.16)", border: `.18em solid ${GOLD}`, borderRadius: ".8em", ...sel }} />
+    <B l={20} t={top} w={17.5} h={2.9} s={{ background: "#fff", border: ".12em solid #d7d7d7", borderRadius: ".8em" }}>
+      <B l={-0.12} t={-0.12} w={17.5} h={2.9} s={{ background: "rgba(255,176,0,.16)", border: `.18em solid ${GOLD}`, borderRadius: ".8em", ...sel }} />
       <B l={1.2} t={0.6} s={{ fontSize: "1.45em", fontWeight: 800, color: "#111" }}>{a}</B>
       <B l={6.8} t={0.85} s={{ fontSize: "1.15em", fontWeight: 700, color: "#8a6d0b" }}>{b}</B>
       <B l={12} t={0.6} w={4.6} s={{ fontSize: "1.5em", fontWeight: 800, color: "#111", textAlign: "right" }}>{price}</B>
@@ -680,12 +680,12 @@ function QtyBreaksScene({ k, cur }: { k: Kf; cur: CSSProperties }) {
     </B>
   );
   const btn = (txt: string, style: CSSProperties) => (
-    <B l={20} t={21.5} w={17.5} h={2.9} s={{ background: "#1d1a14", color: "#fff", borderRadius: ".6em", fontSize: "1.4em", fontWeight: 700, ...center, ...style }}>{txt}</B>
+    <B l={20} t={21.5} w={17.5} h={2.9} s={{ background: "#171614", color: "#fff", borderRadius: ".6em", fontSize: "1.4em", fontWeight: 700, ...center, ...style }}>{txt}</B>
   );
   return (
     <>
       <PageBg />
-      <B l={20} t={9.5} s={{ fontSize: "1.2em", fontWeight: 700, color: "#5A5448" }}>Choose your bundle</B>
+      <B l={20} t={9.5} s={{ fontSize: "1.2em", fontWeight: 700, color: "#545454" }}>Choose your bundle</B>
       {tier(11.4, "Buy 1", "", "$20", k.until(27, 29))}
       {tier(14.7, "Buy 2", "Save 10%", "$36", k.track([[0, "opacity:0"], [27, "opacity:0"], [29, "opacity:1"], [56, "opacity:1"], [58, "opacity:0"], [100, "opacity:0"]]), "Popular")}
       {tier(18.0, "Buy 3", "Save 20%", "$48", k.win(58, 60, 94, 97))}
@@ -706,27 +706,27 @@ function QtyBreaksScene({ k, cur }: { k: Kf; cur: CSSProperties }) {
 
 const BASE_CSS = `
 .xd{container-type:inline-size;width:100%}
-.xd-stage{position:relative;font-size:2.5cqw;width:40em;height:25em;overflow:hidden;border-radius:.9em;background:#f4f1ea;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:#1d1a14;user-select:none;pointer-events:none;line-height:1.2;box-shadow:0 0 0 1px rgba(201,183,143,.35)}
+.xd-stage{position:relative;font-size:2.5cqw;width:40em;height:25em;overflow:hidden;border-radius:.9em;background:#f1f1f1;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:#171614;user-select:none;pointer-events:none;line-height:1.2;box-shadow:0 0 0 1px rgba(255,176,0,.35)}
 .xd-stage *{box-sizing:border-box}
 .xd-a{position:absolute;white-space:nowrap}
 .xd-cur{position:absolute;width:2.6em;height:2.6em;margin:-.22em 0 0 -.33em;z-index:60;filter:drop-shadow(0 .15em .25em rgba(0,0,0,.45))}
-.xd-rip{position:absolute;width:3.4em;height:3.4em;margin:-1.7em 0 0 -1.7em;border-radius:50%;border:.25em solid rgba(201,183,143,.95);background:rgba(201,183,143,.28);opacity:0;z-index:55}
+.xd-rip{position:absolute;width:3.4em;height:3.4em;margin:-1.7em 0 0 -1.7em;border-radius:50%;border:.25em solid rgba(255,176,0,.95);background:rgba(255,176,0,.28);opacity:0;z-index:55}
 .xd-sm{margin:0 0 14px}
 @media (prefers-reduced-motion: reduce){.xd-stage *{animation:none!important}.xd-cur,.xd-rip{display:none}}
 `;
 
 const BANNER_CSS = `
-.xd-banner{background:#16140F;border:1px solid #2E2A22;border-radius:12px;margin:16px 12px 0;overflow:hidden}
-.xd-banner>summary{cursor:pointer;list-style:none;padding:12px 16px;font-size:14px;font-weight:800;color:#C9B78F;display:flex;align-items:center;gap:8px}
+.xd-banner{background:#0F0E0C;border:1px solid #2A2A2A;border-radius:12px;margin:16px 12px 0;overflow:hidden}
+.xd-banner>summary{cursor:pointer;list-style:none;padding:12px 16px;font-size:14px;font-weight:800;color:#FFB000;display:flex;align-items:center;gap:8px}
 .xd-banner>summary::-webkit-details-marker{display:none}
 .xd-banner>summary::before{content:"▸";transition:transform .15s}
 .xd-banner[open]>summary::before{transform:rotate(90deg)}
-.xd-banner>summary small{margin-left:auto;font-weight:500;color:#857f72;font-size:12px}
+.xd-banner>summary small{margin-left:auto;font-weight:500;color:#7f7f7f;font-size:12px}
 .xd-banner-body{display:flex;flex-wrap:wrap;gap:20px;align-items:center;padding:0 16px 16px}
 .xd-banner-stage{flex:1 1 320px;max-width:560px;min-width:0}
 .xd-steps{flex:1 1 220px;margin:0;padding:0;list-style:none;counter-reset:xd}
-.xd-steps li{counter-increment:xd;display:flex;gap:10px;align-items:flex-start;color:#d8d5cc;font-size:14px;line-height:1.45;padding:7px 0}
-.xd-steps li::before{content:counter(xd);flex:none;width:24px;height:24px;border-radius:50%;background:rgba(201,183,143,.15);border:1px solid #C9B78F;color:#C9B78F;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center}
+.xd-steps li{counter-increment:xd;display:flex;gap:10px;align-items:flex-start;color:#d5d5d5;font-size:14px;line-height:1.45;padding:7px 0}
+.xd-steps li::before{content:counter(xd);flex:none;width:24px;height:24px;border-radius:50%;background:rgba(255,176,0,.15);border:1px solid #FFB000;color:#FFB000;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center}
 `;
 
 let cache: Partial<Record<DemoId, Scene>> = {};

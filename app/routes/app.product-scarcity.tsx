@@ -34,10 +34,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         lowStockThreshold: 20,
         headlineText: "Hurry! Only {stock} items left in stock",
         subText: "High demand: selling fast",
-        accentColor: "#D9C9A8",
-        backgroundColor: "#352E28",
-        textColor: "#F6F1E7",
-        borderColor: "#4A4238",
+        accentColor: "#F2F2F2",
+        backgroundColor: "#1C1C1C",
+        textColor: "#FFFFFF",
+        borderColor: "#3A3A3A",
         targetMode: "ALL",
         productIdsJson: "[]",
       },
@@ -119,10 +119,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const subText = String(formData.get("subText") || "")
     .replace(/[\uD83C-\uDBFF\uDC00-\uDFFF]/g, "")
     .trim();
-  const accentColor = String(formData.get("accentColor") || "#D9C9A8");
-  const backgroundColor = String(formData.get("backgroundColor") || "#352E28");
-  const textColor = String(formData.get("textColor") || "#F6F1E7");
-  const borderColor = String(formData.get("borderColor") || "#4A4238");
+  const accentColor = String(formData.get("accentColor") || "#F2F2F2");
+  const backgroundColor = String(formData.get("backgroundColor") || "#1C1C1C");
+  const textColor = String(formData.get("textColor") || "#FFFFFF");
+  const borderColor = String(formData.get("borderColor") || "#3A3A3A");
   const targetMode = String(formData.get("targetMode") || "ALL");
   const productIdsJson = String(formData.get("productIdsJson") || "[]");
   const translationsJsonRaw = String(formData.get("translationsJson") || "");
@@ -356,8 +356,8 @@ export default function ProductScarcityPage() {
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
         .xpp-card {
-          background: #16140F;
-          border: 1px solid #2E2A22;
+          background: #0F0E0C;
+          border: 1px solid #2A2A2A;
           border-radius: 12px;
           padding: 24px;
           margin-bottom: 24px;
@@ -365,20 +365,20 @@ export default function ProductScarcityPage() {
         .xpp-card-title {
           font-size: 18px;
           font-weight: 800;
-          color: #C9B78F;
+          color: #FFB000;
           margin: 0 0 12px;
-          border-bottom: 1px solid #2E2A22;
+          border-bottom: 1px solid #2A2A2A;
           padding-bottom: 10px;
         }
         .xpp-card-desc {
           font-size: 13px;
-          color: #D3D0C7;
+          color: #D0D0D0;
           margin: 0 0 20px;
           line-height: 1.5;
         }
         .xpp-live-preview-box {
           background: #0a0a0a;
-          border: 2px dashed rgba(201,183,143, 0.35);
+          border: 2px dashed rgba(255,176,0, 0.35);
           border-radius: 12px;
           padding: 30px;
           margin-bottom: 24px;
@@ -390,19 +390,19 @@ export default function ProductScarcityPage() {
           margin-bottom: 20px;
         }
         .xpp-preset-card {
-          background: #1d1a14;
-          border: 2px solid #3A352B;
+          background: #171614;
+          border: 2px solid #353535;
           border-radius: 10px;
           padding: 16px;
           cursor: pointer;
           transition: all 0.2s ease;
         }
         .xpp-preset-card:hover {
-          border-color: #58554C;
+          border-color: #555555;
         }
         .xpp-preset-card--active {
-          border-color: #C9B78F;
-          background: #221e16;
+          border-color: #FFB000;
+          background: #1c1b18;
         }
         .xpp-preset-name {
           font-size: 14px;
@@ -412,7 +412,7 @@ export default function ProductScarcityPage() {
         }
         .xpp-preset-desc {
           font-size: 12px;
-          color: #D3D0C7;
+          color: #D0D0D0;
           margin: 0;
         }
         .xpp-field-group {
@@ -427,13 +427,13 @@ export default function ProductScarcityPage() {
         }
         .xpp-hint {
           font-size: 12px;
-          color: #D3D0C7;
+          color: #D0D0D0;
           margin-top: 4px;
         }
         .xpp-input {
           width: 100%;
-          background: #1d1a14;
-          border: 1px solid #3B382F;
+          background: #171614;
+          border: 1px solid #383838;
           border-radius: 8px;
           padding: 10px 14px;
           color: #ffffff;
@@ -441,7 +441,7 @@ export default function ProductScarcityPage() {
           box-sizing: border-box;
         }
         .xpp-input:focus {
-          border-color: #C9B78F;
+          border-color: #FFB000;
           outline: none;
         }
         .xpp-row {
@@ -457,7 +457,7 @@ export default function ProductScarcityPage() {
         .xpp-color-picker input[type="color"] {
           width: 42px;
           height: 42px;
-          border: 1px solid #4A443A;
+          border: 1px solid #444444;
           border-radius: 8px;
           background: none;
           cursor: pointer;
@@ -477,19 +477,19 @@ export default function ProductScarcityPage() {
           transition: all 0.2s ease;
         }
         .xpp-btn--primary {
-          background: #C9B78F;
+          background: #FFB000;
           color: #000000;
         }
         .xpp-btn--secondary {
-          background: #2A261E;
+          background: #262626;
           color: #ffffff;
-          border: 1px solid #3a352b;
+          border: 1px solid #353535;
         }
         .xpp-var-chip {
           display: inline-block;
           background: rgba(255, 215, 0, 0.15);
-          border: 1px solid #C9B78F;
-          color: #C9B78F;
+          border: 1px solid #FFB000;
+          color: #FFB000;
           padding: 2px 8px;
           border-radius: 4px;
           font-size: 12px;
@@ -502,8 +502,8 @@ export default function ProductScarcityPage() {
           display: inline-flex;
           align-items: center;
           gap: 8px;
-          background: #2A261E;
-          border: 1px solid #3a352b;
+          background: #262626;
+          border: 1px solid #353535;
           border-radius: 20px;
           padding: 4px 12px;
           font-size: 12px;
@@ -524,7 +524,7 @@ export default function ProductScarcityPage() {
         }
         @keyframes xpp-preview-pop {
           0% { transform: scale(1); }
-          40% { transform: scale(1.3); color: #C9B78F; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6); }
+          40% { transform: scale(1.3); color: #FFB000; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6); }
           100% { transform: scale(1); }
         }
       `}</style>
@@ -547,11 +547,11 @@ export default function ProductScarcityPage() {
         {/* Live Preview Box */}
         <div className="xpp-live-preview-box" dir={isPreviewRtl ? "rtl" : "ltr"}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-            <span style={{ fontSize: 12, fontWeight: 800, color: "#C9B78F", textTransform: "uppercase", letterSpacing: 1 }}>
+            <span style={{ fontSize: 12, fontWeight: 800, color: "#FFB000", textTransform: "uppercase", letterSpacing: 1 }}>
               
                                         <Translate text='Real-Time Storefront Preview (' />{selectedLang.toUpperCase()})
             </span>
-            <span style={{ fontSize: 12, color: "#8F8A7E" }}>
+            <span style={{ fontSize: 12, color: "#8A8A8A" }}>
               
                                         <Translate text='Preset:' /> {designPreset}
             </span>
@@ -562,9 +562,9 @@ export default function ProductScarcityPage() {
               maxWidth: 520,
               margin: "0 auto",
               padding: 16,
-              background: "#131007",
+              background: "#0B0A08",
               borderRadius: 14,
-              border: "1px solid #2A261E",
+              border: "1px solid #262626",
             }}
           >
             {designPreset === "urgency_badge" && (
@@ -684,7 +684,7 @@ export default function ProductScarcityPage() {
         </div>
 
         {/* Theme Customizer Quick Link Card */}
-        <div className="xpp-card" style={{ border: "1.5px solid rgba(201,183,143, 0.4)", background: "#18150f" }}>
+        <div className="xpp-card" style={{ border: "1.5px solid rgba(255,176,0, 0.4)", background: "#0f0e0c" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
             <div>
               <h2 className="xpp-card-title"><Translate text='How to Place this Block on Your Store' /></h2>
@@ -792,8 +792,8 @@ export default function ProductScarcityPage() {
               <label
                 style={{
                   flex: 1,
-                  background: stockSource === "shopify" ? "#221e16" : "#1d1a14",
-                  border: `2px solid ${stockSource === "shopify" ? "#C9B78F" : "#3A352B"}`,
+                  background: stockSource === "shopify" ? "#1c1b18" : "#171614",
+                  border: `2px solid ${stockSource === "shopify" ? "#FFB000" : "#353535"}`,
                   borderRadius: 10,
                   padding: 14,
                   cursor: "pointer",
@@ -807,7 +807,7 @@ export default function ProductScarcityPage() {
                   style={{ marginRight: 8 }}
                 />
                 <span style={{ fontWeight: 800, color: "#fff" }}><Translate text='Real Shopify Inventory' /></span>
-                <p style={{ margin: "4px 0 0", fontSize: 12, color: "#A39E91" }}>
+                <p style={{ margin: "4px 0 0", fontSize: 12, color: "#9E9E9E" }}>
                   
                                                     <Translate text='Reads the actual inventory quantity of the product or selected variant.' />
                                                   </p>
@@ -816,8 +816,8 @@ export default function ProductScarcityPage() {
               <label
                 style={{
                   flex: 1,
-                  background: stockSource === "manual_range" ? "#221e16" : "#1d1a14",
-                  border: `2px solid ${stockSource === "manual_range" ? "#C9B78F" : "#3A352B"}`,
+                  background: stockSource === "manual_range" ? "#1c1b18" : "#171614",
+                  border: `2px solid ${stockSource === "manual_range" ? "#FFB000" : "#353535"}`,
                   borderRadius: 10,
                   padding: 14,
                   cursor: "pointer",
@@ -831,7 +831,7 @@ export default function ProductScarcityPage() {
                   style={{ marginRight: 8 }}
                 />
                 <span style={{ fontWeight: 800, color: "#fff" }}><Translate text='Simulated Stock Range' /></span>
-                <p style={{ margin: "4px 0 0", fontSize: 12, color: "#A39E91" }}>
+                <p style={{ margin: "4px 0 0", fontSize: 12, color: "#9E9E9E" }}>
                   
                                                     <Translate text='Generates an enticing low quantity (e.g. between 3 and 12) per product.' />
                                                   </p>
@@ -897,7 +897,7 @@ export default function ProductScarcityPage() {
             />
 
             <div style={{ marginBottom: 14 }}>
-              <span style={{ fontSize: 12, color: "#8F8A7E", marginRight: 8 }}><Translate text='Available Variables:' /></span>
+              <span style={{ fontSize: 12, color: "#8A8A8A", marginRight: 8 }}><Translate text='Available Variables:' /></span>
               <span
                 className="xpp-var-chip"
                 onClick={() => handleTextChange("headlineText", `${currentCopy.headlineText} {stock}`)}
@@ -978,8 +978,8 @@ export default function ProductScarcityPage() {
                   key={m.key}
                   style={{
                     flex: 1,
-                    background: targetMode === m.key ? "#221e16" : "#1d1a14",
-                    border: `2px solid ${targetMode === m.key ? "#C9B78F" : "#3A352B"}`,
+                    background: targetMode === m.key ? "#1c1b18" : "#171614",
+                    border: `2px solid ${targetMode === m.key ? "#FFB000" : "#353535"}`,
                     borderRadius: 8,
                     padding: 12,
                     cursor: "pointer",
@@ -993,7 +993,7 @@ export default function ProductScarcityPage() {
                     style={{ marginRight: 6 }}
                   />
                   <strong style={{ color: "#fff", fontSize: 13 }}>{m.label}</strong>
-                  <div style={{ fontSize: 11, color: "#A39E91", marginTop: 2 }}>{m.desc}</div>
+                  <div style={{ fontSize: 11, color: "#9E9E9E", marginTop: 2 }}>{m.desc}</div>
                 </label>
               ))}
             </div>
@@ -1013,7 +1013,7 @@ export default function ProductScarcityPage() {
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                   {isSearching && (
-                    <span style={{ position: "absolute", right: 12, top: 10, fontSize: 12, color: "#C9B78F" }}>
+                    <span style={{ position: "absolute", right: 12, top: 10, fontSize: 12, color: "#FFB000" }}>
                       
                                                                 <Translate text='Searching store...' />
                                                               </span>
@@ -1022,7 +1022,7 @@ export default function ProductScarcityPage() {
 
                 {/* Search Results Dropdown */}
                 {filteredSearchResults.length > 0 && (
-                  <div style={{ background: "#1d1a14", border: "1px solid #3A352B", borderRadius: 8, maxHeight: 180, overflowY: "auto", marginBottom: 14 }}>
+                  <div style={{ background: "#171614", border: "1px solid #353535", borderRadius: 8, maxHeight: 180, overflowY: "auto", marginBottom: 14 }}>
                     {filteredSearchResults.map((prod) => {
                       const isSelected = selectedProductIds.includes(prod.id);
                       return (
@@ -1031,16 +1031,16 @@ export default function ProductScarcityPage() {
                           onClick={() => toggleProductSelection(prod.id)}
                           style={{
                             padding: "8px 12px",
-                            borderBottom: "1px solid #2E2A22",
+                            borderBottom: "1px solid #2A2A2A",
                             display: "flex",
                             justifyContent: "space-between",
                             alignItems: "center",
                             cursor: "pointer",
-                            background: isSelected ? "rgba(201,183,143, 0.12)" : "transparent",
+                            background: isSelected ? "rgba(255,176,0, 0.12)" : "transparent",
                           }}
                         >
                           <span style={{ fontSize: 13, color: "#fff" }}>{prod.title}</span>
-                          <span style={{ fontSize: 12, fontWeight: 700, color: isSelected ? "#4ade80" : "#C9B78F" }}>
+                          <span style={{ fontSize: 12, fontWeight: 700, color: isSelected ? "#4ade80" : "#FFB000" }}>
                             {isSelected ? "Selected ✓" : "+ Add"}
                           </span>
                         </div>
@@ -1051,7 +1051,7 @@ export default function ProductScarcityPage() {
 
                 {/* Selected Products Badges */}
                 <div style={{ marginTop: 10 }}>
-                  <span style={{ fontSize: 12, color: "#8F8A7E", display: "block", marginBottom: 6 }}>
+                  <span style={{ fontSize: 12, color: "#8A8A8A", display: "block", marginBottom: 6 }}>
                     
                                                           <Translate text='Currently Selected (' />{selectedProductIds.length}):
                   </span>
@@ -1068,7 +1068,7 @@ export default function ProductScarcityPage() {
                       ))}
                     </div>
                   ) : (
-                    <span style={{ fontSize: 12, color: "#6F6A5F" }}><Translate text='No products selected yet. Search above to add products.' /></span>
+                    <span style={{ fontSize: 12, color: "#6A6A6A" }}><Translate text='No products selected yet. Search above to add products.' /></span>
                   )}
                 </div>
               </div>
@@ -1141,7 +1141,7 @@ export default function ProductScarcityPage() {
           </div>
 
           {/* Submit */}
-          <div style={{ position: "sticky", bottom: 16, zIndex: 10, background: "rgba(10,10,10,0.85)", backdropFilter: "blur(10px)", padding: 14, borderRadius: 10, border: "1px solid #3A352B", display: "flex", justifyContent: "flex-end" }}>
+          <div style={{ position: "sticky", bottom: 16, zIndex: 10, background: "rgba(10,10,10,0.85)", backdropFilter: "blur(10px)", padding: 14, borderRadius: 10, border: "1px solid #353535", display: "flex", justifyContent: "flex-end" }}>
             <button
               type="submit"
               className="xpp-btn xpp-btn--primary"

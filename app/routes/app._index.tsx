@@ -637,8 +637,8 @@ function FeatureIcon({ id }: { id: string }) {
 const DASHBOARD_STYLES = `
   /* Section panels below the hero: same dark surface, border and radius as the hero */
   .xp-panel {
-    background: #16140F;
-    border: 1px solid #2E2A22;
+    background: #0F0E0C;
+    border: 1px solid #2A2A2A;
     border-radius: 12px;
     padding: 24px 28px 28px;
     color: #FFFFFF;
@@ -649,7 +649,7 @@ const DASHBOARD_STYLES = `
     font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
     font-size: 18px;
     font-weight: 600;
-    color: #C9B78F;
+    color: #FFB000;
   }
   .xp-panel .xp-grid,
   .xp-panel .xp-setup-guide {
@@ -661,8 +661,8 @@ const DASHBOARD_STYLES = `
     }
   }
   .xp-hero {
-    background: #16140F;
-    border: 1px solid #2E2A22;
+    background: #0F0E0C;
+    border: 1px solid #2A2A2A;
     border-radius: 12px;
     padding: 28px;
     color: #FFFFFF;
@@ -684,7 +684,7 @@ const DASHBOARD_STYLES = `
   }
   .xp-hero-tag {
     display: inline-block;
-    color: #C9B78F;
+    color: #FFB000;
     font-size: 12px;
     font-weight: 700;
     margin-bottom: 8px;
@@ -698,7 +698,7 @@ const DASHBOARD_STYLES = `
   }
   .xp-hero-subtitle {
     font-size: 14px;
-    color: #b8b2a3;
+    color: #b2b2b2;
     margin: 0 0 18px;
     line-height: 1.5;
   }
@@ -714,7 +714,7 @@ const DASHBOARD_STYLES = `
   .xp-stat-box {
     position: relative;
     background: rgba(255, 255, 255, 0.05);
-    border: 1px solid #2E2A22;
+    border: 1px solid #2A2A2A;
     border-radius: 10px;
     padding: 16px 14px;
     text-align: center;
@@ -732,13 +732,13 @@ const DASHBOARD_STYLES = `
   }
   .xp-stat-box--link:hover,
   .xp-stat-box--link:focus-visible {
-    border-color: #4A443A;
+    border-color: #444444;
     background: rgba(255, 255, 255, 0.07);
     outline: none;
   }
   .xp-stat-box--analytics {
     background: rgba(255, 255, 255, 0.05);
-    border-color: #2E2A22;
+    border-color: #2A2A2A;
   }
   .xp-stat-new {
     position: absolute;
@@ -746,33 +746,33 @@ const DASHBOARD_STYLES = `
     inset-inline-end: 8px;
     font-size: 9px;
     font-weight: 800;
-    background: #C9B78F;
-    color: #0E0D0B;
+    background: #FFB000;
+    color: #060605;
     padding: 2px 6px;
     border-radius: 999px;
   }
   .xp-stat-icon {
-    color: #C9B78F;
+    color: #FFB000;
     display: inline-flex;
   }
   .xp-stat-number {
     display: block;
     font-size: 22px;
     font-weight: 800;
-    color: #C9B78F;
+    color: #FFB000;
   }
   .xp-stat-number--sm {
     font-size: 18px;
   }
   .xp-stat-label {
     font-size: 11px;
-    color: #9A958A;
+    color: #959595;
   }
 
   /* Feature slider */
   .xp-slider {
     background: rgba(255, 255, 255, 0.035);
-    border: 1px solid #2E2A22;
+    border: 1px solid #2A2A2A;
     border-radius: 12px;
     padding: 14px 16px 0;
     overflow: hidden;
@@ -805,9 +805,9 @@ const DASHBOARD_STYLES = `
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #C9B78F;
-    background: rgba(201,183,143, 0.1);
-    border: 1px solid rgba(201,183,143, 0.3);
+    color: #FFB000;
+    background: rgba(255,176,0, 0.1);
+    border: 1px solid rgba(255,176,0, 0.3);
   }
   .xp-slide-body {
     flex: 1;
@@ -829,9 +829,9 @@ const DASHBOARD_STYLES = `
     font-weight: 700;
     padding: 2px 8px;
     border-radius: 999px;
-    background: #2A261E;
-    color: #8F8A7E;
-    border: 1px solid #3A352B;
+    background: #262626;
+    color: #8A8A8A;
+    border: 1px solid #353535;
   }
   .xp-slide-status.is-on {
     background: rgba(16, 128, 67, 0.2);
@@ -841,16 +841,16 @@ const DASHBOARD_STYLES = `
   .xp-slide-pitch {
     margin: 4px 0 0;
     font-size: 13px;
-    color: #b8b2a3;
+    color: #b2b2b2;
     line-height: 1.45;
   }
   .xp-slide-link {
     flex-shrink: 0;
     font-size: 12px;
     font-weight: 700;
-    color: #C9B78F;
+    color: #FFB000;
     text-decoration: none;
-    border: 1px solid rgba(201,183,143, 0.45);
+    border: 1px solid rgba(255,176,0, 0.45);
     padding: 7px 12px;
     border-radius: 8px;
     white-space: nowrap;
@@ -858,7 +858,7 @@ const DASHBOARD_STYLES = `
   }
   .xp-slide-link:hover,
   .xp-slide-link:focus-visible {
-    background: rgba(201,183,143, 0.12);
+    background: rgba(255,176,0, 0.12);
     outline: none;
   }
   .xp-slider-foot {
@@ -879,21 +879,21 @@ const DASHBOARD_STYLES = `
     padding: 0;
     border-radius: 999px;
     border: none;
-    background: #3D3A31;
+    background: #3A3A3A;
     cursor: pointer;
     transition: width 0.3s ease, background 0.3s ease;
   }
   .xp-dot.is-active {
     width: 22px;
-    background: #C9B78F;
+    background: #FFB000;
   }
   .xp-dot:focus-visible {
-    outline: 2px solid #C9B78F;
+    outline: 2px solid #FFB000;
     outline-offset: 2px;
   }
   .xp-slider-count {
     font-size: 11px;
-    color: #7A7569;
+    color: #757575;
     font-variant-numeric: tabular-nums;
   }
   .xp-slider-progress {
@@ -905,7 +905,7 @@ const DASHBOARD_STYLES = `
     display: block;
     height: 100%;
     width: 100%;
-    background: #C9B78F;
+    background: #FFB000;
     transform-origin: left center;
     animation-name: xp-progress;
     animation-timing-function: linear;
@@ -921,7 +921,7 @@ const DASHBOARD_STYLES = `
 
   /* Case study strip */
   .xp-case {
-    border-top: 1px solid #2A261E;
+    border-top: 1px solid #262626;
     padding-top: 16px;
     transition: opacity 0.3s ease;
   }
@@ -938,26 +938,26 @@ const DASHBOARD_STYLES = `
   .xp-case-tag {
     font-size: 10px;
     font-weight: 800;
-    color: #0E0D0B;
-    background: #C9B78F;
+    color: #060605;
+    background: #FFB000;
     padding: 2px 8px;
     border-radius: 4px;
   }
   .xp-case-feature {
     font-size: 11px;
     font-weight: 700;
-    color: #C9B78F;
+    color: #FFB000;
   }
   .xp-case-count {
     margin-inline-start: auto;
     font-size: 11px;
-    color: #6F6A5F;
+    color: #6A6A6A;
     font-variant-numeric: tabular-nums;
   }
   .xp-case-next {
     background: none;
-    border: 1px solid #3A352B;
-    color: #A39E91;
+    border: 1px solid #353535;
+    color: #9E9E9E;
     font-size: 11px;
     font-weight: 600;
     padding: 3px 9px;
@@ -966,8 +966,8 @@ const DASHBOARD_STYLES = `
   }
   .xp-case-next:hover,
   .xp-case-next:focus-visible {
-    color: #C9B78F;
-    border-color: rgba(201,183,143, 0.5);
+    color: #FFB000;
+    border-color: rgba(255,176,0, 0.5);
     outline: none;
   }
   .xp-case-body {
@@ -981,17 +981,17 @@ const DASHBOARD_STYLES = `
     margin: 0 0 3px;
     font-size: 13px;
     font-weight: 600;
-    color: #ebe8df;
+    color: #e8e8e8;
     line-height: 1.45;
   }
   .xp-case-detail {
     margin: 0 0 4px;
     font-size: 12px;
-    color: #9D9A91;
+    color: #9A9A9A;
     line-height: 1.45;
   }
   .xp-case-apply {
-    color: #C9B78F;
+    color: #FFB000;
     font-weight: 600;
     text-decoration: none;
     white-space: nowrap;
@@ -1002,16 +1002,16 @@ const DASHBOARD_STYLES = `
   .xp-case-source {
     margin: 0;
     font-size: 10.5px;
-    color: #6F6A5F;
+    color: #6A6A6A;
   }
   .xp-case-source a {
-    color: #807D74;
+    color: #7D7D7D;
     text-decoration: underline;
-    text-decoration-color: #4A443A;
+    text-decoration-color: #444444;
     text-underline-offset: 2px;
   }
   .xp-case-source a:hover {
-    color: #b8b2a3;
+    color: #b2b2b2;
   }
 
   @media (max-width: 720px) {
@@ -1039,8 +1039,8 @@ const DASHBOARD_STYLES = `
     margin-top: 12px;
   }
   .xp-card {
-    background: #16140F;
-    border: 1px solid #2E2A22;
+    background: #0F0E0C;
+    border: 1px solid #2A2A2A;
     border-radius: 12px;
     padding: 20px;
     display: flex;
@@ -1049,7 +1049,7 @@ const DASHBOARD_STYLES = `
     transition: all 0.2s ease;
   }
   .xp-card.is-enabled {
-    border-color: #4A443A;
+    border-color: #444444;
   }
   .xp-card-header {
     margin-bottom: 12px;
@@ -1079,13 +1079,13 @@ const DASHBOARD_STYLES = `
     border: 1px solid rgba(74, 222, 128, 0.3);
   }
   .xp-pill--inactive {
-    background: #2A261E;
-    color: #8F8A7E;
-    border: 1px solid #3A352B;
+    background: #262626;
+    color: #8A8A8A;
+    border: 1px solid #353535;
   }
   .xp-card-desc {
     font-size: 13px;
-    color: #b8b2a3;
+    color: #b2b2b2;
     line-height: 1.5;
     margin: 0 0 16px;
     flex: 1;
@@ -1094,7 +1094,7 @@ const DASHBOARD_STYLES = `
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-top: 1px solid #2A261E;
+    border-top: 1px solid #262626;
     padding-top: 14px;
     gap: 12px;
   }
@@ -1108,26 +1108,26 @@ const DASHBOARD_STYLES = `
     transition: background 0.15s ease;
   }
   .xp-toggle-btn--on {
-    background: #0E0D0B;
-    color: #C9B78F;
-    border: 1px solid #C9B78F;
+    background: #060605;
+    color: #FFB000;
+    border: 1px solid #FFB000;
   }
   .xp-toggle-btn--on:hover {
-    background: #1d1a14;
+    background: #171614;
   }
   .xp-toggle-btn--off {
-    background: #1d1a14;
-    color: #8F8A7E;
-    border: 1px solid #3A352B;
+    background: #171614;
+    color: #8A8A8A;
+    border: 1px solid #353535;
   }
   .xp-toggle-btn--off:hover {
-    background: #2a261e;
+    background: #262626;
     color: #ffffff;
   }
   .xp-config-link {
     font-size: 13px;
     font-weight: 600;
-    color: #C9B78F;
+    color: #FFB000;
     text-decoration: none;
   }
   .xp-config-link:hover {
@@ -1140,8 +1140,8 @@ const DASHBOARD_STYLES = `
     margin-top: 12px;
   }
   .xp-step {
-    background: #16140F;
-    border: 1px solid #2E2A22;
+    background: #0F0E0C;
+    border: 1px solid #2A2A2A;
     border-radius: 10px;
     padding: 16px;
     display: flex;
@@ -1153,8 +1153,8 @@ const DASHBOARD_STYLES = `
     color: #ffffff;
   }
   .xp-step-num {
-    background: #0E0D0B;
-    color: #C9B78F;
+    background: #060605;
+    color: #FFB000;
     font-weight: 700;
     width: 28px;
     height: 28px;
@@ -1164,11 +1164,11 @@ const DASHBOARD_STYLES = `
     justify-content: center;
     flex-shrink: 0;
     font-size: 13px;
-    border: 1px solid #C9B78F;
+    border: 1px solid #FFB000;
   }
   .xp-step p {
     font-size: 12px;
-    color: #b8b2a3;
+    color: #b2b2b2;
     margin: 4px 0 0;
     line-height: 1.4;
   }

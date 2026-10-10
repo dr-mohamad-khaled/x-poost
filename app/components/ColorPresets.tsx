@@ -14,30 +14,41 @@ export type Palette = {
 
 /**
  * Ready-made colour palettes shared by every feature.
- * "warm" is the default for new setups; "classic" is the original black & gold.
+ * "neutral_dark" is the default for new setups; the merchant picks any other palette or custom colors.
  */
 export const PALETTES: Palette[] = [
   {
-    id: "warm",
-    name: "Warm Taupe & Champagne",
-    bg: "#2E2823",
-    surface: "#352E28",
-    track: "#4A4238",
-    border: "#4A4238",
-    accent: "#D9C9A8",
-    text: "#F6F1E7",
-    onAccent: "#2E2823",
+    id: "neutral_dark",
+    name: "Neutral Dark",
+    bg: "#141414",
+    surface: "#1C1C1C",
+    track: "#3A3A3A",
+    border: "#333333",
+    accent: "#F2F2F2",
+    text: "#FFFFFF",
+    onAccent: "#141414",
   },
   {
-    id: "cream",
-    name: "Warm Cream & Bronze",
-    bg: "#F6F1E7",
-    surface: "#FFFFFF",
-    track: "#E2D8C6",
-    border: "#D9CDB8",
-    accent: "#8C6B4B",
-    text: "#2B2620",
+    id: "neutral_light",
+    name: "Neutral Light",
+    bg: "#FFFFFF",
+    surface: "#F7F7F7",
+    track: "#E4E4E4",
+    border: "#DCDCDC",
+    accent: "#141414",
+    text: "#141414",
     onAccent: "#FFFFFF",
+  },
+  {
+    id: "amber",
+    name: "Amber",
+    bg: "#060605",
+    surface: "#0F0E0C",
+    track: "#1F1D1A",
+    border: "#252320",
+    accent: "#FFB000",
+    text: "#FFFFFF",
+    onAccent: "#060605",
   },
   {
     id: "classic",
@@ -58,7 +69,7 @@ export const DEFAULT_PALETTE = PALETTES[0];
 export function ColorPresets({ onApply }: { onApply: (p: Palette) => void }) {
   return (
     <div style={{ marginBottom: 16 }}>
-      <div style={{ fontSize: 12, color: "#A39E91", marginBottom: 8 }}>
+      <div style={{ fontSize: 12, color: "#9E9E9E", marginBottom: 8 }}>
         <Translate text="Start from a ready-made palette, then fine-tune any color below." />
       </div>
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
@@ -73,9 +84,9 @@ export function ColorPresets({ onApply }: { onApply: (p: Palette) => void }) {
               gap: 8,
               padding: "6px 12px",
               borderRadius: 8,
-              border: "1px solid #3A352B",
-              background: "#1D1A14",
-              color: "#E9DFC8",
+              border: "1px solid #353535",
+              background: "#171614",
+              color: "#FFD985",
               fontSize: 12,
               fontWeight: 600,
               cursor: "pointer",

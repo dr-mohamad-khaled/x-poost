@@ -203,9 +203,9 @@
     var bottomMobile = (config.mobileBottomOffsetPx != null ? config.mobileBottomOffsetPx : 24) + "px";
     mount.style.setProperty("--xpsb-bottom-desktop", bottomDesktop);
     mount.style.setProperty("--xpsb-bottom-mobile", bottomMobile);
-    mount.style.setProperty("--xpsb-bg", config.backgroundColor || "#2E2823");
-    mount.style.setProperty("--xpsb-gold", config.accentColor || "#D9C9A8");
-    mount.style.setProperty("--xpsb-text", config.textColor || "#F6F1E7");
+    mount.style.setProperty("--xpsb-bg", config.backgroundColor || "#141414");
+    mount.style.setProperty("--xpsb-gold", config.accentColor || "#F2F2F2");
+    mount.style.setProperty("--xpsb-text", config.textColor || "#FFFFFF");
 
     var waClean = (config.whatsappNumber || "").replace(/[^0-9]/g, "");
     var waMsg = encodeURIComponent(config.whatsappMessage || "Hi, I have a question!");

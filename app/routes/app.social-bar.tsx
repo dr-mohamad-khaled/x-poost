@@ -42,13 +42,13 @@ const LAYOUT_STYLES = [
 
 const DESIGN_THEMES = [
   {
-    id: "warm_champagne",
-    name: "Warm Taupe & Champagne",
+    id: "neutral_graphite",
+    name: "Neutral Graphite",
     badge: "Default",
-    bg: "#2E2823",
-    accent: "#D9C9A8",
-    text: "#F6F1E7",
-    description: "Soft taupe with champagne accents. Quiet, premium and easy on the eyes.",
+    bg: "#141414",
+    accent: "#F2F2F2",
+    text: "#FFFFFF",
+    description: "Clean graphite with soft white accents. Neutral by design, so it fits any store.",
   },
   {
     id: "gold_luxury",
@@ -57,7 +57,7 @@ const DESIGN_THEMES = [
     bg: "#0B0B0B",
     accent: "#D4AF37",
     text: "#FFFFFF",
-    description: "Opulent obsidian with 24K gold accents and warm amber neon glow.",
+    description: "Opulent obsidian with 24K gold accents.",
   },
   {
     id: "glassmorphism",
@@ -151,7 +151,7 @@ function parsePosition(rawPos: string | null | undefined) {
   let side = "bottom-right";
   let bottomOffsetPx = 24;
   let mobileBottomOffsetPx = 24;
-  let designTheme = "warm_champagne";
+  let designTheme = "neutral_graphite";
   let layoutStyle = "action_stack";
   let networks: Record<string, string> = {};
 
@@ -204,7 +204,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           side: "bottom-right",
           bottomOffsetPx: 24,
           mobileBottomOffsetPx: 24,
-          designTheme: "warm_champagne",
+          designTheme: "neutral_graphite",
           layoutStyle: "action_stack",
         }),
         badgeText: "Need help? Chat with us",
@@ -215,9 +215,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         tiktokUrl: "",
         vipCommunityLabel: "Join our VIP Deals Group",
         vipCommunityUrl: "",
-        backgroundColor: "#2E2823",
-        accentColor: "#D9C9A8",
-        textColor: "#F6F1E7",
+        backgroundColor: "#141414",
+        accentColor: "#F2F2F2",
+        textColor: "#FFFFFF",
       },
     });
   }
@@ -260,7 +260,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const side = String(formData.get("side") || "bottom-right");
   const bottomOffsetPx = Math.max(10, Math.min(300, parseInt(String(formData.get("bottomOffsetPx") || "24"), 10) || 24));
   const mobileBottomOffsetPx = Math.max(10, Math.min(300, parseInt(String(formData.get("mobileBottomOffsetPx") || "24"), 10) || 24));
-  const designTheme = String(formData.get("designTheme") || "warm_champagne");
+  const designTheme = String(formData.get("designTheme") || "neutral_graphite");
   const layoutStyle = String(formData.get("layoutStyle") || "action_stack");
 
   const networks: Record<string, string> = {};
@@ -286,9 +286,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const tiktokUrl = String(formData.get("tiktokUrl") || "").trim();
   const vipCommunityLabel = String(formData.get("vipCommunityLabel") || "Join our VIP Deals Group").trim();
   const vipCommunityUrl = String(formData.get("vipCommunityUrl") || "").trim();
-  const backgroundColor = String(formData.get("backgroundColor") || "#2E2823");
-  const accentColor = String(formData.get("accentColor") || "#D9C9A8");
-  const textColor = String(formData.get("textColor") || "#F6F1E7");
+  const backgroundColor = String(formData.get("backgroundColor") || "#141414");
+  const accentColor = String(formData.get("accentColor") || "#F2F2F2");
+  const textColor = String(formData.get("textColor") || "#FFFFFF");
   const translationsJsonRaw = String(formData.get("translationsJson") || "");
 
   await prisma.socialWidgetConfig.upsert({
@@ -390,7 +390,7 @@ export default function SocialBarSettings() {
 
   const [selectedLayout, setSelectedLayout] = useState<string>(parsedPos.layoutStyle || "action_stack");
   const [inqOpen, setInqOpen] = useState(true);
-  const [selectedTheme, setSelectedTheme] = useState<string>(parsedPos.designTheme || "warm_champagne");
+  const [selectedTheme, setSelectedTheme] = useState<string>(parsedPos.designTheme || "neutral_graphite");
   const [side, setSide] = useState<string>(parsedPos.side || "bottom-right");
   const [desktopOffset, setDesktopOffset] = useState<number>(parsedPos.bottomOffsetPx || 24);
   const [mobileOffset, setMobileOffset] = useState<number>(parsedPos.mobileBottomOffsetPx || 24);
@@ -399,9 +399,9 @@ export default function SocialBarSettings() {
   const [waNumber, setWaNumber] = useState(/^\+?1234567890$/.test(String(config.whatsappNumber || "").trim()) ? "" : (config.whatsappNumber || ""));
   const [waMsg, setWaMsg] = useState(config.whatsappMessage || "Hi, I have a question about my order!");
   const [vipLabel, setVipLabel] = useState(config.vipCommunityLabel || "Join our VIP Deals Group");
-  const [accentColor, setAccentColor] = useState(config.accentColor || "#D9C9A8");
-  const [bgColor, setBgColor] = useState(config.backgroundColor || "#2E2823");
-  const [textColor, setTextColor] = useState(config.textColor || "#F6F1E7");
+  const [accentColor, setAccentColor] = useState(config.accentColor || "#F2F2F2");
+  const [bgColor, setBgColor] = useState(config.backgroundColor || "#141414");
+  const [textColor, setTextColor] = useState(config.textColor || "#FFFFFF");
 
   const cleanWaNumber = waNumber.replace(/[^0-9]/g, "");
   const waUrl = cleanWaNumber ? `https://wa.me/${cleanWaNumber}?text=${encodeURIComponent(currentCopy.whatsappMessage || waMsg)}` : "#";
@@ -1149,10 +1149,10 @@ const SOCIAL_BAR_STYLES = `
     }
   }
   .xp-layout-card, .xp-theme-card {
-    border: 1px solid #3A352B !important;
+    border: 1px solid #353535 !important;
     border-radius: 10px !important;
     padding: 16px !important;
-    background: #1D1A14 !important;
+    background: #171614 !important;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
@@ -1161,14 +1161,14 @@ const SOCIAL_BAR_STYLES = `
     position: relative;
   }
   .xp-layout-card:hover, .xp-theme-card:hover {
-    border-color: rgba(201,183,143, 0.6) !important;
-    background: #1d1a14 !important;
+    border-color: rgba(255,176,0, 0.6) !important;
+    background: #171614 !important;
     transform: translateY(-2px);
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4) !important;
   }
   .xp-layout-card.is-selected, .xp-theme-card.is-selected {
-    border-color: #C9B78F !important;
-    background: #221e16 !important;
+    border-color: #FFB000 !important;
+    background: #1c1b18 !important;
   }
   .xp-layout-header, .xp-theme-header {
     display: flex;
@@ -1193,9 +1193,9 @@ const SOCIAL_BAR_STYLES = `
     font-weight: 800 !important;
     text-transform: uppercase !important;
     letter-spacing: 0.6px !important;
-    background: rgba(201,183,143, 0.15) !important;
-    color: #C9B78F !important;
-    border: 1px solid rgba(201,183,143, 0.4) !important;
+    background: rgba(255,176,0, 0.15) !important;
+    color: #FFB000 !important;
+    border: 1px solid rgba(255,176,0, 0.4) !important;
     padding: 3px 8px !important;
     border-radius: 4px !important;
     display: inline-block !important;
@@ -1203,23 +1203,23 @@ const SOCIAL_BAR_STYLES = `
   }
   .xp-layout-card.is-selected .xp-layout-badge,
   .xp-theme-card.is-selected .xp-theme-badge {
-    background: #C9B78F !important;
-    color: #0E0D0B !important;
-    border-color: #C9B78F !important;
+    background: #FFB000 !important;
+    color: #060605 !important;
+    border-color: #FFB000 !important;
     font-weight: 900 !important;
   }
   .xp-layout-desc, .xp-theme-desc {
     margin: 0 !important;
     font-size: 12px !important;
-    color: #C7C4BB !important;
+    color: #C4C4C4 !important;
     line-height: 1.45 !important;
   }
 
 
   /* Native Luxury Dark Section Cards */
   .xp-section-card {
-    background: #16140F !important;
-    border: 1px solid #2E2A22 !important;
+    background: #0F0E0C !important;
+    border: 1px solid #2A2A2A !important;
     border-radius: 12px !important;
     padding: 24px !important;
     margin-bottom: 20px !important;
@@ -1229,7 +1229,7 @@ const SOCIAL_BAR_STYLES = `
   .xp-section-title {
     font-size: 16px !important;
     font-weight: 700 !important;
-    color: #C9B78F !important; margin: 0 0 16px 0 !important; border-bottom: 1px solid #2E2A22 !important; padding-bottom: 12px !important;
+    color: #FFB000 !important; margin: 0 0 16px 0 !important; border-bottom: 1px solid #2A2A2A !important; padding-bottom: 12px !important;
     display: flex !important;
     align-items: center !important;
     gap: 8px !important;
@@ -1248,13 +1248,13 @@ const SOCIAL_BAR_STYLES = `
   }
   .xp-section-intro {
     font-size: 13px;
-    color: #b8b2a3;
+    color: #b2b2b2;
     margin: 0 0 16px;
     line-height: 1.4;
   }
   .xp-sub {
     font-size: 12px;
-    color: #8F8A7E;
+    color: #8A8A8A;
     margin: 4px 0 0;
   }
   .xp-row {
@@ -1285,14 +1285,14 @@ const SOCIAL_BAR_STYLES = `
   }
   .xp-field small {
     font-size: 11px;
-    color: #8F8A7E;
+    color: #8A8A8A;
   }
   .xp-input {
     padding: 8px 12px;
-    border: 1px solid #3A352B;
+    border: 1px solid #353535;
     border-radius: 6px;
     font-size: 13px;
-    background: #16140F;
+    background: #0F0E0C;
   }
   .xp-grid-2 {
     display: grid;
@@ -1327,10 +1327,10 @@ const SOCIAL_BAR_STYLES = `
     }
   }
   .xp-layout-card {
-    border: 1px solid #2E2A22;
+    border: 1px solid #2A2A2A;
     border-radius: 10px;
     padding: 14px;
-    background: #16140F;
+    background: #0F0E0C;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
@@ -1338,13 +1338,13 @@ const SOCIAL_BAR_STYLES = `
     gap: 6px;
   }
   .xp-layout-card:hover {
-    border-color: #C9B78F;
+    border-color: #FFB000;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   }
   .xp-layout-card.is-selected {
-    border-color: #C9B78F;
-    background: #221e16;
+    border-color: #FFB000;
+    background: #1c1b18;
     box-shadow: 0 0 0 1px #008060, 0 4px 14px rgba(0, 128, 96, 0.15);
   }
   .xp-layout-header {
@@ -1357,8 +1357,8 @@ const SOCIAL_BAR_STYLES = `
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    background: #2A261E;
-    color: #4A443A;
+    background: #262626;
+    color: #444444;
     padding: 2px 6px;
     border-radius: 4px;
   }
@@ -1371,7 +1371,7 @@ const SOCIAL_BAR_STYLES = `
   .xp-layout-desc {
     margin: 0;
     font-size: 11px;
-    color: #8F8A7E;
+    color: #8A8A8A;
     line-height: 1.35;
   }
 
@@ -1387,10 +1387,10 @@ const SOCIAL_BAR_STYLES = `
     }
   }
   .xp-theme-card {
-    border: 1px solid #2E2A22;
+    border: 1px solid #2A2A2A;
     border-radius: 10px;
     padding: 14px;
-    background: #16140F;
+    background: #0F0E0C;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
@@ -1399,13 +1399,13 @@ const SOCIAL_BAR_STYLES = `
     position: relative;
   }
   .xp-theme-card:hover {
-    border-color: #C9B78F;
+    border-color: #FFB000;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   }
   .xp-theme-card.is-selected {
-    border-color: #C9B78F;
-    background: #221e16;
+    border-color: #FFB000;
+    background: #1c1b18;
     box-shadow: 0 0 0 1px #008060, 0 4px 14px rgba(0, 128, 96, 0.15);
   }
   .xp-theme-header {
@@ -1418,15 +1418,15 @@ const SOCIAL_BAR_STYLES = `
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    background: #2A261E;
-    color: #4A443A;
+    background: #262626;
+    color: #444444;
     padding: 2px 6px;
     border-radius: 4px;
   }
   .xp-theme-check {
     font-size: 11px;
     font-weight: 700;
-    color: #C9B78F;
+    color: #FFB000;
   }
   .xp-theme-title {
     margin: 2px 0 0;
@@ -1437,7 +1437,7 @@ const SOCIAL_BAR_STYLES = `
   .xp-theme-desc {
     margin: 0;
     font-size: 11px;
-    color: #8F8A7E;
+    color: #8A8A8A;
     line-height: 1.35;
     flex-grow: 1;
   }
@@ -1456,8 +1456,8 @@ const SOCIAL_BAR_STYLES = `
 
   /* Vertical Offset Box */
   .xp-offset-box {
-    background: #1D1A14;
-    border: 1px solid #2E2A22;
+    background: #171614;
+    border: 1px solid #2A2A2A;
     border-radius: 8px;
     padding: 14px 16px;
     margin-top: 12px;
@@ -1478,7 +1478,7 @@ const SOCIAL_BAR_STYLES = `
   }
   .xp-offset-header small {
     font-size: 11px;
-    color: #8F8A7E;
+    color: #8A8A8A;
   }
   .xp-offset-val-wrap {
     display: flex;
@@ -1490,7 +1490,7 @@ const SOCIAL_BAR_STYLES = `
   .xp-offset-number {
     width: 60px;
     padding: 4px 8px;
-    border: 1px solid #3A352B;
+    border: 1px solid #353535;
     border-radius: 4px;
     font-size: 13px;
     font-weight: 700;
@@ -1499,7 +1499,7 @@ const SOCIAL_BAR_STYLES = `
   .xp-range-slider {
     width: 100%;
     cursor: pointer;
-    accent-color: #C9B78F;
+    accent-color: #FFB000;
   }
   .xp-offset-presets {
     display: flex;
@@ -1510,11 +1510,11 @@ const SOCIAL_BAR_STYLES = `
   }
   .xp-preset-label {
     font-size: 11px;
-    color: #8F8A7E;
+    color: #8A8A8A;
   }
   .xp-preset-btn {
-    background: #16140F;
-    border: 1px solid #3A352B;
+    background: #0F0E0C;
+    border: 1px solid #353535;
     border-radius: 4px;
     padding: 3px 8px;
     font-size: 11px;
@@ -1524,8 +1524,8 @@ const SOCIAL_BAR_STYLES = `
     transition: background 0.15s;
   }
   .xp-preset-btn:hover {
-    background: #1d1a14;
-    border-color: #8F8A7E;
+    background: #171614;
+    border-color: #8A8A8A;
   }
 
   .xp-color-wrap {
@@ -1536,7 +1536,7 @@ const SOCIAL_BAR_STYLES = `
   .xp-color-wrap input[type="color"] {
     width: 38px;
     height: 34px;
-    border: 1px solid #3A352B;
+    border: 1px solid #353535;
     border-radius: 4px;
     cursor: pointer;
     padding: 0;
@@ -1544,15 +1544,15 @@ const SOCIAL_BAR_STYLES = `
   .xp-wa-preview {
     margin-top: 10px;
     padding: 8px 12px;
-    background: #1D1A14;
+    background: #171614;
     border-radius: 6px;
     font-size: 11px;
     word-break: break-all;
   }
   .xp-btn-submit {
-    background: #0E0D0B;
-    color: #C9B78F;
-    border: 1px solid #C9B78F;
+    background: #060605;
+    color: #FFB000;
+    border: 1px solid #FFB000;
     padding: 12px 24px;
     border-radius: 6px;
     font-weight: 700;
@@ -1562,7 +1562,7 @@ const SOCIAL_BAR_STYLES = `
     transition: background 0.2s;
   }
   .xp-btn-submit:hover {
-    background: #1d1a14;
+    background: #171614;
   }
 
   /* Live Preview Styles */
@@ -1590,12 +1590,12 @@ const SOCIAL_BAR_STYLES = `
   .xp-offset-indicator-bar {
     display: flex;
     justify-content: space-between;
-    background: #2A261E;
+    background: #262626;
     padding: 6px 10px;
     border-radius: 6px;
     font-size: 11px;
     margin: 10px 0 14px;
-    color: #3A352B;
+    color: #353535;
   }
 
   .xp-preview-social-deck {
@@ -1787,7 +1787,7 @@ const SOCIAL_BAR_STYLES = `
   .xp-chips-label {
     font-size: 11px;
     font-weight: 600;
-    color: #8F8A7E;
+    color: #8A8A8A;
     margin-bottom: 6px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -1865,7 +1865,7 @@ const SOCIAL_BAR_STYLES = `
   }
   .xp-concierge-social-label {
     font-size: 11px;
-    color: #8F8A7E;
+    color: #8A8A8A;
   }
 
   /* VIP Funnel */
@@ -1951,7 +1951,7 @@ const SOCIAL_BAR_STYLES = `
     padding-top: 10px;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
     font-size: 11px;
-    color: #8F8A7E;
+    color: #8A8A8A;
   }
   .xp-concierge-social-row {
     display: flex;
@@ -1975,8 +1975,8 @@ const SOCIAL_BAR_STYLES = `
   .xp-social-icon-circle:hover {
     background: rgba(255, 255, 255, 0.18);
     transform: translateY(-2px);
-    border-color: #C9B78F;
-    color: #C9B78F;
+    border-color: #FFB000;
+    color: #FFB000;
   }
 
   /* Compact Horizontal Dock */
@@ -2009,15 +2009,15 @@ const SOCIAL_BAR_STYLES = `
   }
   .xp-dock-pill-wa:hover {
     background: #25D366;
-    color: #0E0D0B;
+    color: #060605;
     transform: translateY(-1px);
   }
   .xp-dock-pill-vip {
-    background: rgba(201,183,143, 0.12);
-    border: 1px solid rgba(201,183,143, 0.35);
+    background: rgba(255,176,0, 0.12);
+    border: 1px solid rgba(255,176,0, 0.35);
   }
   .xp-dock-pill-vip:hover {
-    background: rgba(201,183,143, 0.25);
+    background: rgba(255,176,0, 0.25);
     transform: translateY(-1px);
   }
   .xp-dock-divider {
@@ -2047,8 +2047,8 @@ const SOCIAL_BAR_STYLES = `
   .xp-dock-social-btn:hover {
     background: rgba(255, 255, 255, 0.2);
     transform: translateY(-2px);
-    border-color: #C9B78F;
-    color: #C9B78F;
+    border-color: #FFB000;
+    color: #FFB000;
   }
 
   /* SVG Icons */

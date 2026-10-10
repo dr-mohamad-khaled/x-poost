@@ -1,7 +1,7 @@
 /* XPoost: Retention Triggers (Exit-Intent Saver) */
 :root, #xpoost-root, #xpoost-exit-root, body {
-  --xpr-bg: #2E2823;
-  --xpr-gold: #D9C9A8;
+  --xpr-bg: #141414;
+  --xpr-gold: #F2F2F2;
   --xpr-text: #FFFFFF;
 }
 
@@ -38,8 +38,8 @@
 .xpr-exit-modal,
 #xpoost-root .xpr-exit-modal,
 #xpoost-exit-root .xpr-exit-modal {
-  background: var(--xpr-bg, #2E2823) !important;
-  border: 1px solid rgba(217, 201, 168, 0.5) !important;
+  background: var(--xpr-bg, #141414) !important;
+  border: 1px solid rgba(242, 242, 242, 0.5) !important;
   border-radius: 16px !important;
   width: 100% !important;
   max-width: 420px !important;
@@ -88,12 +88,12 @@
   display: inline-flex !important;
   align-items: center !important;
   gap: 6px !important;
-  border: 1px solid var(--xpr-gold, #D9C9A8) !important;
+  border: 1px solid var(--xpr-gold, #F2F2F2) !important;
   border-radius: 20px !important;
   padding: 4px 12px !important;
   font-size: 12px !important;
   font-weight: 800 !important;
-  color: var(--xpr-gold, #D9C9A8) !important;
+  color: var(--xpr-gold, #F2F2F2) !important;
   margin-bottom: 12px !important;
 }
 
@@ -127,7 +127,7 @@
 .xpr-exit-coupon,
 #xpoost-root .xpr-exit-coupon,
 #xpoost-exit-root .xpr-exit-coupon {
-  border: 1px dashed var(--xpr-gold, #D9C9A8) !important;
+  border: 1px dashed var(--xpr-gold, #F2F2F2) !important;
   border-radius: 8px !important;
   padding: 10px 14px !important;
   background: rgba(255, 255, 255, 0.04) !important;
@@ -142,7 +142,7 @@
 .xpr-exit-coupon:hover,
 #xpoost-root .xpr-exit-coupon:hover,
 #xpoost-exit-root .xpr-exit-coupon:hover {
-  background: rgba(217, 201, 168, 0.1) !important;
+  background: rgba(242, 242, 242, 0.1) !important;
 }
 
 .xpr-coupon-code,
@@ -158,8 +158,8 @@
 .xpr-coupon-copy,
 #xpoost-root .xpr-coupon-copy,
 #xpoost-exit-root .xpr-coupon-copy {
-  background: var(--xpr-gold, #D9C9A8) !important;
-  color: #2E2823 !important;
+  background: var(--xpr-gold, #F2F2F2) !important;
+  color: #141414 !important;
   font-size: 10px !important;
   font-weight: 800 !important;
   padding: 4px 8px !important;
@@ -169,8 +169,8 @@
 .xpr-exit-btn,
 #xpoost-root .xpr-exit-btn,
 #xpoost-exit-root .xpr-exit-btn {
-  background: var(--xpr-gold, #D9C9A8) !important;
-  color: #2E2823 !important;
+  background: var(--xpr-gold, #F2F2F2) !important;
+  color: #141414 !important;
   border: none !important;
   border-radius: 8px !important;
   padding: 13px !important;
