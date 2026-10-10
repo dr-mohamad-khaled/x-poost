@@ -44,6 +44,8 @@
       bundleTotalSingle: "إجمالي المجموعة (منتج واحد):",
       bundleSavings: "أنت توفر {amount} (تم تطبيق خصم المجموعة {discount}%)",
       bundleSavingsApplied: "أنت توفر {amount} (تم تطبيق خصم المجموعة)",
+      meterSaved: "أنت توفر",
+      meterCount: "{count} من {total} تم اختيارها",
       adding: "جاري الإضافة...",
       continueToCart: "المتابعة إلى السلة \u2190",
       addSingleItemSave: "إضافة منتج واحد ({price}) وتوفير الخصم \u2190",
@@ -70,6 +72,8 @@
       bundleTotalSingle: "Bundle Routine Total (1 item):",
       bundleSavings: "You save {amount} ({discount}% Bundle Discount Applied)",
       bundleSavingsApplied: "You save {amount} (Bundle Discount Applied)",
+      meterSaved: "You're saving",
+      meterCount: "{count} of {total} selected",
       adding: "Adding...",
       continueToCart: "Continue to Cart \u2192",
       addSingleItemSave: "Add 1 Item ({price}) & Save \u2192",
@@ -96,6 +100,8 @@
       bundleTotalSingle: "Total du lot (1 article) :",
       bundleSavings: "Vous économisez {amount} (remise de lot de {discount}% appliquée)",
       bundleSavingsApplied: "Vous économisez {amount} (remise de lot appliquée)",
+      meterSaved: "Vous économisez",
+      meterCount: "{count} sur {total} sélectionnés",
       adding: "Ajout en cours...",
       continueToCart: "Continuer vers le panier \u2192",
       addSingleItemSave: "Ajouter 1 article ({price}) et économiser \u2192",
@@ -122,6 +128,8 @@
       bundleTotalSingle: "Set-Gesamtbetrag (1 Artikel):",
       bundleSavings: "Sie sparen {amount} ({discount}% Paket-Rabatt angewendet)",
       bundleSavingsApplied: "Sie sparen {amount} (Paket-Rabatt angewendet)",
+      meterSaved: "Sie sparen",
+      meterCount: "{count} von {total} ausgewählt",
       adding: "Wird hinzugefügt...",
       continueToCart: "Weiter zum Warenkorb \u2192",
       addSingleItemSave: "1 Artikel hinzufügen ({price}) & sparen \u2192",
@@ -148,6 +156,8 @@
       bundleTotalSingle: "Total del paquete (1 artículo):",
       bundleSavings: "Ahorras {amount} ({discount}% de descuento aplicado)",
       bundleSavingsApplied: "Ahorras {amount} (descuento de paquete aplicado)",
+      meterSaved: "Estás ahorrando",
+      meterCount: "{count} de {total} seleccionados",
       adding: "Añadiendo...",
       continueToCart: "Continuar al carrito \u2192",
       addSingleItemSave: "Añadir 1 artículo ({price}) y ahorrar \u2192",
@@ -174,6 +184,8 @@
       bundleTotalSingle: "Totale pacchetto (1 articolo):",
       bundleSavings: "Risparmi {amount} ({discount}% di sconto applicato)",
       bundleSavingsApplied: "Risparmi {amount} (sconto pacchetto applicato)",
+      meterSaved: "Stai risparmiando",
+      meterCount: "{count} di {total} selezionati",
       adding: "Aggiunta in corso...",
       continueToCart: "Continua al carrello \u2192",
       addSingleItemSave: "Aggiungi 1 articolo ({price}) e risparmia \u2192",
@@ -200,6 +212,8 @@
       bundleTotalSingle: "Total do pacote (1 item):",
       bundleSavings: "Você economiza {amount} ({discount}% de desconto aplicado)",
       bundleSavingsApplied: "Você economiza {amount} (desconto de pacote aplicado)",
+      meterSaved: "Você está economizando",
+      meterCount: "{count} de {total} selecionados",
       adding: "Adicionando...",
       continueToCart: "Continuar para o carrinho \u2192",
       addSingleItemSave: "Adicionar 1 item ({price}) e economizar \u2192",
@@ -1200,6 +1214,121 @@
         '<div class="xpc-urgency-scarcity">' + escapeHtml(scarcityNoticeText) + '</div>' +
         '<div class="xpc-modal-products-list">' + flashItemsHtml + '</div>';
     }
+    // LAYOUT 5: Swipe Cards (horizontal scroll-snap product cards)
+    else if (layoutStyle === "swipe_cards") {
+      var swTotalOrig = 0;
+      var swTotalSale = 0;
+      var swAnyDiscount = false;
+      var swSelectedCount = 0;
+
+      var swipeCardsHtml = rules.map(function (rule, idx) {
+        var origPrice = parseFloat(rule.targetProductPrice || "29.99");
+        var discount = rule.discountPercent ? parseFloat(rule.discountPercent) : 0;
+        var hasDiscount = discount > 0;
+        var salePrice = (hasDiscount ? origPrice * (1 - discount / 100) : origPrice).toFixed(2);
+        var targetVariant = rule.targetVariantId ? rule.targetVariantId.replace(/[^0-9]/g, "") : "";
+        var isPreselected = rule.preselected !== false;
+        var pUrl = getProductUrl(rule);
+
+        if (isPreselected) {
+          swTotalOrig += origPrice;
+          swTotalSale += parseFloat(salePrice);
+          swSelectedCount++;
+          if (hasDiscount) swAnyDiscount = true;
+        }
+
+        return (
+          '<div class="xpc-swipe-card' + (isPreselected ? ' is-selected' : '') + '" data-index="' + idx + '">' +
+          '<div class="xpc-swipe-thumb">' +
+          '<a href="' + pUrl + '" target="_blank" class="xpc-product-link">' +
+          (rule.targetProductImage ? '<img class="xpc-swipe-img" src="' + escapeHtml(rule.targetProductImage) + '" alt="" />' : '<div class="xpc-swipe-ph">' + VECTOR_ICONS.gift + '</div>') +
+          '</a>' +
+          (hasDiscount ? '<span class="xpc-bundle-thumb-save">-' + discount + '%</span>' : '') +
+          '<span class="xpc-swipe-tick">' + VECTOR_ICONS.check + '</span>' +
+          '</div>' +
+          '<div class="xpc-swipe-name"><a href="' + pUrl + '" target="_blank" class="xpc-product-link">' + escapeHtml(rule.targetProductTitle || "Add-on") + '</a></div>' +
+          '<div class="xpc-modal-pricing">' +
+          '<span class="xpc-modal-sale">' + symbol + salePrice + '</span>' +
+          (hasDiscount ? '<span class="xpc-modal-orig">' + symbol + origPrice.toFixed(2) + '</span>' : '') +
+          '</div>' +
+          '<input type="checkbox" class="xpc-product-check" style="display:none;" data-index="' + idx + '" data-variant-id="' + targetVariant + '" data-orig-price="' + origPrice.toFixed(2) + '" data-price="' + salePrice + '" data-has-discount="' + (hasDiscount ? '1' : '0') + '"' + (isPreselected ? ' checked' : '') + ' />' +
+          '<div class="xpc-bundle-toggle-pill ' + (isPreselected ? 'is-checked' : '') + '">' +
+          (isPreselected ? VECTOR_ICONS.check + '<span>' + escapeHtml(getUiString('added')) + '</span>' : '<span>' + escapeHtml(getUiString('add')) + '</span>') +
+          '</div>' +
+          '</div>'
+        );
+      }).join("");
+
+      var swDiscountPercent = rules[0].discountPercent ? parseFloat(rules[0].discountPercent) : 0;
+      var swSavings = swTotalOrig - swTotalSale;
+
+      modalInnerHtml =
+        '<div class="xpc-swipe-track">' + swipeCardsHtml + '</div>' +
+        '<div class="xpc-bundle-summary-card" id="xpc-bundle-summary">' +
+        '<div class="xpc-bundle-summary-row">' +
+        '<span class="xpc-bundle-summary-label">' + getUiString('bundleTotal', { count: '<span id="xpc-bundle-count">' + swSelectedCount + '</span>' }) + '</span>' +
+        '<div class="xpc-bundle-summary-prices">' +
+        '<span class="xpc-bundle-sum-orig" id="xpc-bundle-orig" style="' + (swAnyDiscount ? '' : 'display:none;') + '">' + symbol + swTotalOrig.toFixed(2) + '</span>' +
+        '<span class="xpc-bundle-sum-sale" id="xpc-bundle-sale">' + symbol + swTotalSale.toFixed(2) + '</span>' +
+        '</div>' +
+        '</div>' +
+        '<div class="xpc-bundle-savings-highlight" id="xpc-bundle-savings" style="' + (swSavings > 0.009 ? '' : 'display:none;') + '">' +
+        VECTOR_ICONS.check +
+        '<span>' + escapeHtml(getUiString('bundleSavings', { amount: symbol + swSavings.toFixed(2), discount: swDiscountPercent })) + '</span>' +
+        '</div>' +
+        '</div>';
+    }
+    // LAYOUT 6: Savings Meter (live savings counter + progress bar + switches)
+    else if (layoutStyle === "savings_meter") {
+      var mtTotalOrig = 0;
+      var mtTotalSale = 0;
+      var mtSelectedCount = 0;
+
+      var meterRowsHtml = rules.map(function (rule, idx) {
+        var origPrice = parseFloat(rule.targetProductPrice || "29.99");
+        var discount = rule.discountPercent ? parseFloat(rule.discountPercent) : 0;
+        var hasDiscount = discount > 0;
+        var salePrice = (hasDiscount ? origPrice * (1 - discount / 100) : origPrice).toFixed(2);
+        var targetVariant = rule.targetVariantId ? rule.targetVariantId.replace(/[^0-9]/g, "") : "";
+        var isPreselected = rule.preselected !== false;
+        var pUrl = getProductUrl(rule);
+
+        if (isPreselected) {
+          mtTotalOrig += origPrice;
+          mtTotalSale += parseFloat(salePrice);
+          mtSelectedCount++;
+        }
+
+        return (
+          '<div class="xpc-meter-row' + (isPreselected ? ' is-selected' : '') + '" data-index="' + idx + '">' +
+          '<a href="' + pUrl + '" target="_blank" class="xpc-product-link">' +
+          (rule.targetProductImage ? '<img class="xpc-meter-thumb" src="' + escapeHtml(rule.targetProductImage) + '" alt="" />' : '<div class="xpc-meter-thumb"></div>') +
+          '</a>' +
+          '<div class="xpc-meter-info">' +
+          '<div class="xpc-meter-name"><a href="' + pUrl + '" target="_blank" class="xpc-product-link">' + escapeHtml(rule.targetProductTitle || "Add-on") + '</a></div>' +
+          '<div class="xpc-modal-pricing">' +
+          '<span class="xpc-modal-sale">' + symbol + salePrice + '</span>' +
+          (hasDiscount ? '<span class="xpc-modal-orig">' + symbol + origPrice.toFixed(2) + '</span><span class="xpc-modal-save-pill">' + escapeHtml(getUiString('saveBadge', { discount: discount })) + '</span>' : '') +
+          '</div>' +
+          '</div>' +
+          '<input type="checkbox" class="xpc-product-check" style="display:none;" data-index="' + idx + '" data-variant-id="' + targetVariant + '" data-orig-price="' + origPrice.toFixed(2) + '" data-price="' + salePrice + '" data-has-discount="' + (hasDiscount ? '1' : '0') + '"' + (isPreselected ? ' checked' : '') + ' />' +
+          '<span class="xpc-switch" aria-hidden="true"><i></i></span>' +
+          '</div>'
+        );
+      }).join("");
+
+      var mtSaved = mtTotalOrig - mtTotalSale;
+      modalInnerHtml =
+        '<div class="xpc-meter-head">' +
+        '<div class="xpc-meter-amount-wrap">' +
+        '<span class="xpc-meter-label" id="xpc-meter-label">' + escapeHtml(mtSaved > 0.009 ? getUiString('meterSaved') : getUiString('selected')) + '</span>' +
+        '<strong class="xpc-meter-amount" id="xpc-meter-amount">' + symbol + (mtSaved > 0.009 ? mtSaved : mtTotalSale).toFixed(2) + '</strong>' +
+        '</div>' +
+        '<span class="xpc-meter-count" id="xpc-meter-count">' + escapeHtml(getUiString('meterCount', { count: mtSelectedCount, total: rules.length })) + '</span>' +
+        '</div>' +
+        '<div class="xpc-meter-track"><span class="xpc-meter-fill" id="xpc-meter-fill" style="width:' + Math.round((mtSelectedCount / Math.max(rules.length, 1)) * 100) + '%;"></span></div>' +
+        '<div class="xpc-meter-list">' + meterRowsHtml + '</div>';
+    }
 
     var html =
       '<div class="xpc-modal-backdrop xpc-modal-layout--' + layoutStyle + '" id="xpc-pre-modal"' + (configStore.isRtl ? ' dir="rtl"' : '') + '>' +
@@ -1299,9 +1428,22 @@
         }
       }
 
+      // Savings Meter layout: live savings amount, count and progress bar
+      var meterAmountEl = modalEl.querySelector("#xpc-meter-amount");
+      if (meterAmountEl) {
+        var meterSavedAmt = totalOrig - total;
+        var meterLabelEl = modalEl.querySelector("#xpc-meter-label");
+        var meterCountEl = modalEl.querySelector("#xpc-meter-count");
+        var meterFillEl = modalEl.querySelector("#xpc-meter-fill");
+        meterAmountEl.textContent = symbol + (meterSavedAmt > 0.009 ? meterSavedAmt : total).toFixed(2);
+        if (meterLabelEl) meterLabelEl.textContent = meterSavedAmt > 0.009 ? getUiString("meterSaved") : getUiString("selected");
+        if (meterCountEl) meterCountEl.textContent = getUiString("meterCount", { count: selectedCount, total: checkboxes.length });
+        if (meterFillEl) meterFillEl.style.width = (checkboxes.length ? Math.round((selectedCount / checkboxes.length) * 100) : 0) + "%";
+      }
+
       // Sync toggle pills inside bundle cards
       checkboxes.forEach(function (cb) {
-        var card = cb.closest(".xpc-bundle-item-card");
+        var card = cb.closest(".xpc-bundle-item-card, .xpc-swipe-card");
         if (card) {
           var pill = card.querySelector(".xpc-bundle-toggle-pill");
           if (pill) {
@@ -1348,7 +1490,7 @@
     }
 
     // Interactive card toggling
-    modalEl.querySelectorAll(".xpc-modal-product, .xpc-bundle-card, .xpc-bundle-item-card, .xpc-sheet-item, .xpc-spotlight-hero-card").forEach(function (row) {
+    modalEl.querySelectorAll(".xpc-modal-product, .xpc-bundle-card, .xpc-bundle-item-card, .xpc-sheet-item, .xpc-spotlight-hero-card, .xpc-swipe-card, .xpc-meter-row").forEach(function (row) {
       row.addEventListener("click", function (e) {
         if (e.target && (e.target.tagName === "INPUT" || e.target.closest("a"))) return;
         var cb = row.querySelector(".xpc-product-check");
@@ -1362,7 +1504,7 @@
 
     checkboxes.forEach(function (cb) {
       cb.addEventListener("change", function () {
-        var parentRow = cb.closest(".xpc-modal-product, .xpc-bundle-card, .xpc-bundle-item-card, .xpc-sheet-item, .xpc-spotlight-hero-card");
+        var parentRow = cb.closest(".xpc-modal-product, .xpc-bundle-card, .xpc-bundle-item-card, .xpc-sheet-item, .xpc-spotlight-hero-card, .xpc-swipe-card, .xpc-meter-row");
         if (parentRow) parentRow.classList.toggle("is-selected", cb.checked);
         updateButtonState();
       });

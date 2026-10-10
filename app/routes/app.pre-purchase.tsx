@@ -571,9 +571,9 @@ type OfferGroup = {
 const PRE_PURCHASE_LAYOUTS = [
   {
     id: "spotlight_hero",
-    name: "Spotlight Hero & Value Showcase",
+    name: "Featured Product",
     badge: "Recommended",
-    desc: "Highlights the primary offer product with an elevated showcase hero card and stacked complementary secondary add-ons.",
+    desc: "One star product in a large card with benefit bullets, plus smaller add-ons underneath. Best when one product should stand out.",
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
@@ -582,9 +582,9 @@ const PRE_PURCHASE_LAYOUTS = [
   },
   {
     id: "bundle_grid",
-    name: "Bundle & Save Grid Deck",
-    badge: "High Conversion",
-    desc: "Clean side-by-side product cards with instant discount badges, checkmark toggles, and unified bundle add CTA.",
+    name: "Bundle Builder",
+    badge: "Best for sets",
+    desc: "Products linked with + signs and a live bundle total that shows what the shopper saves. Great for routines and kits.",
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect width="7" height="7" x="3" y="3" rx="1"/>
@@ -596,9 +596,9 @@ const PRE_PURCHASE_LAYOUTS = [
   },
   {
     id: "bottom_sheet",
-    name: "Sleek Slide-Up Bottom Sheet",
-    badge: "Mobile Native",
-    desc: "Modern drawer bottom sheet with pull-handle indicator, streamlined product chips, and thumb-friendly checkout trigger.",
+    name: "Slide-Up Drawer",
+    badge: "Mobile-first",
+    desc: "A compact panel that slides up from the bottom with a quick, thumb-friendly checklist. Ideal for phones.",
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect width="18" height="18" x="3" y="3" rx="2"/>
@@ -609,13 +609,39 @@ const PRE_PURCHASE_LAYOUTS = [
   },
   {
     id: "flash_urgency",
-    name: "Urgent Flash Deal with Live Timer",
-    badge: "Scarcity Driver",
-    desc: "High-urgency design with an active ticking countdown timer banner, gold highlight glow, and reserving cart prompt.",
+    name: "Flash Deal",
+    badge: "Urgency",
+    desc: "A live countdown and a limited-allocation notice that nudge shoppers to decide now.",
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10"/>
         <polyline points="12 6 12 12 16 14"/>
+      </svg>
+    ),
+  },
+  {
+    id: "swipe_cards",
+    name: "Swipe Cards",
+    badge: "Visual",
+    desc: "Big product photos in swipeable cards with a one-tap add button and a running total underneath. Great for visual products.",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="5" width="6.5" height="14" rx="1.5"/>
+        <rect x="9.5" y="5" width="6.5" height="14" rx="1.5"/>
+        <path d="M19 9l3 3-3 3"/>
+      </svg>
+    ),
+  },
+  {
+    id: "savings_meter",
+    name: "Savings Meter",
+    badge: "Progress",
+    desc: "A live savings counter and progress bar above simple on/off rows. Shoppers watch their savings grow as they add items.",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 17a9 9 0 0 1 18 0"/>
+        <path d="M3 17h18"/>
+        <path d="M12 17l4-6"/>
       </svg>
     ),
   },
@@ -633,6 +659,8 @@ const PREVIEW_I18N: Record<SupportedLanguage, {
   bundleSavings: string;
   rating: string;
   additionalUpgrades: string;
+  meterSaved: string;
+  meterCount: string;
 }> = {
     ar: {
     stepPrimary: "المنتج الأساسي",
@@ -646,6 +674,8 @@ const PREVIEW_I18N: Record<SupportedLanguage, {
     bundleSavings: "أنت توفر {amount} (تم تطبيق خصم المجموعة {discount}%)",
     rating: "تقييم 4.9 / 5.0",
     additionalUpgrades: "ترقيات إضافية:",
+    meterSaved: "أنت توفر",
+    meterCount: "{count} من {total} تم اختيارها",
   },
   en: {
     stepPrimary: "PRIMARY ESSENTIAL",
@@ -659,23 +689,27 @@ const PREVIEW_I18N: Record<SupportedLanguage, {
     bundleSavings: "You save {amount} ({discount}% Bundle Discount Applied)",
     rating: "4.9 / 5.0 Rating",
     additionalUpgrades: "Additional Upgrades:",
+    meterSaved: "You're saving",
+    meterCount: "{count} of {total} selected",
   },
   fr: {
     stepPrimary: "PRODUIT PRINCIPAL",
-    stepComp: "Ã‰TAPE COMPLÃ‰MENTAIRE {n}",
-    savePill: "Ã‰CONOMISEZ {discount}%",
+    stepComp: "ÉTAPE COMPLÉMENTAIRE {n}",
+    savePill: "ÉCONOMISEZ {discount}%",
     added: "Ajouté",
     selected: "Sélectionné",
     add: "+ Ajouter",
     bundleTotal: "Total du lot ({count} articles) :",
     bundleTotal1: "Total du lot (1 article) :",
     bundleSavings: "Vous économisez {amount} (remise de lot de {discount}% appliquée)",
-    rating: "Ã‰valuation 4,9 / 5,0",
+    rating: "Évaluation 4,9 / 5,0",
     additionalUpgrades: "Améliorations supplémentaires :",
+    meterSaved: "Vous économisez",
+    meterCount: "{count} sur {total} sélectionnés",
   },
   de: {
     stepPrimary: "HAUPTPRODUKT",
-    stepComp: "ERGÃ„NZENDE STUFE {n}",
+    stepComp: "ERGÄNZENDE STUFE {n}",
     savePill: "SPAREN SIE {discount}%",
     added: "Hinzugefügt",
     selected: "Ausgewählt",
@@ -685,6 +719,8 @@ const PREVIEW_I18N: Record<SupportedLanguage, {
     bundleSavings: "Sie sparen {amount} ({discount}% Paket-Rabatt angewendet)",
     rating: "4.9 / 5.0 Bewertung",
     additionalUpgrades: "Zusätzliche Upgrades:",
+    meterSaved: "Sie sparen",
+    meterCount: "{count} von {total} ausgewählt",
   },
   es: {
     stepPrimary: "PRODUCTO PRINCIPAL",
@@ -698,6 +734,8 @@ const PREVIEW_I18N: Record<SupportedLanguage, {
     bundleSavings: "Ahorras {amount} ({discount}% de descuento aplicado)",
     rating: "Calificación 4.9 / 5.0",
     additionalUpgrades: "Mejoras adicionales:",
+    meterSaved: "Estás ahorrando",
+    meterCount: "{count} de {total} seleccionados",
   },
   it: {
     stepPrimary: "PRODOTTO PRINCIPALE",
@@ -711,6 +749,8 @@ const PREVIEW_I18N: Record<SupportedLanguage, {
     bundleSavings: "Risparmi {amount} ({discount}% di sconto applicato)",
     rating: "Valutazione 4.9 / 5.0",
     additionalUpgrades: "Aggiornamenti aggiuntivi:",
+    meterSaved: "Stai risparmiando",
+    meterCount: "{count} di {total} selezionati",
   },
   pt: {
     stepPrimary: "PRODUTO PRINCIPAL",
@@ -724,6 +764,8 @@ const PREVIEW_I18N: Record<SupportedLanguage, {
     bundleSavings: "Você economiza {amount} ({discount}% de desconto aplicado)",
     rating: "Avaliação 4.9 / 5.0",
     additionalUpgrades: "Upgrades adicionais:",
+    meterSaved: "Você está economizando",
+    meterCount: "{count} de {total} selecionados",
   },
 };
 
@@ -2407,7 +2449,7 @@ export default function PrePurchaseSettings() {
 
                   <div className="xp-modal-header">
                     <span className="xp-gold-badge">
-                      {activeOfferCopy.offerTag || (modalLayout === "spotlight_hero" ? "SPOTLIGHT SHOWCASE" : modalLayout === "bundle_grid" ? "BUNDLE & SAVE DECK" : modalLayout === "bottom_sheet" ? "ADD-ON DRAWER" : "FLASH UPSELL DEAL")}
+                      {activeOfferCopy.offerTag || ({ spotlight_hero: "FEATURED OFFER", bundle_grid: "BUNDLE & SAVE", bottom_sheet: "QUICK ADD-ONS", flash_urgency: "FLASH DEAL", swipe_cards: "SWIPE & ADD", savings_meter: "YOUR SAVINGS" } as Record<string, string>)[modalLayout] || "SPECIAL OFFER"}
                     </span>
                     <span className="xp-modal-close">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -2673,7 +2715,7 @@ export default function PrePurchaseSettings() {
                             </div>
                             {isDiscounted && checkedCount > 0 && (
                               <div className="xp-bundle-savings-highlight">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#25D366" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                                   <polyline points="20 6 9 17 4 12"/>
                                 </svg>
                                 <span>{pI18n.bundleSavings.replace("{amount}", `${(checkedOrig - checkedDisc).toFixed(2)}`).replace("{discount}", discountPercent)}</span>
@@ -2732,6 +2774,162 @@ export default function PrePurchaseSettings() {
                                       {isDiscounted && <span className="xp-discount-pill">{pI18n.savePill.replace("{discount}", discountPercent)}</span>}
                                     </div>
                                   </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* LAYOUT 5: Swipe Cards */}
+                      {modalLayout === "swipe_cards" && (
+                        <div className="xp-swipe-wrap">
+                          <div className="xp-swipe-track">
+                            {selectedProductsList.map((p) => {
+                              const isChecked = previewCheckedIds.includes(p.id);
+                              const orig = parseFloat(p.price || "30.00");
+                              const sale = (orig * (1 - discRate)).toFixed(2);
+                              return (
+                                <div
+                                  key={p.id}
+                                  className={`xp-swipe-card ${isChecked ? "is-selected" : ""}`}
+                                  onClick={() => togglePreviewCheck(p.id)}
+                                >
+                                  <div className="xp-swipe-thumb">
+                                    {p.imageUrl ? (
+                                      <img src={p.imageUrl} alt="" className="xp-swipe-img" />
+                                    ) : (
+                                      <div className="xp-swipe-ph">
+                                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                                          <rect x="3" y="8" width="18" height="13" rx="2"/>
+                                          <path d="M12 8v13M3 12h18"/>
+                                        </svg>
+                                      </div>
+                                    )}
+                                    {isDiscounted && <span className="xp-bundle-thumb-save">-{discountPercent}%</span>}
+                                    <span className="xp-swipe-tick">
+                                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                        <polyline points="20 6 9 17 4 12"/>
+                                      </svg>
+                                    </span>
+                                  </div>
+                                  <div className="xp-swipe-name">
+                                    <a
+                                      href={p.handle ? `/products/${p.handle}` : "#"}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      className="xp-product-link"
+                                      onClick={(e) => e.stopPropagation()}
+                                    >
+                                      {p.title}
+                                    </a>
+                                  </div>
+                                  <div className="xp-modal-pricing">
+                                    <span className="xp-price-sale">${isDiscounted ? sale : orig.toFixed(2)}</span>
+                                    {isDiscounted && <span className="xp-price-orig">${orig.toFixed(2)}</span>}
+                                  </div>
+                                  <button type="button" className={`xp-bundle-toggle-pill ${isChecked ? "is-checked" : ""}`}>
+                                    {isChecked ? (
+                                      <>
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                          <polyline points="20 6 9 17 4 12"/>
+                                        </svg>
+                                        <span>{pI18n.added}</span>
+                                      </>
+                                    ) : (
+                                      <span>{pI18n.add}</span>
+                                    )}
+                                  </button>
+                                </div>
+                              );
+                            })}
+                          </div>
+                          <div className="xp-bundle-summary-card" style={{ marginBottom: "14px" }}>
+                            <div className="xp-bundle-summary-row">
+                              <span className="xp-bundle-summary-label">
+                                {pI18n.bundleTotal.replace("{count}", String(checkedCount))}
+                              </span>
+                              <div className="xp-bundle-summary-prices">
+                                {isDiscounted && checkedOrig > 0 && (
+                                  <span className="xp-bundle-sum-orig">${checkedOrig.toFixed(2)}</span>
+                                )}
+                                <span className="xp-bundle-sum-sale">${checkedDisc.toFixed(2)}</span>
+                              </div>
+                            </div>
+                            {isDiscounted && checkedCount > 0 && (
+                              <div className="xp-bundle-savings-highlight">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                  <polyline points="20 6 9 17 4 12"/>
+                                </svg>
+                                <span>{pI18n.bundleSavings.replace("{amount}", `${(checkedOrig - checkedDisc).toFixed(2)}`).replace("{discount}", discountPercent)}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* LAYOUT 6: Savings Meter */}
+                      {modalLayout === "savings_meter" && (
+                        <div className="xp-meter-wrap">
+                          <div className="xp-meter-head">
+                            <div className="xp-meter-amount-wrap">
+                              <span className="xp-meter-label">
+                                {isDiscounted && checkedOrig - checkedDisc > 0.009 ? pI18n.meterSaved : pI18n.selected}
+                              </span>
+                              <strong className="xp-meter-amount">
+                                ${(isDiscounted && checkedOrig - checkedDisc > 0.009 ? checkedOrig - checkedDisc : checkedDisc).toFixed(2)}
+                              </strong>
+                            </div>
+                            <span className="xp-meter-count">
+                              {pI18n.meterCount.replace("{count}", String(checkedCount)).replace("{total}", String(selectedProductsList.length))}
+                            </span>
+                          </div>
+                          <div className="xp-meter-track">
+                            <span
+                              className="xp-meter-fill"
+                              style={{ width: `${selectedProductsList.length ? Math.round((checkedCount / selectedProductsList.length) * 100) : 0}%` }}
+                            />
+                          </div>
+                          <div className="xp-meter-list">
+                            {selectedProductsList.map((p) => {
+                              const isChecked = previewCheckedIds.includes(p.id);
+                              const orig = parseFloat(p.price || "30.00");
+                              const sale = (orig * (1 - discRate)).toFixed(2);
+                              return (
+                                <div
+                                  key={p.id}
+                                  className={`xp-meter-row ${isChecked ? "is-selected" : ""}`}
+                                  onClick={() => togglePreviewCheck(p.id)}
+                                >
+                                  {p.imageUrl ? (
+                                    <img src={p.imageUrl} alt="" className="xp-meter-thumb" />
+                                  ) : (
+                                    <div className="xp-meter-thumb">
+                                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#919191" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                                        <rect x="3" y="8" width="18" height="13" rx="2"/>
+                                        <path d="M12 8v13M3 12h18"/>
+                                      </svg>
+                                    </div>
+                                  )}
+                                  <div className="xp-meter-info">
+                                    <div className="xp-meter-name">
+                                      <a
+                                        href={p.handle ? `/products/${p.handle}` : "#"}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="xp-product-link"
+                                        onClick={(e) => e.stopPropagation()}
+                                      >
+                                        {p.title}
+                                      </a>
+                                    </div>
+                                    <div className="xp-modal-pricing">
+                                      <span className="xp-price-sale">${isDiscounted ? sale : orig.toFixed(2)}</span>
+                                      {isDiscounted && <span className="xp-price-orig">${orig.toFixed(2)}</span>}
+                                      {isDiscounted && <span className="xp-discount-pill">{pI18n.savePill.replace("{discount}", discountPercent)}</span>}
+                                    </div>
+                                  </div>
+                                  <span className="xp-switch" aria-hidden="true"><i /></span>
                                 </div>
                               );
                             })}
@@ -4181,210 +4379,271 @@ const PRE_PURCHASE_STYLES = `
     letter-spacing: 0.5px;
     margin-bottom: 6px;
   }
-  /* Layout 2: Curated Bundle Routine Set */
-  .xp-bundle-deck-wrap {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 14px;
-    min-width: 0;
-    box-sizing: border-box;
-  }
-  .xp-bundle-routine-deck {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    max-height: 270px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding-right: 4px;
-    min-width: 0;
-    box-sizing: border-box;
-  }
-  .xp-bundle-routine-deck::-webkit-scrollbar {
-    width: 4px;
-  }
-  .xp-bundle-routine-deck::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #FFEB97 0%, #E8C872 48%, #B8863B 100%);
-    border-radius: 4px;
-  }
-  .xp-bundle-connector-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin: 2px 0;
-  }
-  .xp-bundle-line {
-    flex: 1;
-    height: 1px;
-    background: rgba(232,200,114, 0.25);
-  }
-  .xp-bundle-plus-badge {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: #0C0803;
-    border: 1px solid #E8C872;
-    color: #E8C872;
-    font-size: 11px;
-    font-weight: 900;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
-  }
-  .xp-bundle-item-card {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 12px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(232,200,114, 0.25);
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    min-width: 0;
-    box-sizing: border-box;
-  }
-  .xp-bundle-item-card:hover {
-    border-color: rgba(232,200,114, 0.6);
-    background: rgba(255, 255, 255, 0.07);
-    transform: translateY(-1px);
-  }
-  .xp-bundle-item-card.is-selected {
-    border-color: #E8C872;
-    background: rgba(232,200,114, 0.1);
-  }
-  .xp-bundle-card-thumb-wrap {
-    position: relative;
-    width: 54px;
-    height: 54px;
-    flex-shrink: 0;
-  }
-  .xp-bundle-card-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 8px;
-    border: 1px solid rgba(232,200,114, 0.35);
-    background: #1D150C;
-  }
-  .xp-bundle-img-placeholder {
-    width: 100%;
-    height: 100%;
-    background: #1D150C;
-    border-radius: 8px;
-    border: 1px solid rgba(232,200,114, 0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .xp-bundle-thumb-save {
-    position: absolute;
-    top: -5px;
-    left: -5px;
-    background: linear-gradient(135deg, #FFEB97 0%, #E8C872 48%, #B8863B 100%);
-    color: #0C0803;
-    font-size: 9px;
-    font-weight: 800;
-    padding: 1px 4px;
-    border-radius: 3px;
-    line-height: 1.2;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-  }
-  .xp-bundle-card-info {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-  }
-  .xp-bundle-step-tag {
-    font-size: 9px;
-    font-weight: 800;
-    letter-spacing: 0.6px;
-    text-transform: uppercase;
-    color: #E8C872;
-  }
-  .xp-bundle-card-title {
-    font-size: 13px;
-    font-weight: 600;
-    color: #ffffff;
-    line-height: 1.35;
-    margin: 0;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    word-break: break-word;
-  }
-  .xp-bundle-action-cell {
-    flex-shrink: 0;
-  }
-  .xp-bundle-toggle-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 6px 10px;
-    border-radius: 20px;
-    border: 1px solid rgba(232,200,114, 0.4);
-    background: rgba(255, 255, 255, 0.05);
-    color: #B2B2B2;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-  .xp-bundle-toggle-pill.is-checked {
-    background: linear-gradient(135deg, #FFEB97 0%, #E8C872 48%, #B8863B 100%);
-    border-color: #E8C872;
-    color: #0C0803;
-  }
-  .xp-bundle-summary-card {
-    background: rgba(232,200,114, 0.06);
-    border: 1px solid rgba(232,200,114, 0.35);
-    border-radius: 8px;
-    padding: 10px 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    box-sizing: border-box;
-  }
-  .xp-bundle-summary-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .xp-bundle-summary-label {
-    font-size: 12px;
-    color: #e0e0e0;
-    font-weight: 600;
-  }
-  .xp-bundle-summary-prices {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .xp-bundle-sum-orig {
-    font-size: 11px;
-    color: #8A8A8A;
-    text-decoration: line-through;
-  }
-  .xp-bundle-sum-sale {
-    font-size: 14px;
-    font-weight: 800;
-    color: #E8C872;
-  }
-  .xp-bundle-savings-highlight {
-    display: flex;
-    align-items: center;
-    font-size: 11px;
-    font-weight: 700;
-    color: #25D366;
-    margin-top: 2px;
-  }
+  /* Layout 2: Bundle Builder (theme-aware, mirrors the storefront) */
+/* ===================================================
+   Curated Bundle Routine Set (Pre-Purchase Modal)
+   =================================================== */
+.xp-bundle-deck-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.xp-bundle-routine-deck {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 280px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px;
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.xp-bundle-routine-deck::-webkit-scrollbar {
+  width: 4px;
+}
+.xp-bundle-routine-deck::-webkit-scrollbar-thumb {
+  background: var(--pm-accent, #F2F2F2);
+  border-radius: 4px;
+}
+
+.xp-bundle-connector-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 2px 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.xp-bundle-line {
+  flex: 1;
+  height: 1px;
+  background: color-mix(in srgb, var(--pm-accent, #F2F2F2) 25%, transparent);
+}
+
+.xp-bundle-plus-badge {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--pm-bg, #141414);
+  border: 1px solid var(--pm-accent, #F2F2F2);
+  color: var(--pm-accent, #F2F2F2);
+  font-size: 11px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.xp-bundle-item-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: color-mix(in srgb, var(--pm-text, #FFFFFF) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--pm-accent, #F2F2F2) 25%, transparent);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.xp-bundle-item-card:hover {
+  border-color: color-mix(in srgb, var(--pm-accent, #F2F2F2) 60%, transparent);
+  background: color-mix(in srgb, var(--pm-text, #FFFFFF) 7%, transparent);
+  transform: translateY(-1px);
+}
+
+.xp-bundle-item-card.is-selected {
+  border-color: var(--pm-accent, #F2F2F2);
+  background: color-mix(in srgb, var(--pm-accent, #F2F2F2) 10%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--pm-accent, #F2F2F2) 30%, transparent);
+}
+
+.xp-bundle-card-thumb-wrap {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+}
+
+.xp-bundle-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--pm-accent, #F2F2F2) 35%, transparent);
+  background: color-mix(in srgb, var(--pm-text, #FFFFFF) 10%, var(--pm-bg, #141414));
+  display: block;
+}
+
+.xp-bundle-img-placeholder {
+  width: 100%;
+  height: 100%;
+  background: color-mix(in srgb, var(--pm-text, #FFFFFF) 10%, var(--pm-bg, #141414));
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--pm-accent, #F2F2F2) 20%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--pm-accent, #F2F2F2);
+}
+.xp-bundle-img-placeholder svg {
+  width: 22px;
+  height: 22px;
+}
+
+.xp-bundle-thumb-save {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  background: var(--pm-accent, #F2F2F2);
+  color: var(--pm-bg, #141414);
+  font-size: 9px;
+  font-weight: 800;
+  padding: 1px 4px;
+  border-radius: 3px;
+  line-height: 1.2;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.xp-bundle-card-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.xp-bundle-step-tag {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--pm-accent, #F2F2F2);
+}
+
+.xp-bundle-card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--pm-text, #fff);
+  line-height: 1.35;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
+}
+
+.xp-bundle-action-cell {
+  flex-shrink: 0;
+}
+
+.xp-bundle-toggle-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 11px;
+  border-radius: 20px;
+  border: 1px solid color-mix(in srgb, var(--pm-accent, #F2F2F2) 40%, transparent);
+  background: color-mix(in srgb, var(--pm-text, #FFFFFF) 5%, transparent);
+  color: color-mix(in srgb, var(--pm-text, #FFFFFF) 72%, transparent);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.xp-bundle-toggle-pill svg {
+  width: 12px;
+  height: 12px;
+}
+
+.xp-bundle-toggle-pill.is-checked {
+  background: var(--pm-accent, #F2F2F2);
+  border-color: var(--pm-accent, #F2F2F2);
+  color: var(--pm-bg, #141414);
+  box-shadow: none;
+}
+
+.xp-bundle-summary-card {
+  background: color-mix(in srgb, var(--pm-accent, #F2F2F2) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--pm-accent, #F2F2F2) 35%, transparent);
+  border-radius: 10px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.xp-bundle-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.xp-bundle-summary-label {
+  font-size: 12px;
+  color: color-mix(in srgb, var(--pm-text, #FFFFFF) 72%, transparent);
+  font-weight: 600;
+}
+
+.xp-bundle-summary-prices {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.xp-bundle-sum-orig {
+  font-size: 11px;
+  color: color-mix(in srgb, var(--pm-text, #FFFFFF) 55%, transparent);
+  text-decoration: line-through;
+}
+
+.xp-bundle-sum-sale {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--pm-accent, #F2F2F2);
+}
+
+.xp-bundle-savings-highlight {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #25D366;
+  color: color-mix(in srgb, #25D366 62%, var(--pm-text, #fff));
+  margin-top: 2px;
+}
+
+.xp-bundle-savings-highlight svg {
+  stroke: currentColor;
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
   .xp-flash-item-badge {
     font-size: 9px;
     font-weight: 800;
@@ -4393,6 +4652,181 @@ const PRE_PURCHASE_STYLES = `
     padding: 1px 5px;
     border-radius: 3px;
   }
+
+  /* Layouts 5 and 6 (preview) */
+/* Layout 5: Swipe Cards */
+.xp-swipe-track {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  padding: 6px 4px 12px;
+  margin: 0 -4px 8px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--pm-accent, #F2F2F2) transparent;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.xp-swipe-track::-webkit-scrollbar { height: 4px; }
+.xp-swipe-track::-webkit-scrollbar-thumb { background: var(--pm-accent, #F2F2F2); border-radius: 4px; }
+.xp-swipe-card {
+  flex: 0 0 150px;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--pm-text, #FFFFFF) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--pm-accent, #F2F2F2) 25%, transparent);
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+  box-sizing: border-box;
+  min-width: 0;
+}
+.xp-swipe-card:hover { border-color: color-mix(in srgb, var(--pm-accent, #F2F2F2) 60%, transparent); transform: translateY(-2px); }
+.xp-swipe-card.is-selected {
+  border-color: var(--pm-accent, #F2F2F2);
+  background: color-mix(in srgb, var(--pm-accent, #F2F2F2) 10%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--pm-accent, #F2F2F2) 30%, transparent);
+}
+.xp-swipe-thumb { position: relative; width: 100%; aspect-ratio: 1 / 1; }
+.xp-swipe-thumb a { display: block; width: 100%; height: 100%; }
+.xp-swipe-img, .xp-swipe-ph {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  display: block;
+  box-sizing: border-box;
+  background: color-mix(in srgb, var(--pm-text, #FFFFFF) 10%, var(--pm-bg, #141414));
+  border: 1px solid color-mix(in srgb, var(--pm-accent, #F2F2F2) 22%, transparent);
+}
+.xp-swipe-ph { display: flex; align-items: center; justify-content: center; color: var(--pm-accent, #F2F2F2); }
+.xp-swipe-ph svg { width: 28px; height: 28px; }
+.xp-swipe-tick {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--pm-bg, #141414) 72%, transparent);
+  border: 1.5px solid color-mix(in srgb, var(--pm-text, #FFFFFF) 40%, transparent);
+  color: transparent;
+  transition: all 0.2s ease;
+}
+.xp-swipe-tick svg { width: 12px; height: 12px; }
+.xp-swipe-card.is-selected .xp-swipe-tick { background: var(--pm-accent, #F2F2F2); border-color: var(--pm-accent, #F2F2F2); color: var(--pm-bg, #141414); }
+.xp-swipe-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--pm-text, #FFFFFF);
+  line-height: 1.3;
+  min-height: 2.6em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+.xp-swipe-card .xp-modal-pricing { flex-wrap: wrap; gap: 2px 6px; }
+.xp-swipe-card .xp-bundle-toggle-pill { justify-content: center; width: 100%; box-sizing: border-box; }
+
+/* Layout 6: Savings Meter */
+.xp-meter-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.xp-meter-amount-wrap { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.xp-meter-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--pm-text, #FFFFFF) 60%, transparent);
+}
+.xp-meter-amount { font-size: 28px; line-height: 1; font-weight: 800; color: var(--pm-accent, #F2F2F2); }
+.xp-meter-count { font-size: 12px; font-weight: 600; color: color-mix(in srgb, var(--pm-text, #FFFFFF) 72%, transparent); white-space: nowrap; }
+.xp-meter-track {
+  height: 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--pm-text, #FFFFFF) 12%, var(--pm-bg, #141414));
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.xp-meter-fill { display: block; height: 100%; border-radius: 999px; background: var(--pm-accent, #F2F2F2); transition: width 0.35s ease; }
+.xp-meter-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+.xp-meter-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--pm-text, #FFFFFF) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--pm-text, #FFFFFF) 12%, transparent);
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+  box-sizing: border-box;
+  min-width: 0;
+}
+.xp-meter-row.is-selected { border-color: var(--pm-accent, #F2F2F2); background: color-mix(in srgb, var(--pm-accent, #F2F2F2) 8%, transparent); }
+.xp-meter-thumb {
+  width: 46px;
+  height: 46px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--pm-text, #FFFFFF) 10%, var(--pm-bg, #141414));
+  border: 1px solid color-mix(in srgb, var(--pm-text, #FFFFFF) 12%, var(--pm-bg, #141414));
+}
+.xp-meter-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.xp-meter-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--pm-text, #FFFFFF);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+.xp-switch {
+  position: relative;
+  width: 42px;
+  height: 24px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--pm-text, #FFFFFF) 22%, var(--pm-bg, #141414));
+  flex-shrink: 0;
+  transition: background 0.2s ease;
+}
+.xp-switch i {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--pm-text, #FFFFFF) 85%, var(--pm-bg, #141414));
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+.xp-meter-row.is-selected .xp-switch { background: var(--pm-accent, #F2F2F2); }
+.xp-meter-row.is-selected .xp-switch i { transform: translateX(18px); background: var(--pm-bg, #141414); }
+[dir="rtl"] .xp-switch i { left: auto; right: 3px; }
+[dir="rtl"] .xp-meter-row.is-selected .xp-switch i { transform: translateX(-18px); }
+
   .xp-btn-urgency-glow {
     animation: xp-pulse-gold 2s infinite ease-in-out;
   }
