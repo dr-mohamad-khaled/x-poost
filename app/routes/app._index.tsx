@@ -145,6 +145,11 @@ export default function XPoostDashboard() {
 
   const featureList = Object.values(features);
   const activeCount = featureList.filter((f) => f.enabled).length;
+  const nextOff = featureList.find((f) => !f.enabled);
+  const scrollToFeatures = (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    document.getElementById("xp-features")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   return (
     <s-page heading="XPoost — Conversion Suite">
@@ -155,34 +160,88 @@ export default function XPoostDashboard() {
       ) : null}
 
       <div className="xp-hero">
-        <div className="xp-hero-main">
-          <div className="xp-hero-content">
-            <div className="xp-hero-tag"><Translate text='Storefront Conversion Suite' /></div>
-            <h1 className="xp-hero-title"><Translate text='Boost Sales &amp; Average Order Value' /></h1>
+        <div className="xp-banner">
+          <div className="xp-banner-content">
+            <div className="xp-hero-tag"><Translate text='Your conversion toolkit' /></div>
+            <h1 className="xp-hero-title"><Translate text='Turn more visitors into bigger orders' /></h1>
             <p className="xp-hero-subtitle">
-              {featureList.length}  <Translate text='coordinated conversion features designed to increase revenue, engage shoppers, and recover lost carts.' />
-                                      </p>
-            <FeatureSlider features={featureList} />
+              {featureList.length} <Translate text='tools that lift order value, nudge hesitant shoppers and win back abandoning carts. Switch one on, pick your colors, then track the lift in Analytics.' />
+            </p>
+            <div className="xp-banner-cta">
+              <a href="#xp-features" className="xp-btn xp-btn--primary" onClick={scrollToFeatures}>
+                <Translate text='Browse features' />
+              </a>
+              <Link to="/app/analytics" className="xp-btn xp-btn--ghost">
+                <Translate text='See your results &rarr;' />
+              </Link>
+            </div>
+            <ul className="xp-banner-checks">
+              <li><span className="xp-check" aria-hidden="true"><FeatureIcon id="check" /></span><Translate text='Unlimited views, no quotas' /></li>
+              <li><span className="xp-check" aria-hidden="true"><FeatureIcon id="check" /></span><Translate text='Zero theme edits' /></li>
+              <li><span className="xp-check" aria-hidden="true"><FeatureIcon id="check" /></span><Translate text='Your colors, your brand' /></li>
+            </ul>
+          </div>
+          <div className="xp-banner-art" aria-hidden="true">
+            <GemArt />
+          </div>
+        </div>
+
+        <div className="xp-spot-grid">
+          <div className="xp-spot">
+            <span className="xp-spot-badge xp-spot-badge--amber" aria-hidden="true"><FeatureIcon id="quantityBreaks" /></span>
+            <h3 className="xp-spot-title"><Translate text='Your toolkit' /></h3>
+            <div className="xp-spot-metric">
+              <span className="xp-spot-num">{activeCount}</span>
+              <span className="xp-spot-of"><Translate text='of' /> {featureList.length} <Translate text='features live' /></span>
+            </div>
+            <div
+              className="xp-meter"
+              role="progressbar"
+              aria-valuemin={0}
+              aria-valuemax={featureList.length}
+              aria-valuenow={activeCount}
+            >
+              <span style={{ width: `${featureList.length ? Math.round((activeCount / featureList.length) * 100) : 0}%` }} />
+            </div>
+            <p className="xp-spot-note">
+              {nextOff ? (
+                <>
+                  <Translate text='Next up:' />{" "}
+                  <Link to={nextOff.route}>{FEATURE_PITCH[nextOff.id]?.name ?? nextOff.title}</Link>
+                </>
+              ) : (
+                <Translate text='Everything is live. Check Analytics to see what is paying off.' />
+              )}
+            </p>
+            <a href="#xp-features" className="xp-btn xp-btn--soft xp-btn--block" onClick={scrollToFeatures}>
+              <Translate text='Manage features' />
+            </a>
           </div>
 
-          <div className="xp-hero-stats">
-            <div className="xp-stat-box">
-              <span className="xp-stat-number">
-                {activeCount} / {featureList.length}
-              </span>
-              <span className="xp-stat-label"><Translate text='Features Active' /></span>
-            </div>
-            <Link to="/app/analytics" className="xp-stat-box xp-stat-box--link xp-stat-box--analytics">
-              <span className="xp-stat-new"><Translate text='New' /></span>
-              <span className="xp-stat-icon" aria-hidden="true">
-                <FeatureIcon id="analytics" />
-              </span>
-              <span className="xp-stat-number xp-stat-number--sm"><Translate text='Analytics' /></span>
-              <span className="xp-stat-label"><Translate text='View Insights &rarr;' /></span>
+          <div className="xp-spot">
+            <span className="xp-spot-badge xp-spot-badge--orange" aria-hidden="true"><FeatureIcon id="analytics" /></span>
+            <h3 className="xp-spot-title">
+              <Translate text="See what's paying off" />
+              <span className="xp-spot-new"><Translate text='New' /></span>
+            </h3>
+            <ul className="xp-spot-list">
+              <li><span className="xp-check" aria-hidden="true"><FeatureIcon id="check" /></span><Translate text='Revenue XPoost added, day by day' /></li>
+              <li><span className="xp-check" aria-hidden="true"><FeatureIcon id="check" /></span><Translate text='Views, actions and rate for every feature' /></li>
+            </ul>
+            <Link to="/app/analytics" className="xp-btn xp-btn--soft xp-btn--block">
+              <Translate text='Open analytics &rarr;' />
             </Link>
-            <Link to="/app/pricing" className="xp-stat-box xp-stat-box--link">
-              <span className="xp-stat-number xp-stat-number--sm"><Translate text='Plans' /></span>
-              <span className="xp-stat-label"><Translate text='Manage Billing &rarr;' /></span>
+          </div>
+
+          <div className="xp-spot">
+            <span className="xp-spot-badge xp-spot-badge--light" aria-hidden="true"><FeatureIcon id="plan" /></span>
+            <h3 className="xp-spot-title"><Translate text='One plan, nothing locked' /></h3>
+            <ul className="xp-spot-list">
+              <li><span className="xp-check" aria-hidden="true"><FeatureIcon id="check" /></span><Translate text='No caps on views or orders' /></li>
+              <li><span className="xp-check" aria-hidden="true"><FeatureIcon id="check" /></span><Translate text='Every feature included' /></li>
+            </ul>
+            <Link to="/app/pricing" className="xp-btn xp-btn--soft xp-btn--block">
+              <Translate text='Manage plan &rarr;' />
             </Link>
           </div>
         </div>
@@ -190,7 +249,7 @@ export default function XPoostDashboard() {
         <CaseStudyStrip />
       </div>
 
-      <section className="xp-panel">
+      <section className="xp-panel" id="xp-features">
         <h2 className="xp-panel-title"><Translate text='Conversion Features' /></h2>
         <div className="xp-grid">
           {featureList.map((f) => (
@@ -248,10 +307,8 @@ export default function XPoostDashboard() {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Hero: auto-rotating feature slider
+   Hero: short pitch per feature (used for the "Next up" hint)
    ───────────────────────────────────────────────────────────── */
-
-const SLIDE_MS = 5000;
 
 const FEATURE_PITCH: Record<string, { name: string; pitch: string }> = {
   scarcity: { name: "Urgency & Social Proof", pitch: "Live purchase and stock alerts that build trust while shoppers browse." },
@@ -265,111 +322,28 @@ const FEATURE_PITCH: Record<string, { name: string; pitch: string }> = {
   socialBar: { name: "Support & Social Bar", pitch: "WhatsApp support and your social channels, one tap away." },
 };
 
-type SliderFeature = {
-  id: string;
-  title: string;
-  description: string;
-  route: string;
-  enabled: boolean;
-};
-
-function FeatureSlider({ features }: { features: SliderFeature[] }) {
-  const [index, setIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
-  const count = features.length;
-
-  useEffect(() => {
-    if (typeof window === "undefined" || !window.matchMedia) return;
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReducedMotion(mq.matches);
-    const onChange = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
-    mq.addEventListener?.("change", onChange);
-    return () => mq.removeEventListener?.("change", onChange);
-  }, []);
-
-  // One timer per slide: restarts on manual navigation and on resume
-  useEffect(() => {
-    if (paused || reducedMotion || count < 2) return;
-    const t = window.setTimeout(() => setIndex((i) => (i + 1) % count), SLIDE_MS);
-    return () => window.clearTimeout(t);
-  }, [index, paused, reducedMotion, count]);
-
-  if (count === 0) return null;
-  const autoplay = !paused && !reducedMotion && count > 1;
-
+/* Flat faceted gem used as the hero mark (brand palette only) */
+function GemArt() {
+  const stroke = "#060605";
   return (
-    <div
-      className="xp-slider"
-      role="region"
-      aria-roledescription="carousel"
-      aria-label="XPoost features"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocus={() => setPaused(true)}
-      onBlur={() => setPaused(false)}
-    >
-      <div className="xp-slider-stage">
-        {features.map((f, i) => {
-          const meta = FEATURE_PITCH[f.id] || { name: f.title, pitch: f.description };
-          const isActive = i === index;
-          return (
-            <div
-              key={f.id}
-              className={`xp-slide ${isActive ? "is-active" : ""}`}
-              role="group"
-              aria-roledescription="slide"
-              aria-label={`${i + 1} of ${count}: ${meta.name}`}
-              aria-hidden={!isActive}
-            >
-              <span className="xp-slide-icon" aria-hidden="true">
-                <FeatureIcon id={f.id} />
-              </span>
-              <div className="xp-slide-body">
-                <div className="xp-slide-top">
-                  <span className="xp-slide-name">{meta.name}</span>
-                  <span className={`xp-slide-status ${f.enabled ? "is-on" : ""}`}>
-                    {f.enabled ? "Active" : "Off"}
-                  </span>
-                </div>
-                <p className="xp-slide-pitch"><Translate text={meta.pitch} /></p>
-              </div>
-              <Link to={f.route} className="xp-slide-link" tabIndex={isActive ? 0 : -1}>
-                {f.enabled ? "Configure" : "Set up"}  <Translate text='&rarr;' />
-                                    </Link>
-            </div>
-          );
-        })}
-      </div>
-
-      <div className="xp-slider-foot">
-        <div className="xp-slider-dots" role="tablist" aria-label="Choose feature">
-          {features.map((f, i) => (
-            <button
-              key={f.id}
-              type="button"
-              role="tab"
-              aria-selected={i === index}
-              aria-label={FEATURE_PITCH[f.id]?.name || f.title}
-              className={`xp-dot ${i === index ? "is-active" : ""}`}
-              onClick={() => setIndex(i)}
-            />
-          ))}
-        </div>
-        <span className="xp-slider-count">
-          {String(index + 1).padStart(2, "0")} / {String(count).padStart(2, "0")}
-        </span>
-      </div>
-      <div className="xp-slider-progress" aria-hidden="true">
-        {autoplay ? (
-          <span
-            key={`${index}-${paused}`}
-            className="xp-slider-progress-fill"
-            style={{ animationDuration: `${SLIDE_MS}ms` }}
-          />
-        ) : null}
-      </div>
-    </div>
+    <svg viewBox="0 0 240 220" width="100%" height="100%" role="presentation" focusable="false">
+      <circle cx="120" cy="110" r="96" fill="none" stroke="#2A2A2A" strokeWidth="1" />
+      <circle cx="120" cy="110" r="70" fill="none" stroke="#2A2A2A" strokeWidth="1" strokeDasharray="3 6" />
+      <g transform="translate(10 22)" strokeLinejoin="round" strokeWidth="2" stroke={stroke}>
+        <polygon points="20,75 70,30 65,75" fill="#FF7700" />
+        <polygon points="70,30 65,75 110,75" fill="#FFD985" />
+        <polygon points="70,30 150,30 110,75" fill="#FFB000" />
+        <polygon points="150,30 110,75 155,75" fill="#E69A00" />
+        <polygon points="150,30 155,75 200,75" fill="#FF7700" />
+        <polygon points="20,75 65,75 110,165" fill="#E69A00" />
+        <polygon points="65,75 110,75 110,165" fill="#FFB000" />
+        <polygon points="110,75 155,75 110,165" fill="#FFD985" />
+        <polygon points="155,75 200,75 110,165" fill="#CC6200" />
+      </g>
+      <path d="M34 40l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#FFD985" />
+      <path d="M206 150l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#FFB000" />
+      <path d="M198 36l1.6 4 4 1.6-4 1.6-1.6 4-1.6-4-4-1.6 4-1.6z" fill="#FFD985" />
+    </svg>
   );
 }
 
@@ -496,7 +470,7 @@ function CaseStudyStrip() {
   return (
     <div className={`xp-case ${index === null ? "is-pending" : ""}`} aria-live="polite">
       <div className="xp-case-head">
-        <span className="xp-case-tag"><Translate text='Case Study' /></span>
+        <span className="xp-case-tag"><Translate text='Benchmark' /></span>
         <span className="xp-case-feature"><Translate text={study.feature} /></span>
         <span className="xp-case-count">
           {shown + 1} / {total}
@@ -505,28 +479,25 @@ function CaseStudyStrip() {
           type="button"
           className="xp-case-next"
           onClick={() => setIndex((i) => ((i ?? 0) + 1) % total)}
-          aria-label="Next case study"
+          aria-label="Next benchmark"
         >
-          
-                            <Translate text='Next &rarr;' />
-                          </button>
+          <Translate text='Next &rarr;' />
+        </button>
       </div>
       <div key={shown} className="xp-case-body">
         <p className="xp-case-headline">{study.headline}</p>
-        <p className="xp-case-detail">
-          <Translate text={study.detail} />{" "}
-          <Link to={study.route} className="xp-case-apply">
-            
-                                  <Translate text='Apply to my store &rarr;' />
-                                </Link>
-        </p>
-        <p className="xp-case-source">
-          
-                            <Translate text='Source:' />{" "}
-          <a href={study.url} target="_blank" rel="noreferrer">
-            {study.source}
-          </a>
-        </p>
+        <p className="xp-case-detail"><Translate text={study.detail} /></p>
+        <div className="xp-case-foot">
+          <Link to={study.route} className="xp-btn xp-btn--soft xp-btn--sm">
+            <Translate text='Try it on my store &rarr;' />
+          </Link>
+          <p className="xp-case-source">
+            <Translate text='Source:' />{" "}
+            <a href={study.url} target="_blank" rel="noreferrer">
+              {study.source}
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -616,6 +587,19 @@ function FeatureIcon({ id }: { id: string }) {
           <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
         </svg>
       );
+    case "check":
+      return (
+        <svg {...common}>
+          <path d="M20 6 9 17l-5-5" />
+        </svg>
+      );
+    case "plan":
+      return (
+        <svg {...common}>
+          <rect x="1" y="4" width="22" height="16" rx="2" />
+          <path d="M1 10h22" />
+        </svg>
+      );
     case "analytics":
       return (
         <svg {...common}>
@@ -661,293 +645,247 @@ const DASHBOARD_STYLES = `
     }
   }
   .xp-hero {
-    background: #0F0E0C;
-    border: 1px solid #2A2A2A;
-    border-radius: 12px;
-    padding: 28px;
-    color: #FFFFFF;
-    margin-bottom: 24px;
     display: flex;
     flex-direction: column;
-    gap: 22px;
+    gap: 16px;
+    margin-bottom: 24px;
+    color: #FFFFFF;
   }
-  .xp-hero-main {
-    display: flex;
-    justify-content: space-between;
-    align-items: stretch;
-    gap: 24px;
-    flex-wrap: wrap;
+
+  /* Banner */
+  .xp-banner {
+    background: #0F0E0C;
+    border: 1px solid #2A2A2A;
+    border-radius: 14px;
+    padding: 32px 36px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 250px;
+    align-items: center;
+    gap: 28px;
   }
-  .xp-hero-content {
-    flex: 1 1 420px;
-    min-width: 0;
-  }
+  .xp-banner-content { min-width: 0; }
   .xp-hero-tag {
     display: inline-block;
     color: #FFB000;
     font-size: 12px;
     font-weight: 700;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
   }
   .xp-hero-title {
     font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
-    font-size: 28px;
+    font-size: 34px;
+    line-height: 1.15;
     font-weight: 600;
-    margin: 0 0 8px;
-    letter-spacing: -0.5px;
+    margin: 0 0 12px;
+    letter-spacing: -0.4px;
+    color: #FFFFFF;
+    max-width: 560px;
   }
   .xp-hero-subtitle {
-    font-size: 14px;
-    color: #b2b2b2;
-    margin: 0 0 18px;
-    line-height: 1.5;
+    font-size: 14.5px;
+    color: #B2B2B2;
+    margin: 0 0 22px;
+    line-height: 1.6;
+    max-width: 540px;
+  }
+  .xp-banner-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .xp-banner-checks {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 22px;
+    font-size: 12.5px;
+    color: #9E9E9E;
+  }
+  .xp-banner-checks li,
+  .xp-spot-list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .xp-check {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 176, 0, 0.14);
+    color: #FFB000;
+  }
+  .xp-check svg { width: 11px; height: 11px; stroke-width: 2.6; }
+  .xp-banner-art {
+    width: 250px;
+    height: 220px;
+    justify-self: center;
   }
 
-  /* Stat tiles */
-  .xp-hero-stats {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(110px, 1fr));
-    gap: 12px;
-    align-content: center;
-    flex: 0 1 460px;
+  /* Buttons */
+  .xp-btn {
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+    padding: 11px 18px;
+    border-radius: 9px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
   }
-  .xp-stat-box {
-    position: relative;
-    background: rgba(255, 255, 255, 0.05);
+  .xp-btn:focus-visible { outline: 2px solid #FFB000; outline-offset: 2px; }
+  .xp-btn--primary { background: #FFB000; color: #060605; }
+  .xp-btn--primary:hover { background: #FFC233; }
+  .xp-btn--ghost { background: transparent; color: #FFFFFF; border-color: #3A3A3A; }
+  .xp-btn--ghost:hover { border-color: #FFB000; color: #FFD985; }
+  .xp-btn--soft {
+    background: rgba(255, 176, 0, 0.12);
+    color: #FFD985;
+    border-color: rgba(255, 176, 0, 0.28);
+  }
+  .xp-btn--soft:hover { background: #FFB000; color: #060605; border-color: #FFB000; }
+  .xp-btn--block { width: 100%; }
+  .xp-btn--sm { padding: 8px 14px; font-size: 12px; }
+
+  /* Spotlight cards */
+  .xp-spot-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .xp-spot {
+    background: #0F0E0C;
     border: 1px solid #2A2A2A;
-    border-radius: 10px;
-    padding: 16px 14px;
-    text-align: center;
+    border-radius: 14px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    color: inherit;
-    text-decoration: none;
-    min-height: 96px;
+    gap: 12px;
+    transition: border-color 0.2s ease;
   }
-  .xp-stat-box--link {
-    transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
-  }
-  .xp-stat-box--link:hover,
-  .xp-stat-box--link:focus-visible {
-    border-color: #444444;
-    background: rgba(255, 255, 255, 0.07);
-    outline: none;
-  }
-  .xp-stat-box--analytics {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: #2A2A2A;
-  }
-  .xp-stat-new {
-    position: absolute;
-    top: 8px;
-    inset-inline-end: 8px;
-    font-size: 9px;
-    font-weight: 800;
-    background: #FFB000;
-    color: #060605;
-    padding: 2px 6px;
-    border-radius: 999px;
-  }
-  .xp-stat-icon {
-    color: #FFB000;
+  .xp-spot:hover { border-color: #5A4A1F; }
+  .xp-spot-badge {
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
     display: inline-flex;
-  }
-  .xp-stat-number {
-    display: block;
-    font-size: 22px;
-    font-weight: 800;
-    color: #FFB000;
-  }
-  .xp-stat-number--sm {
-    font-size: 18px;
-  }
-  .xp-stat-label {
-    font-size: 11px;
-    color: #959595;
-  }
-
-  /* Feature slider */
-  .xp-slider {
-    background: rgba(255, 255, 255, 0.035);
-    border: 1px solid #2A2A2A;
-    border-radius: 12px;
-    padding: 14px 16px 0;
-    overflow: hidden;
-  }
-  .xp-slider-stage {
-    position: relative;
-    min-height: 64px;
-  }
-  .xp-slide {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s linear 0.45s;
-  }
-  .xp-slide.is-active {
-    position: relative;
-    opacity: 1;
-    visibility: visible;
-    transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s;
-  }
-  .xp-slide-icon {
-    flex-shrink: 0;
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    display: flex;
     align-items: center;
     justify-content: center;
-    color: #FFB000;
-    background: rgba(255,176,0, 0.1);
-    border: 1px solid rgba(255,176,0, 0.3);
+    color: #060605;
   }
-  .xp-slide-body {
-    flex: 1;
-    min-width: 0;
-  }
-  .xp-slide-top {
+  .xp-spot-badge--amber { background: #FFB000; }
+  .xp-spot-badge--orange { background: #FF7700; }
+  .xp-spot-badge--light { background: #FFD985; }
+  .xp-spot-title {
+    margin: 2px 0 0;
     display: flex;
     align-items: center;
     gap: 8px;
     flex-wrap: wrap;
+    font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+    font-size: 17px;
+    line-height: 1.25;
+    font-weight: 600;
+    color: #FFFFFF;
   }
-  .xp-slide-name {
-    font-size: 15px;
-    font-weight: 700;
-    color: #fff;
-  }
-  .xp-slide-status {
-    font-size: 10px;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 999px;
-    background: #262626;
-    color: #8A8A8A;
-    border: 1px solid #353535;
-  }
-  .xp-slide-status.is-on {
-    background: rgba(16, 128, 67, 0.2);
-    color: #4ade80;
-    border-color: rgba(74, 222, 128, 0.3);
-  }
-  .xp-slide-pitch {
-    margin: 4px 0 0;
-    font-size: 13px;
-    color: #b2b2b2;
-    line-height: 1.45;
-  }
-  .xp-slide-link {
-    flex-shrink: 0;
-    font-size: 12px;
-    font-weight: 700;
-    color: #FFB000;
-    text-decoration: none;
-    border: 1px solid rgba(255,176,0, 0.45);
-    padding: 7px 12px;
-    border-radius: 8px;
-    white-space: nowrap;
-    transition: background 0.15s ease;
-  }
-  .xp-slide-link:hover,
-  .xp-slide-link:focus-visible {
-    background: rgba(255,176,0, 0.12);
-    outline: none;
-  }
-  .xp-slider-foot {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-top: 12px;
-    padding-bottom: 10px;
-  }
-  .xp-slider-dots {
-    display: flex;
-    gap: 6px;
-  }
-  .xp-dot {
-    width: 7px;
-    height: 7px;
-    padding: 0;
-    border-radius: 999px;
-    border: none;
-    background: #3A3A3A;
-    cursor: pointer;
-    transition: width 0.3s ease, background 0.3s ease;
-  }
-  .xp-dot.is-active {
-    width: 22px;
+  .xp-spot-new {
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: 800;
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
     background: #FFB000;
+    color: #060605;
+    padding: 2px 7px;
+    border-radius: 999px;
   }
-  .xp-dot:focus-visible {
-    outline: 2px solid #FFB000;
-    outline-offset: 2px;
+  .xp-spot-metric {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
   }
-  .xp-slider-count {
-    font-size: 11px;
-    color: #757575;
+  .xp-spot-num {
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1;
+    color: #FFB000;
     font-variant-numeric: tabular-nums;
   }
-  .xp-slider-progress {
-    height: 2px;
-    margin: 0 -16px;
-    background: rgba(255, 255, 255, 0.05);
+  .xp-spot-of { font-size: 13px; color: #B2B2B2; }
+  .xp-meter {
+    height: 6px;
+    border-radius: 999px;
+    background: #262626;
+    overflow: hidden;
   }
-  .xp-slider-progress-fill {
+  .xp-meter span {
     display: block;
     height: 100%;
-    width: 100%;
+    border-radius: 999px;
     background: #FFB000;
-    transform-origin: left center;
-    animation-name: xp-progress;
-    animation-timing-function: linear;
-    animation-fill-mode: forwards;
+    transition: width 0.4s ease;
   }
-  [dir="rtl"] .xp-slider-progress-fill {
-    transform-origin: right center;
+  .xp-spot-note {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #B2B2B2;
+    flex: 1;
   }
-  @keyframes xp-progress {
-    from { transform: scaleX(0); }
-    to { transform: scaleX(1); }
+  .xp-spot-note a { color: #FFB000; font-weight: 700; text-decoration: none; }
+  .xp-spot-note a:hover { text-decoration: underline; }
+  .xp-spot-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #B2B2B2;
+    flex: 1;
   }
+  .xp-spot-list li { align-items: flex-start; }
 
-  /* Case study strip */
+  /* Benchmark card */
   .xp-case {
-    border-top: 1px solid #262626;
-    padding-top: 16px;
+    background: #0F0E0C;
+    border: 1px solid #2A2A2A;
+    border-radius: 14px;
+    padding: 20px 24px 22px;
     transition: opacity 0.3s ease;
   }
-  .xp-case.is-pending {
-    opacity: 0;
-  }
+  .xp-case.is-pending { opacity: 0; }
   .xp-case-head {
     display: flex;
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
   }
   .xp-case-tag {
     font-size: 10px;
     font-weight: 800;
     color: #060605;
     background: #FFB000;
-    padding: 2px 8px;
-    border-radius: 4px;
+    padding: 3px 9px;
+    border-radius: 5px;
   }
-  .xp-case-feature {
-    font-size: 11px;
-    font-weight: 700;
-    color: #FFB000;
-  }
+  .xp-case-feature { font-size: 12px; font-weight: 700; color: #FFD985; }
   .xp-case-count {
     margin-inline-start: auto;
     font-size: 11px;
@@ -960,77 +898,60 @@ const DASHBOARD_STYLES = `
     color: #9E9E9E;
     font-size: 11px;
     font-weight: 600;
-    padding: 3px 9px;
-    border-radius: 6px;
+    padding: 4px 10px;
+    border-radius: 7px;
     cursor: pointer;
   }
   .xp-case-next:hover,
-  .xp-case-next:focus-visible {
-    color: #FFB000;
-    border-color: rgba(255,176,0, 0.5);
-    outline: none;
-  }
-  .xp-case-body {
-    animation: xp-case-in 0.5s ease both;
-  }
+  .xp-case-next:focus-visible { color: #FFB000; border-color: rgba(255,176,0,0.5); outline: none; }
+  .xp-case-body { animation: xp-case-in 0.5s ease both; }
   @keyframes xp-case-in {
     from { opacity: 0; transform: translateY(4px); }
     to { opacity: 1; transform: translateY(0); }
   }
   .xp-case-headline {
-    margin: 0 0 3px;
-    font-size: 13px;
+    margin: 0 0 6px;
+    font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+    font-size: 18px;
+    line-height: 1.35;
     font-weight: 600;
-    color: #e8e8e8;
-    line-height: 1.45;
+    color: #FFFFFF;
+    max-width: 760px;
   }
   .xp-case-detail {
-    margin: 0 0 4px;
-    font-size: 12px;
-    color: #9A9A9A;
-    line-height: 1.45;
+    margin: 0 0 16px;
+    font-size: 13.5px;
+    color: #B2B2B2;
+    line-height: 1.55;
+    max-width: 760px;
   }
-  .xp-case-apply {
-    color: #FFB000;
-    font-weight: 600;
-    text-decoration: none;
-    white-space: nowrap;
+  .xp-case-foot {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
   }
-  .xp-case-apply:hover {
-    text-decoration: underline;
-  }
-  .xp-case-source {
-    margin: 0;
-    font-size: 10.5px;
-    color: #6A6A6A;
-  }
+  .xp-case-source { margin: 0; font-size: 11px; color: #6A6A6A; }
   .xp-case-source a {
-    color: #7D7D7D;
+    color: #8A8A8A;
     text-decoration: underline;
     text-decoration-color: #444444;
     text-underline-offset: 2px;
   }
-  .xp-case-source a:hover {
-    color: #b2b2b2;
-  }
+  .xp-case-source a:hover { color: #B2B2B2; }
 
-  @media (max-width: 720px) {
-    .xp-hero { padding: 20px 16px; }
-    .xp-hero-title { font-size: 22px; }
-    .xp-hero-stats { grid-template-columns: repeat(3, 1fr); flex-basis: 100%; }
-    .xp-stat-box { padding: 12px 8px; min-height: 84px; }
-    .xp-stat-number { font-size: 18px; }
-    .xp-stat-number--sm { font-size: 15px; }
-    .xp-slide { flex-wrap: wrap; row-gap: 10px; }
-    .xp-slide-body { flex: 1 1 calc(100% - 58px); }
-    .xp-slide-link { margin-inline-start: 0; }
+  @media (max-width: 900px) {
+    .xp-spot-grid { grid-template-columns: 1fr; }
+    .xp-banner { grid-template-columns: 1fr; padding: 24px 20px; }
+    .xp-banner-art { display: none; }
+    .xp-hero-title { font-size: 26px; }
+  }
+  @media (max-width: 640px) {
+    .xp-case { padding: 16px; }
     .xp-case-feature { flex-basis: 100%; order: 3; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .xp-slide, .xp-slide.is-active, .xp-case-body, .xp-dot, .xp-stat-box--link {
-      transition: none;
-      animation: none;
-    }
+    .xp-case-body, .xp-btn, .xp-spot, .xp-meter span { transition: none; animation: none; }
   }
   .xp-grid {
     display: grid;
