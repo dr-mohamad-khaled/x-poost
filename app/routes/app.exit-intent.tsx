@@ -410,8 +410,8 @@ const EXIT_INTENT_STYLES = `
 
   /* Native Luxury Dark Section Cards */
   .xp-section-card {
-    background: #0F0E0C !important;
-    border: 1px solid #2A2A2A !important;
+    background: #150E07 !important;
+    border: 1px solid #3A2B17 !important;
     border-radius: 12px !important;
     padding: 24px !important;
     margin-bottom: 20px !important;
@@ -421,7 +421,7 @@ const EXIT_INTENT_STYLES = `
   .xp-section-title {
     font-size: 16px !important;
     font-weight: 700 !important;
-    color: #FFB000 !important; margin: 0 0 16px 0 !important; border-bottom: 1px solid #2A2A2A !important; padding-bottom: 12px !important;
+    color: #E8C872 !important; margin: 0 0 16px 0 !important; border-bottom: 1px solid #3A2B17 !important; padding-bottom: 12px !important;
     display: flex !important;
     align-items: center !important;
     gap: 8px !important;
@@ -475,10 +475,10 @@ const EXIT_INTENT_STYLES = `
   }
   .xp-input {
     padding: 8px 12px;
-    border: 1px solid #353535;
+    border: 1px solid #43331D;
     border-radius: 6px;
     font-size: 13px;
-    background: #0F0E0C;
+    background: #150E07;
   }
   .xp-grid-2 {
     display: grid;
@@ -498,15 +498,15 @@ const EXIT_INTENT_STYLES = `
   .xp-color-wrap input[type="color"] {
     width: 38px;
     height: 34px;
-    border: 1px solid #353535;
+    border: 1px solid #43331D;
     border-radius: 4px;
     cursor: pointer;
     padding: 0;
   }
   .xp-btn-gold {
-    background: #060605;
-    color: #FFB000;
-    border: 1px solid #FFB000;
+    background: #0C0803;
+    color: #E8C872;
+    border: 1px solid #E8C872;
     padding: 12px 20px;
     border-radius: 6px;
     font-weight: 700;

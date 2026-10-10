@@ -356,8 +356,8 @@ export default function ProductScarcityPage() {
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
         .xpp-card {
-          background: #0F0E0C;
-          border: 1px solid #2A2A2A;
+          background: #150E07;
+          border: 1px solid #3A2B17;
           border-radius: 12px;
           padding: 24px;
           margin-bottom: 24px;
@@ -365,9 +365,9 @@ export default function ProductScarcityPage() {
         .xpp-card-title {
           font-size: 18px;
           font-weight: 800;
-          color: #FFB000;
+          color: #E8C872;
           margin: 0 0 12px;
-          border-bottom: 1px solid #2A2A2A;
+          border-bottom: 1px solid #3A2B17;
           padding-bottom: 10px;
         }
         .xpp-card-desc {
@@ -378,7 +378,7 @@ export default function ProductScarcityPage() {
         }
         .xpp-live-preview-box {
           background: #0a0a0a;
-          border: 2px dashed rgba(255,176,0, 0.35);
+          border: 2px dashed rgba(232,200,114, 0.35);
           border-radius: 12px;
           padding: 30px;
           margin-bottom: 24px;
@@ -390,8 +390,8 @@ export default function ProductScarcityPage() {
           margin-bottom: 20px;
         }
         .xpp-preset-card {
-          background: #171614;
-          border: 2px solid #353535;
+          background: #1D150C;
+          border: 2px solid #43331D;
           border-radius: 10px;
           padding: 16px;
           cursor: pointer;
@@ -401,7 +401,7 @@ export default function ProductScarcityPage() {
           border-color: #555555;
         }
         .xpp-preset-card--active {
-          border-color: #FFB000;
+          border-color: #E8C872;
           background: #1c1b18;
         }
         .xpp-preset-name {
@@ -432,7 +432,7 @@ export default function ProductScarcityPage() {
         }
         .xpp-input {
           width: 100%;
-          background: #171614;
+          background: #1D150C;
           border: 1px solid #383838;
           border-radius: 8px;
           padding: 10px 14px;
@@ -441,7 +441,7 @@ export default function ProductScarcityPage() {
           box-sizing: border-box;
         }
         .xpp-input:focus {
-          border-color: #FFB000;
+          border-color: #E8C872;
           outline: none;
         }
         .xpp-row {
@@ -477,19 +477,19 @@ export default function ProductScarcityPage() {
           transition: all 0.2s ease;
         }
         .xpp-btn--primary {
-          background: #FFB000;
+          background: linear-gradient(135deg, #FFEB97 0%, #E8C872 48%, #B8863B 100%);
           color: #000000;
         }
         .xpp-btn--secondary {
-          background: #262626;
+          background: #2F2314;
           color: #ffffff;
-          border: 1px solid #353535;
+          border: 1px solid #43331D;
         }
         .xpp-var-chip {
           display: inline-block;
           background: rgba(255, 215, 0, 0.15);
-          border: 1px solid #FFB000;
-          color: #FFB000;
+          border: 1px solid #E8C872;
+          color: #E8C872;
           padding: 2px 8px;
           border-radius: 4px;
           font-size: 12px;
@@ -502,8 +502,8 @@ export default function ProductScarcityPage() {
           display: inline-flex;
           align-items: center;
           gap: 8px;
-          background: #262626;
-          border: 1px solid #353535;
+          background: #2F2314;
+          border: 1px solid #43331D;
           border-radius: 20px;
           padding: 4px 12px;
           font-size: 12px;
@@ -524,7 +524,7 @@ export default function ProductScarcityPage() {
         }
         @keyframes xpp-preview-pop {
           0% { transform: scale(1); }
-          40% { transform: scale(1.3); color: #FFB000; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6); }
+          40% { transform: scale(1.3); color: #E8C872; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6); }
           100% { transform: scale(1); }
         }
       `}</style>
@@ -547,7 +547,7 @@ export default function ProductScarcityPage() {
         {/* Live Preview Box */}
         <div className="xpp-live-preview-box" dir={isPreviewRtl ? "rtl" : "ltr"}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-            <span style={{ fontSize: 12, fontWeight: 800, color: "#FFB000", textTransform: "uppercase", letterSpacing: 1 }}>
+            <span style={{ fontSize: 12, fontWeight: 800, color: "#E8C872", textTransform: "uppercase", letterSpacing: 1 }}>
               
                                         <Translate text='Real-Time Storefront Preview (' />{selectedLang.toUpperCase()})
             </span>
@@ -562,9 +562,9 @@ export default function ProductScarcityPage() {
               maxWidth: 520,
               margin: "0 auto",
               padding: 16,
-              background: "#0B0A08",
+              background: "#0E0904",
               borderRadius: 14,
-              border: "1px solid #262626",
+              border: "1px solid #2F2314",
             }}
           >
             {designPreset === "urgency_badge" && (
@@ -684,7 +684,7 @@ export default function ProductScarcityPage() {
         </div>
 
         {/* Theme Customizer Quick Link Card */}
-        <div className="xpp-card" style={{ border: "1.5px solid rgba(255,176,0, 0.4)", background: "#0f0e0c" }}>
+        <div className="xpp-card" style={{ border: "1.5px solid rgba(232,200,114, 0.4)", background: "#150E07" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
             <div>
               <h2 className="xpp-card-title"><Translate text='How to Place this Block on Your Store' /></h2>
@@ -792,8 +792,8 @@ export default function ProductScarcityPage() {
               <label
                 style={{
                   flex: 1,
-                  background: stockSource === "shopify" ? "#1c1b18" : "#171614",
-                  border: `2px solid ${stockSource === "shopify" ? "#FFB000" : "#353535"}`,
+                  background: stockSource === "shopify" ? "#1c1b18" : "#1D150C",
+                  border: `2px solid ${stockSource === "shopify" ? "#E8C872" : "#43331D"}`,
                   borderRadius: 10,
                   padding: 14,
                   cursor: "pointer",
@@ -816,8 +816,8 @@ export default function ProductScarcityPage() {
               <label
                 style={{
                   flex: 1,
-                  background: stockSource === "manual_range" ? "#1c1b18" : "#171614",
-                  border: `2px solid ${stockSource === "manual_range" ? "#FFB000" : "#353535"}`,
+                  background: stockSource === "manual_range" ? "#1c1b18" : "#1D150C",
+                  border: `2px solid ${stockSource === "manual_range" ? "#E8C872" : "#43331D"}`,
                   borderRadius: 10,
                   padding: 14,
                   cursor: "pointer",
@@ -978,8 +978,8 @@ export default function ProductScarcityPage() {
                   key={m.key}
                   style={{
                     flex: 1,
-                    background: targetMode === m.key ? "#1c1b18" : "#171614",
-                    border: `2px solid ${targetMode === m.key ? "#FFB000" : "#353535"}`,
+                    background: targetMode === m.key ? "#1c1b18" : "#1D150C",
+                    border: `2px solid ${targetMode === m.key ? "#E8C872" : "#43331D"}`,
                     borderRadius: 8,
                     padding: 12,
                     cursor: "pointer",
@@ -1013,7 +1013,7 @@ export default function ProductScarcityPage() {
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                   {isSearching && (
-                    <span style={{ position: "absolute", right: 12, top: 10, fontSize: 12, color: "#FFB000" }}>
+                    <span style={{ position: "absolute", right: 12, top: 10, fontSize: 12, color: "#E8C872" }}>
                       
                                                                 <Translate text='Searching store...' />
                                                               </span>
@@ -1022,7 +1022,7 @@ export default function ProductScarcityPage() {
 
                 {/* Search Results Dropdown */}
                 {filteredSearchResults.length > 0 && (
-                  <div style={{ background: "#171614", border: "1px solid #353535", borderRadius: 8, maxHeight: 180, overflowY: "auto", marginBottom: 14 }}>
+                  <div style={{ background: "#1D150C", border: "1px solid #43331D", borderRadius: 8, maxHeight: 180, overflowY: "auto", marginBottom: 14 }}>
                     {filteredSearchResults.map((prod) => {
                       const isSelected = selectedProductIds.includes(prod.id);
                       return (
@@ -1031,16 +1031,16 @@ export default function ProductScarcityPage() {
                           onClick={() => toggleProductSelection(prod.id)}
                           style={{
                             padding: "8px 12px",
-                            borderBottom: "1px solid #2A2A2A",
+                            borderBottom: "1px solid #3A2B17",
                             display: "flex",
                             justifyContent: "space-between",
                             alignItems: "center",
                             cursor: "pointer",
-                            background: isSelected ? "rgba(255,176,0, 0.12)" : "transparent",
+                            background: isSelected ? "rgba(232,200,114, 0.12)" : "transparent",
                           }}
                         >
                           <span style={{ fontSize: 13, color: "#fff" }}>{prod.title}</span>
-                          <span style={{ fontSize: 12, fontWeight: 700, color: isSelected ? "#4ade80" : "#FFB000" }}>
+                          <span style={{ fontSize: 12, fontWeight: 700, color: isSelected ? "#4ade80" : "#E8C872" }}>
                             {isSelected ? "Selected ✓" : "+ Add"}
                           </span>
                         </div>
@@ -1141,7 +1141,7 @@ export default function ProductScarcityPage() {
           </div>
 
           {/* Submit */}
-          <div style={{ position: "sticky", bottom: 16, zIndex: 10, background: "rgba(10,10,10,0.85)", backdropFilter: "blur(10px)", padding: 14, borderRadius: 10, border: "1px solid #353535", display: "flex", justifyContent: "flex-end" }}>
+          <div style={{ position: "sticky", bottom: 16, zIndex: 10, background: "rgba(10,10,10,0.85)", backdropFilter: "blur(10px)", padding: 14, borderRadius: 10, border: "1px solid #43331D", display: "flex", justifyContent: "flex-end" }}>
             <button
               type="submit"
               className="xpp-btn xpp-btn--primary"

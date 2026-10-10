@@ -199,7 +199,7 @@ class Kf {
 /* Tiny layout helpers                                                 */
 /* ------------------------------------------------------------------ */
 
-const GOLD = "#FFB000";
+const GOLD = "#E8C872";
 const DARK = "#141414";
 
 type BProps = {
@@ -305,7 +305,7 @@ const PageBg = () => (
     >
       <B l={4.6} t={3} w={4.8} h={10} s={{ background: "rgba(255,255,255,.6)", borderRadius: "1.2em" }} />
     </B>
-    <B l={20} t={5.2} w={12} h={1.2} s={{ background: "#262626", borderRadius: ".4em" }} />
+    <B l={20} t={5.2} w={12} h={1.2} s={{ background: "#2F2314", borderRadius: ".4em" }} />
     <B l={20} t={7.4} w={16} h={0.7} s={{ background: "#d1d1d1", borderRadius: ".4em" }} />
     <B l={20} t={8.9} w={11} h={0.7} s={{ background: "#d1d1d1", borderRadius: ".4em" }} />
   </>
@@ -324,7 +324,7 @@ const AtcBtn = ({ t = 16, style, label = "Add to cart" }: { t?: number; style?: 
     w={17}
     h={3.6}
     s={{
-      background: "#171614",
+      background: "#1D150C",
       color: "#fff",
       borderRadius: ".6em",
       fontSize: "1.5em",
@@ -411,7 +411,7 @@ function inCart(): Scene {
   const item = (top: number, name: string, price: string, tone: number, style: CSSProperties) => (
     <B l={1.2} t={top} w={15.6} h={4.2} s={style}>
       <Thumb l={0} t={0} size={4.2} tone={tone} />
-      <B l={5.2} t={0.3} s={{ fontSize: "1.3em", fontWeight: 700, color: "#262626" }}>{name}</B>
+      <B l={5.2} t={0.3} s={{ fontSize: "1.3em", fontWeight: 700, color: "#2F2314" }}>{name}</B>
       <B l={5.2} t={2.4} s={{ fontSize: "1.3em", color: "#545454" }}>{price}</B>
     </B>
   );
@@ -460,7 +460,7 @@ function shippingBar(): Scene {
     [100, 36, 22],
   ]);
   const msg = (text: ReactNode, style: CSSProperties) => (
-    <B l={9.5} t={6} w={21} s={{ fontSize: "1.25em", fontWeight: 700, color: "#262626", ...style }}>{text}</B>
+    <B l={9.5} t={6} w={21} s={{ fontSize: "1.25em", fontWeight: 700, color: "#2F2314", ...style }}>{text}</B>
   );
   const dot = (x: number, style: CSSProperties) => (
     <B l={x} t={8.25} w={1.8} h={1.8} s={{ borderRadius: "50%", background: "#fff", border: ".18em solid #c9c9c9" }}>
@@ -489,7 +489,7 @@ function shippingBar(): Scene {
       <B l={26.5} t={10.5} s={{ fontSize: "1.1em", color: "#757575" }}>Free ship</B>
       <B l={9.5} t={12.4} w={21} h={4.6} s={{ border: ".1em solid #eee", borderRadius: ".7em" }}>
         <Thumb l={0.4} t={0.4} size={3.8} tone={0} />
-        <B l={5} t={0.5} s={{ fontSize: "1.4em", fontWeight: 700, color: "#262626" }}>Face Serum</B>
+        <B l={5} t={0.5} s={{ fontSize: "1.4em", fontWeight: 700, color: "#2F2314" }}>Face Serum</B>
         <B l={5} t={2.5} s={{ fontSize: "1.2em", color: "#6A6A6A" }}>$25.00</B>
         <B l={14.6} t={1.1} w={1.9} h={1.9} s={{ border: ".1em solid #C4C4C4", borderRadius: ".4em", fontSize: "1.4em", ...center }}>–</B>
         <B l={18.2} t={1.1} w={1.9} h={1.9} s={{ border: ".1em solid #C4C4C4", borderRadius: ".4em", fontSize: "1.4em", ...center, ...k.press(20) }}>+</B>
@@ -520,7 +520,7 @@ function scarcity(): Scene {
   const k = new Kf("sc", 9);
   const toast = (icon: string, line1: string, line2: string, style: CSSProperties) => (
     <B l={2} t={19.6} w={27} h={4.4} s={{ background: DARK, borderLeft: `.4em solid ${GOLD}`, borderRadius: ".8em", boxShadow: "0 .6em 2em rgba(0,0,0,.35)", ...style }}>
-      <B l={1} t={0.9} w={2.6} h={2.6} s={{ borderRadius: "50%", background: "rgba(255,176,0,.18)", color: GOLD, fontSize: "1.4em", fontWeight: 900, ...center }}>{icon}</B>
+      <B l={1} t={0.9} w={2.6} h={2.6} s={{ borderRadius: "50%", background: "rgba(232,200,114,.18)", color: GOLD, fontSize: "1.4em", fontWeight: 900, ...center }}>{icon}</B>
       <B l={4.4} t={0.7} s={{ fontSize: "1.3em", fontWeight: 700, color: "#fff" }}>{line1}</B>
       <B l={4.4} t={2.5} s={{ fontSize: "1.1em", color: "#9e9e9e" }}>{line2}</B>
     </B>
@@ -551,7 +551,7 @@ function socialBar(): Scene {
   ]);
   const row = (top: number, label: string, sub: string, color: string, hl?: CSSProperties) => (
     <B l={1} t={top} w={13.5} h={3.2} s={{ background: "#1e1e1e", borderRadius: ".7em", border: ".1em solid #363636" }}>
-      {hl ? <B l={-0.1} t={-0.1} w={13.5} h={3.2} s={{ border: `.15em solid ${GOLD}`, borderRadius: ".7em", background: "rgba(255,176,0,.15)", ...hl }} /> : null}
+      {hl ? <B l={-0.1} t={-0.1} w={13.5} h={3.2} s={{ border: `.15em solid ${GOLD}`, borderRadius: ".7em", background: "rgba(232,200,114,.15)", ...hl }} /> : null}
       <B l={0.7} t={0.6} w={2} h={2} s={{ background: color, borderRadius: "50%" }} />
       <B l={3.3} t={0.35} s={{ fontSize: "1.3em", fontWeight: 700, color: "#fff" }}>{label}</B>
       <B l={3.3} t={1.85} s={{ fontSize: "1em", color: "#9e9e9e" }}>{sub}</B>
@@ -594,7 +594,7 @@ function productScarcity(): Scene {
       {label("Only 7 left", { color: "#b3501a", opacity: 0, ...k.track([[0, "opacity:0"], [32, "opacity:0"], [36, "opacity:1"], [58, "opacity:1"], [62, "opacity:0"], [100, "opacity:0"]]) })}
       {label("Only 4 left — hurry!", { color: "#c0392b", opacity: 0, ...k.win(60, 64, 92, 96) })}
       <B l={20} t={15.1} w={17} h={1.1} s={{ background: "#e1e1e1", borderRadius: ".6em", overflow: "hidden" }}>
-        <B l={0} t={0} h={1.1} s={{ borderRadius: ".6em", ...k.track([[0, "width:80%;background:#FFB000"], [30, "width:80%;background:#FFB000"], [40, "width:46%;background:#e07b2a"], [58, "width:46%;background:#e07b2a"], [68, "width:24%;background:#c0392b"], [92, "width:24%;background:#c0392b"], [100, "width:80%;background:#FFB000"]]) }} />
+        <B l={0} t={0} h={1.1} s={{ borderRadius: ".6em", ...k.track([[0, "width:80%;background:#E8C872"], [30, "width:80%;background:#E8C872"], [40, "width:46%;background:#e07b2a"], [58, "width:46%;background:#e07b2a"], [68, "width:24%;background:#c0392b"], [92, "width:24%;background:#c0392b"], [100, "width:80%;background:#E8C872"]]) }} />
       </B>
       <AtcBtn t={17.4} style={k.track([[0, "transform:none"], [72, "transform:none"], [78, "transform:scale(1.04)"], [84, "transform:none"], [90, "transform:scale(1.04)"], [96, "transform:none"], [100, "transform:none"]])} />
       <B l={3.6} t={5.6} w={7.4} h={2.4} s={{ background: "#c0392b", color: "#fff", borderRadius: "1.2em", fontSize: "1.2em", fontWeight: 800, ...center, ...k.win(64, 68, 92, 96, "transform:scale(.6)", "transform:none") }}>Low stock</B>
@@ -670,7 +670,7 @@ function quantityBreaks(): Scene {
 function QtyBreaksScene({ k, cur }: { k: Kf; cur: CSSProperties }) {
   const tier = (top: number, a: string, b: string, price: string, sel: CSSProperties, badge?: string) => (
     <B l={20} t={top} w={17.5} h={2.9} s={{ background: "#fff", border: ".12em solid #d7d7d7", borderRadius: ".8em" }}>
-      <B l={-0.12} t={-0.12} w={17.5} h={2.9} s={{ background: "rgba(255,176,0,.16)", border: `.18em solid ${GOLD}`, borderRadius: ".8em", ...sel }} />
+      <B l={-0.12} t={-0.12} w={17.5} h={2.9} s={{ background: "rgba(232,200,114,.16)", border: `.18em solid ${GOLD}`, borderRadius: ".8em", ...sel }} />
       <B l={1.2} t={0.6} s={{ fontSize: "1.45em", fontWeight: 800, color: "#111" }}>{a}</B>
       <B l={6.8} t={0.85} s={{ fontSize: "1.15em", fontWeight: 700, color: "#8a6d0b" }}>{b}</B>
       <B l={12} t={0.6} w={4.6} s={{ fontSize: "1.5em", fontWeight: 800, color: "#111", textAlign: "right" }}>{price}</B>
@@ -680,7 +680,7 @@ function QtyBreaksScene({ k, cur }: { k: Kf; cur: CSSProperties }) {
     </B>
   );
   const btn = (txt: string, style: CSSProperties) => (
-    <B l={20} t={21.5} w={17.5} h={2.9} s={{ background: "#171614", color: "#fff", borderRadius: ".6em", fontSize: "1.4em", fontWeight: 700, ...center, ...style }}>{txt}</B>
+    <B l={20} t={21.5} w={17.5} h={2.9} s={{ background: "#1D150C", color: "#fff", borderRadius: ".6em", fontSize: "1.4em", fontWeight: 700, ...center, ...style }}>{txt}</B>
   );
   return (
     <>
@@ -706,18 +706,18 @@ function QtyBreaksScene({ k, cur }: { k: Kf; cur: CSSProperties }) {
 
 const BASE_CSS = `
 .xd{container-type:inline-size;width:100%}
-.xd-stage{position:relative;font-size:2.5cqw;width:40em;height:25em;overflow:hidden;border-radius:.9em;background:#f1f1f1;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:#171614;user-select:none;pointer-events:none;line-height:1.2;box-shadow:0 0 0 1px rgba(255,176,0,.35)}
+.xd-stage{position:relative;font-size:2.5cqw;width:40em;height:25em;overflow:hidden;border-radius:.9em;background:#f1f1f1;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:#1D150C;user-select:none;pointer-events:none;line-height:1.2;box-shadow:0 0 0 1px rgba(232,200,114,.35)}
 .xd-stage *{box-sizing:border-box}
 .xd-a{position:absolute;white-space:nowrap}
 .xd-cur{position:absolute;width:2.6em;height:2.6em;margin:-.22em 0 0 -.33em;z-index:60;filter:drop-shadow(0 .15em .25em rgba(0,0,0,.45))}
-.xd-rip{position:absolute;width:3.4em;height:3.4em;margin:-1.7em 0 0 -1.7em;border-radius:50%;border:.25em solid rgba(255,176,0,.95);background:rgba(255,176,0,.28);opacity:0;z-index:55}
+.xd-rip{position:absolute;width:3.4em;height:3.4em;margin:-1.7em 0 0 -1.7em;border-radius:50%;border:.25em solid rgba(232,200,114,.95);background:rgba(232,200,114,.28);opacity:0;z-index:55}
 .xd-sm{margin:0 0 14px}
 @media (prefers-reduced-motion: reduce){.xd-stage *{animation:none!important}.xd-cur,.xd-rip{display:none}}
 `;
 
 const BANNER_CSS = `
-.xd-banner{background:#0F0E0C;border:1px solid #2A2A2A;border-radius:12px;margin:16px 12px 0;overflow:hidden}
-.xd-banner>summary{cursor:pointer;list-style:none;padding:12px 16px;font-size:14px;font-weight:800;color:#FFB000;display:flex;align-items:center;gap:8px}
+.xd-banner{background:#150E07;border:1px solid #3A2B17;border-radius:12px;margin:16px 12px 0;overflow:hidden}
+.xd-banner>summary{cursor:pointer;list-style:none;padding:12px 16px;font-size:14px;font-weight:800;color:#E8C872;display:flex;align-items:center;gap:8px}
 .xd-banner>summary::-webkit-details-marker{display:none}
 .xd-banner>summary::before{content:"▸";transition:transform .15s}
 .xd-banner[open]>summary::before{transform:rotate(90deg)}
@@ -726,7 +726,7 @@ const BANNER_CSS = `
 .xd-banner-stage{flex:1 1 320px;max-width:560px;min-width:0}
 .xd-steps{flex:1 1 220px;margin:0;padding:0;list-style:none;counter-reset:xd}
 .xd-steps li{counter-increment:xd;display:flex;gap:10px;align-items:flex-start;color:#d5d5d5;font-size:14px;line-height:1.45;padding:7px 0}
-.xd-steps li::before{content:counter(xd);flex:none;width:24px;height:24px;border-radius:50%;background:rgba(255,176,0,.15);border:1px solid #FFB000;color:#FFB000;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center}
+.xd-steps li::before{content:counter(xd);flex:none;width:24px;height:24px;border-radius:50%;background:rgba(232,200,114,.15);border:1px solid #E8C872;color:#E8C872;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center}
 `;
 
 let cache: Partial<Record<DemoId, Scene>> = {};

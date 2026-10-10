@@ -934,7 +934,7 @@ export default function InCartUpsellSettings() {
           <div className="xp-index-card" style={{ marginBottom: "20px", padding: "18px 22px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
               <div>
-                <h3 style={{ fontSize: "16px", fontWeight: "700", color: "#FFB000", margin: "0 0 4px 0", borderBottom: "1px solid #2A2A2A", paddingBottom: "8px" }}>
+                <h3 style={{ fontSize: "16px", fontWeight: "700", color: "#E8C872", margin: "0 0 4px 0", borderBottom: "1px solid #3A2B17", paddingBottom: "8px" }}>
                   
                                                     <Translate text='In-Cart Drawer Appearance & Colors' />
                                                   </h3>
@@ -959,7 +959,7 @@ export default function InCartUpsellSettings() {
                       name="inCartBg"
                       value={inCartBg}
                       onChange={(e) => setInCartBg(e.target.value)}
-                      style={{ width: "40px", height: "36px", padding: "2px", border: "1px solid #353535", borderRadius: "6px", background: "#111", cursor: "pointer" }}
+                      style={{ width: "40px", height: "36px", padding: "2px", border: "1px solid #43331D", borderRadius: "6px", background: "#111", cursor: "pointer" }}
                     />
                     <span style={{ fontSize: "13px", fontFamily: "monospace", color: "#fff" }}>{inCartBg}</span>
                   </div>
@@ -976,7 +976,7 @@ export default function InCartUpsellSettings() {
                       name="inCartAccent"
                       value={inCartAccent}
                       onChange={(e) => setInCartAccent(e.target.value)}
-                      style={{ width: "40px", height: "36px", padding: "2px", border: "1px solid #353535", borderRadius: "6px", background: "#111", cursor: "pointer" }}
+                      style={{ width: "40px", height: "36px", padding: "2px", border: "1px solid #43331D", borderRadius: "6px", background: "#111", cursor: "pointer" }}
                     />
                     <span style={{ fontSize: "13px", fontFamily: "monospace", color: "#fff" }}>{inCartAccent}</span>
                   </div>
@@ -993,7 +993,7 @@ export default function InCartUpsellSettings() {
                       name="inCartText"
                       value={inCartText}
                       onChange={(e) => setInCartText(e.target.value)}
-                      style={{ width: "40px", height: "36px", padding: "2px", border: "1px solid #353535", borderRadius: "6px", background: "#111", cursor: "pointer" }}
+                      style={{ width: "40px", height: "36px", padding: "2px", border: "1px solid #43331D", borderRadius: "6px", background: "#111", cursor: "pointer" }}
                     />
                     <span style={{ fontSize: "13px", fontFamily: "monospace", color: "#fff" }}>{inCartText}</span>
                   </div>
@@ -1345,7 +1345,7 @@ export default function InCartUpsellSettings() {
                 )}
 
                 {/* Multi-Language In-Offer Configuration */}
-                <div className="xp-editor-section" style={{ borderLeft: "3px solid #FFB000", paddingLeft: "16px" }}>
+                <div className="xp-editor-section" style={{ borderLeft: "3px solid #E8C872", paddingLeft: "16px" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
                     <div>
                       <h3 style={{ margin: 0, fontSize: "14px", fontWeight: "700" }}>
@@ -1517,7 +1517,7 @@ export default function InCartUpsellSettings() {
                                 {p.imageUrl ? (
                                   <img src={p.imageUrl} alt="" className="xp-trigger-chip-thumb" />
                                 ) : (
-                                  <span style={{ width: "20px", height: "20px", display: "inline-flex", alignItems: "center", justifyContent: "center", background: "#262626", color: "#8A8A8A", borderRadius: "50%", fontSize: "10px" }}>
+                                  <span style={{ width: "20px", height: "20px", display: "inline-flex", alignItems: "center", justifyContent: "center", background: "#2F2314", color: "#8A8A8A", borderRadius: "50%", fontSize: "10px" }}>
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="18" height="18" x="3" y="3" rx="2"/></svg>
                                   </span>
                                 )}
@@ -1542,7 +1542,7 @@ export default function InCartUpsellSettings() {
                       )}
 
                       {/* Catalog Checklist */}
-                      <div className="xp-picker-list" style={{ maxHeight: "240px", overflowY: "auto", border: "1px solid #2A2A2A", borderRadius: "6px" }}>
+                      <div className="xp-picker-list" style={{ maxHeight: "240px", overflowY: "auto", border: "1px solid #3A2B17", borderRadius: "6px" }}>
                         {filteredTriggerProducts.length === 0 ? (
                           <div style={{ padding: "20px", textAlign: "center", color: "#919191", fontSize: "12px" }}>
                             {isSearchingTrigger ? "Searching store catalog..." : `No products found matching "${triggerSearch}"`}
@@ -1561,7 +1561,7 @@ export default function InCartUpsellSettings() {
                                 type="checkbox"
                                 checked={isSelected}
                                 onChange={() => {}}
-                                style={{ width: "16px", height: "16px", accentColor: "#060605", marginRight: "8px", pointerEvents: "none" }}
+                                style={{ width: "16px", height: "16px", accentColor: "#0C0803", marginRight: "8px", pointerEvents: "none" }}
                               />
                               {p.imageUrl ? (
                                 <img src={p.imageUrl} alt="" className="xp-picker-thumb" />
@@ -1580,7 +1580,7 @@ export default function InCartUpsellSettings() {
                               </div>
                               {isSelected && (
                                 <span className="xp-check-mark">
-                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFB000" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E8C872" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                                     <polyline points="20 6 9 17 4 12"/>
                                   </svg>
                                 </span>
@@ -1605,7 +1605,7 @@ export default function InCartUpsellSettings() {
                                                               <Translate text='Select the product that appears as a one-click add-on inside the drawer.' />
                                                             </p>
 
-                  <div className="xp-selected-trigger-card" style={{ background: "#171614", padding: "10px", border: "1px solid #2A2A2A", borderRadius: "6px" }}>
+                  <div className="xp-selected-trigger-card" style={{ background: "#1D150C", padding: "10px", border: "1px solid #3A2B17", borderRadius: "6px" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                       {selectedProduct?.imageUrl ? (
                         <img src={selectedProduct.imageUrl} alt="" className="xp-picker-thumb" />
@@ -1620,7 +1620,7 @@ export default function InCartUpsellSettings() {
                       )}
                       <div>
                         <strong style={{ color: "#ffffff", fontSize: "14px", fontWeight: "700" }}>{selectedProduct?.title}</strong>
-                        <div className="xp-sub" style={{ color: "#FFB000", fontWeight: "600" }}>${selectedProduct?.price}</div>
+                        <div className="xp-sub" style={{ color: "#E8C872", fontWeight: "600" }}>${selectedProduct?.price}</div>
                       </div>
                     </div>
                     <button
@@ -1684,7 +1684,7 @@ export default function InCartUpsellSettings() {
                             </div>
                             {selectedTargetId === p.id && (
                               <span className="xp-check-mark">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFB000" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E8C872" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                                   <polyline points="20 6 9 17 4 12"/>
                                 </svg>
                               </span>
@@ -1704,7 +1704,7 @@ export default function InCartUpsellSettings() {
                   <input type="hidden" name="extraTargetsJson" value={extraTargetsJson} />
 
                   {/* Extra add-ons: up to 3 products total in the cart widget */}
-                  <div style={{ marginTop: "16px", paddingTop: "14px", borderTop: "1px solid #2A2A2A" }}>
+                  <div style={{ marginTop: "16px", paddingTop: "14px", borderTop: "1px solid #3A2B17" }}>
                     <strong style={{ color: "#ffffff", fontSize: "13px" }}>
                       
                                                                     <Translate text='Additional add-ons (' />{extraProducts.length}/2)
@@ -1718,7 +1718,7 @@ export default function InCartUpsellSettings() {
                       <div
                         key={p.id}
                         className="xp-selected-trigger-card"
-                        style={{ background: "#171614", padding: "10px", border: "1px solid #2A2A2A", borderRadius: "6px", marginBottom: "8px" }}
+                        style={{ background: "#1D150C", padding: "10px", border: "1px solid #3A2B17", borderRadius: "6px", marginBottom: "8px" }}
                       >
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                           {p.imageUrl ? (
@@ -1728,7 +1728,7 @@ export default function InCartUpsellSettings() {
                           )}
                           <div>
                             <strong style={{ color: "#ffffff", fontSize: "14px", fontWeight: "700" }}>{p.title}</strong>
-                            <div className="xp-sub" style={{ color: "#FFB000", fontWeight: "600" }}>${p.price}</div>
+                            <div className="xp-sub" style={{ color: "#E8C872", fontWeight: "600" }}>${p.price}</div>
                           </div>
                         </div>
                         <button
@@ -1840,7 +1840,7 @@ export default function InCartUpsellSettings() {
                         </div>
                       </div>
                       <div className="xp-discount-hint">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="#FFB000" style={{ verticalAlign: "middle", marginRight: "6px" }}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="#E8C872" style={{ verticalAlign: "middle", marginRight: "6px" }}>
                           <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
                         </svg>
                         
@@ -1999,10 +1999,10 @@ const IN_CART_STYLES = `
 
   /* High-Contrast Section Headers */
   .xp-editor-section h3 {
-    color: #FFB000 !important;
+    color: #E8C872 !important;
     font-size: 15px !important;
     font-weight: 800 !important;
-    border-bottom: 1px solid #2A2A2A !important;
+    border-bottom: 1px solid #3A2B17 !important;
     padding-bottom: 8px !important;
     margin-bottom: 12px !important;
   }
@@ -2016,7 +2016,7 @@ const IN_CART_STYLES = `
     font-weight: 700 !important;
   }
   .xp-promoted-names {
-    color: #FFB000 !important;
+    color: #E8C872 !important;
     font-weight: 600 !important;
   }
   .xp-selected-trigger-card strong {
@@ -2033,7 +2033,7 @@ const IN_CART_STYLES = `
     font-weight: 600 !important;
   }
   .xp-picker-item-price {
-    color: #FFB000 !important;
+    color: #E8C872 !important;
     font-weight: 600 !important;
   }
   .xp-picker-item strong,
@@ -2058,8 +2058,8 @@ const IN_CART_STYLES = `
 
   /* Global Bar */
   .xp-global-bar {
-    background: #0F0E0C;
-    border: 1px solid #2A2A2A;
+    background: #150E07;
+    border: 1px solid #3A2B17;
     border-radius: 10px;
     padding: 16px 20px;
     display: flex;
@@ -2110,20 +2110,20 @@ const IN_CART_STYLES = `
     padding: 8px 14px;
     border-radius: 6px;
     cursor: pointer;
-    border: 1px solid #353535;
-    background: #0F0E0C;
+    border: 1px solid #43331D;
+    background: #150E07;
     color: #ffffff;
     transition: all 0.15s ease;
   }
   .xp-btn-status-toggle.is-disabled {
-    background: #060605;
-    color: #FFB000;
-    border-color: #FFB000;
+    background: #0C0803;
+    color: #E8C872;
+    border-color: #E8C872;
   }
   .xp-btn-gold-primary {
-    background: #060605;
-    color: #FFB000;
-    border: 1px solid #FFB000;
+    background: #0C0803;
+    color: #E8C872;
+    border: 1px solid #E8C872;
     padding: 8px 18px;
     border-radius: 6px;
     font-weight: 700;
@@ -2136,14 +2136,14 @@ const IN_CART_STYLES = `
     transition: all 0.15s ease;
   }
   .xp-btn-gold-primary:hover {
-    background: #171614;
+    background: #1D150C;
     transform: translateY(-1px);
   }
 
   /* Index Table View */
   .xp-index-card {
-    background: #0F0E0C;
-    border: 1px solid #2A2A2A;
+    background: #150E07;
+    border: 1px solid #3A2B17;
     border-radius: 10px;
     box-shadow: none;
     overflow: hidden;
@@ -2154,7 +2154,7 @@ const IN_CART_STYLES = `
     justify-content: space-between;
     align-items: center;
     gap: 16px;
-    border-bottom: 1px solid #262626;
+    border-bottom: 1px solid #2F2314;
     flex-wrap: wrap;
   }
   .xp-search-box {
@@ -2174,15 +2174,15 @@ const IN_CART_STYLES = `
   .xp-search-input {
     width: 100%;
     padding: 8px 30px 8px 32px;
-    border: 1px solid #353535;
+    border: 1px solid #43331D;
     border-radius: 6px;
     font-size: 13px;
-    background: #0F0E0C;
+    background: #150E07;
     outline: none;
   }
   .xp-search-input:focus {
-    border-color: #060605;
-    box-shadow: 0 0 0 1px #060605;
+    border-color: #0C0803;
+    box-shadow: 0 0 0 1px #0C0803;
   }
   .xp-search-clear {
     position: absolute;
@@ -2203,15 +2203,15 @@ const IN_CART_STYLES = `
     font-weight: 600;
     border-radius: 20px;
     border: 1px solid transparent;
-    background: #171614;
+    background: #1D150C;
     color: #8A8A8A;
     cursor: pointer;
     transition: all 0.15s ease;
   }
   .xp-filter-tab.is-selected {
-    background: #060605;
-    color: #FFB000;
-    border-color: #FFB000;
+    background: #0C0803;
+    color: #E8C872;
+    border-color: #E8C872;
   }
   .xp-table-wrapper {
     overflow-x: auto;
@@ -2223,21 +2223,21 @@ const IN_CART_STYLES = `
     text-align: left;
   }
   .xp-table th {
-    background: #171614;
+    background: #1D150C;
     padding: 12px 16px;
     color: #b2b2b2;
     font-weight: 600;
     font-size: 12px;
-    border-bottom: 1px solid #2A2A2A;
+    border-bottom: 1px solid #3A2B17;
   }
   .xp-table td {
     padding: 12px 16px;
-    border-bottom: 1px solid #262626;
+    border-bottom: 1px solid #2F2314;
     color: #ffffff;
     vertical-align: middle;
   }
   .xp-table-row:hover {
-    background: #171614;
+    background: #1D150C;
   }
   .xp-table-row.is-row-selected {
     background: #1c1b18;
@@ -2246,7 +2246,7 @@ const IN_CART_STYLES = `
     width: 16px;
     height: 16px;
     cursor: pointer;
-    accent-color: #060605;
+    accent-color: #0C0803;
   }
   .xp-table-title-cell {
     display: flex;
@@ -2258,14 +2258,14 @@ const IN_CART_STYLES = `
     height: 36px;
     border-radius: 6px;
     object-fit: cover;
-    border: 1px solid #2A2A2A;
+    border: 1px solid #3A2B17;
     flex-shrink: 0;
   }
   .xp-table-thumb-placeholder {
     width: 36px;
     height: 36px;
     border-radius: 6px;
-    background: #171614;
+    background: #1D150C;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2284,7 +2284,7 @@ const IN_CART_STYLES = `
   }
   .xp-table-title-link strong {
     font-size: 13px;
-    color: #FFB000;
+    color: #E8C872;
   }
   .xp-table-title-link:hover strong {
     text-decoration: underline;
@@ -2305,11 +2305,11 @@ const IN_CART_STYLES = `
     color: #25D366;
   }
   .xp-badge-paused {
-    background: #262626;
+    background: #2F2314;
     color: #8A8A8A;
   }
   .xp-trigger-badge {
-    background: #171614;
+    background: #1D150C;
     color: #ffffff;
     padding: 3px 8px;
     border-radius: 6px;
@@ -2339,8 +2339,8 @@ const IN_CART_STYLES = `
     text-overflow: ellipsis;
   }
   .xp-discount-tag {
-    background: #060605;
-    color: #FFB000;
+    background: #0C0803;
+    color: #E8C872;
     font-size: 11px;
     font-weight: 800;
     padding: 2px 8px;
@@ -2361,17 +2361,17 @@ const IN_CART_STYLES = `
     font-size: 11px;
     font-weight: 600;
     border-radius: 4px;
-    border: 1px solid #353535;
-    background: #0F0E0C;
+    border: 1px solid #43331D;
+    background: #150E07;
     cursor: pointer;
     transition: all 0.12s ease;
   }
   .xp-action-btn:hover {
-    background: #171614;
+    background: #1D150C;
   }
   .xp-action-edit {
-    color: #FFB000;
-    border-color: #FFB000;
+    color: #E8C872;
+    border-color: #E8C872;
   }
   .xp-action-toggle {
     color: #ffffff;
@@ -2388,7 +2388,7 @@ const IN_CART_STYLES = `
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-top: 1px solid #2A2A2A;
+    border-top: 1px solid #3A2B17;
     font-size: 12px;
     color: #8A8A8A;
   }
@@ -2401,8 +2401,8 @@ const IN_CART_STYLES = `
     width: 28px;
     height: 28px;
     border-radius: 4px;
-    border: 1px solid #353535;
-    background: #0F0E0C;
+    border: 1px solid #43331D;
+    background: #150E07;
     cursor: pointer;
     font-size: 16px;
     line-height: 1;
@@ -2435,21 +2435,21 @@ const IN_CART_STYLES = `
 
   /* Editor View */
   .xp-editor-card {
-    background: #0F0E0C;
-    border: 1px solid #2A2A2A;
+    background: #150E07;
+    border: 1px solid #3A2B17;
     border-radius: 10px;
     padding: 24px;
     box-shadow: none;
   }
   .xp-editor-breadcrumb {
     margin-bottom: 20px;
-    border-bottom: 1px solid #262626;
+    border-bottom: 1px solid #2F2314;
     padding-bottom: 12px;
   }
   .xp-btn-back {
     background: none;
     border: none;
-    color: #FFB000;
+    color: #E8C872;
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
@@ -2466,8 +2466,8 @@ const IN_CART_STYLES = `
     color: #ffffff;
   }
   .xp-editor-section {
-    background: #171614;
-    border: 1px solid #2A2A2A;
+    background: #1D150C;
+    border: 1px solid #3A2B17;
     border-radius: 8px;
     padding: 16px;
     margin-bottom: 16px;
@@ -2515,10 +2515,10 @@ const IN_CART_STYLES = `
   }
   .xp-input {
     padding: 8px 12px;
-    border: 1px solid #353535;
+    border: 1px solid #43331D;
     border-radius: 6px;
     font-size: 13px;
-    background: #0F0E0C;
+    background: #150E07;
     color: #ffffff;
   }
   .xp-grid-2 {
@@ -2527,9 +2527,9 @@ const IN_CART_STYLES = `
     gap: 14px;
   }
   .xp-btn-gold {
-    background: #060605;
-    color: #FFB000;
-    border: 1px solid #FFB000;
+    background: #0C0803;
+    color: #E8C872;
+    border: 1px solid #E8C872;
     padding: 10px 20px;
     border-radius: 6px;
     font-weight: 700;
@@ -2538,11 +2538,11 @@ const IN_CART_STYLES = `
     transition: background 0.15s ease;
   }
   .xp-btn-gold:hover {
-    background: #171614;
+    background: #1D150C;
   }
   .xp-btn-cancel {
-    background: #0F0E0C;
-    border: 1px solid #353535;
+    background: #150E07;
+    border: 1px solid #43331D;
     color: #b2b2b2;
     padding: 10px 18px;
     border-radius: 6px;
@@ -2563,8 +2563,8 @@ const IN_CART_STYLES = `
   .xp-trigger-picker-wrap {
     margin-top: 12px;
     padding: 14px;
-    background: #171614;
-    border: 1px solid #2A2A2A;
+    background: #1D150C;
+    border: 1px solid #3A2B17;
     border-radius: 8px;
     display: flex;
     flex-direction: column;
@@ -2582,8 +2582,8 @@ const IN_CART_STYLES = `
     align-items: center;
   }
   .xp-trigger-selected-wrap {
-    background: #0F0E0C;
-    border: 1px solid #353535;
+    background: #150E07;
+    border: 1px solid #43331D;
     border-radius: 8px;
     padding: 10px 12px;
   }
@@ -2607,8 +2607,8 @@ const IN_CART_STYLES = `
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: #171614;
-    border: 1px solid #353535;
+    background: #1D150C;
+    border: 1px solid #43331D;
     border-radius: 16px;
     padding: 3px 8px 3px 4px;
     font-size: 11px;
@@ -2657,14 +2657,14 @@ const IN_CART_STYLES = `
   }
   .xp-trigger-search-dropdown {
     margin-top: 8px;
-    border-top: 1px solid #2A2A2A;
+    border-top: 1px solid #3A2B17;
     padding-top: 8px;
   }
   .xp-trigger-dropdown-list {
     max-height: 180px;
   }
   .xp-check-mark {
-    color: #FFB000;
+    color: #E8C872;
     font-weight: 800;
     font-size: 16px;
     margin-left: auto;
@@ -2674,7 +2674,7 @@ const IN_CART_STYLES = `
   .xp-btn-text {
     background: none;
     border: none;
-    color: #FFB000;
+    color: #E8C872;
     font-size: 12px;
     cursor: pointer;
     font-weight: 600;
@@ -2689,9 +2689,9 @@ const IN_CART_STYLES = `
   .xp-picker-list {
     max-height: 240px;
     overflow-y: auto;
-    border: 1px solid #353535;
+    border: 1px solid #43331D;
     border-radius: 6px;
-    background: #0F0E0C;
+    background: #150E07;
   }
   .xp-picker-list::-webkit-scrollbar {
     width: 5px;
@@ -2705,7 +2705,7 @@ const IN_CART_STYLES = `
     align-items: center;
     gap: 10px;
     padding: 8px 12px;
-    border-bottom: 1px solid #262626;
+    border-bottom: 1px solid #2F2314;
     cursor: pointer;
     transition: background 0.12s ease;
   }
@@ -2713,7 +2713,7 @@ const IN_CART_STYLES = `
     border-bottom: none;
   }
   .xp-picker-item:hover {
-    background: #171614;
+    background: #1D150C;
   }
   .xp-picker-item.is-selected {
     background: #1c1b18;
@@ -2721,7 +2721,7 @@ const IN_CART_STYLES = `
   .xp-picker-checkbox {
     width: 16px;
     height: 16px;
-    accent-color: #060605;
+    accent-color: #0C0803;
     cursor: pointer;
   }
   .xp-picker-thumb {
@@ -2729,13 +2729,13 @@ const IN_CART_STYLES = `
     height: 36px;
     object-fit: cover;
     border-radius: 4px;
-    border: 1px solid #2A2A2A;
+    border: 1px solid #3A2B17;
     flex-shrink: 0;
   }
   .xp-picker-thumb-placeholder {
     width: 36px;
     height: 36px;
-    background: #262626;
+    background: #2F2314;
     border-radius: 4px;
     display: flex;
     align-items: center;
@@ -2771,7 +2771,7 @@ const IN_CART_STYLES = `
   .xp-check-label input[type="checkbox"] {
     width: 16px;
     height: 16px;
-    accent-color: #060605;
+    accent-color: #0C0803;
     cursor: pointer;
   }
   .xp-radio-card-group {
@@ -2785,19 +2785,19 @@ const IN_CART_STYLES = `
     align-items: flex-start;
     gap: 12px;
     padding: 10px 14px;
-    border: 1px solid #353535;
+    border: 1px solid #43331D;
     border-radius: 8px;
     cursor: pointer;
-    background: #0F0E0C;
+    background: #150E07;
     transition: all 0.15s ease;
   }
   .xp-radio-card.is-selected {
-    border-color: #FFB000;
+    border-color: #E8C872;
     background: #1c1b18;
   }
   .xp-radio-card input[type="radio"] {
     margin-top: 3px;
-    accent-color: #060605;
+    accent-color: #0C0803;
     cursor: pointer;
   }
   .xp-radio-card-content strong {
@@ -2808,8 +2808,8 @@ const IN_CART_STYLES = `
 
   /* Discount Box */
   .xp-discount-box {
-    background: #0F0E0C;
-    border: 1px solid #2A2A2A;
+    background: #150E07;
+    border: 1px solid #3A2B17;
     border-radius: 8px;
     padding: 12px;
     margin-top: 8px;

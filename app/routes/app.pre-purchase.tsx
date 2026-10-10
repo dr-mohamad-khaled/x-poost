@@ -1314,7 +1314,7 @@ export default function PrePurchaseSettings() {
           <div className="xp-index-card" style={{ marginBottom: "20px", padding: "18px 22px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
               <div>
-                <h3 style={{ fontSize: "16px", fontWeight: "700", color: "#FFB000", margin: "0 0 4px 0", borderBottom: "1px solid #2A2A2A", paddingBottom: "8px" }}>
+                <h3 style={{ fontSize: "16px", fontWeight: "700", color: "#E8C872", margin: "0 0 4px 0", borderBottom: "1px solid #3A2B17", paddingBottom: "8px" }}>
                   
                                                     <Translate text='Popup Appearance & Colors' />
                                                   </h3>
@@ -1339,7 +1339,7 @@ export default function PrePurchaseSettings() {
                       name="prePurchaseBg"
                       value={modalBg}
                       onChange={(e) => setModalBg(e.target.value)}
-                      style={{ width: "40px", height: "36px", padding: "2px", border: "1px solid #353535", borderRadius: "6px", background: "#111", cursor: "pointer" }}
+                      style={{ width: "40px", height: "36px", padding: "2px", border: "1px solid #43331D", borderRadius: "6px", background: "#111", cursor: "pointer" }}
                     />
                     <span style={{ fontSize: "13px", fontFamily: "monospace", color: "#fff" }}>{modalBg}</span>
                   </div>
@@ -1356,7 +1356,7 @@ export default function PrePurchaseSettings() {
                       name="prePurchaseAccent"
                       value={modalAccent}
                       onChange={(e) => setModalAccent(e.target.value)}
-                      style={{ width: "40px", height: "36px", padding: "2px", border: "1px solid #353535", borderRadius: "6px", background: "#111", cursor: "pointer" }}
+                      style={{ width: "40px", height: "36px", padding: "2px", border: "1px solid #43331D", borderRadius: "6px", background: "#111", cursor: "pointer" }}
                     />
                     <span style={{ fontSize: "13px", fontFamily: "monospace", color: "#fff" }}>{modalAccent}</span>
                   </div>
@@ -1373,7 +1373,7 @@ export default function PrePurchaseSettings() {
                       name="prePurchaseText"
                       value={modalText}
                       onChange={(e) => setModalText(e.target.value)}
-                      style={{ width: "40px", height: "36px", padding: "2px", border: "1px solid #353535", borderRadius: "6px", background: "#111", cursor: "pointer" }}
+                      style={{ width: "40px", height: "36px", padding: "2px", border: "1px solid #43331D", borderRadius: "6px", background: "#111", cursor: "pointer" }}
                     />
                     <span style={{ fontSize: "13px", fontFamily: "monospace", color: "#fff" }}>{modalText}</span>
                   </div>
@@ -1951,7 +1951,7 @@ export default function PrePurchaseSettings() {
                                 {p.imageUrl ? (
                                   <img src={p.imageUrl} alt="" className="xp-trigger-chip-thumb" />
                                 ) : (
-                                  <span style={{ width: "20px", height: "20px", display: "inline-flex", alignItems: "center", justifyContent: "center", background: "#262626", color: "#8A8A8A", borderRadius: "50%", fontSize: "10px" }}>
+                                  <span style={{ width: "20px", height: "20px", display: "inline-flex", alignItems: "center", justifyContent: "center", background: "#2F2314", color: "#8A8A8A", borderRadius: "50%", fontSize: "10px" }}>
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="18" height="18" x="3" y="3" rx="2"/></svg>
                                   </span>
                                 )}
@@ -1976,7 +1976,7 @@ export default function PrePurchaseSettings() {
                       )}
 
                       {/* Catalog Checklist */}
-                      <div className="xp-picker-list" style={{ maxHeight: "240px", overflowY: "auto", border: "1px solid #2A2A2A", borderRadius: "6px" }}>
+                      <div className="xp-picker-list" style={{ maxHeight: "240px", overflowY: "auto", border: "1px solid #3A2B17", borderRadius: "6px" }}>
                         {filteredTriggerProducts.length === 0 ? (
                           <div style={{ padding: "20px", textAlign: "center", color: "#919191", fontSize: "12px" }}>
                             {isSearchingTrigger ? "Searching store catalog..." : `No products found matching "${triggerSearch}"`}
@@ -1995,7 +1995,7 @@ export default function PrePurchaseSettings() {
                                 type="checkbox"
                                 checked={isSelected}
                                 onChange={() => {}}
-                                style={{ width: "16px", height: "16px", accentColor: "#060605", marginRight: "8px", pointerEvents: "none" }}
+                                style={{ width: "16px", height: "16px", accentColor: "#0C0803", marginRight: "8px", pointerEvents: "none" }}
                               />
                               {p.imageUrl ? (
                                 <img src={p.imageUrl} alt="" className="xp-picker-thumb" />
@@ -2014,7 +2014,7 @@ export default function PrePurchaseSettings() {
                               </div>
                               {isSelected && (
                                 <span className="xp-check-mark">
-                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFB000" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E8C872" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                                     <polyline points="20 6 9 17 4 12"/>
                                   </svg>
                                 </span>
@@ -2065,9 +2065,9 @@ export default function PrePurchaseSettings() {
                   <input type="hidden" name="layoutStyle" value={modalLayout} />
 
                   {modalLayout === "spotlight_hero" ? (
-                    <div style={{ marginTop: "16px", padding: "16px", background: "#171614", border: "1px solid #2A2A2A", borderRadius: "8px" }}>
+                    <div style={{ marginTop: "16px", padding: "16px", background: "#1D150C", border: "1px solid #3A2B17", borderRadius: "8px" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "6px" }}>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFB000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E8C872" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                           <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                         </svg>
                         <strong style={{ fontSize: "13px", color: "#ffffff" }}><Translate text='Spotlight Hero Value Highlights (3 Bullets)' /></strong>
@@ -2822,18 +2822,18 @@ const PRE_PURCHASE_STYLES = `
 
   /* High-Contrast Section Headers & Layout Badges */
   .xp-editor-section h3 {
-    color: #FFB000 !important;
+    color: #E8C872 !important;
     font-size: 15px !important;
     font-weight: 800 !important;
-    border-bottom: 1px solid #2A2A2A !important;
+    border-bottom: 1px solid #3A2B17 !important;
     padding-bottom: 8px !important;
     margin-bottom: 12px !important;
   }
   .xp-layout-card {
-    border: 1px solid #353535 !important;
+    border: 1px solid #43331D !important;
     border-radius: 10px !important;
     padding: 16px !important;
-    background: #171614 !important;
+    background: #1D150C !important;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
@@ -2841,13 +2841,13 @@ const PRE_PURCHASE_STYLES = `
     gap: 8px;
   }
   .xp-layout-card:hover {
-    border-color: rgba(255,176,0, 0.6) !important;
-    background: #171614 !important;
+    border-color: rgba(232,200,114, 0.6) !important;
+    background: #1D150C !important;
     transform: translateY(-2px);
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4) !important;
   }
   .xp-layout-card.is-selected {
-    border-color: #FFB000 !important;
+    border-color: #E8C872 !important;
     background: #1c1b18 !important;
   }
   .xp-layout-card-title {
@@ -2864,17 +2864,17 @@ const PRE_PURCHASE_STYLES = `
     font-weight: 800 !important;
     text-transform: uppercase !important;
     letter-spacing: 0.6px !important;
-    background: rgba(255,176,0, 0.15) !important;
-    color: #FFB000 !important;
-    border: 1px solid rgba(255,176,0, 0.4) !important;
+    background: rgba(232,200,114, 0.15) !important;
+    color: #E8C872 !important;
+    border: 1px solid rgba(232,200,114, 0.4) !important;
     padding: 3px 8px !important;
     border-radius: 4px !important;
     display: inline-block !important;
   }
   .xp-layout-card.is-selected .xp-layout-card-badge {
-    background: #FFB000 !important;
-    color: #060605 !important;
-    border-color: #FFB000 !important;
+    background: #E8C872 !important;
+    color: #0C0803 !important;
+    border-color: #E8C872 !important;
     font-weight: 900 !important;
   }
   .xp-layout-card-desc {
@@ -2886,8 +2886,8 @@ const PRE_PURCHASE_STYLES = `
 
   /* Global Bar */
   .xp-global-bar {
-    background: #0F0E0C;
-    border: 1px solid #2A2A2A;
+    background: #150E07;
+    border: 1px solid #3A2B17;
     border-radius: 10px;
     padding: 16px 20px;
     display: flex;
@@ -2938,20 +2938,20 @@ const PRE_PURCHASE_STYLES = `
     padding: 8px 14px;
     border-radius: 6px;
     cursor: pointer;
-    border: 1px solid #353535;
-    background: #0F0E0C;
+    border: 1px solid #43331D;
+    background: #150E07;
     color: #ffffff;
     transition: all 0.15s ease;
   }
   .xp-btn-status-toggle.is-disabled {
-    background: #060605;
-    color: #FFB000;
-    border-color: #FFB000;
+    background: #0C0803;
+    color: #E8C872;
+    border-color: #E8C872;
   }
   .xp-btn-gold-primary {
-    background: #060605;
-    color: #FFB000;
-    border: 1px solid #FFB000;
+    background: #0C0803;
+    color: #E8C872;
+    border: 1px solid #E8C872;
     padding: 8px 18px;
     border-radius: 6px;
     font-weight: 700;
@@ -2964,14 +2964,14 @@ const PRE_PURCHASE_STYLES = `
     transition: all 0.15s ease;
   }
   .xp-btn-gold-primary:hover {
-    background: #171614;
+    background: #1D150C;
     transform: translateY(-1px);
   }
 
   /* Index Table View */
   .xp-index-card {
-    background: #0F0E0C;
-    border: 1px solid #2A2A2A;
+    background: #150E07;
+    border: 1px solid #3A2B17;
     border-radius: 10px;
     box-shadow: none;
     overflow: hidden;
@@ -2982,7 +2982,7 @@ const PRE_PURCHASE_STYLES = `
     justify-content: space-between;
     align-items: center;
     gap: 16px;
-    border-bottom: 1px solid #262626;
+    border-bottom: 1px solid #2F2314;
     flex-wrap: wrap;
   }
   .xp-search-box {
@@ -3002,15 +3002,15 @@ const PRE_PURCHASE_STYLES = `
   .xp-search-input {
     width: 100%;
     padding: 8px 30px 8px 32px;
-    border: 1px solid #353535;
+    border: 1px solid #43331D;
     border-radius: 6px;
     font-size: 13px;
-    background: #0F0E0C;
+    background: #150E07;
     outline: none;
   }
   .xp-search-input:focus {
-    border-color: #060605;
-    box-shadow: 0 0 0 1px #060605;
+    border-color: #0C0803;
+    box-shadow: 0 0 0 1px #0C0803;
   }
   .xp-search-clear {
     position: absolute;
@@ -3031,15 +3031,15 @@ const PRE_PURCHASE_STYLES = `
     font-weight: 600;
     border-radius: 20px;
     border: 1px solid transparent;
-    background: #171614;
+    background: #1D150C;
     color: #8A8A8A;
     cursor: pointer;
     transition: all 0.15s ease;
   }
   .xp-filter-tab.is-selected {
-    background: #060605;
-    color: #FFB000;
-    border-color: #FFB000;
+    background: #0C0803;
+    color: #E8C872;
+    border-color: #E8C872;
   }
   .xp-table-wrapper {
     overflow-x: auto;
@@ -3051,21 +3051,21 @@ const PRE_PURCHASE_STYLES = `
     text-align: left;
   }
   .xp-table th {
-    background: #171614;
+    background: #1D150C;
     padding: 12px 16px;
     color: #b2b2b2;
     font-weight: 600;
     font-size: 12px;
-    border-bottom: 1px solid #2A2A2A;
+    border-bottom: 1px solid #3A2B17;
   }
   .xp-table td {
     padding: 12px 16px;
-    border-bottom: 1px solid #262626;
+    border-bottom: 1px solid #2F2314;
     color: #ffffff;
     vertical-align: middle;
   }
   .xp-table-row:hover {
-    background: #171614;
+    background: #1D150C;
   }
   .xp-table-row.is-row-selected {
     background: #1c1b18;
@@ -3074,7 +3074,7 @@ const PRE_PURCHASE_STYLES = `
     width: 16px;
     height: 16px;
     cursor: pointer;
-    accent-color: #060605;
+    accent-color: #0C0803;
   }
   .xp-table-title-cell {
     display: flex;
@@ -3086,14 +3086,14 @@ const PRE_PURCHASE_STYLES = `
     height: 36px;
     border-radius: 6px;
     object-fit: cover;
-    border: 1px solid #2A2A2A;
+    border: 1px solid #3A2B17;
     flex-shrink: 0;
   }
   .xp-table-thumb-placeholder {
     width: 36px;
     height: 36px;
     border-radius: 6px;
-    background: #171614;
+    background: #1D150C;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -3112,7 +3112,7 @@ const PRE_PURCHASE_STYLES = `
   }
   .xp-table-title-link strong {
     font-size: 13px;
-    color: #FFB000;
+    color: #E8C872;
   }
   .xp-table-title-link:hover strong {
     text-decoration: underline;
@@ -3133,11 +3133,11 @@ const PRE_PURCHASE_STYLES = `
     color: #25D366;
   }
   .xp-badge-paused {
-    background: #262626;
+    background: #2F2314;
     color: #8A8A8A;
   }
   .xp-trigger-badge {
-    background: #171614;
+    background: #1D150C;
     color: #ffffff;
     padding: 3px 8px;
     border-radius: 6px;
@@ -3167,8 +3167,8 @@ const PRE_PURCHASE_STYLES = `
     text-overflow: ellipsis;
   }
   .xp-discount-tag {
-    background: #060605;
-    color: #FFB000;
+    background: #0C0803;
+    color: #E8C872;
     font-size: 11px;
     font-weight: 800;
     padding: 2px 8px;
@@ -3189,17 +3189,17 @@ const PRE_PURCHASE_STYLES = `
     font-size: 11px;
     font-weight: 600;
     border-radius: 4px;
-    border: 1px solid #353535;
-    background: #0F0E0C;
+    border: 1px solid #43331D;
+    background: #150E07;
     cursor: pointer;
     transition: all 0.12s ease;
   }
   .xp-action-btn:hover {
-    background: #171614;
+    background: #1D150C;
   }
   .xp-action-edit {
-    color: #FFB000;
-    border-color: #FFB000;
+    color: #E8C872;
+    border-color: #E8C872;
   }
   .xp-action-toggle {
     color: #ffffff;
@@ -3216,7 +3216,7 @@ const PRE_PURCHASE_STYLES = `
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-top: 1px solid #2A2A2A;
+    border-top: 1px solid #3A2B17;
     font-size: 12px;
     color: #8A8A8A;
   }
@@ -3229,8 +3229,8 @@ const PRE_PURCHASE_STYLES = `
     width: 28px;
     height: 28px;
     border-radius: 4px;
-    border: 1px solid #353535;
-    background: #0F0E0C;
+    border: 1px solid #43331D;
+    background: #150E07;
     cursor: pointer;
     font-size: 16px;
     line-height: 1;
@@ -3263,21 +3263,21 @@ const PRE_PURCHASE_STYLES = `
 
   /* Editor View */
   .xp-editor-card {
-    background: #0F0E0C;
-    border: 1px solid #2A2A2A;
+    background: #150E07;
+    border: 1px solid #3A2B17;
     border-radius: 10px;
     padding: 24px;
     box-shadow: none;
   }
   .xp-editor-breadcrumb {
     margin-bottom: 20px;
-    border-bottom: 1px solid #262626;
+    border-bottom: 1px solid #2F2314;
     padding-bottom: 12px;
   }
   .xp-btn-back {
     background: none;
     border: none;
-    color: #FFB000;
+    color: #E8C872;
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
@@ -3294,8 +3294,8 @@ const PRE_PURCHASE_STYLES = `
     color: #ffffff;
   }
   .xp-editor-section {
-    background: #171614;
-    border: 1px solid #2A2A2A;
+    background: #1D150C;
+    border: 1px solid #3A2B17;
     border-radius: 8px;
     padding: 16px;
     margin-bottom: 16px;
@@ -3358,10 +3358,10 @@ const PRE_PURCHASE_STYLES = `
   }
   .xp-input {
     padding: 8px 12px;
-    border: 1px solid #353535;
+    border: 1px solid #43331D;
     border-radius: 6px;
     font-size: 13px;
-    background: #0F0E0C;
+    background: #150E07;
     color: #ffffff;
   }
   .xp-grid-2 {
@@ -3370,9 +3370,9 @@ const PRE_PURCHASE_STYLES = `
     gap: 14px;
   }
   .xp-btn-gold {
-    background: #060605;
-    color: #FFB000;
-    border: 1px solid #FFB000;
+    background: #0C0803;
+    color: #E8C872;
+    border: 1px solid #E8C872;
     padding: 10px 20px;
     border-radius: 6px;
     font-weight: 700;
@@ -3381,11 +3381,11 @@ const PRE_PURCHASE_STYLES = `
     transition: background 0.15s ease;
   }
   .xp-btn-gold:hover {
-    background: #171614;
+    background: #1D150C;
   }
   .xp-btn-cancel {
-    background: #0F0E0C;
-    border: 1px solid #353535;
+    background: #150E07;
+    border: 1px solid #43331D;
     color: #b2b2b2;
     padding: 10px 18px;
     border-radius: 6px;
@@ -3406,8 +3406,8 @@ const PRE_PURCHASE_STYLES = `
   .xp-trigger-picker-wrap {
     margin-top: 10px;
     padding: 10px;
-    background: #0F0E0C;
-    border: 1px solid #2A2A2A;
+    background: #150E07;
+    border: 1px solid #3A2B17;
     border-radius: 6px;
   }
   .xp-selected-trigger-card {
@@ -3423,14 +3423,14 @@ const PRE_PURCHASE_STYLES = `
   }
   .xp-trigger-search-dropdown {
     margin-top: 8px;
-    border-top: 1px solid #2A2A2A;
+    border-top: 1px solid #3A2B17;
     padding-top: 8px;
   }
   .xp-trigger-dropdown-list {
     max-height: 180px;
   }
   .xp-check-mark {
-    color: #FFB000;
+    color: #E8C872;
     font-weight: 800;
     font-size: 16px;
     margin-left: auto;
@@ -3449,7 +3449,7 @@ const PRE_PURCHASE_STYLES = `
   .xp-btn-text {
     background: none;
     border: none;
-    color: #FFB000;
+    color: #E8C872;
     font-size: 12px;
     cursor: pointer;
     font-weight: 600;
@@ -3464,9 +3464,9 @@ const PRE_PURCHASE_STYLES = `
   .xp-picker-list {
     max-height: 240px;
     overflow-y: auto;
-    border: 1px solid #353535;
+    border: 1px solid #43331D;
     border-radius: 6px;
-    background: #0F0E0C;
+    background: #150E07;
   }
   .xp-picker-list::-webkit-scrollbar {
     width: 5px;
@@ -3480,7 +3480,7 @@ const PRE_PURCHASE_STYLES = `
     align-items: center;
     gap: 10px;
     padding: 8px 12px;
-    border-bottom: 1px solid #262626;
+    border-bottom: 1px solid #2F2314;
     cursor: pointer;
     transition: background 0.12s ease;
   }
@@ -3488,7 +3488,7 @@ const PRE_PURCHASE_STYLES = `
     border-bottom: none;
   }
   .xp-picker-item:hover {
-    background: #171614;
+    background: #1D150C;
   }
   .xp-picker-item.is-selected {
     background: #1c1b18;
@@ -3496,7 +3496,7 @@ const PRE_PURCHASE_STYLES = `
   .xp-picker-checkbox {
     width: 16px;
     height: 16px;
-    accent-color: #060605;
+    accent-color: #0C0803;
     cursor: pointer;
   }
   .xp-picker-thumb {
@@ -3504,13 +3504,13 @@ const PRE_PURCHASE_STYLES = `
     height: 36px;
     object-fit: cover;
     border-radius: 4px;
-    border: 1px solid #2A2A2A;
+    border: 1px solid #3A2B17;
     flex-shrink: 0;
   }
   .xp-picker-thumb-placeholder {
     width: 36px;
     height: 36px;
-    background: #262626;
+    background: #2F2314;
     border-radius: 4px;
     display: flex;
     align-items: center;
@@ -3553,7 +3553,7 @@ const PRE_PURCHASE_STYLES = `
   .xp-check-label input[type="checkbox"] {
     width: 16px;
     height: 16px;
-    accent-color: #060605;
+    accent-color: #0C0803;
     cursor: pointer;
   }
   .xp-radio-card-group {
@@ -3567,19 +3567,19 @@ const PRE_PURCHASE_STYLES = `
     align-items: flex-start;
     gap: 12px;
     padding: 10px 14px;
-    border: 1px solid #353535;
+    border: 1px solid #43331D;
     border-radius: 8px;
     cursor: pointer;
-    background: #0F0E0C;
+    background: #150E07;
     transition: all 0.15s ease;
   }
   .xp-radio-card.is-selected {
-    border-color: #FFB000;
+    border-color: #E8C872;
     background: #1c1b18;
   }
   .xp-radio-card input[type="radio"] {
     margin-top: 3px;
-    accent-color: #060605;
+    accent-color: #0C0803;
     cursor: pointer;
   }
   .xp-radio-card-content strong {
@@ -3592,8 +3592,8 @@ const PRE_PURCHASE_STYLES = `
   .xp-trigger-picker-wrap {
     margin-top: 12px;
     padding: 14px;
-    background: #171614;
-    border: 1px solid #2A2A2A;
+    background: #1D150C;
+    border: 1px solid #3A2B17;
     border-radius: 8px;
     display: flex;
     flex-direction: column;
@@ -3611,8 +3611,8 @@ const PRE_PURCHASE_STYLES = `
     align-items: center;
   }
   .xp-trigger-selected-wrap {
-    background: #0F0E0C;
-    border: 1px solid #353535;
+    background: #150E07;
+    border: 1px solid #43331D;
     border-radius: 8px;
     padding: 10px 12px;
   }
@@ -3636,8 +3636,8 @@ const PRE_PURCHASE_STYLES = `
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: #171614;
-    border: 1px solid #353535;
+    background: #1D150C;
+    border: 1px solid #43331D;
     border-radius: 16px;
     padding: 3px 8px 3px 4px;
     font-size: 11px;
@@ -3676,8 +3676,8 @@ const PRE_PURCHASE_STYLES = `
 
   /* Discount Box */
   .xp-discount-box {
-    background: #0F0E0C;
-    border: 1px solid #2A2A2A;
+    background: #150E07;
+    border: 1px solid #3A2B17;
     border-radius: 8px;
     padding: 12px;
     margin-top: 8px;
@@ -3912,24 +3912,24 @@ const PRE_PURCHASE_STYLES = `
     gap: 12px;
   }
   .xp-layout-card {
-    border: 1px solid #353535;
+    border: 1px solid #43331D;
     border-radius: 8px;
     padding: 14px;
-    background: #0F0E0C;
+    background: #150E07;
     cursor: pointer;
     transition: all 0.15s ease;
     display: flex;
     flex-direction: column;
   }
   .xp-layout-card:hover {
-    border-color: #060605;
+    border-color: #0C0803;
     transform: translateY(-1px);
     box-shadow: 0 2px 6px rgba(0,0,0,0.06);
   }
   .xp-layout-card.is-selected {
-    border-color: #FFB000;
+    border-color: #E8C872;
     background: #1c1b18;
-    box-shadow: 0 0 0 1px #FFB000;
+    box-shadow: 0 0 0 1px #E8C872;
   }
   .xp-layout-card-top {
     display: flex;
@@ -3938,15 +3938,15 @@ const PRE_PURCHASE_STYLES = `
     margin-bottom: 8px;
   }
   .xp-layout-card-icon {
-    color: #FFB000;
+    color: #E8C872;
     display: flex;
     align-items: center;
   }
   .xp-layout-card-badge {
     font-size: 10px;
     font-weight: 700;
-    background: #060605;
-    color: #FFB000;
+    background: #0C0803;
+    color: #E8C872;
     padding: 2px 8px;
     border-radius: 10px;
   }
@@ -3971,15 +3971,15 @@ const PRE_PURCHASE_STYLES = `
     font-size: 11px;
     font-weight: 600;
     border-radius: 12px;
-    border: 1px solid #353535;
+    border: 1px solid #43331D;
     color: #8A8A8A;
-    background: #0F0E0C;
+    background: #150E07;
     transition: all 0.12s ease;
   }
   .xp-layout-radio.is-checked {
-    background: #060605;
-    color: #FFB000;
-    border-color: #060605;
+    background: #0C0803;
+    color: #E8C872;
+    border-color: #0C0803;
   }
 
   /* Live Preview Architecture Styles */
@@ -3993,9 +3993,9 @@ const PRE_PURCHASE_STYLES = `
   .xp-preview-layout-badge {
     font-size: 10px;
     font-weight: 800;
-    background: #060605;
-    color: #FFB000;
-    border: 1px solid #FFB000;
+    background: #0C0803;
+    color: #E8C872;
+    border: 1px solid #E8C872;
     padding: 2px 8px;
     border-radius: 4px;
     white-space: nowrap;
@@ -4169,7 +4169,7 @@ const PRE_PURCHASE_STYLES = `
     display: inline-flex;
     width: 11px;
     height: 11px;
-    color: #FFB000;
+    color: #E8C872;
     margin-right: 4px;
     vertical-align: -1px;
   }
@@ -4205,7 +4205,7 @@ const PRE_PURCHASE_STYLES = `
     width: 4px;
   }
   .xp-bundle-routine-deck::-webkit-scrollbar-thumb {
-    background: #FFB000;
+    background: linear-gradient(135deg, #FFEB97 0%, #E8C872 48%, #B8863B 100%);
     border-radius: 4px;
   }
   .xp-bundle-connector-row {
@@ -4218,15 +4218,15 @@ const PRE_PURCHASE_STYLES = `
   .xp-bundle-line {
     flex: 1;
     height: 1px;
-    background: rgba(255,176,0, 0.25);
+    background: rgba(232,200,114, 0.25);
   }
   .xp-bundle-plus-badge {
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    background: #060605;
-    border: 1px solid #FFB000;
-    color: #FFB000;
+    background: #0C0803;
+    border: 1px solid #E8C872;
+    color: #E8C872;
     font-size: 11px;
     font-weight: 900;
     display: flex;
@@ -4240,7 +4240,7 @@ const PRE_PURCHASE_STYLES = `
     gap: 12px;
     padding: 10px 12px;
     background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255,176,0, 0.25);
+    border: 1px solid rgba(232,200,114, 0.25);
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
@@ -4248,13 +4248,13 @@ const PRE_PURCHASE_STYLES = `
     box-sizing: border-box;
   }
   .xp-bundle-item-card:hover {
-    border-color: rgba(255,176,0, 0.6);
+    border-color: rgba(232,200,114, 0.6);
     background: rgba(255, 255, 255, 0.07);
     transform: translateY(-1px);
   }
   .xp-bundle-item-card.is-selected {
-    border-color: #FFB000;
-    background: rgba(255,176,0, 0.1);
+    border-color: #E8C872;
+    background: rgba(232,200,114, 0.1);
   }
   .xp-bundle-card-thumb-wrap {
     position: relative;
@@ -4267,15 +4267,15 @@ const PRE_PURCHASE_STYLES = `
     height: 100%;
     object-fit: cover;
     border-radius: 8px;
-    border: 1px solid rgba(255,176,0, 0.35);
-    background: #171614;
+    border: 1px solid rgba(232,200,114, 0.35);
+    background: #1D150C;
   }
   .xp-bundle-img-placeholder {
     width: 100%;
     height: 100%;
-    background: #171614;
+    background: #1D150C;
     border-radius: 8px;
-    border: 1px solid rgba(255,176,0, 0.2);
+    border: 1px solid rgba(232,200,114, 0.2);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -4284,8 +4284,8 @@ const PRE_PURCHASE_STYLES = `
     position: absolute;
     top: -5px;
     left: -5px;
-    background: #FFB000;
-    color: #060605;
+    background: linear-gradient(135deg, #FFEB97 0%, #E8C872 48%, #B8863B 100%);
+    color: #0C0803;
     font-size: 9px;
     font-weight: 800;
     padding: 1px 4px;
@@ -4305,7 +4305,7 @@ const PRE_PURCHASE_STYLES = `
     font-weight: 800;
     letter-spacing: 0.6px;
     text-transform: uppercase;
-    color: #FFB000;
+    color: #E8C872;
   }
   .xp-bundle-card-title {
     font-size: 13px;
@@ -4331,20 +4331,20 @@ const PRE_PURCHASE_STYLES = `
     font-weight: 700;
     padding: 6px 10px;
     border-radius: 20px;
-    border: 1px solid rgba(255,176,0, 0.4);
+    border: 1px solid rgba(232,200,114, 0.4);
     background: rgba(255, 255, 255, 0.05);
     color: #B2B2B2;
     cursor: pointer;
     transition: all 0.2s ease;
   }
   .xp-bundle-toggle-pill.is-checked {
-    background: #FFB000;
-    border-color: #FFB000;
-    color: #060605;
+    background: linear-gradient(135deg, #FFEB97 0%, #E8C872 48%, #B8863B 100%);
+    border-color: #E8C872;
+    color: #0C0803;
   }
   .xp-bundle-summary-card {
-    background: rgba(255,176,0, 0.06);
-    border: 1px solid rgba(255,176,0, 0.35);
+    background: rgba(232,200,114, 0.06);
+    border: 1px solid rgba(232,200,114, 0.35);
     border-radius: 8px;
     padding: 10px 12px;
     display: flex;
@@ -4375,7 +4375,7 @@ const PRE_PURCHASE_STYLES = `
   .xp-bundle-sum-sale {
     font-size: 14px;
     font-weight: 800;
-    color: #FFB000;
+    color: #E8C872;
   }
   .xp-bundle-savings-highlight {
     display: flex;

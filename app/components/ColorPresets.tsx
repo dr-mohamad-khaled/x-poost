@@ -40,16 +40,17 @@ export const PALETTES: Palette[] = [
     onAccent: "#FFFFFF",
   },
   {
-    id: "amber",
-    name: "Amber",
-    bg: "#060605",
-    surface: "#0F0E0C",
-    track: "#1F1D1A",
-    border: "#252320",
-    accent: "#FFB000",
+    id: "gold",
+    name: "Gold",
+    bg: "#140E08",
+    surface: "#1D150C",
+    track: "#33261A",
+    border: "#3A2B17",
+    accent: "#E8C872",
     text: "#FFFFFF",
-    onAccent: "#060605",
+    onAccent: "#140E08",
   },
+
   {
     id: "classic",
     name: "Classic Black & Gold",
@@ -69,7 +70,7 @@ export const DEFAULT_PALETTE = PALETTES[0];
 export function ColorPresets({ onApply }: { onApply: (p: Palette) => void }) {
   return (
     <div style={{ marginBottom: 16 }}>
-      <div style={{ fontSize: 12, color: "#9E9E9E", marginBottom: 8 }}>
+      <div style={{ fontSize: 12, color: "#A89B80", marginBottom: 8 }}>
         <Translate text="Start from a ready-made palette, then fine-tune any color below." />
       </div>
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
@@ -84,9 +85,9 @@ export function ColorPresets({ onApply }: { onApply: (p: Palette) => void }) {
               gap: 8,
               padding: "6px 12px",
               borderRadius: 8,
-              border: "1px solid #353535",
-              background: "#171614",
-              color: "#FFD985",
+              border: "1px solid #43331D",
+              background: "#1D150C",
+              color: "#FFEB97",
               fontSize: 12,
               fontWeight: 600,
               cursor: "pointer",

@@ -159,7 +159,7 @@ export default function App() {
         {EXIT_INTENT_AVAILABLE ? <a href="/app/exit-intent">{i18n.navExitIntent || "Exit-Intent Recovery"}</a> : null}
       </NavMenu>
 
-      <div dir={isAr ? "rtl" : "ltr"} style={{ width: "100%", minHeight: "100vh", background: "#060605" }}>
+      <div dir={isAr ? "rtl" : "ltr"} style={{ width: "100%", minHeight: "100vh", background: "radial-gradient(900px 520px at 8% -6%, rgba(255,235,151,0.085), transparent 62%), radial-gradient(820px 620px at 100% 0%, rgba(88,55,20,0.42), transparent 62%), linear-gradient(180deg, #120B05 0%, #0C0803 480px)" }}>
         <style>{`
           /* GLOBAL DARK THEME RESETS */
           
@@ -167,56 +167,56 @@ export default function App() {
           .xp-section-title {
             font-size: 16px !important;
             font-weight: 700 !important;
-            color: #FFB000 !important;
+            color: #E8C872 !important;
             margin: 0 0 16px 0 !important;
             display: flex !important;
             align-items: center !important;
             gap: 8px !important;
-                        border-bottom: 1px solid #2A2A2A !important;
+                        border-bottom: 1px solid #3A2B17 !important;
             padding-bottom: 12px !important;
           }
 
           .xp-help-link {
             display: inline-flex; align-items: center; gap: 7px;
             padding: 6px 14px; border-radius: 999px;
-            border: 1px solid rgba(255,176,0,0.4);
+            border: 1px solid rgba(232,200,114,0.4);
             background: transparent;
-            color: #FFD985 !important; font-size: 12px; font-weight: 700;
+            color: #FFEB97 !important; font-size: 12px; font-weight: 700;
             text-decoration: none !important; cursor: pointer;
             transition: background .2s, border-color .2s;
           }
           .xp-help-link:hover, .xp-help-link.is-active {
-            background: rgba(255,176,0,0.14); border-color: rgba(255,176,0,0.7);
+            background: rgba(232,200,114,0.14); border-color: rgba(232,200,114,0.7);
           }
           .xp-help-q {
             display: inline-grid; place-items: center; width: 18px; height: 18px;
-            border-radius: 50%; background: #FFB000; color: #060605;
+            border-radius: 50%; background: linear-gradient(135deg, #FFEB97 0%, #E8C872 48%, #B8863B 100%); color: #0C0803;
             font-size: 11px; font-weight: 900;
           }
 
           :root {
-            --p-color-bg-surface: #0F0E0C;
-            --p-color-bg-surface-secondary: #171614;
+            --p-color-bg-surface: #150E07;
+            --p-color-bg-surface-secondary: #1D150C;
             --p-color-text: #ffffff;
-            --p-color-text-secondary: #9e9e9e;
-            --p-color-border: #2A2A2A;
+            --p-color-text-secondary: #9E957B;
+            --p-color-border: #3A2B17;
             color-scheme: dark;
           }
           body, html {
-            background-color: #060605 !important;
+            background-color: #0C0803 !important;
             color: #ffffff !important;
           }
           s-page, s-section, s-card {
-            --p-color-bg-surface: #0F0E0C !important;
-            --p-color-bg-surface-secondary: #171614 !important;
+            --p-color-bg-surface: #150E07 !important;
+            --p-color-bg-surface-secondary: #1D150C !important;
             --p-color-text: #ffffff !important;
-            --p-color-text-secondary: #9e9e9e !important;
-            --p-color-border: #2A2A2A !important;
+            --p-color-text-secondary: #9E957B !important;
+            --p-color-border: #3A2B17 !important;
             color: #ffffff !important;
           }
           s-section, s-card {
-            background: #0F0E0C !important;
-            border: 1px solid #2A2A2A !important;
+            background: #150E07 !important;
+            border: 1px solid #3A2B17 !important;
             border-radius: 12px !important;
           }
         `}</style>
@@ -229,8 +229,8 @@ export default function App() {
             flexWrap: "wrap",
             gap: "12px",
             padding: "10px 20px",
-            background: "#0B0A08",
-            borderBottom: "1px solid #232323",
+            background: "linear-gradient(180deg, rgba(40,26,12,0.92), rgba(14,9,4,0.92))", backdropFilter: "blur(10px)",
+            borderBottom: "1px solid rgba(255,235,151,0.14)",
             position: "sticky",
             top: 0,
             zIndex: 50,
@@ -242,13 +242,13 @@ export default function App() {
                 fontFamily: 'Georgia, "Iowan Old Style", "Times New Roman", serif',
                 fontSize: "16px",
                 fontWeight: 600,
-                color: "#FFB000",
+                background: "linear-gradient(90deg, #FFEB97, #D6AE5B 60%, #B8863B)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent",
               }}
             >
               XPoost
             </span>
-            <span style={{ fontSize: "12px", color: "#7f7f7f" }}>|</span>
-            <span style={{ fontSize: "12px", color: "#9e9e9e", fontWeight: 500 }}>
+            <span style={{ fontSize: "12px", color: "#7F7863" }}>|</span>
+            <span style={{ fontSize: "12px", color: "#9E957B", fontWeight: 500 }}>
               {i18n.dashboardLangTitle || "Dashboard Language"}:
             </span>
           </div>
@@ -268,9 +268,9 @@ export default function App() {
               value={dashboardLocale}
               onChange={(e) => handleLanguageChange(e.target.value as SupportedLanguage)}
               style={{
-                background: "#171614",
-                color: "#FFD985",
-                border: "1px solid #414141",
+                background: "#1D150C",
+                color: "#FFEB97",
+                border: "1px solid #4D3B22",
                 borderRadius: "6px",
                 padding: "6px 14px",
                 fontSize: "12px",
@@ -284,7 +284,7 @@ export default function App() {
                 <option
                   key={lang.code}
                   value={lang.code}
-                  style={{ background: "#171614", color: "#f4f4f5" }}
+                  style={{ background: "#1D150C", color: "#f4f4f5" }}
                 >
                   {lang.nativeName} ({lang.label}) {lang.dir === "rtl" ? "[RTL]" : ""}
                 </option>

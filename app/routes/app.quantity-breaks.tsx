@@ -355,16 +355,16 @@ export default function QuantityBreaksPage() {
     setTiers(DEFAULT_TIERS);
     setDesignPreset("modern_cards");
     setAnimationStyle("shimmer");
-    setAccentColor("#FFB000");
-    setBackgroundColor("#0F0E0C");
-    setBorderColor("#2A2A2A");
+    setAccentColor("#F2F2F2");
+    setBackgroundColor("#141414");
+    setBorderColor("#333333");
     setTextColor("#FFFFFF");
-    setBadgeBgColor("#FFB000");
-    setBadgeTextColor("#000000");
+    setBadgeBgColor("#F2F2F2");
+    setBadgeTextColor("#141414");
     setShowAddToCartBtn(false);
     setAddToCartBtnText("Add to Cart");
-    setBtnBgColor("#FFB000");
-    setBtnTextColor("#000000");
+    setBtnBgColor("#F2F2F2");
+    setBtnTextColor("#141414");
     setViewMode("create");
   };
 
@@ -538,8 +538,8 @@ export default function QuantityBreaksPage() {
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
         .xpp-card {
-          background: #0F0E0C;
-          border: 1px solid #2A2A2A;
+          background: #150E07;
+          border: 1px solid #3A2B17;
           border-radius: 12px;
           padding: 24px;
           margin-bottom: 24px;
@@ -547,7 +547,7 @@ export default function QuantityBreaksPage() {
         .xpp-card-title {
           font-size: 17px;
           font-weight: 800;
-          color: #FFB000;
+          color: #E8C872;
           margin: 0 0 10px;
           display: flex;
           align-items: center;
@@ -574,13 +574,13 @@ export default function QuantityBreaksPage() {
           transition: all 0.2s ease;
         }
         .xpp-btn--primary {
-          background: #FFB000;
+          background: linear-gradient(135deg, #FFEB97 0%, #E8C872 48%, #B8863B 100%);
           color: #000000;
         }
         .xpp-btn--secondary {
-          background: #262626;
+          background: #2F2314;
           color: #ffffff;
-          border: 1px solid #353535;
+          border: 1px solid #43331D;
         }
         .xpp-btn--danger {
           background: rgba(239, 68, 68, 0.15);
@@ -593,7 +593,7 @@ export default function QuantityBreaksPage() {
         }
         .xpp-input {
           width: 100%;
-          background: #171614;
+          background: #1D150C;
           border: 1px solid #383838;
           border-radius: 8px;
           padding: 10px 14px;
@@ -602,7 +602,7 @@ export default function QuantityBreaksPage() {
           box-sizing: border-box;
         }
         .xpp-input:focus {
-          border-color: #FFB000;
+          border-color: #E8C872;
           outline: none;
         }
         .xpp-label {
@@ -625,16 +625,16 @@ export default function QuantityBreaksPage() {
         .xpp-table th {
           text-align: left;
           padding: 12px;
-          border-bottom: 2px solid #2A2A2A;
+          border-bottom: 2px solid #3A2B17;
           font-size: 12px;
           font-weight: 800;
-          color: #FFB000;
+          color: #E8C872;
           text-transform: uppercase;
           letter-spacing: 0.5px;
         }
         .xpp-table td {
           padding: 14px 12px;
-          border-bottom: 1px solid #262626;
+          border-bottom: 1px solid #2F2314;
           font-size: 13px;
           color: #e5e5e5;
           vertical-align: middle;
@@ -665,8 +665,8 @@ export default function QuantityBreaksPage() {
           margin-bottom: 20px;
         }
         .xpp-preset-card {
-          background: #171614;
-          border: 2px solid #353535;
+          background: #1D150C;
+          border: 2px solid #43331D;
           border-radius: 10px;
           padding: 16px;
           cursor: pointer;
@@ -676,12 +676,12 @@ export default function QuantityBreaksPage() {
           border-color: #555555;
         }
         .xpp-preset-card--active {
-          border-color: #FFB000;
+          border-color: #E8C872;
           background: #1c1b18;
         }
         .xpp-tier-item {
-          background: #171614;
-          border: 1px solid #353535;
+          background: #1D150C;
+          border: 1px solid #43331D;
           border-radius: 10px;
           padding: 16px;
           margin-bottom: 14px;
@@ -690,8 +690,8 @@ export default function QuantityBreaksPage() {
           display: inline-flex;
           align-items: center;
           gap: 6px;
-          background: #262626;
-          border: 1px solid #353535;
+          background: #2F2314;
+          border: 1px solid #43331D;
           border-radius: 20px;
           padding: 4px 12px;
           font-size: 12px;
@@ -823,10 +823,10 @@ export default function QuantityBreaksPage() {
             </div>
 
             {/* Theme Placement Notice Card */}
-            <div className="xpp-card" style={{ background: "#0f0e0c", border: "1.5px solid rgba(255,176,0, 0.35)" }}>
+            <div className="xpp-card" style={{ background: "#150E07", border: "1.5px solid rgba(232,200,114, 0.35)" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
                 <div>
-                  <h3 style={{ fontSize: 15, fontWeight: 800, color: "#FFB000", margin: "0 0 6px" }}>
+                  <h3 style={{ fontSize: 15, fontWeight: 800, color: "#E8C872", margin: "0 0 6px" }}>
                     
                                                           <Translate text='How to Display this Block on Your Product Page' />
                                                         </h3>
@@ -858,7 +858,7 @@ export default function QuantityBreaksPage() {
 
               {offers.length === 0 ? (
                 <div style={{ textAlign: "center", padding: "48px 20px" }}>
-                  <div style={{ fontSize: 36, marginBottom: 12, color: "#FFB000" }}>
+                  <div style={{ fontSize: 36, marginBottom: 12, color: "#E8C872" }}>
                     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                       <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
                       <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
@@ -906,20 +906,20 @@ export default function QuantityBreaksPage() {
                             </td>
                             <td>
                               {offer.targetMode === "ALL" ? (
-                                <span style={{ color: "#FFB000", fontWeight: 700 }}><Translate text='All Products' /></span>
+                                <span style={{ color: "#E8C872", fontWeight: 700 }}><Translate text='All Products' /></span>
                               ) : (
                                 <span>{productIds.length}  <Translate text='Targeted Product' />{productIds.length === 1 ? "" : "s"}</span>
                               )}
                             </td>
                             <td>
-                              <span style={{ background: "rgba(255,176,0, 0.15)", color: "#FFB000", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 700 }}>
+                              <span style={{ background: "rgba(232,200,114, 0.15)", color: "#E8C872", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 700 }}>
                                 {offer.discountType === "FIXED_PER_ITEM" ? "Fixed Per Item ($)" : "Percentage (%)"}
                               </span>
                             </td>
                             <td>
                               <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                                 {parsedTiers.map((t: any, idx: number) => (
-                                  <span key={idx} style={{ background: "#262626", padding: "2px 6px", borderRadius: 4, fontSize: 11 }}>
+                                  <span key={idx} style={{ background: "#2F2314", padding: "2px 6px", borderRadius: 4, fontSize: 11 }}>
                                     {t.quantity}<Translate text='x (' />{t.discountValue}{offer.discountType === "FIXED_PER_ITEM" ? "$" : "%"})
                                   </span>
                                 ))}
@@ -1016,10 +1016,10 @@ export default function QuantityBreaksPage() {
             </div>
 
             {/* Language Switcher for Copy Editing */}
-            <div className="xpp-card" style={{ border: "1px solid rgba(255,176,0, 0.3)" }}>
+            <div className="xpp-card" style={{ border: "1px solid rgba(232,200,114, 0.3)" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
                 <div>
-                  <h3 style={{ fontSize: 14, fontWeight: 800, color: "#FFB000", margin: "0 0 4px" }}>
+                  <h3 style={{ fontSize: 14, fontWeight: 800, color: "#E8C872", margin: "0 0 4px" }}>
                     
                                                           <Translate text='Multi-Language Translation Customization' />
                                                         </h3>
@@ -1089,8 +1089,8 @@ export default function QuantityBreaksPage() {
                 <label
                   style={{
                     flex: 1,
-                    background: targetMode === "SPECIFIC" ? "#1c1b18" : "#171614",
-                    border: `2px solid ${targetMode === "SPECIFIC" ? "#FFB000" : "#353535"}`,
+                    background: targetMode === "SPECIFIC" ? "#1c1b18" : "#1D150C",
+                    border: `2px solid ${targetMode === "SPECIFIC" ? "#E8C872" : "#43331D"}`,
                     borderRadius: 10,
                     padding: 14,
                     cursor: "pointer",
@@ -1113,8 +1113,8 @@ export default function QuantityBreaksPage() {
                 <label
                   style={{
                     flex: 1,
-                    background: targetMode === "ALL" ? "#1c1b18" : "#171614",
-                    border: `2px solid ${targetMode === "ALL" ? "#FFB000" : "#353535"}`,
+                    background: targetMode === "ALL" ? "#1c1b18" : "#1D150C",
+                    border: `2px solid ${targetMode === "ALL" ? "#E8C872" : "#43331D"}`,
                     borderRadius: 10,
                     padding: 14,
                     cursor: "pointer",
@@ -1136,7 +1136,7 @@ export default function QuantityBreaksPage() {
               </div>
 
               {targetMode === "SPECIFIC" && (
-                <div style={{ background: "#171614", padding: 16, borderRadius: 10, border: "1px solid #353535" }}>
+                <div style={{ background: "#1D150C", padding: 16, borderRadius: 10, border: "1px solid #43331D" }}>
                   <label className="xpp-label"><Translate text='Search & Select Products' /></label>
                   <input
                     type="text"
@@ -1146,11 +1146,11 @@ export default function QuantityBreaksPage() {
                     className="xpp-input"
                     style={{ marginBottom: 10 }}
                   />
-                  {isSearching && <div style={{ fontSize: 12, color: "#FFB000" }}><Translate text='Searching store catalog...' /></div>}
+                  {isSearching && <div style={{ fontSize: 12, color: "#E8C872" }}><Translate text='Searching store catalog...' /></div>}
 
                   {/* Search Results Dropdown */}
                   {filteredSearchResults.length > 0 && (
-                    <div style={{ maxHeight: 200, overflowY: "auto", background: "#262626", borderRadius: 8, padding: 8, marginBottom: 12 }}>
+                    <div style={{ maxHeight: 200, overflowY: "auto", background: "#2F2314", borderRadius: 8, padding: 8, marginBottom: 12 }}>
                       {filteredSearchResults.map((prod) => {
                         const isSelected = selectedProductIds.includes(String(prod.id));
                         return (
@@ -1163,11 +1163,11 @@ export default function QuantityBreaksPage() {
                               justifyContent: "space-between",
                               padding: "8px 12px",
                               cursor: "pointer",
-                              background: isSelected ? "#2a2a2a" : "transparent",
+                              background: isSelected ? "#3A2B17" : "transparent",
                               borderRadius: 6,
                             }}
                           >
-                            <span style={{ fontSize: 13, color: isSelected ? "#FFB000" : "#fff" }}>{prod.title}</span>
+                            <span style={{ fontSize: 13, color: isSelected ? "#E8C872" : "#fff" }}>{prod.title}</span>
                             <span style={{ fontSize: 12, fontWeight: 700 }}>{isSelected ? "Selected" : "+ Add"}</span>
                           </div>
                         );
@@ -1212,8 +1212,8 @@ export default function QuantityBreaksPage() {
                 <label
                   style={{
                     flex: 1,
-                    background: discountType === "PERCENTAGE" ? "#1c1b18" : "#171614",
-                    border: `2px solid ${discountType === "PERCENTAGE" ? "#FFB000" : "#353535"}`,
+                    background: discountType === "PERCENTAGE" ? "#1c1b18" : "#1D150C",
+                    border: `2px solid ${discountType === "PERCENTAGE" ? "#E8C872" : "#43331D"}`,
                     borderRadius: 10,
                     padding: 14,
                     cursor: "pointer",
@@ -1236,8 +1236,8 @@ export default function QuantityBreaksPage() {
                 <label
                   style={{
                     flex: 1,
-                    background: discountType === "FIXED_PER_ITEM" ? "#1c1b18" : "#171614",
-                    border: `2px solid ${discountType === "FIXED_PER_ITEM" ? "#FFB000" : "#353535"}`,
+                    background: discountType === "FIXED_PER_ITEM" ? "#1c1b18" : "#1D150C",
+                    border: `2px solid ${discountType === "FIXED_PER_ITEM" ? "#E8C872" : "#43331D"}`,
                     borderRadius: 10,
                     padding: 14,
                     cursor: "pointer",
@@ -1275,7 +1275,7 @@ export default function QuantityBreaksPage() {
               {tiers.map((tier, idx) => (
                 <div key={idx} className="xpp-tier-item">
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-                    <span style={{ fontSize: 14, fontWeight: 800, color: "#FFB000" }}>
+                    <span style={{ fontSize: 14, fontWeight: 800, color: "#E8C872" }}>
                       
                                                     <Translate text='Tier #' />{idx + 1}
                     </span>
@@ -1413,8 +1413,8 @@ export default function QuantityBreaksPage() {
                   <label
                     style={{
                       flex: 1,
-                      background: animationStyle === "shimmer" ? "#1c1b18" : "#171614",
-                      border: `1.5px solid ${animationStyle === "shimmer" ? "#FFB000" : "#353535"}`,
+                      background: animationStyle === "shimmer" ? "#1c1b18" : "#1D150C",
+                      border: `1.5px solid ${animationStyle === "shimmer" ? "#E8C872" : "#43331D"}`,
                       borderRadius: 8,
                       padding: 12,
                       cursor: "pointer",
@@ -1437,8 +1437,8 @@ export default function QuantityBreaksPage() {
                   <label
                     style={{
                       flex: 1,
-                      background: animationStyle === "shine_glow" ? "#1c1b18" : "#171614",
-                      border: `1.5px solid ${animationStyle === "shine_glow" ? "#FFB000" : "#353535"}`,
+                      background: animationStyle === "shine_glow" ? "#1c1b18" : "#1D150C",
+                      border: `1.5px solid ${animationStyle === "shine_glow" ? "#E8C872" : "#43331D"}`,
                       borderRadius: 8,
                       padding: 12,
                       cursor: "pointer",
@@ -1461,8 +1461,8 @@ export default function QuantityBreaksPage() {
                   <label
                     style={{
                       flex: 1,
-                      background: animationStyle === "floating_badge" ? "#1c1b18" : "#171614",
-                      border: `1.5px solid ${animationStyle === "floating_badge" ? "#FFB000" : "#353535"}`,
+                      background: animationStyle === "floating_badge" ? "#1c1b18" : "#1D150C",
+                      border: `1.5px solid ${animationStyle === "floating_badge" ? "#E8C872" : "#43331D"}`,
                       borderRadius: 8,
                       padding: 12,
                       cursor: "pointer",
@@ -1654,9 +1654,9 @@ export default function QuantityBreaksPage() {
             </div>
 
             {/* Section 8: Interactive Live Storefront Preview */}
-            <div className="xpp-card" style={{ background: "#060605", border: "2px dashed rgba(255,176,0, 0.4)" }} dir={isPreviewRtl ? "rtl" : "ltr"}>
+            <div className="xpp-card" style={{ background: "#0C0803", border: "2px dashed rgba(232,200,114, 0.4)" }} dir={isPreviewRtl ? "rtl" : "ltr"}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-                <span style={{ fontSize: 12, fontWeight: 800, color: "#FFB000", textTransform: "uppercase", letterSpacing: 1 }}>
+                <span style={{ fontSize: 12, fontWeight: 800, color: "#E8C872", textTransform: "uppercase", letterSpacing: 1 }}>
                   
                                                     <Translate text='Real-Time Storefront Interactive Preview (' />{selectedLang.toUpperCase()})
                 </span>
@@ -1861,7 +1861,7 @@ export default function QuantityBreaksPage() {
                           key={idx}
                           onClick={() => setSelectedPreviewIndex(idx)}
                           style={{
-                            background: isSelected ? "rgba(255,176,0, 0.08)" : backgroundColor,
+                            background: isSelected ? "rgba(232,200,114, 0.08)" : backgroundColor,
                             borderBottom: idx === tiers.length - 1 ? "none" : `1px solid ${borderColor}`,
                             padding: "12px 16px",
                             display: "flex",
@@ -1926,7 +1926,7 @@ export default function QuantityBreaksPage() {
                             alignItems: "center",
                             justifyContent: "space-between",
                             cursor: "pointer",
-                            boxShadow: isSelected ? "0 4px 20px rgba(255,176,0, 0.2)" : "none",
+                            boxShadow: isSelected ? "0 4px 20px rgba(232,200,114, 0.2)" : "none",
                           }}
                         >
                           <div>

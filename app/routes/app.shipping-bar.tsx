@@ -656,9 +656,9 @@ export default function ShippingBarSettings() {
                 <button
                   type="button"
                   className="xp-btn-secondary"
-                  onClick={() => { setBgColor("#060605"); setTextColor("#FFFFFF"); setTrackColor("#1F1D1A"); setProgressColor("#FFB000"); }}
+                  onClick={() => { setBgColor("#140E08"); setTextColor("#FFFFFF"); setTrackColor("#33261A"); setProgressColor("#E8C872"); }}
                 >
-                  <Translate text='Amber' />
+                  <Translate text='Gold' />
                 </button>
               </div>
             </div>
@@ -708,7 +708,7 @@ export default function ShippingBarSettings() {
               {targetOverrides.map((ov, oi) => (
                 <div
                   key={oi}
-                  style={{ border: "1px solid rgba(255,176,0,0.35)", borderRadius: 10, padding: 14, marginBottom: 14 }}
+                  style={{ border: "1px solid rgba(232,200,114,0.35)", borderRadius: 10, padding: 14, marginBottom: 14 }}
                 >
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
                     <strong><Translate text='Rule' /> {oi + 1}: {ov.countries.length ? ov.countries.join(", ") : "no countries yet"}</strong>
@@ -1212,7 +1212,7 @@ function RewardFields({
   };
 
   return (
-    <div style={{ marginTop: 10, padding: 10, borderRadius: 8, background: "rgba(255,176,0,0.06)", border: "1px dashed rgba(255,176,0,0.35)" }}>
+    <div style={{ marginTop: 10, padding: 10, borderRadius: 8, background: "rgba(232,200,114,0.06)", border: "1px dashed rgba(232,200,114,0.35)" }}>
       <div className="xp-field" style={{ marginBottom: 8 }}>
         <label><Translate text='Checkout reward' /></label>
         <select
@@ -1369,7 +1369,7 @@ function CountryPicker({
             key={c}
             style={{
               display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 10px",
-              borderRadius: 999, background: "rgba(255,176,0,0.15)", border: "1px solid rgba(255,176,0,0.5)", fontSize: 12,
+              borderRadius: 999, background: "rgba(232,200,114,0.15)", border: "1px solid rgba(232,200,114,0.5)", fontSize: 12,
             }}
           >
             {names[c] || c} ({c})
@@ -1409,10 +1409,10 @@ const SHIPPING_BAR_STYLES = `
     }
   }
   .xp-layout-card {
-    border: 1px solid #353535 !important;
+    border: 1px solid #43331D !important;
     border-radius: 10px !important;
     padding: 16px !important;
-    background: #171614 !important;
+    background: #1D150C !important;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
@@ -1420,13 +1420,13 @@ const SHIPPING_BAR_STYLES = `
     gap: 8px;
   }
   .xp-layout-card:hover {
-    border-color: rgba(255,176,0, 0.6) !important;
-    background: #171614 !important;
+    border-color: rgba(232,200,114, 0.6) !important;
+    background: #1D150C !important;
     transform: translateY(-2px);
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4) !important;
   }
   .xp-layout-card.is-selected {
-    border-color: #FFB000 !important;
+    border-color: #E8C872 !important;
     background: #1c1b18 !important;
   }
   .xp-layout-header {
@@ -1450,18 +1450,18 @@ const SHIPPING_BAR_STYLES = `
     font-weight: 800 !important;
     text-transform: uppercase !important;
     letter-spacing: 0.6px !important;
-    background: rgba(255,176,0, 0.15) !important;
-    color: #FFB000 !important;
-    border: 1px solid rgba(255,176,0, 0.4) !important;
+    background: rgba(232,200,114, 0.15) !important;
+    color: #E8C872 !important;
+    border: 1px solid rgba(232,200,114, 0.4) !important;
     padding: 3px 8px !important;
     border-radius: 4px !important;
     display: inline-block !important;
     white-space: nowrap !important;
   }
   .xp-layout-card.is-selected .xp-layout-badge {
-    background: #FFB000 !important;
-    color: #060605 !important;
-    border-color: #FFB000 !important;
+    background: #E8C872 !important;
+    color: #0C0803 !important;
+    border-color: #E8C872 !important;
     font-weight: 900 !important;
   }
   .xp-layout-desc {
@@ -1474,8 +1474,8 @@ const SHIPPING_BAR_STYLES = `
 
   /* Native Luxury Dark Section Cards */
   .xp-section-card {
-    background: #0F0E0C !important;
-    border: 1px solid #2A2A2A !important;
+    background: #150E07 !important;
+    border: 1px solid #3A2B17 !important;
     border-radius: 12px !important;
     padding: 24px !important;
     margin-bottom: 20px !important;
@@ -1485,7 +1485,7 @@ const SHIPPING_BAR_STYLES = `
   .xp-section-title {
     font-size: 16px !important;
     font-weight: 700 !important;
-    color: #FFB000 !important; margin: 0 0 16px 0 !important; border-bottom: 1px solid #2A2A2A !important; padding-bottom: 12px !important;
+    color: #E8C872 !important; margin: 0 0 16px 0 !important; border-bottom: 1px solid #3A2B17 !important; padding-bottom: 12px !important;
     display: flex !important;
     align-items: center !important;
     gap: 8px !important;
@@ -1541,10 +1541,10 @@ const SHIPPING_BAR_STYLES = `
   }
   .xp-input {
     padding: 8px 12px;
-    border: 1px solid #353535;
+    border: 1px solid #43331D;
     border-radius: 6px;
     font-size: 13px;
-    background: #0F0E0C;
+    background: #150E07;
   }
   .xp-grid-2 {
     display: grid;
@@ -1579,10 +1579,10 @@ const SHIPPING_BAR_STYLES = `
     }
   }
   .xp-layout-card {
-    border: 1px solid #2A2A2A;
+    border: 1px solid #3A2B17;
     border-radius: 10px;
     padding: 14px;
-    background: #0F0E0C;
+    background: #150E07;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
@@ -1590,12 +1590,12 @@ const SHIPPING_BAR_STYLES = `
     gap: 6px;
   }
   .xp-layout-card:hover {
-    border-color: #FFB000;
+    border-color: #E8C872;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   }
   .xp-layout-card.is-selected {
-    border-color: #FFB000;
+    border-color: #E8C872;
     background: #1c1b18;
     box-shadow: 0 0 0 1px #008060, 0 4px 14px rgba(0, 128, 96, 0.15);
   }
@@ -1609,7 +1609,7 @@ const SHIPPING_BAR_STYLES = `
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    background: #262626;
+    background: #2F2314;
     color: #444444;
     padding: 2px 6px;
     border-radius: 4px;
@@ -1617,7 +1617,7 @@ const SHIPPING_BAR_STYLES = `
   .xp-theme-check {
     font-size: 11px;
     font-weight: 700;
-    color: #FFB000;
+    color: #E8C872;
   }
   .xp-layout-title {
     margin: 2px 0 0;
@@ -1639,10 +1639,10 @@ const SHIPPING_BAR_STYLES = `
     gap: 12px;
   }
   .xp-tier-card {
-    border: 1px solid #2A2A2A;
+    border: 1px solid #3A2B17;
     border-radius: 8px;
     padding: 12px 14px;
-    background: #171614;
+    background: #1D150C;
   }
   .xp-tier-header {
     display: flex;
@@ -1654,7 +1654,7 @@ const SHIPPING_BAR_STYLES = `
     font-size: 11px;
     font-weight: 700;
     color: #ffffff;
-    background: #262626;
+    background: #2F2314;
     padding: 2px 8px;
     border-radius: 4px;
   }
@@ -1667,8 +1667,8 @@ const SHIPPING_BAR_STYLES = `
     cursor: pointer;
   }
   .xp-btn-secondary {
-    background: #0F0E0C;
-    border: 1px solid #353535;
+    background: #150E07;
+    border: 1px solid #43331D;
     padding: 8px 14px;
     border-radius: 6px;
     font-size: 12px;
@@ -1684,15 +1684,15 @@ const SHIPPING_BAR_STYLES = `
   .xp-color-wrap input[type="color"] {
     width: 38px;
     height: 34px;
-    border: 1px solid #353535;
+    border: 1px solid #43331D;
     border-radius: 4px;
     cursor: pointer;
     padding: 0;
   }
   .xp-btn-submit {
-    background: #060605;
-    color: #FFB000;
-    border: 1px solid #FFB000;
+    background: #0C0803;
+    color: #E8C872;
+    border: 1px solid #E8C872;
     padding: 12px 24px;
     border-radius: 6px;
     font-weight: 700;
@@ -1702,7 +1702,7 @@ const SHIPPING_BAR_STYLES = `
     transition: background 0.2s;
   }
   .xp-btn-submit:hover {
-    background: #171614;
+    background: #1D150C;
   }
 
   /* Simulator & Preview */
@@ -1728,7 +1728,7 @@ const SHIPPING_BAR_STYLES = `
     font-weight: 700;
   }
   .xp-slider-control {
-    background: #171614;
+    background: #1D150C;
     padding: 12px;
     border-radius: 8px;
     margin: 12px 0 16px;
@@ -1743,7 +1743,7 @@ const SHIPPING_BAR_STYLES = `
   .xp-range-slider {
     width: 100%;
     cursor: pointer;
-    accent-color: #FFB000;
+    accent-color: #E8C872;
   }
 
   .xp-bar-preview-box {
@@ -1773,7 +1773,7 @@ const SHIPPING_BAR_STYLES = `
     left: 20px;
     right: 20px;
     height: 4px;
-    background: var(--xp-track, #353535);
+    background: var(--xp-track, #43331D);
     border-radius: 2px;
     z-index: 1;
   }
@@ -1819,7 +1819,7 @@ const SHIPPING_BAR_STYLES = `
   /* Gamified Cards */
   .xp-cards-progress-bar {
     height: 6px;
-    background: var(--xp-track, #353535);
+    background: var(--xp-track, #43331D);
     border-radius: 3px;
     overflow: hidden;
     margin-bottom: 12px;
@@ -1875,7 +1875,7 @@ const SHIPPING_BAR_STYLES = `
   }
   .xp-luxury-bar-track {
     height: 8px;
-    background: var(--xp-track, #262626);
+    background: var(--xp-track, #2F2314);
     border-radius: 4px;
     overflow: hidden;
     position: relative;
@@ -1928,7 +1928,7 @@ const SHIPPING_BAR_STYLES = `
   }
   .xp-split-track {
     height: 6px;
-    background: var(--xp-track, #262626);
+    background: var(--xp-track, #2F2314);
     border-radius: 3px;
     overflow: hidden;
   }

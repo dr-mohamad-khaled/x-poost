@@ -48,7 +48,7 @@ export default function Pricing() {
           padding: 24px 20px 80px;
           color: #ffffff;
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-          background: #0a0a0a;
+          background: #140A06;
           border-radius: 16px;
         }
         .xpp-container * {
@@ -58,7 +58,7 @@ export default function Pricing() {
 
         /* â”€â”€ Highlight Badges & Accents â”€â”€ */
         .xpp-hl-gold {
-          color: #FFB000 !important;
+          color: #E8C872 !important;
           font-weight: 800;
         }
         .xpp-hl-green {
@@ -68,8 +68,8 @@ export default function Pricing() {
         .xpp-badge-gold {
           display: inline-block;
           background: rgba(255, 215, 0, 0.16);
-          border: 1px solid #FFB000;
-          color: #FFB000 !important;
+          border: 1px solid #E8C872;
+          color: #E8C872 !important;
           padding: 2px 9px;
           border-radius: 6px;
           font-weight: 800;
@@ -104,8 +104,8 @@ export default function Pricing() {
 
         /* â”€â”€ Hero â”€â”€ */
         .xpp-hero {
-          background: #111111;
-          border: 1.5px solid rgba(255,176,0, 0.4);
+          background: #1B110A;
+          border: 1.5px solid rgba(232,200,114, 0.4);
           border-radius: 16px;
           padding: 48px 36px 44px;
           margin-bottom: 24px;
@@ -115,9 +115,9 @@ export default function Pricing() {
         }
         .xpp-hero-badge {
           display: inline-block;
-          background: rgba(255,176,0, 0.2);
-          color: #FFB000;
-          border: 1px solid #FFB000;
+          background: rgba(232,200,114, 0.2);
+          color: #E8C872;
+          border: 1px solid #E8C872;
           padding: 6px 18px;
           border-radius: 20px;
           font-size: 12px;
@@ -136,7 +136,7 @@ export default function Pricing() {
         }
         .xpp-hero-title em {
           font-style: normal;
-          color: #FFB000;
+          color: #E8C872;
         }
         .xpp-hero-subtitle {
           font-size: 16px;
@@ -155,8 +155,8 @@ export default function Pricing() {
           margin-bottom: 24px;
         }
         .xpp-proof-stat {
-          background: #0F0E0C;
-          border: 1.5px solid #2a2a2a;
+          background: #150E07;
+          border: 1.5px solid #3A2B17;
           border-radius: 12px;
           padding: 24px 18px;
           text-align: center;
@@ -164,7 +164,7 @@ export default function Pricing() {
         .xpp-proof-num {
           font-size: 32px;
           font-weight: 900;
-          color: #FFB000;
+          color: #E8C872;
           line-height: 1;
           margin-bottom: 8px;
         }
@@ -177,8 +177,8 @@ export default function Pricing() {
 
         /* â”€â”€ Unlimited Banner â”€â”€ */
         .xpp-unlimited-banner {
-          background: #0f0e0c;
-          border: 2px solid #FFB000;
+          background: #150E07;
+          border: 2px solid #E8C872;
           border-radius: 14px;
           padding: 26px 30px;
           margin-bottom: 26px;
@@ -190,8 +190,8 @@ export default function Pricing() {
           flex-shrink: 0;
           width: 54px;
           height: 54px;
-          background: rgba(255,176,0, 0.25);
-          border: 1.5px solid #FFB000;
+          background: rgba(232,200,114, 0.25);
+          border: 1.5px solid #E8C872;
           border-radius: 50%;
           display: flex;
           align-items: center;
@@ -212,9 +212,9 @@ export default function Pricing() {
 
         /* â”€â”€ Status Banner â”€â”€ */
         .xpp-status-banner {
-          background: #0F0E0C;
-          border-left: 5px solid #FFB000;
-          border: 1px solid #2a2a2a;
+          background: #150E07;
+          border-left: 5px solid #E8C872;
+          border: 1px solid #3A2B17;
           border-left-width: 5px;
           border-radius: 10px;
           padding: 18px 22px;
@@ -246,8 +246,8 @@ export default function Pricing() {
           margin-bottom: 34px;
         }
         .xpp-plan-card {
-          background: #121212;
-          border: 1.5px solid #353535;
+          background: #1C120A;
+          border: 1.5px solid #43331D;
           border-radius: 16px;
           padding: 38px 32px;
           display: flex;
@@ -259,14 +259,14 @@ export default function Pricing() {
           transform: translateY(-2px);
         }
         .xpp-plan-card--featured {
-          border: 2.5px solid #FFB000;
-          background: #171717;
+          border: 2.5px solid #E8C872;
+          background: #21170D;
         }
         .xpp-plan-tag {
           position: absolute;
           top: -14px;
           right: 24px;
-          background: #FFB000;
+          background: linear-gradient(135deg, #FFEB97 0%, #E8C872 48%, #B8863B 100%);
           color: #000000;
           font-size: 12px;
           font-weight: 900;
@@ -290,7 +290,7 @@ export default function Pricing() {
         .xpp-plan-price-box {
           margin-bottom: 22px;
           padding-bottom: 22px;
-          border-bottom: 1.5px solid #2A2A2A;
+          border-bottom: 1.5px solid #3A2B17;
         }
         .xpp-plan-price {
           font-size: 46px;
@@ -314,7 +314,7 @@ export default function Pricing() {
           font-size: 12px;
           
           letter-spacing: 1.5px;
-          color: #FFB000;
+          color: #E8C872;
           font-weight: 800;
           margin-bottom: 14px;
         }
@@ -342,14 +342,14 @@ export default function Pricing() {
           font-weight: 800;
         }
         .xpp-check-icon {
-          color: #FFB000;
+          color: #E8C872;
           font-weight: 900;
           font-size: 16px;
           flex-shrink: 0;
           margin-top: 2px;
         }
         .xpp-infinity-icon {
-          color: #FFB000;
+          color: #E8C872;
           font-size: 19px;
           font-weight: 900;
           flex-shrink: 0;
@@ -372,28 +372,28 @@ export default function Pricing() {
           text-decoration: none;
         }
         .xpp-btn--primary {
-          background: #FFB000;
+          background: linear-gradient(135deg, #FFEB97 0%, #E8C872 48%, #B8863B 100%);
           color: #000000;
         }
         .xpp-btn--primary:hover {
-          background: #FFB000;
+          background: linear-gradient(135deg, #FFEB97 0%, #E8C872 48%, #B8863B 100%);
           transform: translateY(-1px);
         }
         .xpp-btn--secondary {
-          background: #171614;
+          background: #1D150C;
           color: #ffffff;
-          border: 1.5px solid #444444;
+          border: 1.5px solid #4E4427;
         }
         .xpp-btn--secondary:hover {
-          background: #262626;
-          border-color: #666666;
+          background: #2F2314;
+          border-color: #666050;
         }
         .xpp-btn--disabled {
-          background: #171614;
+          background: #1D150C;
           color: #ffffff;
           opacity: 0.55;
           cursor: not-allowed;
-          border: 1px solid #353535;
+          border: 1px solid #43331D;
         }
         .xpp-btn-sub {
           display: block;
@@ -432,12 +432,12 @@ export default function Pricing() {
           padding: 26px;
         }
         .xpp-vs-card--them {
-          background: #0F0E0C;
-          border: 1.5px solid #353535;
+          background: #150E07;
+          border: 1.5px solid #43331D;
         }
         .xpp-vs-card--us {
-          background: #171717;
-          border: 2px solid #FFB000;
+          background: #21170D;
+          border: 2px solid #E8C872;
         }
         .xpp-vs-card-label {
           font-size: 12px;
@@ -450,7 +450,7 @@ export default function Pricing() {
           color: #ff5252;
         }
         .xpp-vs-card-label--us {
-          color: #FFB000;
+          color: #E8C872;
         }
         .xpp-vs-row {
           display: flex;
@@ -470,8 +470,8 @@ export default function Pricing() {
 
         /* â”€â”€ Cost Breakdown Table â”€â”€ */
         .xpp-compare-card {
-          background: #0F0E0C;
-          border: 1.5px solid #2a2a2a;
+          background: #150E07;
+          border: 1.5px solid #3A2B17;
           border-radius: 16px;
           padding: 30px;
           margin-bottom: 34px;
@@ -496,10 +496,10 @@ export default function Pricing() {
         .xpp-table th, .xpp-table td {
           padding: 14px 16px;
           text-align: left;
-          border-bottom: 1px solid #2A2A2A;
+          border-bottom: 1px solid #3A2B17;
         }
         .xpp-table th {
-          color: #FFB000;
+          color: #E8C872;
           font-weight: 800;
           
           font-size: 12px;
@@ -533,15 +533,15 @@ export default function Pricing() {
           gap: 16px;
         }
         .xpp-faq-item {
-          background: #0F0E0C;
-          border: 1.5px solid #2a2a2a;
+          background: #150E07;
+          border: 1.5px solid #3A2B17;
           border-radius: 12px;
           padding: 20px 22px;
         }
         .xpp-faq-q {
           font-size: 14.5px;
           font-weight: 800;
-          color: #FFB000;
+          color: #E8C872;
           margin: 0 0 8px;
         }
         .xpp-faq-a {
@@ -553,8 +553,8 @@ export default function Pricing() {
 
         /* â”€â”€ Final CTA â”€â”€ */
         .xpp-final-cta {
-          background: #0F0E0C;
-          border: 2px solid rgba(255,176,0, 0.4);
+          background: #150E07;
+          border: 2px solid rgba(232,200,114, 0.4);
           border-radius: 16px;
           padding: 44px 38px;
           text-align: center;
@@ -691,7 +691,7 @@ export default function Pricing() {
             â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <div className="xpp-unlimited-banner">
           <div className="xpp-unlimited-icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FFB000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#E8C872" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M18.178 8c5.096 0 5.096 8 0 8-5.095 0-7.133-8-12.739-8-4.585 0-4.585 8 0 8 5.606 0 7.644-8 12.74-8z"/>
             </svg>
           </div>
