@@ -177,12 +177,7 @@ function Expired({ p }) {
   return <s-banner tone="info">{p.texts.timerExpired}</s-banner>;
 }
 
-function Timer({ p, cd }) { return null; /* Removed to comply with Shopify App Store Req 5.6.6 */ }</s-text>
-        <s-heading>{cd.text}</s-heading>
-      </s-stack>
-    </s-box>
-  );
-}
+function Timer({ p, cd }) { return null; }
 
 function Thumb({ src, alt, size }) {
   if (!src) return <s-box background="subdued" borderRadius="base" minInlineSize={size} minBlockSize={size} />;
@@ -525,4 +520,5 @@ const DESIGNS = {
   spotlight: Spotlight,
   minimal: Minimal,
 };
+
 
