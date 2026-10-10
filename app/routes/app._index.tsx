@@ -9,6 +9,7 @@ import { getOrCreateShop, getShopWithConfigs } from "../shop.server";
 import { ensureUpsellDiscountRegistered } from "../discount.server";
 import { EXIT_INTENT_AVAILABLE } from "../utils/features";
 import { FeatureDemo, type DemoId } from "../components/FeatureDemo";
+import { HeroBanner } from "../components/HeroBanner";
 
 let discountRegisteredShops = new Set<string>();
 
@@ -160,31 +161,7 @@ export default function XPoostDashboard() {
       ) : null}
 
       <div className="xp-hero">
-        <div className="xp-banner">
-          <div className="xp-banner-content">
-            <div className="xp-hero-tag"><Translate text='Your conversion toolkit' /></div>
-            <h1 className="xp-hero-title"><Translate text='Turn more visitors into bigger orders' /></h1>
-            <p className="xp-hero-subtitle">
-              {featureList.length} <Translate text='tools that lift order value, nudge hesitant shoppers and win back abandoning carts. Switch one on, pick your colors, then track the lift in Analytics.' />
-            </p>
-            <div className="xp-banner-cta">
-              <a href="#xp-features" className="xp-btn xp-btn--primary" onClick={scrollToFeatures}>
-                <Translate text='Browse features' />
-              </a>
-              <Link to="/app/analytics" className="xp-btn xp-btn--ghost">
-                <Translate text='See your results &rarr;' />
-              </Link>
-            </div>
-            <ul className="xp-banner-checks">
-              <li><span className="xp-check" aria-hidden="true"><FeatureIcon id="check" /></span><Translate text='Unlimited views, no quotas' /></li>
-              <li><span className="xp-check" aria-hidden="true"><FeatureIcon id="check" /></span><Translate text='Zero theme edits' /></li>
-              <li><span className="xp-check" aria-hidden="true"><FeatureIcon id="check" /></span><Translate text='Your colors, your brand' /></li>
-            </ul>
-          </div>
-          <div className="xp-banner-art" aria-hidden="true">
-            <GemArt />
-          </div>
-        </div>
+        <HeroBanner onBrowse={scrollToFeatures} />
 
         <div className="xp-spot-grid">
           <div className="xp-spot">
@@ -321,31 +298,6 @@ const FEATURE_PITCH: Record<string, { name: string; pitch: string }> = {
   thankYou: { name: "Thank-You Page Upsell", pitch: "A reward for the next order or a ship-together offer, right after checkout." },
   socialBar: { name: "Support & Social Bar", pitch: "WhatsApp support and your social channels, one tap away." },
 };
-
-/* Flat faceted gem used as the hero mark (brand palette only) */
-function GemArt() {
-  const stroke = "#060605";
-  return (
-    <svg viewBox="0 0 240 220" width="100%" height="100%" role="presentation" focusable="false">
-      <circle cx="120" cy="110" r="96" fill="none" stroke="#2A2A2A" strokeWidth="1" />
-      <circle cx="120" cy="110" r="70" fill="none" stroke="#2A2A2A" strokeWidth="1" strokeDasharray="3 6" />
-      <g transform="translate(10 22)" strokeLinejoin="round" strokeWidth="2" stroke={stroke}>
-        <polygon points="20,75 70,30 65,75" fill="#FF7700" />
-        <polygon points="70,30 65,75 110,75" fill="#FFD985" />
-        <polygon points="70,30 150,30 110,75" fill="#FFB000" />
-        <polygon points="150,30 110,75 155,75" fill="#E69A00" />
-        <polygon points="150,30 155,75 200,75" fill="#FF7700" />
-        <polygon points="20,75 65,75 110,165" fill="#E69A00" />
-        <polygon points="65,75 110,75 110,165" fill="#FFB000" />
-        <polygon points="110,75 155,75 110,165" fill="#FFD985" />
-        <polygon points="155,75 200,75 110,165" fill="#CC6200" />
-      </g>
-      <path d="M34 40l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#FFD985" />
-      <path d="M206 150l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#FFB000" />
-      <path d="M198 36l1.6 4 4 1.6-4 1.6-1.6 4-1.6-4-4-1.6 4-1.6z" fill="#FFD985" />
-    </svg>
-  );
-}
 
 /* ─────────────────────────────────────────────────────────────
    Hero: rotating case studies (changes every page view + every minute)
@@ -652,59 +604,6 @@ const DASHBOARD_STYLES = `
     color: #FFFFFF;
   }
 
-  /* Banner */
-  .xp-banner {
-    background: #0F0E0C;
-    border: 1px solid #2A2A2A;
-    border-radius: 14px;
-    padding: 32px 36px;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 250px;
-    align-items: center;
-    gap: 28px;
-  }
-  .xp-banner-content { min-width: 0; }
-  .xp-hero-tag {
-    display: inline-block;
-    color: #FFB000;
-    font-size: 12px;
-    font-weight: 700;
-    margin-bottom: 10px;
-  }
-  .xp-hero-title {
-    font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
-    font-size: 34px;
-    line-height: 1.15;
-    font-weight: 600;
-    margin: 0 0 12px;
-    letter-spacing: -0.4px;
-    color: #FFFFFF;
-    max-width: 560px;
-  }
-  .xp-hero-subtitle {
-    font-size: 14.5px;
-    color: #B2B2B2;
-    margin: 0 0 22px;
-    line-height: 1.6;
-    max-width: 540px;
-  }
-  .xp-banner-cta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  .xp-banner-checks {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px 22px;
-    font-size: 12.5px;
-    color: #9E9E9E;
-  }
-  .xp-banner-checks li,
   .xp-spot-list li {
     display: flex;
     align-items: center;
@@ -722,11 +621,6 @@ const DASHBOARD_STYLES = `
     color: #FFB000;
   }
   .xp-check svg { width: 11px; height: 11px; stroke-width: 2.6; }
-  .xp-banner-art {
-    width: 250px;
-    height: 220px;
-    justify-self: center;
-  }
 
   /* Buttons */
   .xp-btn {
@@ -942,9 +836,6 @@ const DASHBOARD_STYLES = `
 
   @media (max-width: 900px) {
     .xp-spot-grid { grid-template-columns: 1fr; }
-    .xp-banner { grid-template-columns: 1fr; padding: 24px 20px; }
-    .xp-banner-art { display: none; }
-    .xp-hero-title { font-size: 26px; }
   }
   @media (max-width: 640px) {
     .xp-case { padding: 16px; }
