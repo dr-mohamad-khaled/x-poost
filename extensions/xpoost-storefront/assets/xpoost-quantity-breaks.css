@@ -448,8 +448,8 @@
 }
 
 .xpp-qb-preset-luxury_gold .xpp-qb-badge {
-  background: #F2F2F2;
-  color: #000000;
+  background: var(--xpp-qb-badge-bg, #F2F2F2);
+  color: var(--xpp-qb-badge-text, #141414);
   font-weight: 800;
   letter-spacing: 0.5px;
 }

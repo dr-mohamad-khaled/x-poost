@@ -39,7 +39,7 @@
 #xpoost-root .xpr-exit-modal,
 #xpoost-exit-root .xpr-exit-modal {
   background: var(--xpr-bg, #141414) !important;
-  border: 1px solid rgba(242, 242, 242, 0.5) !important;
+  border: 1px solid color-mix(in srgb, var(--xpr-gold, #F2F2F2) 50%, transparent) !important;
   border-radius: 16px !important;
   width: 100% !important;
   max-width: 420px !important;
@@ -142,7 +142,7 @@
 .xpr-exit-coupon:hover,
 #xpoost-root .xpr-exit-coupon:hover,
 #xpoost-exit-root .xpr-exit-coupon:hover {
-  background: rgba(242, 242, 242, 0.1) !important;
+  background: color-mix(in srgb, var(--xpr-gold, #F2F2F2) 10%, transparent) !important;
 }
 
 .xpr-coupon-code,
@@ -159,7 +159,7 @@
 #xpoost-root .xpr-coupon-copy,
 #xpoost-exit-root .xpr-coupon-copy {
   background: var(--xpr-gold, #F2F2F2) !important;
-  color: #141414 !important;
+  color: var(--xpr-bg, #141414) !important;
   font-size: 10px !important;
   font-weight: 800 !important;
   padding: 4px 8px !important;
@@ -170,7 +170,7 @@
 #xpoost-root .xpr-exit-btn,
 #xpoost-exit-root .xpr-exit-btn {
   background: var(--xpr-gold, #F2F2F2) !important;
-  color: #141414 !important;
+  color: var(--xpr-bg, #141414) !important;
   border: none !important;
   border-radius: 8px !important;
   padding: 13px !important;

@@ -286,7 +286,36 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const triggerProductTitle = String(formData.get("triggerProductTitle") || "All Products");
 
     if (triggerType === "SPECIFIC" && (!triggerProductId || triggerProductId === "ALL" || triggerProductId.trim() === "")) {
-      return { error: "Please select at least one trigger product." };
+      return { error: "Please select at least one trigger product." }
+
+    // Colors picked inside the offer editor are shop-wide colors for this popup
+    {
+      const pmBg = String(formData.get("prePurchaseBg") || "");
+      const pmAccent = String(formData.get("prePurchaseAccent") || "");
+      const pmText = String(formData.get("prePurchaseText") || "");
+      const isHex = (v: string) => /^#[0-9a-fA-F]{6}$/.test(v);
+      if (isHex(pmBg) && isHex(pmAccent) && isHex(pmText)) {
+        try {
+          if ((prisma as any).upsellStyleConfig) {
+            await (prisma as any).upsellStyleConfig.upsert({
+              where: { shopId: shop.id },
+              update: { prePurchaseBg: pmBg, prePurchaseAccent: pmAccent, prePurchaseText: pmText },
+              create: {
+                shopId: shop.id,
+                prePurchaseBg: pmBg,
+                prePurchaseAccent: pmAccent,
+                prePurchaseText: pmText,
+                inCartBg: "#141414",
+                inCartAccent: "#F2F2F2",
+                inCartText: "#FFFFFF",
+              },
+            });
+          }
+        } catch (e) {
+          console.warn("[XPoost] Error saving offer colors:", e);
+        }
+      }
+    };
     }
 
     const offerI18nJsonRaw = String(formData.get("offerI18nJson") || "");
@@ -1351,6 +1380,14 @@ export default function PrePurchaseSettings() {
                 </div>
               </div>
 
+              <div style={{ marginTop: 16, padding: 14, borderRadius: 12, background: modalBg, color: modalText, border: `1px solid color-mix(in srgb, ${modalAccent} 40%, transparent)` }}>
+                <div style={{ fontWeight: 700, fontSize: 14 }}><Translate text='Live color preview' /></div>
+                <div style={{ fontSize: 12, opacity: 0.75, marginTop: 2 }}><Translate text='This is how your colors look together. The full storefront preview updates too.' /></div>
+                <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 10 }}>
+                  <span style={{ color: modalAccent, fontWeight: 800 }}>$24.00</span>
+                  <button type="button" style={{ background: modalAccent, color: modalBg, border: "none", borderRadius: 8, padding: "8px 14px", fontWeight: 800, fontSize: 12, cursor: "default" }}><Translate text='Add to cart' /></button>
+                </div>
+              </div>
               <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "16px" }}>
                 <button
                   type="submit"
@@ -2280,6 +2317,38 @@ export default function PrePurchaseSettings() {
                   )}
                 </div>
 
+                {/* Colors (live in the preview) */}
+                <div className="xp-editor-section">
+                  <h3><Translate text='7. Colors' /></h3>
+                  <p className="xp-sub" style={{ margin: "0 0 12px" }}>
+                    <Translate text='Pick a ready-made palette or set your own colors. The preview on the right updates instantly, and the colors apply to this popup on your store.' />
+                  </p>
+                  <ColorPresets onApply={(p) => { setModalBg(p.bg); setModalAccent(p.accent); setModalText(p.text); }} />
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "14px" }}>
+                    {[
+                      { label: "Background", name: "prePurchaseBg", value: modalBg, set: setModalBg },
+                      { label: "Accent / buttons", name: "prePurchaseAccent", value: modalAccent, set: setModalAccent },
+                      { label: "Text", name: "prePurchaseText", value: modalText, set: setModalText },
+                    ].map((f) => (
+                      <div key={f.name}>
+                        <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "#BCBAB5", marginBottom: "6px" }}>
+                          <Translate text={f.label} />
+                        </label>
+                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                          <input
+                            type="color"
+                            name={f.name}
+                            value={f.value}
+                            onChange={(e) => f.set(e.target.value)}
+                            style={{ width: "40px", height: "36px", padding: "2px", border: "1px solid #3A3A3A", borderRadius: "6px", background: "#111", cursor: "pointer" }}
+                          />
+                          <span style={{ fontSize: "13px", fontFamily: "monospace", color: "#fff" }}>{f.value}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
                 {/* Form Buttons */}
                 <div className="xp-form-actions">
                   <button
@@ -2318,7 +2387,7 @@ export default function PrePurchaseSettings() {
                   </span>
                 </div>
 
-                <div className={`xp-modal-mock xp-modal-mock--${modalLayout}`} dir={offerLang === "ar" ? "rtl" : "ltr"}>
+                <div className={`xp-modal-mock xp-modal-mock--${modalLayout}`} dir={offerLang === "ar" ? "rtl" : "ltr"} style={{ "--pm-bg": modalBg, "--pm-accent": modalAccent, "--pm-text": modalText } as any}>
                   {/* Layout 3: Bottom Sheet handle bar */}
                   {modalLayout === "bottom_sheet" && <div className="xp-sheet-handle-bar" />}
 
@@ -2326,7 +2395,7 @@ export default function PrePurchaseSettings() {
                   {modalLayout === "flash_urgency" && (
                     <div className="xp-flash-urgency-banner">
                       <div className="xp-flash-urgency-left">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFB000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--pm-accent)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                           <circle cx="12" cy="12" r="10"/>
                           <polyline points="12 6 12 12 16 14"/>
                         </svg>
@@ -2425,7 +2494,7 @@ export default function PrePurchaseSettings() {
                                 <ul className="xp-spotlight-checklist">
                                   <li>
                                     <span className="xp-check-bullet">
-                                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FFB000" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--pm-accent)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                                         <polyline points="20 6 9 17 4 12"/>
                                       </svg>
                                     </span>
@@ -2433,7 +2502,7 @@ export default function PrePurchaseSettings() {
                                   </li>
                                   <li>
                                     <span className="xp-check-bullet">
-                                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FFB000" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--pm-accent)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                                         <polyline points="20 6 9 17 4 12"/>
                                       </svg>
                                     </span>
@@ -2441,7 +2510,7 @@ export default function PrePurchaseSettings() {
                                   </li>
                                   <li>
                                     <span className="xp-check-bullet">
-                                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FFB000" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--pm-accent)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                                         <polyline points="20 6 9 17 4 12"/>
                                       </svg>
                                     </span>
@@ -3641,11 +3710,11 @@ const PRE_PURCHASE_STYLES = `
     max-width: 100%;
     overflow: hidden;
     overflow-wrap: anywhere;
-    background: #060605;
-    border: 1px solid rgba(255,176,0, 0.4);
+    background: var(--pm-bg, #141414);
+    border: 1px solid color-mix(in srgb, var(--pm-accent, #F2F2F2) 40%, transparent);
     border-radius: 14px;
     padding: 22px;
-    color: #ffffff;
+    color: var(--pm-text, #FFFFFF);
     box-shadow: 0 12px 35px rgba(0,0,0,0.5);
     margin-top: 12px;
   }
@@ -3655,7 +3724,7 @@ const PRE_PURCHASE_STYLES = `
     align-items: center;
   }
   .xp-gold-badge {
-    color: #FFB000;
+    color: var(--pm-accent, #F2F2F2);
     font-size: 10px;
     font-weight: 800;
     letter-spacing: 1px;
@@ -3668,25 +3737,25 @@ const PRE_PURCHASE_STYLES = `
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    background: radial-gradient(circle, rgba(30, 26, 18, 0.95) 0%, rgba(15, 15, 17, 0.98) 100%);
-    border: 1.5px solid rgba(255,176,0, 0.85);
-    color: #FFE58F;
+    background: var(--pm-bg, #141414);
+    border: 1.5px solid color-mix(in srgb, var(--pm-accent, #F2F2F2) 85%, transparent);
+    color: var(--pm-accent, #F2F2F2);
     transition: all 0.2s ease;
   }
   .xp-modal-close:hover {
     transform: scale(1.08) rotate(90deg);
-    border-color: #FFF;
-    color: #FFF;
+    border-color: var(--pm-text, #FFFFFF);
+    color: var(--pm-text, #FFFFFF);
   }
   .xp-modal-headline {
     font-size: 16px;
     font-weight: 700;
     margin: 10px 0 6px;
-    color: #fff;
+    color: var(--pm-text, #FFFFFF);
   }
   .xp-modal-desc {
     font-size: 12px;
-    color: #b2b2b2;
+    color: color-mix(in srgb, var(--pm-text, #FFFFFF) 72%, transparent);
     margin: 0 0 16px;
     line-height: 1.4;
   }
@@ -3703,12 +3772,12 @@ const PRE_PURCHASE_STYLES = `
     width: 4px;
   }
   .xp-modal-scroll-list::-webkit-scrollbar-thumb {
-    background: #FFB000;
+    background: var(--pm-accent, #F2F2F2);
     border-radius: 4px;
   }
   .xp-modal-product {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255,176,0, 0.2);
+    background: color-mix(in srgb, var(--pm-text, #FFFFFF) 4%, transparent);
+    border: 1px solid color-mix(in srgb, var(--pm-accent, #F2F2F2) 20%, transparent);
     border-radius: 8px;
     padding: 8px 10px;
     display: flex;
@@ -3718,7 +3787,7 @@ const PRE_PURCHASE_STYLES = `
   .xp-modal-check {
     width: 16px;
     height: 16px;
-    accent-color: #FFB000;
+    accent-color: var(--pm-accent, #F2F2F2);
     cursor: pointer;
   }
   .xp-modal-img {
@@ -3726,13 +3795,13 @@ const PRE_PURCHASE_STYLES = `
     height: 44px;
     object-fit: cover;
     border-radius: 6px;
-    border: 1px solid #353535;
+    border: 1px solid color-mix(in srgb, var(--pm-text, #FFFFFF) 12%, var(--pm-bg, #141414));
     flex-shrink: 0;
   }
   .xp-modal-img-placeholder {
     width: 44px;
     height: 44px;
-    background: #262626;
+    background: color-mix(in srgb, var(--pm-text, #FFFFFF) 12%, var(--pm-bg, #141414));
     border-radius: 6px;
     display: flex;
     align-items: center;
@@ -3766,16 +3835,16 @@ const PRE_PURCHASE_STYLES = `
   .xp-price-sale {
     font-size: 13px;
     font-weight: 800;
-    color: #FFB000;
+    color: var(--pm-accent, #F2F2F2);
   }
   .xp-price-orig {
     font-size: 11px;
-    color: #757575;
+    color: color-mix(in srgb, var(--pm-text, #FFFFFF) 55%, transparent);
     text-decoration: line-through;
   }
   .xp-discount-pill {
-    background: #FFB000;
-    color: #060605;
+    background: var(--pm-accent, #F2F2F2);
+    color: var(--pm-bg, #141414);
     font-size: 9px;
     font-weight: 800;
     padding: 1px 5px;
@@ -3787,8 +3856,8 @@ const PRE_PURCHASE_STYLES = `
     gap: 10px;
   }
   .xp-btn-add-both {
-    background: #FFB000;
-    color: #060605;
+    background: var(--pm-accent, #F2F2F2);
+    color: var(--pm-bg, #141414);
     border: none;
     padding: 12px;
     border-radius: 8px;
@@ -3801,9 +3870,9 @@ const PRE_PURCHASE_STYLES = `
   .xp-btn-skip {
     display: block;
     width: 100%;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    color: #D4D4D4;
+    background: color-mix(in srgb, var(--pm-text, #FFFFFF) 5%, transparent);
+    border: 1px solid color-mix(in srgb, var(--pm-text, #FFFFFF) 18%, transparent);
+    color: color-mix(in srgb, var(--pm-text, #FFFFFF) 72%, transparent);
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
@@ -3815,9 +3884,9 @@ const PRE_PURCHASE_STYLES = `
     box-sizing: border-box;
   }
   .xp-btn-skip:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.35);
-    color: #FFFFFF;
+    background: color-mix(in srgb, var(--pm-text, #FFFFFF) 10%, transparent);
+    border-color: color-mix(in srgb, var(--pm-text, #FFFFFF) 35%, transparent);
+    color: var(--pm-text, #FFFFFF);
   }
   .xp-product-link {
     color: inherit;
@@ -3934,13 +4003,13 @@ const PRE_PURCHASE_STYLES = `
   .xp-sheet-handle-bar {
     width: 42px;
     height: 4px;
-    background: rgba(255,255,255,0.3);
+    background: color-mix(in srgb, var(--pm-text, #FFFFFF) 30%, transparent);
     border-radius: 2px;
     margin: 0 auto 12px;
   }
   .xp-flash-urgency-banner {
-    background: rgba(255,176,0,0.12);
-    border: 1px solid rgba(255,176,0,0.35);
+    background: color-mix(in srgb, var(--pm-accent, #F2F2F2) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--pm-accent, #F2F2F2) 35%, transparent);
     border-radius: 6px;
     padding: 8px 12px;
     display: flex;
@@ -3954,21 +4023,21 @@ const PRE_PURCHASE_STYLES = `
     gap: 6px;
     font-size: 11px;
     font-weight: 700;
-    color: #FFB000;
+    color: var(--pm-accent, #F2F2F2);
   }
   .xp-urgency-timer-text {
     font-family: monospace;
     font-size: 13px;
     font-weight: 900;
-    color: #fff;
-    background: #060605;
+    color: var(--pm-text, #FFFFFF);
+    background: var(--pm-bg, #141414);
     padding: 2px 6px;
     border-radius: 4px;
-    border: 1px solid rgba(255,176,0,0.4);
+    border: 1px solid color-mix(in srgb, var(--pm-accent, #F2F2F2) 40%, transparent);
   }
   .xp-spotlight-hero-card {
-    background: rgba(255,176,0,0.06);
-    border: 1px solid rgba(255,176,0,0.35);
+    background: color-mix(in srgb, var(--pm-accent, #F2F2F2) 6%, transparent);
+    border: 1px solid color-mix(in srgb, var(--pm-accent, #F2F2F2) 35%, transparent);
     border-radius: 12px;
     padding: 12px;
     margin-bottom: 12px;
@@ -3981,8 +4050,8 @@ const PRE_PURCHASE_STYLES = `
     transition: all 0.18s ease;
   }
   .xp-spotlight-hero-card.is-selected {
-    background: rgba(255,176,0,0.12);
-    border-color: #FFB000;
+    background: color-mix(in srgb, var(--pm-accent, #F2F2F2) 12%, transparent);
+    border-color: var(--pm-accent, #F2F2F2);
   }
   .xp-spotlight-check-pill {
     position: absolute;
@@ -3997,9 +4066,9 @@ const PRE_PURCHASE_STYLES = `
     border-radius: 20px;
     font-size: 11px;
     font-weight: 700;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    color: #B2B2B2;
+    background: color-mix(in srgb, var(--pm-text, #FFFFFF) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--pm-text, #FFFFFF) 22%, transparent);
+    color: color-mix(in srgb, var(--pm-text, #FFFFFF) 72%, transparent);
     user-select: none;
     z-index: 3;
     transition: all 0.2s ease;
@@ -4007,9 +4076,9 @@ const PRE_PURCHASE_STYLES = `
     white-space: nowrap;
   }
   .xp-spotlight-check-pill.is-checked {
-    background: rgba(255,176,0, 0.22);
-    border-color: #FFB000;
-    color: #FFB000;
+    background: color-mix(in srgb, var(--pm-accent, #F2F2F2) 22%, transparent);
+    border-color: var(--pm-accent, #F2F2F2);
+    color: var(--pm-accent, #F2F2F2);
   }
   .xp-spotlight-img-wrap {
     position: relative;
@@ -4022,12 +4091,12 @@ const PRE_PURCHASE_STYLES = `
     width: 100%;
     height: 100%;
     object-fit: cover;
-    background: rgba(255, 255, 255, 0.06);
+    background: color-mix(in srgb, var(--pm-text, #FFFFFF) 6%, transparent);
   }
   .xp-spotlight-img-placeholder {
     width: 84px;
     height: 84px;
-    background: #262626;
+    background: color-mix(in srgb, var(--pm-text, #FFFFFF) 12%, var(--pm-bg, #141414));
     border-radius: 6px;
     display: flex;
     align-items: center;
@@ -4056,7 +4125,7 @@ const PRE_PURCHASE_STYLES = `
     display: flex;
     align-items: center;
     gap: 2px;
-    color: #FFB000;
+    color: var(--pm-accent, #F2F2F2);
   }
   .xp-spotlight-stars svg {
     width: 11px;
@@ -4064,14 +4133,14 @@ const PRE_PURCHASE_STYLES = `
   }
   .xp-spotlight-rating-text {
     font-size: 10px;
-    color: #9E9E9E;
+    color: color-mix(in srgb, var(--pm-text, #FFFFFF) 72%, transparent);
     margin-left: 3px;
   }
   .xp-spotlight-title {
     margin: 0;
     font-size: 13px;
     font-weight: 700;
-    color: #fff;
+    color: var(--pm-text, #FFFFFF);
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -4094,7 +4163,7 @@ const PRE_PURCHASE_STYLES = `
     flex-direction: column;
     gap: 3px;
     font-size: 10px;
-    color: #C4C4C4;
+    color: color-mix(in srgb, var(--pm-text, #FFFFFF) 72%, transparent);
   }
   .xp-check-bullet {
     display: inline-flex;
@@ -4107,7 +4176,7 @@ const PRE_PURCHASE_STYLES = `
   .xp-spotlight-secondary-title {
     font-size: 11px;
     font-weight: 700;
-    color: #8A8A8A;
+    color: color-mix(in srgb, var(--pm-text, #FFFFFF) 55%, transparent);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-bottom: 6px;
@@ -4319,8 +4388,8 @@ const PRE_PURCHASE_STYLES = `
   .xp-flash-item-badge {
     font-size: 9px;
     font-weight: 800;
-    background: rgba(255,176,0,0.2);
-    color: #FFB000;
+    background: color-mix(in srgb, var(--pm-accent, #F2F2F2) 20%, transparent);
+    color: var(--pm-accent, #F2F2F2);
     padding: 1px 5px;
     border-radius: 3px;
   }

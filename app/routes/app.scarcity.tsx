@@ -579,10 +579,11 @@ function TogglePreview({
       className="xps-toast-preview"
       dir={dir}
       style={{
-        background: `#050505`,
+        background: backgroundColor,
+        color: textColor,
         border: `1px solid ${accentColor}73`,
         borderRadius: borderRadiusPx,
-        boxShadow: `0 10px 28px -4px rgba(0,0,0,0.8), 0 0 18px ${accentColor}47`,
+        boxShadow: `0 6px 18px rgba(0,0,0,0.35)`,
       }}
     >
       <span className="xps-toast-preview__icon" style={{ color: accentColor, borderColor: `${accentColor}59` }}>
@@ -595,7 +596,7 @@ function TogglePreview({
           </span>
         ) : null}
         {message.pill ? (
-          <span className="xps-toast-preview__pill" style={{ background: accentColor }}>
+          <span className="xps-toast-preview__pill" style={{ background: accentColor, color: backgroundColor }}>
             {message.pill}
           </span>
         ) : null}

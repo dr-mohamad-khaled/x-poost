@@ -261,7 +261,36 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const triggerProductTitle = String(formData.get("triggerProductTitle") || "All Products");
 
     if (triggerType === "SPECIFIC" && (!triggerProductId || triggerProductId === "ALL" || triggerProductId.trim() === "")) {
-      return { error: "Please select at least one trigger product." };
+      return { error: "Please select at least one trigger product." }
+
+    // Colors picked inside the offer editor are shop-wide colors for this popup
+    {
+      const pmBg = String(formData.get("inCartBg") || "");
+      const pmAccent = String(formData.get("inCartAccent") || "");
+      const pmText = String(formData.get("inCartText") || "");
+      const isHex = (v: string) => /^#[0-9a-fA-F]{6}$/.test(v);
+      if (isHex(pmBg) && isHex(pmAccent) && isHex(pmText)) {
+        try {
+          if ((prisma as any).upsellStyleConfig) {
+            await (prisma as any).upsellStyleConfig.upsert({
+              where: { shopId: shop.id },
+              update: { inCartBg: pmBg, inCartAccent: pmAccent, inCartText: pmText },
+              create: {
+                shopId: shop.id,
+                inCartBg: pmBg,
+                inCartAccent: pmAccent,
+                inCartText: pmText,
+                prePurchaseBg: "#141414",
+                prePurchaseAccent: "#F2F2F2",
+                prePurchaseText: "#FFFFFF",
+              },
+            });
+          }
+        } catch (e) {
+          console.warn("[XPoost] Error saving offer colors:", e);
+        }
+      }
+    };
     }
 
     const targetProductId = String(formData.get("targetProductId") || "");
@@ -971,6 +1000,14 @@ export default function InCartUpsellSettings() {
                 </div>
               </div>
 
+              <div style={{ marginTop: 16, padding: 14, borderRadius: 12, background: inCartBg, color: inCartText, border: `1px solid color-mix(in srgb, ${inCartAccent} 40%, transparent)` }}>
+                <div style={{ fontWeight: 700, fontSize: 14 }}><Translate text='Live color preview' /></div>
+                <div style={{ fontSize: 12, opacity: 0.75, marginTop: 2 }}><Translate text='This is how your colors look together. The full storefront preview updates too.' /></div>
+                <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 10 }}>
+                  <span style={{ color: inCartAccent, fontWeight: 800 }}>$24.00</span>
+                  <button type="button" style={{ background: inCartAccent, color: inCartBg, border: "none", borderRadius: 8, padding: "8px 14px", fontWeight: 800, fontSize: 12, cursor: "default" }}><Translate text='Add to cart' /></button>
+                </div>
+              </div>
               <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "16px" }}>
                 <button
                   type="submit"
@@ -1813,6 +1850,38 @@ export default function InCartUpsellSettings() {
                   )}
                 </div>
 
+                {/* Colors (live in the preview) */}
+                <div className="xp-editor-section">
+                  <h3><Translate text='5. Colors' /></h3>
+                  <p className="xp-sub" style={{ margin: "0 0 12px" }}>
+                    <Translate text='Pick a ready-made palette or set your own colors. The preview on the right updates instantly, and the colors apply to this popup on your store.' />
+                  </p>
+                  <ColorPresets onApply={(p) => { setInCartBg(p.bg); setInCartAccent(p.accent); setInCartText(p.text); }} />
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "14px" }}>
+                    {[
+                      { label: "Background", name: "inCartBg", value: inCartBg, set: setInCartBg },
+                      { label: "Accent / buttons", name: "inCartAccent", value: inCartAccent, set: setInCartAccent },
+                      { label: "Text", name: "inCartText", value: inCartText, set: setInCartText },
+                    ].map((f) => (
+                      <div key={f.name}>
+                        <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "#BCBAB5", marginBottom: "6px" }}>
+                          <Translate text={f.label} />
+                        </label>
+                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                          <input
+                            type="color"
+                            name={f.name}
+                            value={f.value}
+                            onChange={(e) => f.set(e.target.value)}
+                            style={{ width: "40px", height: "36px", padding: "2px", border: "1px solid #3A3A3A", borderRadius: "6px", background: "#111", cursor: "pointer" }}
+                          />
+                          <span style={{ fontSize: "13px", fontFamily: "monospace", color: "#fff" }}>{f.value}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
                 {/* Form Buttons */}
                 <div className="xp-form-actions">
                   <button
@@ -1844,7 +1913,7 @@ export default function InCartUpsellSettings() {
                 <h3><Translate text='Cart Drawer Preview' /></h3>
                 <p className="xp-sub"><Translate text='Embedded add-on card rendered inside cart drawers.' /></p>
 
-                <div className="xp-drawer-mock" dir={selectedLang === "ar" ? "rtl" : "ltr"}>
+                <div className="xp-drawer-mock" dir={selectedLang === "ar" ? "rtl" : "ltr"} style={{ "--pm-bg": inCartBg, "--pm-accent": inCartAccent, "--pm-text": inCartText } as any}>
                   <div className="xp-drawer-title">{activeOfferCopy.headline || headline || "Frequently Bought Together"}</div>
 
                   <div className="xp-addon-card">
@@ -1864,12 +1933,12 @@ export default function InCartUpsellSettings() {
                       </div>
                     )}
                     <div className="xp-addon-body">
-                      <div className="xp-addon-name" style={{ color: "#ffffff" }}>
+                      <div className="xp-addon-name" style={{ color: "var(--pm-text)" }}>
                         <a
                           href={selectedProduct?.handle ? `/products/${selectedProduct.handle}` : "#"}
                           target="_blank"
                           rel="noreferrer"
-                          style={{ color: "#ffffff", textDecoration: "none", fontWeight: "600" }}
+                          style={{ color: "var(--pm-text)", textDecoration: "none", fontWeight: "600" }}
                           onClick={(e) => e.stopPropagation()}
                         >
                           {selectedProduct?.title || (selectedLang === "ar" ? "Ù…Ù†ØªØ¬ Ù…Ù…ÙŠØ² Ø¥Ø¶Ø§ÙÙŠ" : "Exclusive Add-on")}
@@ -1901,7 +1970,7 @@ export default function InCartUpsellSettings() {
                           <div className="xp-addon-placeholder" />
                         )}
                         <div className="xp-addon-body">
-                          <div className="xp-addon-name" style={{ color: "#ffffff", fontWeight: "600" }}>{p.title}</div>
+                          <div className="xp-addon-name" style={{ color: "var(--pm-text)", fontWeight: "600" }}>{p.title}</div>
                           <div className="xp-addon-pricing">
                             <span className="xp-addon-sale">${pSale}</span>
                             {isDiscounted && <span className="xp-addon-orig">${pPrice.toFixed(2)}</span>}
@@ -1973,18 +2042,18 @@ const IN_CART_STYLES = `
   }
   .xp-addon-name,
   .xp-addon-name a {
-    color: #ffffff !important;
+    color: var(--pm-text, #FFFFFF) !important;
     font-weight: 700 !important;
   }
   .xp-addon-name a:hover {
-    color: #FFB000 !important;
+    color: var(--pm-accent, #F2F2F2) !important;
   }
   .xp-addon-sale {
-    color: #FFB000 !important;
+    color: var(--pm-accent, #F2F2F2) !important;
     font-weight: 800 !important;
   }
   .xp-addon-orig {
-    color: #8A8A8A !important;
+    color: color-mix(in srgb, var(--pm-text, #FFFFFF) 55%, transparent) !important;
   }
 
   /* Global Bar */
@@ -2761,18 +2830,18 @@ const IN_CART_STYLES = `
     top: 20px;
   }
   .xp-drawer-mock {
-    background: #060605;
-    border: 1px solid rgba(255,176,0, 0.4);
+    background: var(--pm-bg, #141414);
+    border: 1px solid color-mix(in srgb, var(--pm-accent, #F2F2F2) 40%, transparent);
     border-radius: 12px;
     padding: 18px;
-    color: #ffffff;
+    color: var(--pm-text, #FFFFFF);
     box-shadow: 0 10px 25px rgba(0,0,0,0.4);
     margin-top: 12px;
   }
   .xp-drawer-title {
     font-size: 12px;
     font-weight: 700;
-    color: #FFB000;
+    color: var(--pm-accent, #F2F2F2);
     text-transform: uppercase;
     letter-spacing: 0.8px;
     margin-bottom: 12px;
@@ -2780,8 +2849,8 @@ const IN_CART_STYLES = `
   .xp-addon-card {
     display: flex;
     gap: 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255,176,0, 0.2);
+    background: color-mix(in srgb, var(--pm-text, #FFFFFF) 5%, transparent);
+    border: 1px solid color-mix(in srgb, var(--pm-accent, #F2F2F2) 20%, transparent);
     border-radius: 8px;
     padding: 10px;
     align-items: center;
@@ -2796,7 +2865,7 @@ const IN_CART_STYLES = `
     width: 48px;
     height: 48px;
     border-radius: 6px;
-    background: #262626;
+    background: color-mix(in srgb, var(--pm-text, #FFFFFF) 12%, var(--pm-bg, #141414));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2811,7 +2880,7 @@ const IN_CART_STYLES = `
   .xp-addon-name {
     font-size: 13px;
     font-weight: 600;
-    color: #fff;
+    color: var(--pm-text, #FFFFFF);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -2823,18 +2892,18 @@ const IN_CART_STYLES = `
     align-items: center;
   }
   .xp-addon-sale {
-    color: #FFB000;
+    color: var(--pm-accent, #F2F2F2);
     font-weight: 700;
     font-size: 13px;
   }
   .xp-addon-orig {
-    color: #8A8A8A;
+    color: color-mix(in srgb, var(--pm-text, #FFFFFF) 55%, transparent);
     font-size: 11px;
     text-decoration: line-through;
   }
   .xp-addon-quickadd {
-    background: #FFB000;
-    color: #060605;
+    background: var(--pm-accent, #F2F2F2);
+    color: var(--pm-bg, #141414);
     border: none;
     border-radius: 4px;
     padding: 4px 8px;
@@ -2845,8 +2914,8 @@ const IN_CART_STYLES = `
     margin-top: 4px;
   }
   .xp-addon-badge {
-    background: #FFB000;
-    color: #060605;
+    background: var(--pm-accent, #F2F2F2);
+    color: var(--pm-bg, #141414);
     font-size: 9px;
     font-weight: 800;
     padding: 1px 5px;

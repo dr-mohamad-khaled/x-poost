@@ -83,7 +83,7 @@
   width: 300px;
   max-width: calc(100vw - 32px);
   background: var(--xpsb-bg, #141414);
-  border: 1px solid rgba(242, 242, 242, 0.35);
+  border: 1px solid color-mix(in srgb, var(--xpsb-gold, #F2F2F2) 35%, transparent);
   border-radius: 14px;
   padding: 16px;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
@@ -170,7 +170,7 @@
   color: var(--xpsb-text, #FFFFFF);
 }
 #xpoost-social-root .xpsb-stack-btn-vip:hover {
-  background: rgba(242, 242, 242, 0.08);
+  background: color-mix(in srgb, var(--xpsb-gold, #F2F2F2) 8%, transparent);
 }
 #xpoost-social-root .xpsb-stack-icon {
   width: 22px;
@@ -608,13 +608,13 @@
 }
 #xpoost-social-root .xpsb-dock-pill-wa:hover {
   background: #25D366;
-  color: #141414;
+  color: var(--xpsb-bg, #141414);
   transform: translateY(-2px);
   box-shadow: none;
 }
 #xpoost-social-root .xpsb-dock-pill-vip {
-  background: rgba(242, 242, 242, 0.12);
-  border: 1px solid rgba(242, 242, 242, 0.35);
+  background: color-mix(in srgb, var(--xpsb-gold, #F2F2F2) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--xpsb-gold, #F2F2F2) 35%, transparent);
   color: var(--xpsb-gold, #F2F2F2);
 }
 #xpoost-social-root .xpsb-dock-pill-vip:hover {
