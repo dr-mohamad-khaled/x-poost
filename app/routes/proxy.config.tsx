@@ -97,9 +97,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     if (preRules.length > 0) {
       prePurchase = {
         active: true,
-        backgroundColor: shop.upsellStyleConfig?.prePurchaseBg || "#0B0B0B",
-        accentColor: shop.upsellStyleConfig?.prePurchaseAccent || "#D4AF37",
-        textColor: shop.upsellStyleConfig?.prePurchaseText || "#FFFFFF",
+        backgroundColor: shop.upsellStyleConfig?.prePurchaseBg || "#2E2823",
+        accentColor: shop.upsellStyleConfig?.prePurchaseAccent || "#D9C9A8",
+        textColor: shop.upsellStyleConfig?.prePurchaseText || "#F6F1E7",
         rules: preRules.map((r) => {
           const preselected = !r.offerDescription?.includes("<!--xp:preselect:false-->");
           const layoutMatch = (r.offerDescription || "").match(/<!--xp:layout:([a-z_]+)-->/);
@@ -175,9 +175,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     if (inCartRules.length > 0) {
       inCart = {
         active: true,
-        backgroundColor: shop.upsellStyleConfig?.inCartBg || "#0B0B0B",
-        accentColor: shop.upsellStyleConfig?.inCartAccent || "#D4AF37",
-        textColor: shop.upsellStyleConfig?.inCartText || "#FFFFFF",
+        backgroundColor: shop.upsellStyleConfig?.inCartBg || "#2E2823",
+        accentColor: shop.upsellStyleConfig?.inCartAccent || "#D9C9A8",
+        textColor: shop.upsellStyleConfig?.inCartText || "#F6F1E7",
         rules: inCartRules.map((r) => {
           const hMatch = (r.offerDescription || "").match(/<!--xp:h:([^>]+)-->/);
           const targetProductHandle = hMatch ? decodeURIComponent(hMatch[1].trim()) : "";
@@ -482,8 +482,8 @@ function parseSocialPosition(rawPos: string | null | undefined) {
         badgeTextColor: offer.badgeTextColor,
         showAddToCartBtn: offer.showAddToCartBtn === true,
         addToCartBtnText: offer.addToCartBtnText || "Add to Cart",
-        btnBgColor: offer.btnBgColor || "#D4AF37",
-        btnTextColor: offer.btnTextColor || "#000000",
+        btnBgColor: offer.btnBgColor || "#D9C9A8",
+        btnTextColor: offer.btnTextColor || "#2E2823",
         tiers: tiers,
         translations: {
           offerTitle: offerLangTranslations.offerTitle || globalQbTranslations.sectionTitle || globalQbTranslations.offerTitle || "Select Quantity & Save",

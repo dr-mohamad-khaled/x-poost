@@ -5,8 +5,8 @@
 
 .xpoost-scarcity-toast,
 #xpoost-root .xpoost-scarcity-toast {
-  --xps-bg: #0B0B0B;
-  --xps-gold: #D4AF37;
+  --xps-bg: #2E2823;
+  --xps-gold: #D9C9A8;
   --xps-text: #FFFFFF;
   --xps-radius: 12px;
   --xps-bottom-desktop: 24px;
@@ -55,10 +55,10 @@ body:has(.drawer--active) .xpoost-scarcity-toast {
   flex-direction: column;
   width: 300px;
   max-width: calc(100vw - 32px);
-  background: linear-gradient(145deg, var(--xps-bg, #0B0B0B) 0%, color-mix(in srgb, var(--xps-bg, #0B0B0B) 70%, black) 100%);
-  border: 1px solid color-mix(in srgb, var(--xps-gold, #D4AF37) 45%, transparent);
+  background: var(--xps-bg, #2E2823);
+  border: 1px solid color-mix(in srgb, var(--xps-gold, #D9C9A8) 45%, transparent);
   border-radius: var(--xps-radius, 12px);
-  box-shadow: 0 10px 28px -4px rgba(0, 0, 0, 0.8), 0 0 18px color-mix(in srgb, var(--xps-gold, #D4AF37) 28%, transparent);
+  box-shadow: 0 10px 28px -4px rgba(0, 0, 0, 0.8);
   overflow: hidden;
   pointer-events: auto;
   opacity: 0;
@@ -249,8 +249,8 @@ body:has(.drawer--active) .xpoost-scarcity-toast {
   align-items: center;
   padding: 1px 7px;
   border-radius: 999px;
-  background: linear-gradient(135deg, var(--xps-gold) 0%, color-mix(in srgb, var(--xps-gold) 60%, black) 100%);
-  color: #0b0b0b;
+  background: var(--xps-gold);
+  color: #2e2823;
   font-size: 9.5px;
   font-weight: 800;
   line-height: 1.2;
@@ -277,7 +277,7 @@ body:has(.drawer--active) .xpoost-scarcity-toast {
 #xpoost-root .xpoost-toast-progress-bar {
   height: 100%;
   width: 100%;
-  background: linear-gradient(90deg, color-mix(in srgb, var(--xps-gold) 60%, black), var(--xps-gold), color-mix(in srgb, var(--xps-gold) 40%, white));
+  background: var(--xps-gold);
   transform-origin: left center;
   transform: scaleX(1);
 }

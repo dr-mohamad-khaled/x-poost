@@ -63,9 +63,9 @@
 
   function applyTheme(root, config) {
     root.classList.add("xpoost-scarcity-toast--" + (config.position || "bottom-left"));
-    root.style.setProperty("--xps-bg", config.backgroundColor || "#0B0B0B");
-    root.style.setProperty("--xps-gold", config.accentColor || "#D4AF37");
-    root.style.setProperty("--xps-text", config.textColor || "#FFFFFF");
+    root.style.setProperty("--xps-bg", config.backgroundColor || "#2E2823");
+    root.style.setProperty("--xps-gold", config.accentColor || "#D9C9A8");
+    root.style.setProperty("--xps-text", config.textColor || "#F6F1E7");
     root.style.setProperty("--xps-radius", (config.borderRadiusPx != null ? config.borderRadiusPx : 12) + "px");
     root.style.setProperty("--xps-bottom-desktop", (config.desktopBottomOffsetPx != null ? config.desktopBottomOffsetPx : 24) + "px");
     root.style.setProperty("--xps-bottom-mobile", (config.mobileBottomOffsetPx != null ? config.mobileBottomOffsetPx : 24) + "px");

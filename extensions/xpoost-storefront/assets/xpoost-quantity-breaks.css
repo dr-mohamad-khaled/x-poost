@@ -4,13 +4,13 @@
  */
 
 :root {
-  --xpp-qb-accent: #D4AF37;
-  --xpp-qb-bg: #141414;
-  --xpp-qb-border: #282828;
+  --xpp-qb-accent: #D9C9A8;
+  --xpp-qb-bg: #352E28;
+  --xpp-qb-border: #4A4238;
   --xpp-qb-text: #FFFFFF;
-  --xpp-qb-badge-bg: #D4AF37;
+  --xpp-qb-badge-bg: #D9C9A8;
   --xpp-qb-badge-text: #000000;
-  --xpp-qb-btn-bg: #D4AF37;
+  --xpp-qb-btn-bg: #D9C9A8;
   --xpp-qb-btn-text: #000000;
 }
 
@@ -415,7 +415,7 @@
 
 .xpp-qb-preset-luxury_gold .xpp-qb-tier-item.xpp-qb-selected {
   border-color: var(--xpp-qb-accent);
-  box-shadow: 0 0 14px color-mix(in srgb, var(--xpp-qb-accent) 25%, transparent);
+  box-shadow: none;
 }
 
 .xpp-qb-preset-luxury_gold .xpp-qb-tier-left {
@@ -448,7 +448,7 @@
 }
 
 .xpp-qb-preset-luxury_gold .xpp-qb-badge {
-  background: linear-gradient(135deg, #ECC94B, #D4AF37);
+  background: #D9C9A8;
   color: #000000;
   font-weight: 800;
   letter-spacing: 0.5px;
@@ -524,7 +524,7 @@
     box-shadow: 0 0 0 0 color-mix(in srgb, var(--xpp-qb-accent) 40%, transparent);
   }
   50% {
-    box-shadow: 0 0 14px 2px color-mix(in srgb, var(--xpp-qb-accent) 65%, transparent);
+    box-shadow: none;
   }
 }
 

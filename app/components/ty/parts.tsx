@@ -25,9 +25,9 @@ import {
 // Design gallery
 // ─────────────────────────────────────────────────────────────
 
-const G = "#D4AF37";
-const L = "#3a3a3d";
-const F = "#26262a";
+const G = "#C9B78F";
+const L = "#3e3b32";
+const F = "#2a271e";
 
 /** Tiny wireframes so the merchant sees the layout before picking */
 export function DesignSchematic({ design }: { design: TyDesign }) {
@@ -40,7 +40,7 @@ export function DesignSchematic({ design }: { design: TyDesign }) {
           <>
             <rect x="10" y="8" width="100" height="62" rx="8" fill={F} stroke={L} />
             <rect x="42" y="14" width="36" height="6" rx="3" fill={L} />
-            <rect x="26" y="26" width="68" height="26" rx="6" fill="#18181b" stroke={G} strokeDasharray="3 2" />
+            <rect x="26" y="26" width="68" height="26" rx="6" fill="#1d1a14" stroke={G} strokeDasharray="3 2" />
             <text x="60" y="43" textAnchor="middle" fontSize="12" fill={G}>🎁</text>
             <rect x="34" y="57" width="52" height="8" rx="4" fill={G} />
           </>
@@ -51,7 +51,7 @@ export function DesignSchematic({ design }: { design: TyDesign }) {
             <rect x="10" y="6" width="100" height="66" rx="8" fill={F} stroke={L} />
             {[0, 1, 2].map((i) => (
               <g key={i}>
-                <rect x="16" y={12 + i * 19} width="88" height="15" rx="5" fill="#18181b" stroke={i === 2 ? G : L} />
+                <rect x="16" y={12 + i * 19} width="88" height="15" rx="5" fill="#1d1a14" stroke={i === 2 ? G : L} />
                 <circle cx="25" cy={19.5 + i * 19} r="4" fill={i === 2 ? G : L} />
                 <rect x="34" y={17 + i * 19} width={40 + i * 8} height="5" rx="2.5" fill={L} />
                 <rect x="84" y={16 + i * 19} width="16" height="7" rx="3.5" fill={i === 2 ? G : L} />
@@ -63,7 +63,7 @@ export function DesignSchematic({ design }: { design: TyDesign }) {
         return (
           <>
             <rect x="10" y="6" width="100" height="66" rx="8" fill={F} stroke={L} />
-            <rect x="16" y="11" width="88" height="14" rx="5" fill="#18181b" />
+            <rect x="16" y="11" width="88" height="14" rx="5" fill="#1d1a14" />
             <rect x="21" y="16" width="30" height="4" rx="2" fill={L} />
             <text x="98" y="22" textAnchor="end" fontSize="9" fontWeight="700" fill={G}>09:41</text>
             {[0, 1].map((i) => (
@@ -82,7 +82,7 @@ export function DesignSchematic({ design }: { design: TyDesign }) {
             <rect x="10" y="6" width="100" height="66" rx="8" fill={F} stroke={L} />
             {[0, 1, 2].map((i) => (
               <g key={i}>
-                <rect x={16 + i * 30} y="12" width="26" height="32" rx="5" fill="#18181b" stroke={L} />
+                <rect x={16 + i * 30} y="12" width="26" height="32" rx="5" fill="#1d1a14" stroke={L} />
                 <rect x={19 + i * 30} y="15" width="20" height="14" rx="3" fill={L} />
                 <rect x={19 + i * 30} y="32" width="16" height="3" rx="1.5" fill={L} />
                 <rect x={19 + i * 30} y="38" width="6" height="4" rx="1" fill={G} />
@@ -97,7 +97,7 @@ export function DesignSchematic({ design }: { design: TyDesign }) {
             <rect x="10" y="6" width="100" height="66" rx="8" fill={F} stroke={L} />
             <rect x="16" y="12" width="42" height="54" rx="6" fill={L} />
             <rect x="64" y="14" width="30" height="4" rx="2" fill={G} />
-            <rect x="64" y="23" width="40" height="5" rx="2.5" fill="#d0d0d4" />
+            <rect x="64" y="23" width="40" height="5" rx="2.5" fill="#d4d1c8" />
             <rect x="64" y="32" width="36" height="3" rx="1.5" fill={L} />
             <rect x="64" y="38" width="30" height="3" rx="1.5" fill={L} />
             <rect x="64" y="52" width="40" height="12" rx="6" fill={G} />
@@ -107,7 +107,7 @@ export function DesignSchematic({ design }: { design: TyDesign }) {
         return (
           <>
             <rect x="10" y="24" width="100" height="30" rx="8" fill={F} stroke={L} />
-            <rect x="18" y="31" width="44" height="5" rx="2.5" fill="#d0d0d4" />
+            <rect x="18" y="31" width="44" height="5" rx="2.5" fill="#d4d1c8" />
             <rect x="18" y="40" width="30" height="3" rx="1.5" fill={L} />
             <rect x="74" y="32" width="28" height="12" rx="6" fill={G} />
           </>

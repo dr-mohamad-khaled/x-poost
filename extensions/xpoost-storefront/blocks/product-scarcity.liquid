@@ -94,10 +94,10 @@
       data-proxy-path="/apps/xpoost/config"
       data-locale="{{ request.locale.iso_code }}"
       style="
-        --xpp-ps-accent: {{ block.settings.accent_color | default: '#D4AF37' }};
-        --xpp-ps-bg: {{ block.settings.bg_color | default: '#141414' }};
+        --xpp-ps-accent: {{ block.settings.accent_color | default: '#D9C9A8' }};
+        --xpp-ps-bg: {{ block.settings.bg_color | default: '#352E28' }};
         --xpp-ps-text: {{ block.settings.text_color | default: '#FFFFFF' }};
-        --xpp-ps-border: {{ block.settings.border_color | default: '#2d2d2d' }};
+        --xpp-ps-border: {{ block.settings.border_color | default: '#4a4238' }};
       "
     >
       {% case block.settings.design_preset %}
@@ -278,13 +278,13 @@
       "type": "color",
       "id": "accent_color",
       "label": "Accent / Highlight Color",
-      "default": "#D4AF37"
+      "default": "#D9C9A8"
     },
     {
       "type": "color",
       "id": "bg_color",
       "label": "Card Background Color",
-      "default": "#141414"
+      "default": "#352E28"
     },
     {
       "type": "color",
@@ -296,7 +296,7 @@
       "type": "color",
       "id": "border_color",
       "label": "Border Color",
-      "default": "#2d2d2d"
+      "default": "#4a4238"
     }
   ]
 }

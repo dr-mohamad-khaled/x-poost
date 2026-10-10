@@ -24,8 +24,8 @@ export function FeatureLanguageSwitcher({
   return (
     <div
       style={{
-        background: "linear-gradient(180deg, #18181b 0%, #111113 100%)",
-        border: "1px solid #27272a",
+        background: "linear-gradient(180deg, #1d1a14 0%, #141108 100%)",
+        border: "1px solid #2b281f",
         borderRadius: "10px",
         padding: "14px 18px",
         marginBottom: "20px",
@@ -54,7 +54,7 @@ export function FeatureLanguageSwitcher({
             >
               {i18n.featureLangTitle || "Feature Copy Language"}
             </label>
-            <div style={{ fontSize: "11px", color: "#a1a1aa" }}>
+            <div style={{ fontSize: "11px", color: "#a39e91" }}>
               {i18n.featureLangSubtitle || "Select a language to edit its text or load predefined copy:"}
             </div>
           </div>
@@ -66,8 +66,8 @@ export function FeatureLanguageSwitcher({
               onChange={(e) => onSelectLang(e.target.value as SupportedLanguage)}
               style={{
                 background: "#09090b",
-                color: "#F3E5AB",
-                border: "1px solid #D4AF37",
+                color: "#E9DFC8",
+                border: "1px solid #C9B78F",
                 borderRadius: "6px",
                 padding: "8px 14px",
                 fontSize: "13px",
@@ -81,7 +81,7 @@ export function FeatureLanguageSwitcher({
                 <option
                   key={lang.code}
                   value={lang.code}
-                  style={{ background: "#18181b", color: "#f4f4f5" }}
+                  style={{ background: "#1d1a14", color: "#f4f4f5" }}
                 >
                   {lang.nativeName} ({lang.label}) {lang.dir === "rtl" ? "[RTL]" : "[LTR]"}
                 </option>
@@ -93,7 +93,7 @@ export function FeatureLanguageSwitcher({
                 fontSize: "11px",
                 padding: "4px 8px",
                 borderRadius: "6px",
-                background: activeMeta.dir === "rtl" ? "#3b1d22" : "#1e293b",
+                background: activeMeta.dir === "rtl" ? "#3b1d22" : "#2e2b22",
                 color: activeMeta.dir === "rtl" ? "#fca5a5" : "#93c5fd",
                 fontWeight: 600,
               }}
@@ -108,9 +108,9 @@ export function FeatureLanguageSwitcher({
             type="button"
             onClick={onLoadPredefined}
             style={{
-              background: "#27272a",
-              color: "#e4e4e7",
-              border: "1px solid #3f3f46",
+              background: "#2b281f",
+              color: "#e8e5dc",
+              border: "1px solid #444138",
               borderRadius: "6px",
               padding: "8px 14px",
               fontSize: "12px",
@@ -119,12 +119,12 @@ export function FeatureLanguageSwitcher({
               transition: "all 0.15s ease",
             }}
             onMouseOver={(e) => {
-              e.currentTarget.style.borderColor = "#D4AF37";
-              e.currentTarget.style.color = "#D4AF37";
+              e.currentTarget.style.borderColor = "#C9B78F";
+              e.currentTarget.style.color = "#C9B78F";
             }}
             onMouseOut={(e) => {
-              e.currentTarget.style.borderColor = "#3f3f46";
-              e.currentTarget.style.color = "#e4e4e7";
+              e.currentTarget.style.borderColor = "#444138";
+              e.currentTarget.style.color = "#e8e5dc";
             }}
           >
             {i18n.btnLoadPredefined || "Load Predefined Values for this Language"}

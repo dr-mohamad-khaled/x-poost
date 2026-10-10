@@ -106,10 +106,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         currency: shopCurrency,
         currencySymbol: shopSymbol,
         tiersJson: JSON.stringify({ tiers: DEFAULT_TIERS, layoutStyle: "milestone_stepper" }),
-        progressColor: "#D4AF37",
-        trackColor: "#222222",
-        backgroundColor: "#0B0B0B",
-        textColor: "#FFFFFF",
+        progressColor: "#D9C9A8",
+        trackColor: "#4A4238",
+        backgroundColor: "#2E2823",
+        textColor: "#F6F1E7",
         initialMessage: "Add items to unlock Free Shipping!",
         allUnlockedMessage: "Congratulations! You unlocked all rewards!",
       },
@@ -189,10 +189,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const active = formData.get("active") === "on";
   const currency = shopCurrency;
   const currencySymbol = symbolForCurrency(shopCurrency);
-  const progressColor = String(formData.get("progressColor") || "#D4AF37");
-  const trackColor = String(formData.get("trackColor") || "#222222");
-  const backgroundColor = String(formData.get("backgroundColor") || "#0B0B0B");
-  const textColor = String(formData.get("textColor") || "#FFFFFF");
+  const progressColor = String(formData.get("progressColor") || "#D9C9A8");
+  const trackColor = String(formData.get("trackColor") || "#4A4238");
+  const backgroundColor = String(formData.get("backgroundColor") || "#2E2823");
+  const textColor = String(formData.get("textColor") || "#F6F1E7");
   const initialMessage = String(formData.get("initialMessage") || "Add items to unlock Free Shipping!");
   const allUnlockedMessage = String(formData.get("allUnlockedMessage") || "Congratulations! You unlocked all rewards!");
   const layoutStyle = String(formData.get("layoutStyle") || "milestone_stepper");
@@ -374,10 +374,10 @@ export default function ShippingBarSettings() {
 
   const [selectedLayout, setSelectedLayout] = useState<string>(config.layoutStyle || "milestone_stepper");
   const currencySymbol = config.currencySymbol || "$";
-  const [progressColor, setProgressColor] = useState(config.progressColor || "#D4AF37");
-  const [bgColor, setBgColor] = useState(config.backgroundColor || "#0B0B0B");
-  const [textColor, setTextColor] = useState(config.textColor || "#FFFFFF");
-  const [trackColor, setTrackColor] = useState(config.trackColor || "#222222");
+  const [progressColor, setProgressColor] = useState(config.progressColor || "#D9C9A8");
+  const [bgColor, setBgColor] = useState(config.backgroundColor || "#2E2823");
+  const [textColor, setTextColor] = useState(config.textColor || "#F6F1E7");
+  const [trackColor, setTrackColor] = useState(config.trackColor || "#4A4238");
   const [targetMode, setTargetMode] = useState<string>(config.targeting?.mode || "all");
   const [targetCountries, setTargetCountries] = useState<string[]>(config.targeting?.countries || []);
   const [targetOverrides, setTargetOverrides] = useState<{ countries: string[]; tiers: Tier[] }[]>(
@@ -633,7 +633,7 @@ export default function ShippingBarSettings() {
                 <button
                   type="button"
                   className="xp-btn-secondary"
-                  onClick={() => { setBgColor("#0B0B0B"); setTextColor("#FFFFFF"); setTrackColor("#222222"); setProgressColor("#D4AF37"); }}
+                  onClick={() => { setBgColor("#2E2823"); setTextColor("#F6F1E7"); setTrackColor("#4A4238"); setProgressColor("#D9C9A8"); }}
                 >
                   
                                                     <Translate text='Dark preset' />
@@ -641,11 +641,18 @@ export default function ShippingBarSettings() {
                 <button
                   type="button"
                   className="xp-btn-secondary"
-                  onClick={() => { setBgColor("#FFFFFF"); setTextColor("#1A1A1A"); setTrackColor("#E5E5E5"); setProgressColor("#B8860B"); }}
+                  onClick={() => { setBgColor("#F6F1E7"); setTextColor("#2B2620"); setTrackColor("#E2D8C6"); setProgressColor("#8C6B4B"); }}
                 >
                   
                                                     <Translate text='Light preset' />
                                                   </button>
+                <button
+                  type="button"
+                  className="xp-btn-secondary"
+                  onClick={() => { setBgColor("#0B0B0B"); setTextColor("#FFFFFF"); setTrackColor("#222222"); setProgressColor("#D4AF37"); }}
+                >
+                  <Translate text='Classic black & gold' />
+                </button>
               </div>
             </div>
 
@@ -694,7 +701,7 @@ export default function ShippingBarSettings() {
               {targetOverrides.map((ov, oi) => (
                 <div
                   key={oi}
-                  style={{ border: "1px solid rgba(212,175,55,0.35)", borderRadius: 10, padding: 14, marginBottom: 14 }}
+                  style={{ border: "1px solid rgba(201,183,143,0.35)", borderRadius: 10, padding: 14, marginBottom: 14 }}
                 >
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
                     <strong><Translate text='Rule' /> {oi + 1}: {ov.countries.length ? ov.countries.join(", ") : "no countries yet"}</strong>
@@ -1198,7 +1205,7 @@ function RewardFields({
   };
 
   return (
-    <div style={{ marginTop: 10, padding: 10, borderRadius: 8, background: "rgba(212,175,55,0.06)", border: "1px dashed rgba(212,175,55,0.35)" }}>
+    <div style={{ marginTop: 10, padding: 10, borderRadius: 8, background: "rgba(201,183,143,0.06)", border: "1px dashed rgba(201,183,143,0.35)" }}>
       <div className="xp-field" style={{ marginBottom: 8 }}>
         <label><Translate text='Checkout reward' /></label>
         <select
@@ -1355,7 +1362,7 @@ function CountryPicker({
             key={c}
             style={{
               display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 10px",
-              borderRadius: 999, background: "rgba(212,175,55,0.15)", border: "1px solid rgba(212,175,55,0.5)", fontSize: 12,
+              borderRadius: 999, background: "rgba(201,183,143,0.15)", border: "1px solid rgba(201,183,143,0.5)", fontSize: 12,
             }}
           >
             {names[c] || c} ({c})
@@ -1395,10 +1402,10 @@ const SHIPPING_BAR_STYLES = `
     }
   }
   .xp-layout-card {
-    border: 1px solid #333333 !important;
+    border: 1px solid #3A352B !important;
     border-radius: 10px !important;
     padding: 16px !important;
-    background: #181818 !important;
+    background: #1D1A14 !important;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
@@ -1406,15 +1413,14 @@ const SHIPPING_BAR_STYLES = `
     gap: 8px;
   }
   .xp-layout-card:hover {
-    border-color: rgba(212, 175, 55, 0.6) !important;
-    background: #1f1f1f !important;
+    border-color: rgba(201,183,143, 0.6) !important;
+    background: #1d1a14 !important;
     transform: translateY(-2px);
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4) !important;
   }
   .xp-layout-card.is-selected {
-    border-color: #D4AF37 !important;
-    background: #1e1b12 !important;
-    box-shadow: 0 0 0 1px #D4AF37, 0 4px 18px rgba(212, 175, 55, 0.25) !important;
+    border-color: #C9B78F !important;
+    background: #221e16 !important;
   }
   .xp-layout-header {
     display: flex;
@@ -1437,32 +1443,32 @@ const SHIPPING_BAR_STYLES = `
     font-weight: 800 !important;
     text-transform: uppercase !important;
     letter-spacing: 0.6px !important;
-    background: rgba(212, 175, 55, 0.15) !important;
-    color: #D4AF37 !important;
-    border: 1px solid rgba(212, 175, 55, 0.4) !important;
+    background: rgba(201,183,143, 0.15) !important;
+    color: #C9B78F !important;
+    border: 1px solid rgba(201,183,143, 0.4) !important;
     padding: 3px 8px !important;
     border-radius: 4px !important;
     display: inline-block !important;
     white-space: nowrap !important;
   }
   .xp-layout-card.is-selected .xp-layout-badge {
-    background: #D4AF37 !important;
-    color: #0B0B0B !important;
-    border-color: #D4AF37 !important;
+    background: #C9B78F !important;
+    color: #0E0D0B !important;
+    border-color: #C9B78F !important;
     font-weight: 900 !important;
   }
   .xp-layout-desc {
     margin: 0 !important;
     font-size: 12px !important;
-    color: #c4c4c4 !important;
+    color: #C7C4BB !important;
     line-height: 1.45 !important;
   }
 
 
   /* Native Luxury Dark Section Cards */
   .xp-section-card {
-    background: #141414 !important;
-    border: 1px solid #282828 !important;
+    background: #16140F !important;
+    border: 1px solid #2E2A22 !important;
     border-radius: 12px !important;
     padding: 24px !important;
     margin-bottom: 20px !important;
@@ -1472,7 +1478,7 @@ const SHIPPING_BAR_STYLES = `
   .xp-section-title {
     font-size: 16px !important;
     font-weight: 700 !important;
-    color: #D4AF37 !important; margin: 0 0 16px 0 !important; border-bottom: 1px solid #282828 !important; padding-bottom: 12px !important;
+    color: #C9B78F !important; margin: 0 0 16px 0 !important; border-bottom: 1px solid #2E2A22 !important; padding-bottom: 12px !important;
     display: flex !important;
     align-items: center !important;
     gap: 8px !important;
@@ -1491,13 +1497,13 @@ const SHIPPING_BAR_STYLES = `
   }
   .xp-section-intro {
     font-size: 13px;
-    color: #b0b0b0;
+    color: #b8b2a3;
     margin: 0 0 16px;
     line-height: 1.4;
   }
   .xp-sub {
     font-size: 12px;
-    color: #888888;
+    color: #8F8A7E;
     margin: 4px 0 12px;
   }
   .xp-row {
@@ -1528,10 +1534,10 @@ const SHIPPING_BAR_STYLES = `
   }
   .xp-input {
     padding: 8px 12px;
-    border: 1px solid #333333;
+    border: 1px solid #3A352B;
     border-radius: 6px;
     font-size: 13px;
-    background: #141414;
+    background: #16140F;
   }
   .xp-grid-2 {
     display: grid;
@@ -1566,10 +1572,10 @@ const SHIPPING_BAR_STYLES = `
     }
   }
   .xp-layout-card {
-    border: 1px solid #282828;
+    border: 1px solid #2E2A22;
     border-radius: 10px;
     padding: 14px;
-    background: #141414;
+    background: #16140F;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
@@ -1577,13 +1583,13 @@ const SHIPPING_BAR_STYLES = `
     gap: 6px;
   }
   .xp-layout-card:hover {
-    border-color: #D4AF37;
+    border-color: #C9B78F;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   }
   .xp-layout-card.is-selected {
-    border-color: #D4AF37;
-    background: #1f1d14;
+    border-color: #C9B78F;
+    background: #221e16;
     box-shadow: 0 0 0 1px #008060, 0 4px 14px rgba(0, 128, 96, 0.15);
   }
   .xp-layout-header {
@@ -1596,15 +1602,15 @@ const SHIPPING_BAR_STYLES = `
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    background: #222222;
-    color: #444;
+    background: #2A261E;
+    color: #4A443A;
     padding: 2px 6px;
     border-radius: 4px;
   }
   .xp-theme-check {
     font-size: 11px;
     font-weight: 700;
-    color: #D4AF37;
+    color: #C9B78F;
   }
   .xp-layout-title {
     margin: 2px 0 0;
@@ -1615,7 +1621,7 @@ const SHIPPING_BAR_STYLES = `
   .xp-layout-desc {
     margin: 0;
     font-size: 11px;
-    color: #888888;
+    color: #8F8A7E;
     line-height: 1.35;
   }
 
@@ -1626,10 +1632,10 @@ const SHIPPING_BAR_STYLES = `
     gap: 12px;
   }
   .xp-tier-card {
-    border: 1px solid #282828;
+    border: 1px solid #2E2A22;
     border-radius: 8px;
     padding: 12px 14px;
-    background: #181818;
+    background: #1D1A14;
   }
   .xp-tier-header {
     display: flex;
@@ -1641,7 +1647,7 @@ const SHIPPING_BAR_STYLES = `
     font-size: 11px;
     font-weight: 700;
     color: #ffffff;
-    background: #222222;
+    background: #2A261E;
     padding: 2px 8px;
     border-radius: 4px;
   }
@@ -1654,8 +1660,8 @@ const SHIPPING_BAR_STYLES = `
     cursor: pointer;
   }
   .xp-btn-secondary {
-    background: #141414;
-    border: 1px solid #333333;
+    background: #16140F;
+    border: 1px solid #3A352B;
     padding: 8px 14px;
     border-radius: 6px;
     font-size: 12px;
@@ -1671,15 +1677,15 @@ const SHIPPING_BAR_STYLES = `
   .xp-color-wrap input[type="color"] {
     width: 38px;
     height: 34px;
-    border: 1px solid #333333;
+    border: 1px solid #3A352B;
     border-radius: 4px;
     cursor: pointer;
     padding: 0;
   }
   .xp-btn-submit {
-    background: #0B0B0B;
-    color: #D4AF37;
-    border: 1px solid #D4AF37;
+    background: #0E0D0B;
+    color: #C9B78F;
+    border: 1px solid #C9B78F;
     padding: 12px 24px;
     border-radius: 6px;
     font-weight: 700;
@@ -1689,7 +1695,7 @@ const SHIPPING_BAR_STYLES = `
     transition: background 0.2s;
   }
   .xp-btn-submit:hover {
-    background: #1c1c1c;
+    background: #1d1a14;
   }
 
   /* Simulator & Preview */
@@ -1715,7 +1721,7 @@ const SHIPPING_BAR_STYLES = `
     font-weight: 700;
   }
   .xp-slider-control {
-    background: #181818;
+    background: #1D1A14;
     padding: 12px;
     border-radius: 8px;
     margin: 12px 0 16px;
@@ -1730,7 +1736,7 @@ const SHIPPING_BAR_STYLES = `
   .xp-range-slider {
     width: 100%;
     cursor: pointer;
-    accent-color: #D4AF37;
+    accent-color: #C9B78F;
   }
 
   .xp-bar-preview-box {
@@ -1760,7 +1766,7 @@ const SHIPPING_BAR_STYLES = `
     left: 20px;
     right: 20px;
     height: 4px;
-    background: var(--xp-track, #333);
+    background: var(--xp-track, #3A352B);
     border-radius: 2px;
     z-index: 1;
   }
@@ -1806,7 +1812,7 @@ const SHIPPING_BAR_STYLES = `
   /* Gamified Cards */
   .xp-cards-progress-bar {
     height: 6px;
-    background: var(--xp-track, #333);
+    background: var(--xp-track, #3A352B);
     border-radius: 3px;
     overflow: hidden;
     margin-bottom: 12px;
@@ -1862,7 +1868,7 @@ const SHIPPING_BAR_STYLES = `
   }
   .xp-luxury-bar-track {
     height: 8px;
-    background: var(--xp-track, #222);
+    background: var(--xp-track, #2A261E);
     border-radius: 4px;
     overflow: hidden;
     position: relative;
@@ -1915,7 +1921,7 @@ const SHIPPING_BAR_STYLES = `
   }
   .xp-split-track {
     height: 6px;
-    background: var(--xp-track, #222);
+    background: var(--xp-track, #2A261E);
     border-radius: 3px;
     overflow: hidden;
   }

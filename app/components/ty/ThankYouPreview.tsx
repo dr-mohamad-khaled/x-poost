@@ -7,38 +7,38 @@ import { formatCountdown, type TyRenderPayload } from "../../utils/thankyou";
  */
 
 export const PREVIEW_CSS = `
-.typ{font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#1f2328;background:#fff;border-radius:14px;padding:20px;text-align:start}
+.typ{font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#26231a;background:#fff;border-radius:14px;padding:20px;text-align:start}
 .typ *{box-sizing:border-box}
-.typ .card{border:1px solid #e3e3e3;border-radius:14px;padding:20px;background:#fff}
+.typ .card{border:1px solid #e6e3da;border-radius:14px;padding:20px;background:#fff}
 .typ .card.soft{background:#f6f6f7}
 .typ .stack{display:flex;flex-direction:column;gap:12px}
 .typ .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .typ .center{align-items:center;text-align:center}
 .typ h3{margin:0;font-size:20px;line-height:1.25;font-weight:700}
-.typ .muted{color:#6a6d70}
+.typ .muted{color:#706d64}
 .typ .small{font-size:12px}
 .typ .strong{font-weight:600}
 .typ .badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:600;background:#e3f1df;color:#1a5c2a}
 .typ .badge.info{background:#e1ecff;color:#1e4a9b}
 .typ .badge.warn{background:#fff1cc;color:#7a5200}
-.typ .btn{display:block;width:100%;text-align:center;padding:11px 16px;border-radius:10px;font-weight:600;border:1px solid #1f2328;background:#1f2328;color:#fff;cursor:pointer;font-size:14px}
-.typ .btn.secondary{background:#fff;color:#1f2328;border-color:#c9cccf}
+.typ .btn{display:block;width:100%;text-align:center;padding:11px 16px;border-radius:10px;font-weight:600;border:1px solid #26231a;background:#26231a;color:#fff;cursor:pointer;font-size:14px}
+.typ .btn.secondary{background:#fff;color:#26231a;border-color:#cfccc3}
 .typ .btn.inline{display:inline-block;width:auto}
 .typ .timer{display:flex;justify-content:space-between;align-items:center;background:#f1f2f3;border-radius:12px;padding:12px 16px}
 .typ .timer b{font-size:22px;font-variant-numeric:tabular-nums;letter-spacing:.02em}
-.typ .thumb{width:64px;height:64px;border-radius:10px;background:linear-gradient(135deg,#ececec,#dcdcdc);object-fit:cover;flex-shrink:0}
+.typ .thumb{width:64px;height:64px;border-radius:10px;background:linear-gradient(135deg,#efece3,#DFDCD3);object-fit:cover;flex-shrink:0}
 .typ .thumb.big{width:100%;height:auto;aspect-ratio:1/1}
 .typ .prow{display:grid;grid-template-columns:64px 1fr;gap:12px;align-items:center}
 .typ .code{font-size:24px;font-weight:800;letter-spacing:.08em;font-variant-numeric:tabular-nums;word-break:break-all}
-.typ .sealed{border:1px solid #d6d8da;border-radius:14px;padding:22px;background:#fff;cursor:pointer;width:100%;text-align:center}
-.typ .sealed:hover{border-color:#1f2328}
+.typ .sealed{border:1px solid #dbd8cf;border-radius:14px;padding:22px;background:#fff;cursor:pointer;width:100%;text-align:center}
+.typ .sealed:hover{border-color:#26231a}
 .typ .grid{display:grid;gap:10px}
-.typ .tile{border:1px solid #e3e3e3;border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px}
+.typ .tile{border:1px solid #e6e3da;border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px}
 .typ .tile.off{background:#f6f6f7;opacity:.7}
 .typ .spot{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center}
 .typ.mobile .spot{grid-template-columns:1fr}
 .typ .banner{background:#e8f1ff;border-radius:10px;padding:12px 14px}
-.typ hr{border:0;border-top:1px solid #e3e3e3;margin:0}
+.typ hr{border:0;border-top:1px solid #e6e3da;margin:0}
 .typ .sample{position:absolute;top:8px;right:12px}
 `;
 

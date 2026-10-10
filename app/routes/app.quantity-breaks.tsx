@@ -1,4 +1,5 @@
 ﻿import { Translate } from "../components/Translate";
+import { ColorPresets } from "../components/ColorPresets";
 import { useState, useMemo, useEffect } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Form, useActionData, useLoaderData, useNavigation } from "react-router";
@@ -176,16 +177,16 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       const designPreset = String(formData.get("designPreset") || "modern_cards");
       const animationStyle = String(formData.get("animationStyle") || "shimmer");
 
-      const accentColor = String(formData.get("accentColor") || "#D4AF37");
-      const backgroundColor = String(formData.get("backgroundColor") || "#141414");
-      const borderColor = String(formData.get("borderColor") || "#282828");
-      const textColor = String(formData.get("textColor") || "#FFFFFF");
-      const badgeBgColor = String(formData.get("badgeBgColor") || "#D4AF37");
-      const badgeTextColor = String(formData.get("badgeTextColor") || "#000000");
+      const accentColor = String(formData.get("accentColor") || "#D9C9A8");
+      const backgroundColor = String(formData.get("backgroundColor") || "#352E28");
+      const borderColor = String(formData.get("borderColor") || "#4A4238");
+      const textColor = String(formData.get("textColor") || "#F6F1E7");
+      const badgeBgColor = String(formData.get("badgeBgColor") || "#D9C9A8");
+      const badgeTextColor = String(formData.get("badgeTextColor") || "#2E2823");
       const showAddToCartBtn = formData.get("showAddToCartBtn") === "true";
       const addToCartBtnText = String(formData.get("addToCartBtnText") || "Add to Cart").trim();
-      const btnBgColor = String(formData.get("btnBgColor") || "#D4AF37");
-      const btnTextColor = String(formData.get("btnTextColor") || "#000000");
+      const btnBgColor = String(formData.get("btnBgColor") || "#D9C9A8");
+      const btnTextColor = String(formData.get("btnTextColor") || "#2E2823");
       const translationsJson = String(formData.get("translationsJson") || "{}");
 
       if (offerId) {
@@ -301,16 +302,16 @@ export default function QuantityBreaksPage() {
   const [designPreset, setDesignPreset] = useState("modern_cards");
   const [animationStyle, setAnimationStyle] = useState("shimmer");
 
-  const [accentColor, setAccentColor] = useState("#D4AF37");
-  const [backgroundColor, setBackgroundColor] = useState("#141414");
-  const [borderColor, setBorderColor] = useState("#282828");
-  const [textColor, setTextColor] = useState("#FFFFFF");
-  const [badgeBgColor, setBadgeBgColor] = useState("#D4AF37");
-  const [badgeTextColor, setBadgeTextColor] = useState("#000000");
+  const [accentColor, setAccentColor] = useState("#D9C9A8");
+  const [backgroundColor, setBackgroundColor] = useState("#352E28");
+  const [borderColor, setBorderColor] = useState("#4A4238");
+  const [textColor, setTextColor] = useState("#F6F1E7");
+  const [badgeBgColor, setBadgeBgColor] = useState("#D9C9A8");
+  const [badgeTextColor, setBadgeTextColor] = useState("#2E2823");
   const [showAddToCartBtn, setShowAddToCartBtn] = useState(false);
   const [addToCartBtnText, setAddToCartBtnText] = useState("Add to Cart");
-  const [btnBgColor, setBtnBgColor] = useState("#D4AF37");
-  const [btnTextColor, setBtnTextColor] = useState("#000000");
+  const [btnBgColor, setBtnBgColor] = useState("#D9C9A8");
+  const [btnTextColor, setBtnTextColor] = useState("#2E2823");
 
   // Multi-Language State
   const [selectedLang, setSelectedLang] = useState<SupportedLanguage>(dashboardLocale || "en");
@@ -354,15 +355,15 @@ export default function QuantityBreaksPage() {
     setTiers(DEFAULT_TIERS);
     setDesignPreset("modern_cards");
     setAnimationStyle("shimmer");
-    setAccentColor("#D4AF37");
-    setBackgroundColor("#141414");
-    setBorderColor("#282828");
+    setAccentColor("#C9B78F");
+    setBackgroundColor("#16140F");
+    setBorderColor("#2E2A22");
     setTextColor("#FFFFFF");
-    setBadgeBgColor("#D4AF37");
+    setBadgeBgColor("#C9B78F");
     setBadgeTextColor("#000000");
     setShowAddToCartBtn(false);
     setAddToCartBtnText("Add to Cart");
-    setBtnBgColor("#D4AF37");
+    setBtnBgColor("#C9B78F");
     setBtnTextColor("#000000");
     setViewMode("create");
   };
@@ -387,16 +388,16 @@ export default function QuantityBreaksPage() {
     }
     setDesignPreset(offer.designPreset || "modern_cards");
     setAnimationStyle(offer.animationStyle || "shimmer");
-    setAccentColor(offer.accentColor || "#D4AF37");
-    setBackgroundColor(offer.backgroundColor || "#141414");
-    setBorderColor(offer.borderColor || "#282828");
-    setTextColor(offer.textColor || "#FFFFFF");
-    setBadgeBgColor(offer.badgeBgColor || "#D4AF37");
-    setBadgeTextColor(offer.badgeTextColor || "#000000");
+    setAccentColor(offer.accentColor || "#D9C9A8");
+    setBackgroundColor(offer.backgroundColor || "#352E28");
+    setBorderColor(offer.borderColor || "#4A4238");
+    setTextColor(offer.textColor || "#F6F1E7");
+    setBadgeBgColor(offer.badgeBgColor || "#D9C9A8");
+    setBadgeTextColor(offer.badgeTextColor || "#2E2823");
     setShowAddToCartBtn(offer.showAddToCartBtn === true);
     setAddToCartBtnText(offer.addToCartBtnText || "Add to Cart");
-    setBtnBgColor(offer.btnBgColor || "#D4AF37");
-    setBtnTextColor(offer.btnTextColor || "#000000");
+    setBtnBgColor(offer.btnBgColor || "#D9C9A8");
+    setBtnTextColor(offer.btnTextColor || "#2E2823");
 
     try {
       const parsedTranslations = JSON.parse(offer.translationsJson || "{}");
@@ -537,8 +538,8 @@ export default function QuantityBreaksPage() {
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
         .xpp-card {
-          background: #141414;
-          border: 1px solid #282828;
+          background: #16140F;
+          border: 1px solid #2E2A22;
           border-radius: 12px;
           padding: 24px;
           margin-bottom: 24px;
@@ -546,7 +547,7 @@ export default function QuantityBreaksPage() {
         .xpp-card-title {
           font-size: 17px;
           font-weight: 800;
-          color: #D4AF37;
+          color: #C9B78F;
           margin: 0 0 10px;
           display: flex;
           align-items: center;
@@ -554,7 +555,7 @@ export default function QuantityBreaksPage() {
         }
         .xpp-card-desc {
           font-size: 13px;
-          color: #a1a1aa;
+          color: #a39e91;
           margin: 0 0 20px;
           line-height: 1.5;
         }
@@ -573,13 +574,13 @@ export default function QuantityBreaksPage() {
           transition: all 0.2s ease;
         }
         .xpp-btn--primary {
-          background: linear-gradient(135deg, #FFD700 0%, #D4AF37 100%);
+          background: #C9B78F;
           color: #000000;
         }
         .xpp-btn--secondary {
-          background: #242424;
+          background: #2A261E;
           color: #ffffff;
-          border: 1px solid #3d3d3d;
+          border: 1px solid #3a352b;
         }
         .xpp-btn--danger {
           background: rgba(239, 68, 68, 0.15);
@@ -592,8 +593,8 @@ export default function QuantityBreaksPage() {
         }
         .xpp-input {
           width: 100%;
-          background: #1f1f1f;
-          border: 1px solid #383838;
+          background: #1d1a14;
+          border: 1px solid #3B382F;
           border-radius: 8px;
           padding: 10px 14px;
           color: #ffffff;
@@ -601,7 +602,7 @@ export default function QuantityBreaksPage() {
           box-sizing: border-box;
         }
         .xpp-input:focus {
-          border-color: #D4AF37;
+          border-color: #C9B78F;
           outline: none;
         }
         .xpp-label {
@@ -613,7 +614,7 @@ export default function QuantityBreaksPage() {
         }
         .xpp-hint {
           font-size: 12px;
-          color: #888888;
+          color: #8F8A7E;
           margin-top: 4px;
         }
         .xpp-table {
@@ -624,18 +625,18 @@ export default function QuantityBreaksPage() {
         .xpp-table th {
           text-align: left;
           padding: 12px;
-          border-bottom: 2px solid #282828;
+          border-bottom: 2px solid #2E2A22;
           font-size: 12px;
           font-weight: 800;
-          color: #D4AF37;
+          color: #C9B78F;
           text-transform: uppercase;
           letter-spacing: 0.5px;
         }
         .xpp-table td {
           padding: 14px 12px;
-          border-bottom: 1px solid #222222;
+          border-bottom: 1px solid #2A261E;
           font-size: 13px;
-          color: #e4e4e7;
+          color: #e8e5dc;
           vertical-align: middle;
         }
         .xpp-badge {
@@ -654,7 +655,7 @@ export default function QuantityBreaksPage() {
         }
         .xpp-badge--draft {
           background: rgba(161, 161, 170, 0.15);
-          color: #a1a1aa;
+          color: #a39e91;
           border: 1px solid rgba(161, 161, 170, 0.3);
         }
         .xpp-preset-grid {
@@ -664,23 +665,23 @@ export default function QuantityBreaksPage() {
           margin-bottom: 20px;
         }
         .xpp-preset-card {
-          background: #1a1a1a;
-          border: 2px solid #333333;
+          background: #1d1a14;
+          border: 2px solid #3A352B;
           border-radius: 10px;
           padding: 16px;
           cursor: pointer;
           transition: all 0.2s ease;
         }
         .xpp-preset-card:hover {
-          border-color: #555555;
+          border-color: #58554C;
         }
         .xpp-preset-card--active {
-          border-color: #D4AF37;
-          background: #1e1b12;
+          border-color: #C9B78F;
+          background: #221e16;
         }
         .xpp-tier-item {
-          background: #1c1c1c;
-          border: 1px solid #333333;
+          background: #1d1a14;
+          border: 1px solid #3A352B;
           border-radius: 10px;
           padding: 16px;
           margin-bottom: 14px;
@@ -689,8 +690,8 @@ export default function QuantityBreaksPage() {
           display: inline-flex;
           align-items: center;
           gap: 6px;
-          background: #242424;
-          border: 1px solid #3d3d3d;
+          background: #2A261E;
+          border: 1px solid #3a352b;
           border-radius: 20px;
           padding: 4px 12px;
           font-size: 12px;
@@ -713,7 +714,7 @@ export default function QuantityBreaksPage() {
         .xpp-color-picker input[type="color"] {
           width: 40px;
           height: 40px;
-          border: 1px solid #444;
+          border: 1px solid #4A443A;
           border-radius: 8px;
           background: none;
           cursor: pointer;
@@ -756,8 +757,8 @@ export default function QuantityBreaksPage() {
           animation: xpp-pulse-glow 2.2s infinite ease-in-out;
         }
         @keyframes xpp-pulse-glow {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
-          50% { box-shadow: 0 0 14px 2px rgba(212, 175, 55, 0.7); }
+          0%, 100% {}
+          50% {}
         }
         .xpp-anim-float {
           animation: xpp-badge-float 2.4s infinite ease-in-out;
@@ -822,14 +823,14 @@ export default function QuantityBreaksPage() {
             </div>
 
             {/* Theme Placement Notice Card */}
-            <div className="xpp-card" style={{ background: "linear-gradient(135deg, #18150f 0%, #141414 100%)", border: "1.5px solid rgba(212, 175, 55, 0.35)" }}>
+            <div className="xpp-card" style={{ background: "#18150f", border: "1.5px solid rgba(201,183,143, 0.35)" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
                 <div>
-                  <h3 style={{ fontSize: 15, fontWeight: 800, color: "#D4AF37", margin: "0 0 6px" }}>
+                  <h3 style={{ fontSize: 15, fontWeight: 800, color: "#C9B78F", margin: "0 0 6px" }}>
                     
                                                           <Translate text='How to Display this Block on Your Product Page' />
                                                         </h3>
-                  <p style={{ fontSize: 13, color: "#d4d4d8", margin: 0, lineHeight: 1.5 }}>
+                  <p style={{ fontSize: 13, color: "#d8d5cc", margin: 0, lineHeight: 1.5 }}>
                     
                                                           <Translate text='Open your' /> <strong><Translate text='Shopify Theme Editor' /></strong><Translate text=', navigate to any Product template, click' /> <strong><Translate text='"Add block"' /></strong>  <Translate text='under Product information, and select' /> <strong><Translate text='"XPoost: Quantity Breaks"' /></strong>.
                   </p>
@@ -857,14 +858,14 @@ export default function QuantityBreaksPage() {
 
               {offers.length === 0 ? (
                 <div style={{ textAlign: "center", padding: "48px 20px" }}>
-                  <div style={{ fontSize: 36, marginBottom: 12, color: "#D4AF37" }}>
+                  <div style={{ fontSize: 36, marginBottom: 12, color: "#C9B78F" }}>
                     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                       <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
                       <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
                     </svg>
                   </div>
                   <h4 style={{ fontSize: 16, fontWeight: 700, margin: "0 0 6px", color: "#fff" }}><Translate text='No quantity break offers yet' /></h4>
-                  <p style={{ fontSize: 13, color: "#a1a1aa", maxWidth: 420, margin: "0 auto 20px" }}>
+                  <p style={{ fontSize: 13, color: "#a39e91", maxWidth: 420, margin: "0 auto 20px" }}>
                     
                                                           <Translate text='Create your first volume discount offer to reward customers who buy 2, 3, or more items together.' />
                                                         </p>
@@ -901,24 +902,24 @@ export default function QuantityBreaksPage() {
                           <tr key={offer.id}>
                             <td>
                               <div style={{ fontWeight: 700, color: "#ffffff" }}>{offer.title}</div>
-                              <div style={{ fontSize: 11, color: "#71717a" }}><Translate text='Preset:' /> {offer.designPreset}</div>
+                              <div style={{ fontSize: 11, color: "#857f72" }}><Translate text='Preset:' /> {offer.designPreset}</div>
                             </td>
                             <td>
                               {offer.targetMode === "ALL" ? (
-                                <span style={{ color: "#D4AF37", fontWeight: 700 }}><Translate text='All Products' /></span>
+                                <span style={{ color: "#C9B78F", fontWeight: 700 }}><Translate text='All Products' /></span>
                               ) : (
                                 <span>{productIds.length}  <Translate text='Targeted Product' />{productIds.length === 1 ? "" : "s"}</span>
                               )}
                             </td>
                             <td>
-                              <span style={{ background: "rgba(212, 175, 55, 0.15)", color: "#FFD700", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 700 }}>
+                              <span style={{ background: "rgba(201,183,143, 0.15)", color: "#C9B78F", padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 700 }}>
                                 {offer.discountType === "FIXED_PER_ITEM" ? "Fixed Per Item ($)" : "Percentage (%)"}
                               </span>
                             </td>
                             <td>
                               <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                                 {parsedTiers.map((t: any, idx: number) => (
-                                  <span key={idx} style={{ background: "#222", padding: "2px 6px", borderRadius: 4, fontSize: 11 }}>
+                                  <span key={idx} style={{ background: "#2A261E", padding: "2px 6px", borderRadius: 4, fontSize: 11 }}>
                                     {t.quantity}<Translate text='x (' />{t.discountValue}{offer.discountType === "FIXED_PER_ITEM" ? "$" : "%"})
                                   </span>
                                 ))}
@@ -1015,14 +1016,14 @@ export default function QuantityBreaksPage() {
             </div>
 
             {/* Language Switcher for Copy Editing */}
-            <div className="xpp-card" style={{ border: "1px solid rgba(212, 175, 55, 0.3)" }}>
+            <div className="xpp-card" style={{ border: "1px solid rgba(201,183,143, 0.3)" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
                 <div>
-                  <h3 style={{ fontSize: 14, fontWeight: 800, color: "#D4AF37", margin: "0 0 4px" }}>
+                  <h3 style={{ fontSize: 14, fontWeight: 800, color: "#C9B78F", margin: "0 0 4px" }}>
                     
                                                           <Translate text='Multi-Language Translation Customization' />
                                                         </h3>
-                  <p style={{ fontSize: 12, color: "#a1a1aa", margin: 0 }}>
+                  <p style={{ fontSize: 12, color: "#a39e91", margin: 0 }}>
                     
                                                           <Translate text='Customize the widget&apos;s copy for each storefront language.' />
                                                         </p>
@@ -1088,8 +1089,8 @@ export default function QuantityBreaksPage() {
                 <label
                   style={{
                     flex: 1,
-                    background: targetMode === "SPECIFIC" ? "#1e1b12" : "#1a1a1a",
-                    border: `2px solid ${targetMode === "SPECIFIC" ? "#D4AF37" : "#333"}`,
+                    background: targetMode === "SPECIFIC" ? "#221e16" : "#1d1a14",
+                    border: `2px solid ${targetMode === "SPECIFIC" ? "#C9B78F" : "#3A352B"}`,
                     borderRadius: 10,
                     padding: 14,
                     cursor: "pointer",
@@ -1103,7 +1104,7 @@ export default function QuantityBreaksPage() {
                     style={{ marginRight: 8 }}
                   />
                   <span style={{ fontWeight: 800, color: "#fff" }}><Translate text='Specific Products' /></span>
-                  <p style={{ margin: "4px 0 0 22px", fontSize: 12, color: "#a1a1aa" }}>
+                  <p style={{ margin: "4px 0 0 22px", fontSize: 12, color: "#a39e91" }}>
                     
                                                           <Translate text='Apply terms only to chosen products (single product or multiple).' />
                                                         </p>
@@ -1112,8 +1113,8 @@ export default function QuantityBreaksPage() {
                 <label
                   style={{
                     flex: 1,
-                    background: targetMode === "ALL" ? "#1e1b12" : "#1a1a1a",
-                    border: `2px solid ${targetMode === "ALL" ? "#D4AF37" : "#333"}`,
+                    background: targetMode === "ALL" ? "#221e16" : "#1d1a14",
+                    border: `2px solid ${targetMode === "ALL" ? "#C9B78F" : "#3A352B"}`,
                     borderRadius: 10,
                     padding: 14,
                     cursor: "pointer",
@@ -1127,7 +1128,7 @@ export default function QuantityBreaksPage() {
                     style={{ marginRight: 8 }}
                   />
                   <span style={{ fontWeight: 800, color: "#fff" }}><Translate text='All Store Products' /></span>
-                  <p style={{ margin: "4px 0 0 22px", fontSize: 12, color: "#a1a1aa" }}>
+                  <p style={{ margin: "4px 0 0 22px", fontSize: 12, color: "#a39e91" }}>
                     
                                                           <Translate text='Enable this volume tier structure across your entire catalog.' />
                                                         </p>
@@ -1135,7 +1136,7 @@ export default function QuantityBreaksPage() {
               </div>
 
               {targetMode === "SPECIFIC" && (
-                <div style={{ background: "#181818", padding: 16, borderRadius: 10, border: "1px solid #333" }}>
+                <div style={{ background: "#1D1A14", padding: 16, borderRadius: 10, border: "1px solid #3A352B" }}>
                   <label className="xpp-label"><Translate text='Search & Select Products' /></label>
                   <input
                     type="text"
@@ -1145,11 +1146,11 @@ export default function QuantityBreaksPage() {
                     className="xpp-input"
                     style={{ marginBottom: 10 }}
                   />
-                  {isSearching && <div style={{ fontSize: 12, color: "#D4AF37" }}><Translate text='Searching store catalog...' /></div>}
+                  {isSearching && <div style={{ fontSize: 12, color: "#C9B78F" }}><Translate text='Searching store catalog...' /></div>}
 
                   {/* Search Results Dropdown */}
                   {filteredSearchResults.length > 0 && (
-                    <div style={{ maxHeight: 200, overflowY: "auto", background: "#222", borderRadius: 8, padding: 8, marginBottom: 12 }}>
+                    <div style={{ maxHeight: 200, overflowY: "auto", background: "#2A261E", borderRadius: 8, padding: 8, marginBottom: 12 }}>
                       {filteredSearchResults.map((prod) => {
                         const isSelected = selectedProductIds.includes(String(prod.id));
                         return (
@@ -1166,7 +1167,7 @@ export default function QuantityBreaksPage() {
                               borderRadius: 6,
                             }}
                           >
-                            <span style={{ fontSize: 13, color: isSelected ? "#FFD700" : "#fff" }}>{prod.title}</span>
+                            <span style={{ fontSize: 13, color: isSelected ? "#C9B78F" : "#fff" }}>{prod.title}</span>
                             <span style={{ fontSize: 12, fontWeight: 700 }}>{isSelected ? "Selected" : "+ Add"}</span>
                           </div>
                         );
@@ -1176,7 +1177,7 @@ export default function QuantityBreaksPage() {
 
                   {/* Selected Products Chips */}
                   <div>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: "#a1a1aa" }}>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: "#a39e91" }}>
                       
                                                                 <Translate text='Selected Products (' />{selectedProductIds.length}):
                     </span>
@@ -1191,7 +1192,7 @@ export default function QuantityBreaksPage() {
                         </div>
                       ))}
                       {selectedProductIds.length === 0 && (
-                        <span style={{ fontSize: 12, color: "#888", fontStyle: "italic", marginLeft: 4 }}>
+                        <span style={{ fontSize: 12, color: "#8F8A7E", fontStyle: "italic", marginLeft: 4 }}>
                           
                                                                             <Translate text='No products selected yet. Search above to add items.' />
                                                                           </span>
@@ -1211,8 +1212,8 @@ export default function QuantityBreaksPage() {
                 <label
                   style={{
                     flex: 1,
-                    background: discountType === "PERCENTAGE" ? "#1e1b12" : "#1a1a1a",
-                    border: `2px solid ${discountType === "PERCENTAGE" ? "#D4AF37" : "#333"}`,
+                    background: discountType === "PERCENTAGE" ? "#221e16" : "#1d1a14",
+                    border: `2px solid ${discountType === "PERCENTAGE" ? "#C9B78F" : "#3A352B"}`,
                     borderRadius: 10,
                     padding: 14,
                     cursor: "pointer",
@@ -1226,7 +1227,7 @@ export default function QuantityBreaksPage() {
                     style={{ marginRight: 8 }}
                   />
                   <span style={{ fontWeight: 800, color: "#fff" }}><Translate text='Percentage Discount (%)' /></span>
-                  <p style={{ margin: "4px 0 0 22px", fontSize: 12, color: "#a1a1aa" }}>
+                  <p style={{ margin: "4px 0 0 22px", fontSize: 12, color: "#a39e91" }}>
                     
                                                           <Translate text='e.g. Buy 2 get 10% off each, Buy 3 get 20% off each.' />
                                                         </p>
@@ -1235,8 +1236,8 @@ export default function QuantityBreaksPage() {
                 <label
                   style={{
                     flex: 1,
-                    background: discountType === "FIXED_PER_ITEM" ? "#1e1b12" : "#1a1a1a",
-                    border: `2px solid ${discountType === "FIXED_PER_ITEM" ? "#D4AF37" : "#333"}`,
+                    background: discountType === "FIXED_PER_ITEM" ? "#221e16" : "#1d1a14",
+                    border: `2px solid ${discountType === "FIXED_PER_ITEM" ? "#C9B78F" : "#3A352B"}`,
                     borderRadius: 10,
                     padding: 14,
                     cursor: "pointer",
@@ -1250,7 +1251,7 @@ export default function QuantityBreaksPage() {
                     style={{ marginRight: 8 }}
                   />
                   <span style={{ fontWeight: 800, color: "#fff" }}><Translate text='Fixed Amount Deducted Per Item ($)' /></span>
-                  <p style={{ margin: "4px 0 0 22px", fontSize: 12, color: "#a1a1aa" }}>
+                  <p style={{ margin: "4px 0 0 22px", fontSize: 12, color: "#a39e91" }}>
                     
                                                           <Translate text='e.g. Buy 2 save $5.00 each, Buy 3 save $10.00 each.' />
                                                         </p>
@@ -1274,7 +1275,7 @@ export default function QuantityBreaksPage() {
               {tiers.map((tier, idx) => (
                 <div key={idx} className="xpp-tier-item">
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-                    <span style={{ fontSize: 14, fontWeight: 800, color: "#D4AF37" }}>
+                    <span style={{ fontSize: 14, fontWeight: 800, color: "#C9B78F" }}>
                       
                                                     <Translate text='Tier #' />{idx + 1}
                     </span>
@@ -1366,7 +1367,7 @@ export default function QuantityBreaksPage() {
                   onClick={() => setDesignPreset("modern_cards")}
                 >
                   <div style={{ fontWeight: 800, color: "#fff", marginBottom: 4 }}><Translate text='Modern Stacked Cards' /></div>
-                  <p style={{ fontSize: 12, color: "#a1a1aa", margin: 0 }}>
+                  <p style={{ fontSize: 12, color: "#a39e91", margin: 0 }}>
                     
                                                           <Translate text='Vertical stacked tiles with custom radio selectors, subtle gradient borders, and highlight badge.' />
                                                         </p>
@@ -1377,7 +1378,7 @@ export default function QuantityBreaksPage() {
                   onClick={() => setDesignPreset("grid_boxes")}
                 >
                   <div style={{ fontWeight: 800, color: "#fff", marginBottom: 4 }}><Translate text='Compact Grid Boxes' /></div>
-                  <p style={{ fontSize: 12, color: "#a1a1aa", margin: 0 }}>
+                  <p style={{ fontSize: 12, color: "#a39e91", margin: 0 }}>
                     
                                                           <Translate text='Horizontal side-by-side cards with prominent quantity count and top banner discount tags.' />
                                                         </p>
@@ -1388,7 +1389,7 @@ export default function QuantityBreaksPage() {
                   onClick={() => setDesignPreset("minimal_table")}
                 >
                   <div style={{ fontWeight: 800, color: "#fff", marginBottom: 4 }}><Translate text='Minimalist Sleek Rows' /></div>
-                  <p style={{ fontSize: 12, color: "#a1a1aa", margin: 0 }}>
+                  <p style={{ fontSize: 12, color: "#a39e91", margin: 0 }}>
                     
                                                           <Translate text='Clean compact rows with circular indicator, aligned pricing, and subtle outline hover.' />
                                                         </p>
@@ -1399,7 +1400,7 @@ export default function QuantityBreaksPage() {
                   onClick={() => setDesignPreset("luxury_gold")}
                 >
                   <div style={{ fontWeight: 800, color: "#fff", marginBottom: 4 }}><Translate text='Luxury Gold Vault' /></div>
-                  <p style={{ fontSize: 12, color: "#a1a1aa", margin: 0 }}>
+                  <p style={{ fontSize: 12, color: "#a39e91", margin: 0 }}>
                     
                                                           <Translate text='Deep obsidian card framing with gleaming gold accents, metallic badges, and live savings indicator.' />
                                                         </p>
@@ -1412,8 +1413,8 @@ export default function QuantityBreaksPage() {
                   <label
                     style={{
                       flex: 1,
-                      background: animationStyle === "shimmer" ? "#1e1b12" : "#1a1a1a",
-                      border: `1.5px solid ${animationStyle === "shimmer" ? "#D4AF37" : "#333"}`,
+                      background: animationStyle === "shimmer" ? "#221e16" : "#1d1a14",
+                      border: `1.5px solid ${animationStyle === "shimmer" ? "#C9B78F" : "#3A352B"}`,
                       borderRadius: 8,
                       padding: 12,
                       cursor: "pointer",
@@ -1427,7 +1428,7 @@ export default function QuantityBreaksPage() {
                       style={{ marginRight: 6 }}
                     />
                     <span style={{ fontWeight: 700, color: "#fff", fontSize: 13 }}><Translate text='Shimmer Light Sweep' /></span>
-                    <p style={{ margin: "2px 0 0 20px", fontSize: 11, color: "#a1a1aa" }}>
+                    <p style={{ margin: "2px 0 0 20px", fontSize: 11, color: "#a39e91" }}>
                       
                                                                 <Translate text='A continuous smooth light reflection gliding across the popular tier.' />
                                                               </p>
@@ -1436,8 +1437,8 @@ export default function QuantityBreaksPage() {
                   <label
                     style={{
                       flex: 1,
-                      background: animationStyle === "shine_glow" ? "#1e1b12" : "#1a1a1a",
-                      border: `1.5px solid ${animationStyle === "shine_glow" ? "#D4AF37" : "#333"}`,
+                      background: animationStyle === "shine_glow" ? "#221e16" : "#1d1a14",
+                      border: `1.5px solid ${animationStyle === "shine_glow" ? "#C9B78F" : "#3A352B"}`,
                       borderRadius: 8,
                       padding: 12,
                       cursor: "pointer",
@@ -1451,7 +1452,7 @@ export default function QuantityBreaksPage() {
                       style={{ marginRight: 6 }}
                     />
                     <span style={{ fontWeight: 700, color: "#fff", fontSize: 13 }}><Translate text='Glowing Pulse' /></span>
-                    <p style={{ margin: "2px 0 0 20px", fontSize: 11, color: "#a1a1aa" }}>
+                    <p style={{ margin: "2px 0 0 20px", fontSize: 11, color: "#a39e91" }}>
                       
                                                                 <Translate text='A soft breathing neon ambient glow around the selected tier.' />
                                                               </p>
@@ -1460,8 +1461,8 @@ export default function QuantityBreaksPage() {
                   <label
                     style={{
                       flex: 1,
-                      background: animationStyle === "floating_badge" ? "#1e1b12" : "#1a1a1a",
-                      border: `1.5px solid ${animationStyle === "floating_badge" ? "#D4AF37" : "#333"}`,
+                      background: animationStyle === "floating_badge" ? "#221e16" : "#1d1a14",
+                      border: `1.5px solid ${animationStyle === "floating_badge" ? "#C9B78F" : "#3A352B"}`,
                       borderRadius: 8,
                       padding: 12,
                       cursor: "pointer",
@@ -1475,7 +1476,7 @@ export default function QuantityBreaksPage() {
                       style={{ marginRight: 6 }}
                     />
                     <span style={{ fontWeight: 700, color: "#fff", fontSize: 13 }}><Translate text='Floating Badge' /></span>
-                    <p style={{ margin: "2px 0 0 20px", fontSize: 11, color: "#a1a1aa" }}>
+                    <p style={{ margin: "2px 0 0 20px", fontSize: 11, color: "#a39e91" }}>
                       
                                                                 <Translate text='An animated floating bob effect on highlight badges.' />
                                                               </p>
@@ -1488,6 +1489,8 @@ export default function QuantityBreaksPage() {
             <div className="xpp-card">
               <h3 className="xpp-card-title"><Translate text='6. Custom Appearance Colors' /></h3>
               <p className="xpp-card-desc"><Translate text='Fine-tune the palette to match your store&apos;s brand guidelines.' /></p>
+
+              <ColorPresets onApply={(p) => { setAccentColor(p.accent); setBackgroundColor(p.surface); setBorderColor(p.border); setTextColor(p.text); setBadgeBgColor(p.accent); setBadgeTextColor(p.onAccent); setBtnBgColor(p.accent); setBtnTextColor(p.onAccent); }} />
 
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 16 }}>
                 <div>
@@ -1552,9 +1555,9 @@ export default function QuantityBreaksPage() {
                     type="checkbox"
                     checked={showAddToCartBtn}
                     onChange={(e) => setShowAddToCartBtn(e.target.checked)}
-                    style={{ width: 18, height: 18, accentColor: "#D4AF37", cursor: "pointer" }}
+                    style={{ width: 18, height: 18, accentColor: "#D9C9A8", cursor: "pointer" }}
                   />
-                  <span style={{ fontSize: 13, fontWeight: 700, color: showAddToCartBtn ? "#4ade80" : "#a1a1aa" }}>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: showAddToCartBtn ? "#4ade80" : "#a39e91" }}>
                     {showAddToCartBtn ? "Enabled" : "Disabled"}
                   </span>
                 </label>
@@ -1651,13 +1654,13 @@ export default function QuantityBreaksPage() {
             </div>
 
             {/* Section 8: Interactive Live Storefront Preview */}
-            <div className="xpp-card" style={{ background: "#0a0a0c", border: "2px dashed rgba(212, 175, 55, 0.4)" }} dir={isPreviewRtl ? "rtl" : "ltr"}>
+            <div className="xpp-card" style={{ background: "#0e0d0b", border: "2px dashed rgba(201,183,143, 0.4)" }} dir={isPreviewRtl ? "rtl" : "ltr"}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-                <span style={{ fontSize: 12, fontWeight: 800, color: "#FFD700", textTransform: "uppercase", letterSpacing: 1 }}>
+                <span style={{ fontSize: 12, fontWeight: 800, color: "#C9B78F", textTransform: "uppercase", letterSpacing: 1 }}>
                   
                                                     <Translate text='Real-Time Storefront Interactive Preview (' />{selectedLang.toUpperCase()})
                 </span>
-                <span style={{ fontSize: 12, color: "#888" }}>
+                <span style={{ fontSize: 12, color: "#8F8A7E" }}>
                   
                                                     <Translate text='Layout:' /> {designPreset}  <Translate text='| Effect:' /> {animationStyle}
                 </span>
@@ -1738,7 +1741,7 @@ export default function QuantityBreaksPage() {
                                 width: 18,
                                 height: 18,
                                 borderRadius: "50%",
-                                border: `2px solid ${isSelected ? accentColor : "#555"}`,
+                                border: `2px solid ${isSelected ? accentColor : "#5A5448"}`,
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
@@ -1858,7 +1861,7 @@ export default function QuantityBreaksPage() {
                           key={idx}
                           onClick={() => setSelectedPreviewIndex(idx)}
                           style={{
-                            background: isSelected ? "rgba(212, 175, 55, 0.08)" : backgroundColor,
+                            background: isSelected ? "rgba(201,183,143, 0.08)" : backgroundColor,
                             borderBottom: idx === tiers.length - 1 ? "none" : `1px solid ${borderColor}`,
                             padding: "12px 16px",
                             display: "flex",
@@ -1873,7 +1876,7 @@ export default function QuantityBreaksPage() {
                                 width: 16,
                                 height: 16,
                                 borderRadius: "50%",
-                                border: `2px solid ${isSelected ? accentColor : "#555"}`,
+                                border: `2px solid ${isSelected ? accentColor : "#5A5448"}`,
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
@@ -1923,7 +1926,7 @@ export default function QuantityBreaksPage() {
                             alignItems: "center",
                             justifyContent: "space-between",
                             cursor: "pointer",
-                            boxShadow: isSelected ? "0 4px 20px rgba(212, 175, 55, 0.2)" : "none",
+                            boxShadow: isSelected ? "0 4px 20px rgba(201,183,143, 0.2)" : "none",
                           }}
                         >
                           <div>

@@ -159,72 +159,64 @@ export default function App() {
         {EXIT_INTENT_AVAILABLE ? <a href="/app/exit-intent">{i18n.navExitIntent || "Exit-Intent Recovery"}</a> : null}
       </NavMenu>
 
-      <div dir={isAr ? "rtl" : "ltr"} style={{ width: "100%", minHeight: "100vh", background: "#0a0a0c" }}>
+      <div dir={isAr ? "rtl" : "ltr"} style={{ width: "100%", minHeight: "100vh", background: "#0e0d0b" }}>
         <style>{`
           /* GLOBAL DARK THEME RESETS */
           
           /* High-Contrast Gold Section Titles with Dividers */
           .xp-section-title {
             font-size: 16px !important;
-            font-weight: 800 !important;
-            color: #D4AF37 !important;
+            font-weight: 700 !important;
+            color: #C9B78F !important;
             margin: 0 0 16px 0 !important;
             display: flex !important;
             align-items: center !important;
             gap: 8px !important;
-            letter-spacing: 0.2px !important;
-            border-bottom: 1px solid #282828 !important;
+                        border-bottom: 1px solid #2E2A22 !important;
             padding-bottom: 12px !important;
           }
 
           .xp-help-link {
             display: inline-flex; align-items: center; gap: 7px;
             padding: 6px 14px; border-radius: 999px;
-            border: 1px solid rgba(212,175,55,0.55);
-            background: rgba(212,175,55,0.08);
-            color: #F3E5AB !important; font-size: 12px; font-weight: 700;
+            border: 1px solid rgba(201,183,143,0.4);
+            background: transparent;
+            color: #E9DFC8 !important; font-size: 12px; font-weight: 700;
             text-decoration: none !important; cursor: pointer;
-            transition: background .2s, transform .2s, box-shadow .2s;
-            animation: xp-help-pulse 2.8s ease-in-out infinite;
+            transition: background .2s, border-color .2s;
           }
           .xp-help-link:hover, .xp-help-link.is-active {
-            background: rgba(212,175,55,0.2); transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(212,175,55,0.25);
+            background: rgba(201,183,143,0.14); border-color: rgba(201,183,143,0.7);
           }
           .xp-help-q {
             display: inline-grid; place-items: center; width: 18px; height: 18px;
-            border-radius: 50%; background: #D4AF37; color: #0B0B0B;
+            border-radius: 50%; background: #C9B78F; color: #0E0D0B;
             font-size: 11px; font-weight: 900;
           }
-          @keyframes xp-help-pulse {
-            0%,100% { box-shadow: 0 0 0 0 rgba(212,175,55,0.35); }
-            50% { box-shadow: 0 0 0 7px rgba(212,175,55,0); }
-          }
-          @media (prefers-reduced-motion: reduce) { .xp-help-link { animation: none; } }
 
           :root {
-            --p-color-bg-surface: #141414;
-            --p-color-bg-surface-secondary: #1a1a1a;
+            --p-color-bg-surface: #16140F;
+            --p-color-bg-surface-secondary: #1d1a14;
             --p-color-text: #ffffff;
-            --p-color-text-secondary: #a1a1aa;
-            --p-color-border: #282828;
+            --p-color-text-secondary: #a39e91;
+            --p-color-border: #2E2A22;
             color-scheme: dark;
           }
           body, html {
-            background-color: #0a0a0c !important;
+            background-color: #0e0d0b !important;
             color: #ffffff !important;
           }
           s-page, s-section, s-card {
-            --p-color-bg-surface: #141414 !important;
-            --p-color-bg-surface-secondary: #1a1a1a !important;
+            --p-color-bg-surface: #16140F !important;
+            --p-color-bg-surface-secondary: #1d1a14 !important;
             --p-color-text: #ffffff !important;
-            --p-color-text-secondary: #a1a1aa !important;
-            --p-color-border: #282828 !important;
+            --p-color-text-secondary: #a39e91 !important;
+            --p-color-border: #2E2A22 !important;
             color: #ffffff !important;
           }
           s-section, s-card {
-            background: #141414 !important;
-            border: 1px solid #282828 !important;
+            background: #16140F !important;
+            border: 1px solid #2E2A22 !important;
             border-radius: 12px !important;
           }
         `}</style>
@@ -237,8 +229,8 @@ export default function App() {
             flexWrap: "wrap",
             gap: "12px",
             padding: "10px 20px",
-            background: "#111114",
-            borderBottom: "1px solid #222226",
+            background: "#13110D",
+            borderBottom: "1px solid #26231A",
             position: "sticky",
             top: 0,
             zIndex: 50,
@@ -247,17 +239,16 @@ export default function App() {
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <span
               style={{
-                fontSize: "13px",
-                fontWeight: 700,
-                letterSpacing: "0.05em",
-                color: "#D4AF37",
-                textTransform: "uppercase",
+                fontFamily: 'Georgia, "Iowan Old Style", "Times New Roman", serif',
+                fontSize: "16px",
+                fontWeight: 600,
+                color: "#C9B78F",
               }}
             >
               XPoost
             </span>
-            <span style={{ fontSize: "12px", color: "#71717a" }}>|</span>
-            <span style={{ fontSize: "12px", color: "#a1a1aa", fontWeight: 500 }}>
+            <span style={{ fontSize: "12px", color: "#857f72" }}>|</span>
+            <span style={{ fontSize: "12px", color: "#a39e91", fontWeight: 500 }}>
               {i18n.dashboardLangTitle || "Dashboard Language"}:
             </span>
           </div>
@@ -277,9 +268,9 @@ export default function App() {
               value={dashboardLocale}
               onChange={(e) => handleLanguageChange(e.target.value as SupportedLanguage)}
               style={{
-                background: "#18181b",
-                color: "#F3E5AB",
-                border: "1px solid #3f3f46",
+                background: "#1d1a14",
+                color: "#E9DFC8",
+                border: "1px solid #444138",
                 borderRadius: "6px",
                 padding: "6px 14px",
                 fontSize: "12px",
@@ -293,7 +284,7 @@ export default function App() {
                 <option
                   key={lang.code}
                   value={lang.code}
-                  style={{ background: "#18181b", color: "#f4f4f5" }}
+                  style={{ background: "#1d1a14", color: "#f4f4f5" }}
                 >
                   {lang.nativeName} ({lang.label}) {lang.dir === "rtl" ? "[RTL]" : ""}
                 </option>

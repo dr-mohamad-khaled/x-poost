@@ -1,4 +1,5 @@
 import { Translate } from "../components/Translate";
+import { ColorPresets } from "../components/ColorPresets";
 import { useState, useMemo, useEffect } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Form, useActionData, useLoaderData, useNavigation } from "react-router";
@@ -33,10 +34,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         lowStockThreshold: 20,
         headlineText: "Hurry! Only {stock} items left in stock",
         subText: "High demand: selling fast",
-        accentColor: "#D4AF37",
-        backgroundColor: "#141414",
-        textColor: "#FFFFFF",
-        borderColor: "#2d2d2d",
+        accentColor: "#D9C9A8",
+        backgroundColor: "#352E28",
+        textColor: "#F6F1E7",
+        borderColor: "#4A4238",
         targetMode: "ALL",
         productIdsJson: "[]",
       },
@@ -118,10 +119,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const subText = String(formData.get("subText") || "")
     .replace(/[\uD83C-\uDBFF\uDC00-\uDFFF]/g, "")
     .trim();
-  const accentColor = String(formData.get("accentColor") || "#D4AF37");
-  const backgroundColor = String(formData.get("backgroundColor") || "#141414");
-  const textColor = String(formData.get("textColor") || "#FFFFFF");
-  const borderColor = String(formData.get("borderColor") || "#2d2d2d");
+  const accentColor = String(formData.get("accentColor") || "#D9C9A8");
+  const backgroundColor = String(formData.get("backgroundColor") || "#352E28");
+  const textColor = String(formData.get("textColor") || "#F6F1E7");
+  const borderColor = String(formData.get("borderColor") || "#4A4238");
   const targetMode = String(formData.get("targetMode") || "ALL");
   const productIdsJson = String(formData.get("productIdsJson") || "[]");
   const translationsJsonRaw = String(formData.get("translationsJson") || "");
@@ -355,8 +356,8 @@ export default function ProductScarcityPage() {
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
         .xpp-card {
-          background: #141414;
-          border: 1px solid #282828;
+          background: #16140F;
+          border: 1px solid #2E2A22;
           border-radius: 12px;
           padding: 24px;
           margin-bottom: 24px;
@@ -364,20 +365,20 @@ export default function ProductScarcityPage() {
         .xpp-card-title {
           font-size: 18px;
           font-weight: 800;
-          color: #D4AF37;
+          color: #C9B78F;
           margin: 0 0 12px;
-          border-bottom: 1px solid #282828;
+          border-bottom: 1px solid #2E2A22;
           padding-bottom: 10px;
         }
         .xpp-card-desc {
           font-size: 13px;
-          color: #d0d0d0;
+          color: #D3D0C7;
           margin: 0 0 20px;
           line-height: 1.5;
         }
         .xpp-live-preview-box {
           background: #0a0a0a;
-          border: 2px dashed rgba(212, 175, 55, 0.35);
+          border: 2px dashed rgba(201,183,143, 0.35);
           border-radius: 12px;
           padding: 30px;
           margin-bottom: 24px;
@@ -389,19 +390,19 @@ export default function ProductScarcityPage() {
           margin-bottom: 20px;
         }
         .xpp-preset-card {
-          background: #1a1a1a;
-          border: 2px solid #333333;
+          background: #1d1a14;
+          border: 2px solid #3A352B;
           border-radius: 10px;
           padding: 16px;
           cursor: pointer;
           transition: all 0.2s ease;
         }
         .xpp-preset-card:hover {
-          border-color: #555555;
+          border-color: #58554C;
         }
         .xpp-preset-card--active {
-          border-color: #D4AF37;
-          background: #1e1b12;
+          border-color: #C9B78F;
+          background: #221e16;
         }
         .xpp-preset-name {
           font-size: 14px;
@@ -411,7 +412,7 @@ export default function ProductScarcityPage() {
         }
         .xpp-preset-desc {
           font-size: 12px;
-          color: #d0d0d0;
+          color: #D3D0C7;
           margin: 0;
         }
         .xpp-field-group {
@@ -426,13 +427,13 @@ export default function ProductScarcityPage() {
         }
         .xpp-hint {
           font-size: 12px;
-          color: #d0d0d0;
+          color: #D3D0C7;
           margin-top: 4px;
         }
         .xpp-input {
           width: 100%;
-          background: #1f1f1f;
-          border: 1px solid #383838;
+          background: #1d1a14;
+          border: 1px solid #3B382F;
           border-radius: 8px;
           padding: 10px 14px;
           color: #ffffff;
@@ -440,7 +441,7 @@ export default function ProductScarcityPage() {
           box-sizing: border-box;
         }
         .xpp-input:focus {
-          border-color: #D4AF37;
+          border-color: #C9B78F;
           outline: none;
         }
         .xpp-row {
@@ -456,7 +457,7 @@ export default function ProductScarcityPage() {
         .xpp-color-picker input[type="color"] {
           width: 42px;
           height: 42px;
-          border: 1px solid #444;
+          border: 1px solid #4A443A;
           border-radius: 8px;
           background: none;
           cursor: pointer;
@@ -476,19 +477,19 @@ export default function ProductScarcityPage() {
           transition: all 0.2s ease;
         }
         .xpp-btn--primary {
-          background: linear-gradient(135deg, #FFD700 0%, #D4AF37 100%);
+          background: #C9B78F;
           color: #000000;
         }
         .xpp-btn--secondary {
-          background: #242424;
+          background: #2A261E;
           color: #ffffff;
-          border: 1px solid #3d3d3d;
+          border: 1px solid #3a352b;
         }
         .xpp-var-chip {
           display: inline-block;
           background: rgba(255, 215, 0, 0.15);
-          border: 1px solid #D4AF37;
-          color: #FFD700;
+          border: 1px solid #C9B78F;
+          color: #C9B78F;
           padding: 2px 8px;
           border-radius: 4px;
           font-size: 12px;
@@ -501,8 +502,8 @@ export default function ProductScarcityPage() {
           display: inline-flex;
           align-items: center;
           gap: 8px;
-          background: #242424;
-          border: 1px solid #3d3d3d;
+          background: #2A261E;
+          border: 1px solid #3a352b;
           border-radius: 20px;
           padding: 4px 12px;
           font-size: 12px;
@@ -523,7 +524,7 @@ export default function ProductScarcityPage() {
         }
         @keyframes xpp-preview-pop {
           0% { transform: scale(1); }
-          40% { transform: scale(1.3); color: #FFD700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6); }
+          40% { transform: scale(1.3); color: #C9B78F; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6); }
           100% { transform: scale(1); }
         }
       `}</style>
@@ -546,11 +547,11 @@ export default function ProductScarcityPage() {
         {/* Live Preview Box */}
         <div className="xpp-live-preview-box" dir={isPreviewRtl ? "rtl" : "ltr"}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-            <span style={{ fontSize: 12, fontWeight: 800, color: "#FFD700", textTransform: "uppercase", letterSpacing: 1 }}>
+            <span style={{ fontSize: 12, fontWeight: 800, color: "#C9B78F", textTransform: "uppercase", letterSpacing: 1 }}>
               
                                         <Translate text='Real-Time Storefront Preview (' />{selectedLang.toUpperCase()})
             </span>
-            <span style={{ fontSize: 12, color: "#888888" }}>
+            <span style={{ fontSize: 12, color: "#8F8A7E" }}>
               
                                         <Translate text='Preset:' /> {designPreset}
             </span>
@@ -561,9 +562,9 @@ export default function ProductScarcityPage() {
               maxWidth: 520,
               margin: "0 auto",
               padding: 16,
-              background: "#101010",
+              background: "#131007",
               borderRadius: 14,
-              border: "1px solid #222",
+              border: "1px solid #2A261E",
             }}
           >
             {designPreset === "urgency_badge" && (
@@ -674,7 +675,7 @@ export default function ProductScarcityPage() {
                   <span style={{ fontSize: 14, fontWeight: 700 }}>{previewHeadline}</span>
                 </div>
                 <div style={{ width: "100%", height: 8, background: "rgba(255,255,255,0.1)", borderRadius: 4, overflow: "hidden", marginBottom: 6 }}>
-                  <div style={{ width: `${previewPercent}%`, height: "100%", background: `linear-gradient(90deg, #ff5252 0%, ${accentColor} 100%)`, borderRadius: 4 }}></div>
+                  <div style={{ width: `${previewPercent}%`, height: "100%", background: `#ff5252`, borderRadius: 4 }}></div>
                 </div>
                 {previewSubtext && <div style={{ fontSize: 12, opacity: 0.85 }}>{previewSubtext}</div>}
               </div>
@@ -683,7 +684,7 @@ export default function ProductScarcityPage() {
         </div>
 
         {/* Theme Customizer Quick Link Card */}
-        <div className="xpp-card" style={{ border: "1.5px solid rgba(212, 175, 55, 0.4)", background: "linear-gradient(135deg, #18150f 0%, #141414 100%)" }}>
+        <div className="xpp-card" style={{ border: "1.5px solid rgba(201,183,143, 0.4)", background: "#18150f" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
             <div>
               <h2 className="xpp-card-title"><Translate text='How to Place this Block on Your Store' /></h2>
@@ -791,8 +792,8 @@ export default function ProductScarcityPage() {
               <label
                 style={{
                   flex: 1,
-                  background: stockSource === "shopify" ? "#1e1b12" : "#1a1a1a",
-                  border: `2px solid ${stockSource === "shopify" ? "#D4AF37" : "#333"}`,
+                  background: stockSource === "shopify" ? "#221e16" : "#1d1a14",
+                  border: `2px solid ${stockSource === "shopify" ? "#C9B78F" : "#3A352B"}`,
                   borderRadius: 10,
                   padding: 14,
                   cursor: "pointer",
@@ -806,7 +807,7 @@ export default function ProductScarcityPage() {
                   style={{ marginRight: 8 }}
                 />
                 <span style={{ fontWeight: 800, color: "#fff" }}><Translate text='Real Shopify Inventory' /></span>
-                <p style={{ margin: "4px 0 0", fontSize: 12, color: "#aaa" }}>
+                <p style={{ margin: "4px 0 0", fontSize: 12, color: "#A39E91" }}>
                   
                                                     <Translate text='Reads the actual inventory quantity of the product or selected variant.' />
                                                   </p>
@@ -815,8 +816,8 @@ export default function ProductScarcityPage() {
               <label
                 style={{
                   flex: 1,
-                  background: stockSource === "manual_range" ? "#1e1b12" : "#1a1a1a",
-                  border: `2px solid ${stockSource === "manual_range" ? "#D4AF37" : "#333"}`,
+                  background: stockSource === "manual_range" ? "#221e16" : "#1d1a14",
+                  border: `2px solid ${stockSource === "manual_range" ? "#C9B78F" : "#3A352B"}`,
                   borderRadius: 10,
                   padding: 14,
                   cursor: "pointer",
@@ -830,7 +831,7 @@ export default function ProductScarcityPage() {
                   style={{ marginRight: 8 }}
                 />
                 <span style={{ fontWeight: 800, color: "#fff" }}><Translate text='Simulated Stock Range' /></span>
-                <p style={{ margin: "4px 0 0", fontSize: 12, color: "#aaa" }}>
+                <p style={{ margin: "4px 0 0", fontSize: 12, color: "#A39E91" }}>
                   
                                                     <Translate text='Generates an enticing low quantity (e.g. between 3 and 12) per product.' />
                                                   </p>
@@ -896,7 +897,7 @@ export default function ProductScarcityPage() {
             />
 
             <div style={{ marginBottom: 14 }}>
-              <span style={{ fontSize: 12, color: "#888888", marginRight: 8 }}><Translate text='Available Variables:' /></span>
+              <span style={{ fontSize: 12, color: "#8F8A7E", marginRight: 8 }}><Translate text='Available Variables:' /></span>
               <span
                 className="xpp-var-chip"
                 onClick={() => handleTextChange("headlineText", `${currentCopy.headlineText} {stock}`)}
@@ -977,8 +978,8 @@ export default function ProductScarcityPage() {
                   key={m.key}
                   style={{
                     flex: 1,
-                    background: targetMode === m.key ? "#1e1b12" : "#1a1a1a",
-                    border: `2px solid ${targetMode === m.key ? "#D4AF37" : "#333"}`,
+                    background: targetMode === m.key ? "#221e16" : "#1d1a14",
+                    border: `2px solid ${targetMode === m.key ? "#C9B78F" : "#3A352B"}`,
                     borderRadius: 8,
                     padding: 12,
                     cursor: "pointer",
@@ -992,7 +993,7 @@ export default function ProductScarcityPage() {
                     style={{ marginRight: 6 }}
                   />
                   <strong style={{ color: "#fff", fontSize: 13 }}>{m.label}</strong>
-                  <div style={{ fontSize: 11, color: "#aaa", marginTop: 2 }}>{m.desc}</div>
+                  <div style={{ fontSize: 11, color: "#A39E91", marginTop: 2 }}>{m.desc}</div>
                 </label>
               ))}
             </div>
@@ -1012,7 +1013,7 @@ export default function ProductScarcityPage() {
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                   {isSearching && (
-                    <span style={{ position: "absolute", right: 12, top: 10, fontSize: 12, color: "#D4AF37" }}>
+                    <span style={{ position: "absolute", right: 12, top: 10, fontSize: 12, color: "#C9B78F" }}>
                       
                                                                 <Translate text='Searching store...' />
                                                               </span>
@@ -1021,7 +1022,7 @@ export default function ProductScarcityPage() {
 
                 {/* Search Results Dropdown */}
                 {filteredSearchResults.length > 0 && (
-                  <div style={{ background: "#1a1a1a", border: "1px solid #333", borderRadius: 8, maxHeight: 180, overflowY: "auto", marginBottom: 14 }}>
+                  <div style={{ background: "#1d1a14", border: "1px solid #3A352B", borderRadius: 8, maxHeight: 180, overflowY: "auto", marginBottom: 14 }}>
                     {filteredSearchResults.map((prod) => {
                       const isSelected = selectedProductIds.includes(prod.id);
                       return (
@@ -1030,16 +1031,16 @@ export default function ProductScarcityPage() {
                           onClick={() => toggleProductSelection(prod.id)}
                           style={{
                             padding: "8px 12px",
-                            borderBottom: "1px solid #282828",
+                            borderBottom: "1px solid #2E2A22",
                             display: "flex",
                             justifyContent: "space-between",
                             alignItems: "center",
                             cursor: "pointer",
-                            background: isSelected ? "rgba(212, 175, 55, 0.12)" : "transparent",
+                            background: isSelected ? "rgba(201,183,143, 0.12)" : "transparent",
                           }}
                         >
                           <span style={{ fontSize: 13, color: "#fff" }}>{prod.title}</span>
-                          <span style={{ fontSize: 12, fontWeight: 700, color: isSelected ? "#4ade80" : "#D4AF37" }}>
+                          <span style={{ fontSize: 12, fontWeight: 700, color: isSelected ? "#4ade80" : "#C9B78F" }}>
                             {isSelected ? "Selected ✓" : "+ Add"}
                           </span>
                         </div>
@@ -1050,7 +1051,7 @@ export default function ProductScarcityPage() {
 
                 {/* Selected Products Badges */}
                 <div style={{ marginTop: 10 }}>
-                  <span style={{ fontSize: 12, color: "#888888", display: "block", marginBottom: 6 }}>
+                  <span style={{ fontSize: 12, color: "#8F8A7E", display: "block", marginBottom: 6 }}>
                     
                                                           <Translate text='Currently Selected (' />{selectedProductIds.length}):
                   </span>
@@ -1067,7 +1068,7 @@ export default function ProductScarcityPage() {
                       ))}
                     </div>
                   ) : (
-                    <span style={{ fontSize: 12, color: "#666" }}><Translate text='No products selected yet. Search above to add products.' /></span>
+                    <span style={{ fontSize: 12, color: "#6F6A5F" }}><Translate text='No products selected yet. Search above to add products.' /></span>
                   )}
                 </div>
               </div>
@@ -1081,6 +1082,8 @@ export default function ProductScarcityPage() {
               
                                         <Translate text='Match the scarcity badge colors to your theme.' />
                                       </p>
+
+            <ColorPresets onApply={(p) => { setAccentColor(p.accent); setBackgroundColor(p.surface); setTextColor(p.text); setBorderColor(p.border); }} />
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16 }}>
               <div className="xpp-field-group">
@@ -1138,7 +1141,7 @@ export default function ProductScarcityPage() {
           </div>
 
           {/* Submit */}
-          <div style={{ position: "sticky", bottom: 16, zIndex: 10, background: "rgba(10,10,10,0.85)", backdropFilter: "blur(10px)", padding: 14, borderRadius: 10, border: "1px solid #333", display: "flex", justifyContent: "flex-end" }}>
+          <div style={{ position: "sticky", bottom: 16, zIndex: 10, background: "rgba(10,10,10,0.85)", backdropFilter: "blur(10px)", padding: 14, borderRadius: 10, border: "1px solid #3A352B", display: "flex", justifyContent: "flex-end" }}>
             <button
               type="submit"
               className="xpp-btn xpp-btn--primary"

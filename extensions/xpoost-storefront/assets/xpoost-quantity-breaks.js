@@ -239,14 +239,14 @@
     var t = offer.translations || {};
 
     // Apply offer custom styling variables
-    root.style.setProperty("--xpp-qb-accent", offer.accentColor || "#D4AF37");
-    root.style.setProperty("--xpp-qb-bg", offer.backgroundColor || "#141414");
-    root.style.setProperty("--xpp-qb-border", offer.borderColor || "#282828");
-    root.style.setProperty("--xpp-qb-text", offer.textColor || "#FFFFFF");
-    root.style.setProperty("--xpp-qb-badge-bg", offer.badgeBgColor || "#D4AF37");
-    root.style.setProperty("--xpp-qb-badge-text", offer.badgeTextColor || "#000000");
-    root.style.setProperty("--xpp-qb-btn-bg", offer.btnBgColor || offer.accentColor || "#D4AF37");
-    root.style.setProperty("--xpp-qb-btn-text", offer.btnTextColor || "#000000");
+    root.style.setProperty("--xpp-qb-accent", offer.accentColor || "#D9C9A8");
+    root.style.setProperty("--xpp-qb-bg", offer.backgroundColor || "#352E28");
+    root.style.setProperty("--xpp-qb-border", offer.borderColor || "#4A4238");
+    root.style.setProperty("--xpp-qb-text", offer.textColor || "#F6F1E7");
+    root.style.setProperty("--xpp-qb-badge-bg", offer.badgeBgColor || "#D9C9A8");
+    root.style.setProperty("--xpp-qb-badge-text", offer.badgeTextColor || "#2E2823");
+    root.style.setProperty("--xpp-qb-btn-bg", offer.btnBgColor || offer.accentColor || "#D9C9A8");
+    root.style.setProperty("--xpp-qb-btn-text", offer.btnTextColor || "#2E2823");
     // The section heading sits on the theme's background: use the theme's own text color
     try {
       if (root.parentElement) root.style.setProperty("--xpp-qb-heading-color", getComputedStyle(root.parentElement).color);
