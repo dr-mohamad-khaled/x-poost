@@ -45,8 +45,33 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
       const url = new URL(request.url);
       const rawShop = url.searchParams.get("shop") || "";
-      // Only a plain shop handle / myshopify domain may end up in the redirect URL.
-      const shop = /^[a-z0-9][a-z0-9-]*(\.myshopify\.com)?$/i.test(rawShop) ? rawShop : null;
+      let shop = /^[a-z0-9][a-z0-9-]*(\.myshopify\.com)?$/i.test(rawShop) ? rawShop : null;
+
+      if (!shop) {
+        const host = url.searchParams.get("host");
+        if (host) {
+          try {
+            const decoded = Buffer.from(host, "base64").toString("utf-8");
+            const match = decoded.match(/admin\.shopify\.com\/store\/([a-z0-9-]+)/i) || decoded.match(/([a-z0-9-]+)\.myshopify\.com/i);
+            if (match && match[1]) {
+              shop = `${match[1]}.myshopify.com`;
+            }
+          } catch {}
+        }
+      }
+
+      if (!shop) {
+        const idToken = url.searchParams.get("id_token") || request.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
+        if (idToken && idToken.includes(".")) {
+          try {
+            const payload = JSON.parse(Buffer.from(idToken.split(".")[1], "base64").toString("utf-8"));
+            if (payload?.dest) {
+              shop = new URL(payload.dest).hostname;
+            }
+          } catch {}
+        }
+      }
+
       if (error.status === 401 && shop && !isXhr) {
         const cleanShop = shop.replace(".myshopify.com", "");
         const installUrl = `https://admin.shopify.com/store/${cleanShop}/oauth/install?client_id=${currentApiKey}`;
