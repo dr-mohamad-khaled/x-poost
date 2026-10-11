@@ -11,14 +11,16 @@ import { MONTHLY_PLAN, YEARLY_PLAN, LIFETIME_PLAN } from "./billing.constants";
 
 import { LogSeverity } from "@shopify/shopify-api";
 
+const clean = (val?: string) => (val || "").trim().replace(/^["']|["']$/g, "").trim();
+
 // Credentials come from the environment ONLY. Never put a secret in this file: it is committed to git.
-const apiSecretKey = (
+const apiSecretKey = clean(
   process.env.SHOPIFY_API_SECRET ||
   process.env.SHOPIFY_SECRET ||
   process.env.SHOPIFY_APP_SECRET ||
   process.env.CLIENT_SECRET ||
   ""
-).trim();
+);
 
 if (!apiSecretKey) {
   throw new Error(
@@ -27,9 +29,9 @@ if (!apiSecretKey) {
 }
 
 // The API key (client_id) is public: it is also in shopify.app.toml and in every storefront URL.
-const apiKey = (process.env.SHOPIFY_API_KEY || "872f7f6415d1c243c11ccdfe9426b07f").trim();
-const appUrl = (process.env.SHOPIFY_APP_URL || "https://sea-turtle-app-a4uct.ondigitalocean.app").trim().replace(/\/$/, "");
-const rawScopes = (process.env.SCOPES || "write_discounts,read_products,read_orders,write_checkout_extensions_apis").trim();
+const apiKey = clean(process.env.SHOPIFY_API_KEY || "872f7f6415d1c243c11ccdfe9426b07f");
+const appUrl = clean(process.env.SHOPIFY_APP_URL || "https://sea-turtle-app-a4uct.ondigitalocean.app").replace(/\/$/, "");
+const rawScopes = clean(process.env.SCOPES || "write_discounts,read_products,read_orders,write_checkout_extensions_apis");
 const scopes = rawScopes.split(",").map((s) => s.trim()).filter(Boolean);
 
 const shopify = shopifyApp({
