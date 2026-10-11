@@ -119,6 +119,13 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           }
           const localized = ruleI18n && ruleI18n[storefrontLocale] ? ruleI18n[storefrontLocale] : null;
 
+          const bgMatch = (r.offerDescription || "").match(/<!--xp:bg:([^>]+)-->/);
+          const accentMatch = (r.offerDescription || "").match(/<!--xp:accent:([^>]+)-->/);
+          const textMatch = (r.offerDescription || "").match(/<!--xp:text:([^>]+)-->/);
+          const ruleBg = bgMatch ? decodeURIComponent(bgMatch[1].trim()) : undefined;
+          const ruleAccent = accentMatch ? decodeURIComponent(accentMatch[1].trim()) : undefined;
+          const ruleText = textMatch ? decodeURIComponent(textMatch[1].trim()) : undefined;
+
           const cleanDesc = (r.offerDescription || "")
             .replace(/<!--xp:layout:[a-z_]+-->/g, "")
             .replace(/<!--xp:preselect:false-->/g, "")
@@ -127,6 +134,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
             .replace(/<!--xp:f3:[^>]+-->/g, "")
             .replace(/<!--xp:h:[^>]+-->/g, "")
             .replace(/<!--xp:i18n:[^>]+-->/g, "")
+            .replace(/<!--xp:bg:[^>]+-->/g, "")
+            .replace(/<!--xp:accent:[^>]+-->/g, "")
+            .replace(/<!--xp:text:[^>]+-->/g, "")
             .trim();
 
           const offerHeadline = localized?.headline || r.offerHeadline;
@@ -150,6 +160,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
             discountCode: r.discountCode,
             preselected: preselected,
             layoutStyle: layoutStyle,
+            backgroundColor: ruleBg || shop.upsellStyleConfig?.prePurchaseBg || "#141414",
+            accentColor: ruleAccent || shop.upsellStyleConfig?.prePurchaseAccent || "#F2F2F2",
+            textColor: ruleText || shop.upsellStyleConfig?.prePurchaseText || "#FFFFFF",
             features: [f1, f2, f3],
             offerTag: localized?.offerTag,
             acceptButton: localized?.acceptButton,

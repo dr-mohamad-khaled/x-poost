@@ -286,36 +286,34 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const triggerProductTitle = String(formData.get("triggerProductTitle") || "All Products");
 
     if (triggerType === "SPECIFIC" && (!triggerProductId || triggerProductId === "ALL" || triggerProductId.trim() === "")) {
-      return { error: "Please select at least one trigger product." }
+      return { error: "Please select at least one trigger product." };
+    }
 
     // Colors picked inside the offer editor are shop-wide colors for this popup
-    {
-      const pmBg = String(formData.get("prePurchaseBg") || "");
-      const pmAccent = String(formData.get("prePurchaseAccent") || "");
-      const pmText = String(formData.get("prePurchaseText") || "");
-      const isHex = (v: string) => /^#[0-9a-fA-F]{6}$/.test(v);
-      if (isHex(pmBg) && isHex(pmAccent) && isHex(pmText)) {
-        try {
-          if ((prisma as any).upsellStyleConfig) {
-            await (prisma as any).upsellStyleConfig.upsert({
-              where: { shopId: shop.id },
-              update: { prePurchaseBg: pmBg, prePurchaseAccent: pmAccent, prePurchaseText: pmText },
-              create: {
-                shopId: shop.id,
-                prePurchaseBg: pmBg,
-                prePurchaseAccent: pmAccent,
-                prePurchaseText: pmText,
-                inCartBg: "#141414",
-                inCartAccent: "#F2F2F2",
-                inCartText: "#FFFFFF",
-              },
-            });
-          }
-        } catch (e) {
-          console.warn("[XPoost] Error saving offer colors:", e);
+    const pmBg = String(formData.get("prePurchaseBg") || "");
+    const pmAccent = String(formData.get("prePurchaseAccent") || "");
+    const pmText = String(formData.get("prePurchaseText") || "");
+    const isHex = (v: string) => /^#[0-9a-fA-F]{6}$/.test(v);
+    if (isHex(pmBg) && isHex(pmAccent) && isHex(pmText)) {
+      try {
+        if ((prisma as any).upsellStyleConfig) {
+          await (prisma as any).upsellStyleConfig.upsert({
+            where: { shopId: shop.id },
+            update: { prePurchaseBg: pmBg, prePurchaseAccent: pmAccent, prePurchaseText: pmText },
+            create: {
+              shopId: shop.id,
+              prePurchaseBg: pmBg,
+              prePurchaseAccent: pmAccent,
+              prePurchaseText: pmText,
+              inCartBg: "#141414",
+              inCartAccent: "#F2F2F2",
+              inCartText: "#FFFFFF",
+            },
+          });
         }
+      } catch (e) {
+        console.warn("[XPoost] Error saving offer colors:", e);
       }
-    };
     }
 
     const offerI18nJsonRaw = String(formData.get("offerI18nJson") || "");
@@ -347,6 +345,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     let offerDescription = rawDescription;
     if (!preselectItems) offerDescription += " <!--xp:preselect:false-->";
     if (layoutStyle) offerDescription += ` <!--xp:layout:${layoutStyle}-->`;
+    if (isHex(pmBg)) offerDescription += ` <!--xp:bg:${encodeURIComponent(pmBg)}-->`;
+    if (isHex(pmAccent)) offerDescription += ` <!--xp:accent:${encodeURIComponent(pmAccent)}-->`;
+    if (isHex(pmText)) offerDescription += ` <!--xp:text:${encodeURIComponent(pmText)}-->`;
     if (feature1) offerDescription += ` <!--xp:f1:${encodeURIComponent(feature1)}-->`;
     if (feature2) offerDescription += ` <!--xp:f2:${encodeURIComponent(feature2)}-->`;
     if (feature3) offerDescription += ` <!--xp:f3:${encodeURIComponent(feature3)}-->`;
@@ -564,6 +565,9 @@ type OfferGroup = {
   discountPercent: number | null;
   discountCode: string | null;
   preselectItems: boolean;
+  backgroundColor?: string;
+  accentColor?: string;
+  textColor?: string;
   active: boolean;
   createdAt: Date;
 };
@@ -898,6 +902,13 @@ export default function PrePurchaseSettings() {
         } catch (e) {}
       }
 
+      const bgMatch = (r.offerDescription || "").match(/<!--xp:bg:([^>]+)-->/);
+      const accentMatch = (r.offerDescription || "").match(/<!--xp:accent:([^>]+)-->/);
+      const textMatch = (r.offerDescription || "").match(/<!--xp:text:([^>]+)-->/);
+      const offerBg = bgMatch ? decodeURIComponent(bgMatch[1].trim()) : undefined;
+      const offerAccent = accentMatch ? decodeURIComponent(accentMatch[1].trim()) : undefined;
+      const offerText = textMatch ? decodeURIComponent(textMatch[1].trim()) : undefined;
+
       const cleanDesc = (r.offerDescription || "")
         .replace(/<!--xp:layout:[a-z_]+-->/g, "")
         .replace(/<!--xp:preselect:false-->/g, "")
@@ -906,6 +917,9 @@ export default function PrePurchaseSettings() {
         .replace(/<!--xp:f3:[^>]+-->/g, "")
         .replace(/<!--xp:h:[^>]+-->/g, "")
         .replace(/<!--xp:i18n:[^>]+-->/g, "")
+        .replace(/<!--xp:bg:[^>]+-->/g, "")
+        .replace(/<!--xp:accent:[^>]+-->/g, "")
+        .replace(/<!--xp:text:[^>]+-->/g, "")
         .trim();
 
       if (!map.has(key)) {
@@ -915,6 +929,9 @@ export default function PrePurchaseSettings() {
           headline,
           description: cleanDesc,
           layoutStyle,
+          backgroundColor: offerBg,
+          accentColor: offerAccent,
+          textColor: offerText,
           feature1,
           feature2,
           feature3,
@@ -1110,6 +1127,9 @@ export default function PrePurchaseSettings() {
     setHeadline(freshI18n[lang].headline);
     setDescription(freshI18n[lang].description);
     setModalLayout("spotlight_hero");
+    setModalBg(styleConfig?.prePurchaseBg || "#141414");
+    setModalAccent(styleConfig?.prePurchaseAccent || "#F2F2F2");
+    setModalText(styleConfig?.prePurchaseText || "#FFFFFF");
     setFeature1(freshI18n[lang].feature1);
     setFeature2(freshI18n[lang].feature2);
     setFeature3(freshI18n[lang].feature3);
@@ -1153,6 +1173,9 @@ export default function PrePurchaseSettings() {
     setFeature2(mergedI18n[lang]?.feature2 || offer.feature2);
     setFeature3(mergedI18n[lang]?.feature3 || offer.feature3);
     setModalLayout(offer.layoutStyle || "spotlight_hero");
+    setModalBg(offer.backgroundColor || styleConfig?.prePurchaseBg || "#141414");
+    setModalAccent(offer.accentColor || styleConfig?.prePurchaseAccent || "#F2F2F2");
+    setModalText(offer.textColor || styleConfig?.prePurchaseText || "#FFFFFF");
     if (offer.triggerProductId && offer.triggerProductId !== "ALL") {
       setTriggerType("SPECIFIC");
       const ids = offer.triggerProductId.split(",").map((s) => s.trim()).filter(Boolean);

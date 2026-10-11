@@ -1525,13 +1525,41 @@
       }, 260);
     }
 
-    // Apply dynamic custom colors from Pre-Purchase styling configuration
+    // Apply dynamic custom colors from matched rule or Pre-Purchase styling configuration
     var preConfig = configStore.prePurchase;
+    var heroRule = (rules && rules[0]) || {};
+    var activeBg = heroRule.backgroundColor || (preConfig && preConfig.backgroundColor);
+    var activeAccent = heroRule.accentColor || (preConfig && preConfig.accentColor);
+    var activeText = heroRule.textColor || (preConfig && preConfig.textColor);
+
+    if (modalEl) {
+      if (activeBg) {
+        modalEl.style.setProperty("--xpc-bg", activeBg);
+        modalEl.style.setProperty("--pm-bg", activeBg);
+      }
+      if (activeAccent) {
+        modalEl.style.setProperty("--xpc-gold", activeAccent);
+        modalEl.style.setProperty("--pm-accent", activeAccent);
+      }
+      if (activeText) {
+        modalEl.style.setProperty("--xpc-text", activeText);
+        modalEl.style.setProperty("--pm-text", activeText);
+      }
+    }
     var innerModal = modalEl.querySelector(".xpc-modal");
-    if (innerModal && preConfig) {
-      if (preConfig.backgroundColor) innerModal.style.setProperty("--xpc-bg", preConfig.backgroundColor);
-      if (preConfig.accentColor) innerModal.style.setProperty("--xpc-gold", preConfig.accentColor);
-      if (preConfig.textColor) innerModal.style.setProperty("--xpc-text", preConfig.textColor);
+    if (innerModal) {
+      if (activeBg) {
+        innerModal.style.setProperty("--xpc-bg", activeBg);
+        innerModal.style.setProperty("--pm-bg", activeBg);
+      }
+      if (activeAccent) {
+        innerModal.style.setProperty("--xpc-gold", activeAccent);
+        innerModal.style.setProperty("--pm-accent", activeAccent);
+      }
+      if (activeText) {
+        innerModal.style.setProperty("--xpc-text", activeText);
+        innerModal.style.setProperty("--pm-text", activeText);
+      }
     }
 
     modalEl.querySelector("#xpc-modal-close").addEventListener("click", function () {
