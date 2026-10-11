@@ -1,5 +1,17 @@
 import { authenticate } from "./shopify.server";
-import { MONTHLY_PLAN, LIFETIME_PLAN } from "./billing.constants";
+import prisma from "./db.server";
+import { MONTHLY_PLAN, YEARLY_PLAN, LIFETIME_PLAN, LIFETIME_LIMIT } from "./billing.constants";
+
+/** How many Lifetime Passes are still available (never throws: if the count fails the offer stays open). */
+async function lifetimeSpotsLeft(): Promise<number> {
+  try {
+    const claimed = await prisma.shop.count({ where: { lifetimePurchasedAt: { not: null } } });
+    return Math.max(0, LIFETIME_LIMIT - claimed);
+  } catch (err) {
+    console.warn("[XPoost Billing] lifetime count unavailable:", err);
+    return LIFETIME_LIMIT;
+  }
+}
 
 export async function getBillingData(request: Request) {
   const { billing, session } = await authenticate.admin(request);
@@ -46,8 +58,20 @@ export async function getBillingData(request: Request) {
     console.warn("[XPoost Billing] Check error:", error);
   }
 
+  if (isLifetime) {
+    // Remember who owns the Lifetime Pass so the 100-store cap is counted correctly.
+    try {
+      await prisma.shop.updateMany({ where: { shopDomain: session.shop, lifetimePurchasedAt: null }, data: { lifetimePurchasedAt: new Date() } });
+    } catch (err) {
+      console.warn("[XPoost Billing] could not record lifetime purchase:", err);
+    }
+  }
+  const lifetimeLeft = await lifetimeSpotsLeft();
+
   return {
     shop: session.shop,
+    lifetimeLeft,
+    lifetimeLimit: LIFETIME_LIMIT,
     hasActivePayment,
     activePlanName,
     activeSubscriptionId,
@@ -67,6 +91,9 @@ export async function processBillingAction(request: Request) {
   if (actionType === "cancel") {
     const subscriptionId = formData.get("subscriptionId") as string;
     if (subscriptionId) {
+      const current = await billing.check({ isTest });
+      const owned = (current.appSubscriptions || []).some((s) => s.id === subscriptionId);
+      if (!owned) return { success: false, error: "Subscription not found." };
       await billing.cancel({
         subscriptionId,
         isTest,
@@ -77,7 +104,15 @@ export async function processBillingAction(request: Request) {
     return { success: false, error: "Missing subscription ID." };
   }
 
-  if (plan === MONTHLY_PLAN || plan === LIFETIME_PLAN) {
+  if (plan === MONTHLY_PLAN || plan === YEARLY_PLAN || plan === LIFETIME_PLAN) {
+    if (plan === LIFETIME_PLAN) {
+      // Only offered to the first LIFETIME_LIMIT stores (a store that already owns it is never blocked).
+      const current = await billing.check({ isTest });
+      const ownsIt = (current.oneTimePurchases || []).some((p) => p.status === "ACTIVE");
+      if (!ownsIt && (await lifetimeSpotsLeft()) <= 0) {
+        return { success: false, error: `The Founder's Lifetime Pass was limited to the first ${LIFETIME_LIMIT} stores and is no longer available. Please choose the Monthly or Yearly plan.` };
+      }
+    }
     // Behind DigitalOcean's proxy request.url is http://, so build an https return URL.
     const origin = (process.env.SHOPIFY_APP_URL || new URL(request.url).origin).replace(/\/$/, "");
     const secureOrigin = /localhost|127\.0\.0\.1/.test(origin) ? origin : origin.replace(/^http:\/\//i, "https://");

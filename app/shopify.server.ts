@@ -7,32 +7,29 @@ import {
 } from "@shopify/shopify-app-react-router/server";
 import { PrismaSessionStorage } from "@shopify/shopify-app-session-storage-prisma";
 import prisma from "./db.server";
-import { MONTHLY_PLAN, LIFETIME_PLAN } from "./billing.constants";
+import { MONTHLY_PLAN, YEARLY_PLAN, LIFETIME_PLAN } from "./billing.constants";
 
 import { LogSeverity } from "@shopify/shopify-api";
 
-const defaultApiSecret = ["shpss", "a3ce2f8796742194a43fb04cb05e8e82"].join("_");
-
-const rawSecret =
+// Credentials come from the environment ONLY. Never put a secret in this file: it is committed to git.
+const apiSecretKey = (
   process.env.SHOPIFY_API_SECRET ||
   process.env.SHOPIFY_SECRET ||
   process.env.SHOPIFY_APP_SECRET ||
   process.env.CLIENT_SECRET ||
-  defaultApiSecret;
+  ""
+).trim();
 
-console.log("[SHOPIFY_BOOT_CONFIG]", {
-  hasApiKey: Boolean(process.env.SHOPIFY_API_KEY || "872f7f6415d1c243c11ccdfe9426b07f"),
-  apiKey: (process.env.SHOPIFY_API_KEY || "872f7f6415d1c243c11ccdfe9426b07f"),
-  hasApiSecret: Boolean(rawSecret),
-  apiSecretPrefix: rawSecret ? rawSecret.slice(0, 10) + "..." : "MISSING",
-  apiSecretLength: rawSecret ? rawSecret.length : 0,
-  appUrl: process.env.SHOPIFY_APP_URL || "https://sea-turtle-app-a4uct.ondigitalocean.app",
-});
+if (!apiSecretKey) {
+  throw new Error(
+    "SHOPIFY_API_SECRET is not set. Add it to the server environment (DigitalOcean > App > Settings > Environment variables) before starting XPoost.",
+  );
+}
 
+// The API key (client_id) is public: it is also in shopify.app.toml and in every storefront URL.
 const apiKey = (process.env.SHOPIFY_API_KEY || "872f7f6415d1c243c11ccdfe9426b07f").trim();
-const apiSecretKey = rawSecret.trim();
 const appUrl = (process.env.SHOPIFY_APP_URL || "https://sea-turtle-app-a4uct.ondigitalocean.app").trim().replace(/\/$/, "");
-const rawScopes = (process.env.SCOPES || "write_products,write_discounts,write_metaobjects,write_metaobject_definitions,read_orders").trim();
+const rawScopes = (process.env.SCOPES || "write_discounts,read_products,read_orders,write_checkout_extensions_apis").trim();
 const scopes = rawScopes.split(",").map((s) => s.trim()).filter(Boolean);
 
 const shopify = shopifyApp({
@@ -48,7 +45,7 @@ const shopify = shopifyApp({
     expiringOfflineAccessTokens: true,
   },
   logger: {
-    level: LogSeverity.Debug,
+    level: process.env.NODE_ENV === "production" ? LogSeverity.Warning : LogSeverity.Info,
   },
   billing: {
     [MONTHLY_PLAN]: {
@@ -57,6 +54,16 @@ const shopify = shopifyApp({
           amount: 20,
           currencyCode: "USD",
           interval: BillingInterval.Every30Days,
+        },
+      ],
+      trialDays: 7,
+    },
+    [YEARLY_PLAN]: {
+      lineItems: [
+        {
+          amount: 170,
+          currencyCode: "USD",
+          interval: BillingInterval.Annual,
         },
       ],
       trialDays: 7,

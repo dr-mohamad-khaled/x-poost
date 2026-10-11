@@ -55,7 +55,7 @@ const FEATURES: Feature[] = [
     id: "prePurchase",
     route: "/app/pre-purchase",
     category: "aov",
-    name: { en: "Pre-Purchase Upsell Modal", ar: "نافذة العرض قبل الشراء" },
+    name: { en: "Pre-Purchase Upsell", ar: "نافذة العرض قبل الشراء" },
     goal: {
       en: "Right after Add to Cart, offer a complementary bundle so the shopper adds more to the same order.",
       ar: "بعد الضغط على إضافة إلى السلة مباشرة، تعرض منتجات مكمّلة ليضيف العميل المزيد إلى الطلب نفسه.",
@@ -97,7 +97,7 @@ const FEATURES: Feature[] = [
     id: "inCart",
     route: "/app/in-cart",
     category: "aov",
-    name: { en: "Cart Drawer Upsell", ar: "عروض داخل السلة" },
+    name: { en: "Cart Upsell", ar: "عروض داخل السلة" },
     goal: {
       en: "Inside the slide-out cart, where buying intent is highest, offer quick one-click add-ons.",
       ar: "داخل السلة الجانبية، حيث تكون نية الشراء أعلى ما يمكن، تعرض إضافات سريعة بضغطة واحدة.",
@@ -139,7 +139,7 @@ const FEATURES: Feature[] = [
     id: "thankYou",
     route: "/app/thank-you",
     category: "retention",
-    name: { en: "Thank-You Page Upsell", ar: "عرض صفحة الشكر" },
+    name: { en: "Thank-You Page Offers", ar: "عرض صفحة الشكر" },
     goal: {
       en: "After checkout, reward the customer with an offer for the next order or a chance to ship another item together.",
       ar: "بعد إتمام الدفع، تكافئ العميل بعرض لطلبه القادم أو بفرصة إضافة منتج آخر يُشحن معه.",
@@ -181,7 +181,7 @@ const FEATURES: Feature[] = [
     id: "shippingBar",
     route: "/app/shipping-bar",
     category: "aov",
-    name: { en: "Tiered Perks & Free Shipping Bar", ar: "شريط المزايا المتدرجة والشحن المجاني" },
+    name: { en: "Free Shipping & Rewards Bar", ar: "شريط المزايا المتدرجة والشحن المجاني" },
     goal: {
       en: "Show shoppers how close they are to the next reward, so they add one more item to reach it and your average order value grows.",
       ar: "يوضح للعميل كم تبقّى له ليفتح المكافأة التالية، فيضيف منتجًا إضافيًا للوصول إليها وترتفع قيمة متوسط الطلب.",
@@ -227,7 +227,7 @@ const FEATURES: Feature[] = [
     id: "quantityBreaks",
     route: "/app/quantity-breaks",
     category: "aov",
-    name: { en: "Quantity Breaks", ar: "خصومات الكميات" },
+    name: { en: "Volume Discounts", ar: "خصومات الكميات" },
     goal: {
       en: "Move buyers from one unit to two or three with clear volume pricing right on the product page.",
       ar: "ينقل العميل من شراء قطعة واحدة إلى قطعتين أو ثلاث بتسعير واضح للكميات داخل صفحة المنتج.",
@@ -269,7 +269,7 @@ const FEATURES: Feature[] = [
     id: "productScarcity",
     route: "/app/product-scarcity",
     category: "trust",
-    name: { en: "Stock Scarcity Block", ar: "كتلة ندرة المخزون" },
+    name: { en: "Low Stock Meter", ar: "كتلة ندرة المخزون" },
     goal: {
       en: "A low-stock meter on the product page that nudges hesitant buyers to decide.",
       ar: "مؤشر مخزون منخفض في صفحة المنتج يدفع المتردد لاتخاذ القرار.",
@@ -309,7 +309,7 @@ const FEATURES: Feature[] = [
     id: "socialBar",
     route: "/app/social-bar",
     category: "support",
-    name: { en: "Support & Social Bar", ar: "شريط الدعم والتواصل" },
+    name: { en: "Chat & Social Bar", ar: "شريط الدعم والتواصل" },
     goal: {
       en: "A floating button that gives shoppers one-tap support on WhatsApp, quick inquiry choices and your social channels.",
       ar: "زر عائم يمنح العميل دعمًا بضغطة واحدة على واتساب، مع خيارات استفسار سريعة وقنواتك الاجتماعية.",
@@ -351,7 +351,7 @@ const FEATURES: Feature[] = [
     id: "scarcity",
     route: "/app/scarcity",
     category: "trust",
-    name: { en: "Urgency & Social Proof Notifications", ar: "إشعارات الإلحاح والإثبات الاجتماعي" },
+    name: { en: "Social Proof Popups", ar: "إشعارات الإلحاح والإثبات الاجتماعي" },
     goal: {
       en: "Small corner messages that build trust and gentle urgency: recent purchases, low stock, limited offers and shipping hints.",
       ar: "رسائل صغيرة في زاوية الشاشة تبني الثقة وإحساسًا لطيفًا بالإلحاح: مشتريات حديثة، ومخزون منخفض، وعروض محدودة، وتنبيهات الشحن.",
@@ -1058,7 +1058,7 @@ export default function HelpGuide() {
 }
 
 const HELP_STYLES = `
-  .xh-root { --gold:#E8C872; --gold-soft:#FFEB97; --bg:#0C0803; --card:#150E07; --line:#3A2B17; --muted:#9E957B; color:#fff; padding: 4px 0 40px; }
+  .xh-root { --gold:#E8C872; --gold-soft:#FFEB97; --bg:#0C0803; --card:#150E07; --line:#3A2B17; --muted:#CFC6AC; color:#fff; padding: 4px 0 40px; }
   .xh-root * { box-sizing: border-box; }
   .xh-section { margin-top: 28px; }
   .xh-h2 { font-size: 18px; font-weight: 800; color: var(--gold); margin: 0 0 14px; letter-spacing: .2px; display:flex; align-items:center; gap:10px; }
@@ -1127,7 +1127,7 @@ const HELP_STYLES = `
   .xh-check label.is-done { background: rgba(232,200,114,.07); border-color: rgba(232,200,114,.35); }
   .xh-check label.is-done .xh-box { background: var(--gold); border-color: var(--gold); color:#0C0803; transform: scale(1.08); }
   .xh-check-text { font-size: 13.5px; color:#E5D8B3; }
-  .xh-check label.is-done .xh-check-text { color:#9A9278; text-decoration: line-through; text-decoration-color: rgba(232,200,114,.6); }
+  .xh-check label.is-done .xh-check-text { color:#CFC6AC; text-decoration: line-through; text-decoration-color: rgba(232,200,114,.6); }
 
   /* toolbar */
   .xh-toolbar { display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-bottom: 14px; }
@@ -1150,7 +1150,7 @@ const HELP_STYLES = `
   .xh-card-title { flex:1; min-width:0; display:flex; flex-direction:column; gap:3px; }
   .xh-card-title strong { font-size: 15px; }
   .xh-card-title small { font-size: 12.5px; color: var(--muted); line-height:1.5; }
-  .xh-badge { font-size: 10.5px; font-weight:800; padding: 3px 9px; border-radius: 999px; background:#2A2013; color:#8A826C; border:1px solid #43331D; flex-shrink:0; }
+  .xh-badge { font-size: 10.5px; font-weight:800; padding: 3px 9px; border-radius: 999px; background:#2A2013; color:#C9BFA3; border:1px solid #43331D; flex-shrink:0; }
   .xh-badge.on { background: rgba(34,197,94,.12); color:#4ade80; border-color: rgba(34,197,94,.4); }
   .xh-chev { color: var(--muted); transition: transform .3s; display:grid; }
   .xh-card.is-open .xh-chev { transform: rotate(180deg); color: var(--gold); }
@@ -1183,9 +1183,9 @@ const HELP_STYLES = `
   .xh-d-ship-track i { display:block; height:100%; width:0; border-radius:4px; background: linear-gradient(135deg, #FFEB97 0%, #E8C872 48%, #B8863B 100%); animation: xh-fill 6s ease-in-out infinite; }
   @keyframes xh-fill { 0% { width:5%; } 70% { width:100%; } 100% { width:100%; } }
   .xh-d-ship-dots { display:flex; justify-content:space-between; }
-  .xh-d-ship-dots b { width:22px; height:22px; border-radius:50%; background:#2F2314; color:#756F5B; font-size:10px; display:grid; place-items:center; animation: xh-dot 6s ease-in-out infinite; }
+  .xh-d-ship-dots b { width:22px; height:22px; border-radius:50%; background:#2F2314; color:#C2B89C; font-size:10px; display:grid; place-items:center; animation: xh-dot 6s ease-in-out infinite; }
   .xh-d-ship-dots b:nth-child(1) { animation-delay: 0s; } .xh-d-ship-dots b:nth-child(2) { animation-delay: 1.8s; } .xh-d-ship-dots b:nth-child(3) { animation-delay: 3.4s; }
-  @keyframes xh-dot { 0%,25% { background:#2F2314; color:#756F5B; transform: scale(1);} 35%,100% { background: linear-gradient(135deg, #FFEB97 0%, #E8C872 48%, #B8863B 100%); color:#0C0803; transform: scale(1.12);} }
+  @keyframes xh-dot { 0%,25% { background:#2F2314; color:#C2B89C; transform: scale(1);} 35%,100% { background: linear-gradient(135deg, #FFEB97 0%, #E8C872 48%, #B8863B 100%); color:#0C0803; transform: scale(1.12);} }
   /* pre-purchase */
   .xh-d-pre-modal { background:#20160D; border:1px solid #43331D; border-radius:10px; padding: 12px; display:grid; gap:8px; animation: xh-pop 5s ease-in-out infinite; transform-origin:center; }
   @keyframes xh-pop { 0% { opacity:0; transform: scale(.85);} 12%,80% { opacity:1; transform: scale(1);} 95%,100% { opacity:0; transform: scale(.95);} }

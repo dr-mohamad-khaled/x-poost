@@ -3,7 +3,7 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { useEffect } from "react";
 import { Form, useActionData, useLoaderData, useNavigation } from "react-router";
 import { getBillingData, processBillingAction } from "../pricing.server";
-import { MONTHLY_PLAN, LIFETIME_PLAN } from "../billing.constants";
+import { MONTHLY_PLAN, YEARLY_PLAN, LIFETIME_PLAN } from "../billing.constants";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   return await getBillingData(request);
@@ -20,7 +20,12 @@ export default function Pricing() {
     activeSubscriptionId,
     isLifetime,
     trialDaysRemaining,
+    lifetimeLeft,
+    lifetimeLimit,
   } = useLoaderData<typeof loader>();
+  const isMonthlyActive = Boolean(hasActivePayment && !isLifetime && activePlanName === MONTHLY_PLAN);
+  const isYearlyActive = Boolean(hasActivePayment && !isLifetime && activePlanName === YEARLY_PLAN);
+  const lifetimeSoldOut = !isLifetime && lifetimeLeft <= 0;
   const actionData = useActionData<typeof action>();
   const nav = useNavigation();
   const isSubmitting = nav.state === "submitting";
@@ -241,15 +246,15 @@ export default function Pricing() {
         /* â”€â”€ Plans Grid â”€â”€ */
         .xpp-plans-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-          gap: 24px;
+          grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+          gap: 22px;
           margin-bottom: 34px;
         }
         .xpp-plan-card {
           background: #1C120A;
           border: 1.5px solid #43331D;
           border-radius: 16px;
-          padding: 38px 32px;
+          padding: 36px 26px;
           display: flex;
           flex-direction: column;
           position: relative;
@@ -274,6 +279,11 @@ export default function Pricing() {
           border-radius: 14px;
           
           letter-spacing: 0.6px;
+        }
+        .xpp-plan-tag--soft {
+          background: #2F2314;
+          color: #FFEB97;
+          border: 1px solid #E8C872;
         }
         .xpp-plan-name {
           font-size: 24px;
@@ -631,8 +641,8 @@ export default function Pricing() {
             </div>
             <p className="xpp-status-desc">
               {hasActivePayment
-                ? `Currently on ${activePlanName || (isLifetime ? LIFETIME_PLAN : MONTHLY_PLAN)}${isLifetime ? " (Lifetime Pass -- No recurring charges ever)" : ""}${!isLifetime && trialDaysRemaining !== null && trialDaysRemaining > 0 ? ` with ${trialDaysRemaining} days remaining in trial` : ""}`
-                : "Select either plan below to get started. Cancel anytime during your 7-day trial with 1 click."}
+                ? `Currently on ${activePlanName || (isLifetime ? LIFETIME_PLAN : MONTHLY_PLAN)}${isLifetime ? " (Lifetime Pass: no recurring charges, ever)" : ""}${!isLifetime && trialDaysRemaining !== null && trialDaysRemaining > 0 ? ` with ${trialDaysRemaining} days remaining in trial` : ""}`
+                : "Pick a plan below to get started. Cancel anytime during your 7-day trial with 1 click."}
             </p>
           </div>
           {hasActivePayment && !isLifetime && activeSubscriptionId && (
@@ -718,7 +728,7 @@ export default function Pricing() {
         <div className="xpp-plans-grid">
           {/* Plan 1: Monthly Suite */}
           <div className="xpp-plan-card">
-            <h2 className="xpp-plan-name"><Translate text='Monthly Conversion Suite' /></h2>
+            <h2 className="xpp-plan-name"><Translate text='Monthly' /></h2>
             <p className="xpp-plan-desc">
               
                                         <Translate text='The full 8-in-1 engine.' /> <span className="xpp-hl-gold"><Translate text='No feature locks' /></span>. <span className="xpp-hl-gold"><Translate text='No usage caps' /></span><Translate text='. Start free for 7 days.' />
@@ -743,27 +753,27 @@ export default function Pricing() {
               </li>
               <li className="xpp-feature-item">
                 <span className="xpp-check-icon">&#10003;</span>
-                <span><strong><Translate text='Pre-Purchase' /></strong>  <Translate text='One-Click Upsell Modal' /></span>
+                <span><strong><Translate text='Pre-Purchase Upsell' /></strong>  <Translate text='One-Click Upsell Modal' /></span>
               </li>
               <li className="xpp-feature-item">
                 <span className="xpp-check-icon">&#10003;</span>
-                <span><strong><Translate text='In-Cart Drawer' /></strong>  <Translate text='Smart Recommendations' /></span>
+                <span><strong><Translate text='Cart Upsell' /></strong>  <Translate text='Smart Recommendations' /></span>
               </li>
               <li className="xpp-feature-item">
                 <span className="xpp-check-icon">&#10003;</span>
-                <span><strong><Translate text='Tiered Free Shipping' /></strong>  <Translate text='& Milestone Progress Bar' /></span>
+                <span><strong><Translate text='Free Shipping & Rewards Bar' /></strong>  <Translate text='with spend milestones' /></span>
               </li>
               <li className="xpp-feature-item">
                 <span className="xpp-check-icon">&#10003;</span>
-                <span><strong><Translate text='Social Proof & Scarcity' /></strong>  <Translate text='Urgency Corner Toasts' /></span>
+                <span><strong><Translate text='Social Proof Popups' /></strong>  <Translate text='& Low Stock Meter' /></span>
               </li>
               <li className="xpp-feature-item">
                 <span className="xpp-check-icon">&#10003;</span>
-                <span><strong><Translate text='Exit-Intent Countdown' /></strong>  <Translate text='Cart Recovery Modal' /></span>
+                <span><strong><Translate text='Volume Discounts' /></strong>  <Translate text='& Thank-You Page Offers' /></span>
               </li>
               <li className="xpp-feature-item">
                 <span className="xpp-check-icon">&#10003;</span>
-                <span><strong><Translate text='Customer Support' /></strong>  <Translate text='& VIP WhatsApp Floating Bar' /></span>
+                <span><strong><Translate text='Chat & Social Bar' /></strong>  <Translate text='with WhatsApp and VIP community links' /></span>
               </li>
               <li className="xpp-feature-item">
                 <span className="xpp-check-icon">&#10003;</span>
@@ -779,18 +789,65 @@ export default function Pricing() {
               <input type="hidden" name="plan" value={MONTHLY_PLAN} />
               <button
                 type="submit"
-                className={`xpp-btn ${hasActivePayment && !isLifetime ? "xpp-btn--disabled" : "xpp-btn--secondary"}`}
-                disabled={Boolean(hasActivePayment && !isLifetime) || isSubmitting}
+                className={`xpp-btn ${isMonthlyActive ? "xpp-btn--disabled" : "xpp-btn--secondary"}`}
+                disabled={isMonthlyActive || isSubmitting}
               >
-                {hasActivePayment && !isLifetime ? "Current Active Plan" : "Start 7-Day Free Trial"}
+                {isMonthlyActive ? "Current Active Plan" : isYearlyActive ? "Switch to Monthly" : "Start 7-Day Free Trial"}
               </button>
             </Form>
             <span className="xpp-btn-sub"><span className="xpp-hl-gold"><Translate text='Zero charge' /></span>  <Translate text='until trial ends -- 1-click cancellation' /></span>
           </div>
 
-          {/* Plan 2: Founder's Lifetime Pass */}
+          {/* Plan 2: Yearly */}
           <div className="xpp-plan-card xpp-plan-card--featured">
-            <span className="xpp-plan-tag"><Translate text='Best Value -- Limited Offer' /></span>
+            <span className="xpp-plan-tag"><Translate text='Best for most stores' /></span>
+            <h2 className="xpp-plan-name"><Translate text='Yearly' /></h2>
+            <p className="xpp-plan-desc">
+              <Translate text='Everything in Monthly, billed once a year.' /> <span className="xpp-hl-gold"><Translate text='Save $70 every year' /></span><Translate text='. Start free for 7 days.' />
+            </p>
+            <div className="xpp-plan-price-box">
+              <span className="xpp-plan-price">$170</span>
+              <span className="xpp-plan-period"><Translate text='/ year' /></span>
+              <div className="xpp-plan-note">
+                <span className="xpp-badge-green"><Translate text='$14.17 / month' /></span>  <Translate text='29% less than paying monthly' />
+              </div>
+            </div>
+            <div className="xpp-plan-divider-label"><Translate text='Everything in Monthly, Plus:' /></div>
+            <ul className="xpp-features-list">
+              <li className="xpp-feature-item">
+                <span className="xpp-check-icon">&#10003;</span>
+                <span><span className="xpp-badge-green"><Translate text='Saves $70' /></span>  <Translate text='compared with 12 months of Monthly ($240)' /></span>
+              </li>
+              <li className="xpp-feature-item">
+                <span className="xpp-infinity-icon">&#8734;</span>
+                <span><span className="xpp-badge-green"><Translate text='Unlimited' /></span>  <Translate text='impressions, products, orders & revenue' /></span>
+              </li>
+              <li className="xpp-feature-item">
+                <span className="xpp-check-icon">&#10003;</span>
+                <span><strong><Translate text='All 8 tools' /></strong>  <Translate text='and every future update included' /></span>
+              </li>
+              <li className="xpp-feature-item">
+                <span className="xpp-check-icon">&#10003;</span>
+                <span><strong><Translate text='7-day free trial' /></strong>  <Translate text='-- cancel in 1 click before it ends' /></span>
+              </li>
+            </ul>
+
+            <Form method="post">
+              <input type="hidden" name="plan" value={YEARLY_PLAN} />
+              <button
+                type="submit"
+                className={`xpp-btn ${isYearlyActive ? "xpp-btn--disabled" : "xpp-btn--primary"}`}
+                disabled={isYearlyActive || isSubmitting}
+              >
+                {isYearlyActive ? "Current Active Plan" : "Start 7-Day Free Trial"}
+              </button>
+            </Form>
+            <span className="xpp-btn-sub"><span className="xpp-hl-gold"><Translate text='Zero charge' /></span>  <Translate text='until trial ends -- 1-click cancellation' /></span>
+          </div>
+
+          {/* Plan 3: Founder's Lifetime Pass (first 100 stores) */}
+          <div className="xpp-plan-card">
+            <span className="xpp-plan-tag xpp-plan-tag--soft"><Translate text='First 100 stores only' /></span>
             <h2 className="xpp-plan-name"><Translate text='Founder&apos;s Lifetime Pass' /></h2>
             <p className="xpp-plan-desc">
               
@@ -802,6 +859,13 @@ export default function Pricing() {
               <div className="xpp-plan-note">
                 <span className="xpp-badge-gold"><Translate text='Pays for itself' /></span>  <Translate text='after just' /> <span className="xpp-hl-gold"><Translate text='1 extra order' /></span>  <Translate text='per month' />
                                             </div>
+              <div className="xpp-plan-note" style={{ marginTop: 8 }}>
+                {lifetimeSoldOut ? (
+                  <span className="xpp-badge-red"><Translate text='All lifetime spots have been claimed' /></span>
+                ) : (
+                  <span className="xpp-badge-gold">{isLifetime ? <Translate text='You own a lifetime spot' /> : <>{lifetimeLeft} <Translate text='of' /> {lifetimeLimit} <Translate text='lifetime spots left' /></>}</span>
+                )}
+              </div>
             </div>
             <div className="xpp-plan-divider-label"><Translate text='Everything in Monthly, Plus:' /></div>
             <ul className="xpp-features-list">
@@ -835,7 +899,7 @@ export default function Pricing() {
               </li>
               <li className="xpp-feature-item">
                 <span className="xpp-check-icon">&#10003;</span>
-                <span><Translate text='Founder pricing locked --' /> <span className="xpp-hl-gold"><Translate text='rate will increase soon' /></span></span>
+                <span><Translate text='Founder pricing --' /> <span className="xpp-hl-gold"><Translate text='closes after the first 100 stores' /></span></span>
               </li>
             </ul>
 
@@ -843,10 +907,10 @@ export default function Pricing() {
               <input type="hidden" name="plan" value={LIFETIME_PLAN} />
               <button
                 type="submit"
-                className={`xpp-btn ${isLifetime ? "xpp-btn--disabled" : "xpp-btn--primary"}`}
-                disabled={Boolean(isLifetime) || isSubmitting}
+                className={`xpp-btn ${isLifetime || lifetimeSoldOut ? "xpp-btn--disabled" : "xpp-btn--secondary"}`}
+                disabled={Boolean(isLifetime) || lifetimeSoldOut || isSubmitting}
               >
-                {isLifetime ? "Lifetime Access Active" : "Claim Lifetime Access Now"}
+                {isLifetime ? "Lifetime Access Active" : lifetimeSoldOut ? "Sold out" : "Claim Lifetime Access"}
               </button>
             </Form>
             <span className="xpp-btn-sub"><Translate text='One payment.' /> <span className="xpp-hl-gold"><Translate text='Yours forever' /></span><Translate text='. No recurring charges.' /></span>
@@ -901,8 +965,12 @@ export default function Pricing() {
                 <span className="xpp-badge-green"><Translate text='$20/mo -- everything included' /></span>
               </div>
               <div className="xpp-vs-row">
+                <span className="xpp-vs-row-label"><Translate text='Yearly Plan' /></span>
+                <span className="xpp-badge-green"><Translate text='$170/yr -- save $70' /></span>
+              </div>
+              <div className="xpp-vs-row">
                 <span className="xpp-vs-row-label"><Translate text='Lifetime Option' /></span>
-                <span className="xpp-badge-gold"><Translate text='$249 once -- own it forever' /></span>
+                <span className="xpp-badge-gold"><Translate text='$249 once -- first 100 stores' /></span>
               </div>
               <div className="xpp-vs-row">
                 <span className="xpp-vs-row-label"><Translate text='Features Included' /></span>
@@ -950,7 +1018,7 @@ export default function Pricing() {
                 <td><span className="xpp-badge-green"><Translate text='Included -- Unlimited' /></span></td>
               </tr>
               <tr>
-                <td><Translate text='Tiered Free Shipping Goal Bar' /></td>
+                <td><Translate text='Free Shipping & Rewards Bar' /></td>
                 <td><span className="xpp-badge-red"><Translate text='~$10/mo' /></span></td>
                 <td><span className="xpp-badge-green"><Translate text='Included -- Unlimited' /></span></td>
               </tr>
@@ -960,14 +1028,9 @@ export default function Pricing() {
                 <td><span className="xpp-badge-green"><Translate text='Included -- Unlimited' /></span></td>
               </tr>
               <tr>
-                <td><Translate text='Exit-Intent Cart Saver Popup' /></td>
-                <td><span className="xpp-badge-red"><Translate text='~$15/mo' /></span>  <Translate text='(often capped)' /></td>
-                <td><span className="xpp-badge-green"><Translate text='Included -- Unlimited' /></span></td>
-              </tr>
-              <tr>
                 <td><Translate text='Total Annual Cost' /></td>
-                <td><span className="xpp-badge-red"><Translate text='$960+ / year' /></span>  <Translate text='(and rising with traffic)' /></td>
-                <td><span className="xpp-badge-green"><Translate text='$240/yr' /></span>  <Translate text='or' /> <span className="xpp-badge-gold"><Translate text='$249 lifetime' /></span></td>
+                <td><span className="xpp-badge-red"><Translate text='$780+ / year' /></span>  <Translate text='(and rising with traffic)' /></td>
+                <td><span className="xpp-badge-green"><Translate text='$170/yr' /></span>  <Translate text='or' /> <span className="xpp-badge-green"><Translate text='$240/yr monthly' /></span>  <Translate text='or' /> <span className="xpp-badge-gold"><Translate text='$249 lifetime' /></span></td>
               </tr>
             </tbody>
           </table>
@@ -1001,7 +1064,7 @@ export default function Pricing() {
               <div className="xpp-faq-q"><Translate text='What happens after my 7-day trial?' /></div>
               <p className="xpp-faq-a">
                 
-                                              <Translate text='If you love it, you continue at $20/month or upgrade to lifetime. If not, cancel
+                                              <Translate text='If you love it, you continue at $20/month or $170/year (or claim a lifetime spot while they last). If not, cancel
                                               with' /> <span className="xpp-hl-gold"><Translate text='1 click' /></span>  <Translate text='before the trial ends and you pay' /> <span className="xpp-badge-green">$0.00</span><Translate text='. No hoops, no support emails required.' />
                                             </p>
             </div>
@@ -1010,7 +1073,7 @@ export default function Pricing() {
               <p className="xpp-faq-a">
                 
                                               <Translate text='Yes.' /> <span className="xpp-hl-gold"><Translate text='Every new feature and update' /></span>  <Translate text='we ship is automatically included
-                                              in your Lifetime Pass at' /> <span className="xpp-badge-gold"><Translate text='no additional cost' /></span><Translate text='. You are locked in at today&apos;s price forever.' />
+                                              in your Lifetime Pass at' /> <span className="xpp-badge-gold"><Translate text='no additional cost' /></span><Translate text='. The pass is limited to the first 100 stores, and once those spots are gone it is no longer sold.' />
                                             </p>
             </div>
             <div className="xpp-faq-item">
@@ -1043,26 +1106,26 @@ export default function Pricing() {
           <div className="xpp-final-cta-btns">
             {!hasActivePayment && (
               <Form method="post">
-                <input type="hidden" name="plan" value={MONTHLY_PLAN} />
-                <button
-                  type="submit"
-                  className="xpp-btn xpp-btn--secondary"
-                  disabled={isSubmitting}
-                >
-                  
-                                                    <Translate text='Start Free 7-Day Trial' />
-                                                  </button>
-              </Form>
-            )}
-            {!isLifetime && (
-              <Form method="post">
-                <input type="hidden" name="plan" value={LIFETIME_PLAN} />
+                <input type="hidden" name="plan" value={YEARLY_PLAN} />
                 <button
                   type="submit"
                   className="xpp-btn xpp-btn--primary"
                   disabled={isSubmitting}
                 >
-                  
+
+                                                    <Translate text='Start Free 7-Day Trial -- $170/yr' />
+                                                  </button>
+              </Form>
+            )}
+            {!isLifetime && !lifetimeSoldOut && (
+              <Form method="post">
+                <input type="hidden" name="plan" value={LIFETIME_PLAN} />
+                <button
+                  type="submit"
+                  className="xpp-btn xpp-btn--secondary"
+                  disabled={isSubmitting}
+                >
+
                                                     <Translate text='Claim Lifetime Access -- $249' />
                                                   </button>
               </Form>

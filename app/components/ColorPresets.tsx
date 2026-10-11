@@ -70,7 +70,7 @@ export const DEFAULT_PALETTE = PALETTES[0];
 export function ColorPresets({ onApply }: { onApply: (p: Palette) => void }) {
   return (
     <div style={{ marginBottom: 16 }}>
-      <div style={{ fontSize: 12, color: "#A89B80", marginBottom: 8 }}>
+      <div style={{ fontSize: 12, color: "#D2C8AC", marginBottom: 8 }}>
         <Translate text="Start from a ready-made palette, then fine-tune any color below." />
       </div>
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>

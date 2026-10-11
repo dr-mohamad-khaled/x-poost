@@ -37,6 +37,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   } catch (err: any) {
     console.error("[ACTION_ERROR api.toggle]", err?.stack || err?.message || err);
     if (err instanceof Response) throw err;
-    return Response.json({ ok: false, error: err?.message || "Failed to update feature" });
+    return Response.json({ ok: false, error: "Failed to update feature" });
   }
 };

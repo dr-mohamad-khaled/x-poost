@@ -395,7 +395,7 @@ export default function ExitIntentSettings() {
               >
                 {currentCopy.buttonText}  <Translate text='&rarr;' />
                                             </button>
-              <div style={{ marginTop: 8, fontSize: 11, color: "#7f7f7f", textAlign: "center", cursor: "pointer" }}>
+              <div style={{ marginTop: 8, fontSize: 11, color: "#C9BFA3", textAlign: "center", cursor: "pointer" }}>
                 {currentCopy.dismissText}
               </div>
             </div>
@@ -440,7 +440,7 @@ const EXIT_INTENT_STYLES = `
   }
   .xp-sub {
     font-size: 12px;
-    color: #8A8A8A;
+    color: #CFC6AC;
     margin: 4px 0 12px;
   }
   .xp-row {
@@ -471,7 +471,7 @@ const EXIT_INTENT_STYLES = `
   }
   .xp-field small {
     font-size: 11px;
-    color: #8A8A8A;
+    color: #CFC6AC;
   }
   .xp-input {
     padding: 8px 12px;
@@ -531,7 +531,7 @@ const EXIT_INTENT_STYLES = `
     position: absolute;
     top: 14px;
     right: 16px;
-    color: #8A8A8A;
+    color: #CFC6AC;
     font-size: 20px;
     cursor: pointer;
   }
@@ -561,7 +561,7 @@ const EXIT_INTENT_STYLES = `
   }
   .xp-exit-desc {
     font-size: 12px;
-    color: #9E9E9E;
+    color: #D2C8AC;
     margin: 0 0 16px;
     line-height: 1.4;
   }

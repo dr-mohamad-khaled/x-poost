@@ -346,7 +346,7 @@ export default function ProductScarcityPage() {
   const previewPercent = Math.min(100, Math.max(10, Math.round((previewStock / maxStock) * 100)));
 
   return (
-    <s-page heading="Product Stock & Scarcity Block">
+    <s-page heading="Low Stock Meter">
       <style>{`
         .xpp-ps-admin {
           max-width: 1040px;
@@ -551,7 +551,7 @@ export default function ProductScarcityPage() {
               
                                         <Translate text='Real-Time Storefront Preview (' />{selectedLang.toUpperCase()})
             </span>
-            <span style={{ fontSize: 12, color: "#8A8A8A" }}>
+            <span style={{ fontSize: 12, color: "#CFC6AC" }}>
               
                                         <Translate text='Preset:' /> {designPreset}
             </span>
@@ -807,7 +807,7 @@ export default function ProductScarcityPage() {
                   style={{ marginRight: 8 }}
                 />
                 <span style={{ fontWeight: 800, color: "#fff" }}><Translate text='Real Shopify Inventory' /></span>
-                <p style={{ margin: "4px 0 0", fontSize: 12, color: "#9E9E9E" }}>
+                <p style={{ margin: "4px 0 0", fontSize: 12, color: "#D2C8AC" }}>
                   
                                                     <Translate text='Reads the actual inventory quantity of the product or selected variant.' />
                                                   </p>
@@ -831,7 +831,7 @@ export default function ProductScarcityPage() {
                   style={{ marginRight: 8 }}
                 />
                 <span style={{ fontWeight: 800, color: "#fff" }}><Translate text='Simulated Stock Range' /></span>
-                <p style={{ margin: "4px 0 0", fontSize: 12, color: "#9E9E9E" }}>
+                <p style={{ margin: "4px 0 0", fontSize: 12, color: "#D2C8AC" }}>
                   
                                                     <Translate text='Generates an enticing low quantity (e.g. between 3 and 12) per product.' />
                                                   </p>
@@ -897,7 +897,7 @@ export default function ProductScarcityPage() {
             />
 
             <div style={{ marginBottom: 14 }}>
-              <span style={{ fontSize: 12, color: "#8A8A8A", marginRight: 8 }}><Translate text='Available Variables:' /></span>
+              <span style={{ fontSize: 12, color: "#CFC6AC", marginRight: 8 }}><Translate text='Available Variables:' /></span>
               <span
                 className="xpp-var-chip"
                 onClick={() => handleTextChange("headlineText", `${currentCopy.headlineText} {stock}`)}
@@ -993,7 +993,7 @@ export default function ProductScarcityPage() {
                     style={{ marginRight: 6 }}
                   />
                   <strong style={{ color: "#fff", fontSize: 13 }}>{m.label}</strong>
-                  <div style={{ fontSize: 11, color: "#9E9E9E", marginTop: 2 }}>{m.desc}</div>
+                  <div style={{ fontSize: 11, color: "#D2C8AC", marginTop: 2 }}>{m.desc}</div>
                 </label>
               ))}
             </div>
@@ -1051,7 +1051,7 @@ export default function ProductScarcityPage() {
 
                 {/* Selected Products Badges */}
                 <div style={{ marginTop: 10 }}>
-                  <span style={{ fontSize: 12, color: "#8A8A8A", display: "block", marginBottom: 6 }}>
+                  <span style={{ fontSize: 12, color: "#CFC6AC", display: "block", marginBottom: 6 }}>
                     
                                                           <Translate text='Currently Selected (' />{selectedProductIds.length}):
                   </span>
@@ -1068,7 +1068,7 @@ export default function ProductScarcityPage() {
                       ))}
                     </div>
                   ) : (
-                    <span style={{ fontSize: 12, color: "#6A6A6A" }}><Translate text='No products selected yet. Search above to add products.' /></span>
+                    <span style={{ fontSize: 12, color: "#C2B89C" }}><Translate text='No products selected yet. Search above to add products.' /></span>
                   )}
                 </div>
               </div>

@@ -26,12 +26,33 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   const tyActive = await prisma.tyOffer.count({ where: { shopId: shopData?.id ?? "", enabled: true } });
 
+  // Revenue box: what XPoost added in the last 30 days (same source as the Analytics page)
+  const revSince = new Date(Date.now() - 30 * 86_400_000);
+  const revWhere = { shopId: shopData?.id ?? "", day: { gte: revSince }, cancelled: false };
+  let revenue = { direct: 0, store: 0, orders: 0, xpOrders: 0, currency: String((shopData as any)?.analyticsCurrency || "USD") };
+  try {
+    const [agg, withXp] = await Promise.all([
+      prisma.xpOrder.aggregate({ where: revWhere, _sum: { subtotal: true, directRevenue: true }, _count: { _all: true } }),
+      prisma.xpOrder.count({ where: { ...revWhere, directRevenue: { gt: 0 } } }),
+    ]);
+    revenue = {
+      ...revenue,
+      direct: Number(agg._sum.directRevenue || 0),
+      store: Number(agg._sum.subtotal || 0),
+      orders: agg._count._all,
+      xpOrders: withXp,
+    };
+  } catch (err) {
+    console.warn("[xpoost] dashboard revenue unavailable:", err);
+  }
+
   return {
     shopDomain: session.shop,
+    revenue,
     features: {
       prePurchase: {
         id: "prePurchase",
-        title: "Pre-Purchase Upsell Modal",
+        title: "Pre-Purchase Upsell",
         description: "Present high-value complementary upgrades immediately after shoppers click Add to Cart, before they proceed to checkout.",
         route: "/app/pre-purchase",
         enabled: shopData?.prePurchaseEnabled ?? false,
@@ -39,7 +60,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       },
       inCart: {
         id: "inCart",
-        title: "Cart Drawer Upsell & Cross-Sell",
+        title: "Cart Upsell",
         description: "Recommend personalized add-ons directly inside your theme's slide-out cart drawer with seamless 1-click addition.",
         route: "/app/in-cart",
         enabled: shopData?.inCartUpsellEnabled ?? false,
@@ -47,7 +68,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       },
       thankYou: {
         id: "thankYou",
-        title: "Thank-You Page Upsell & Rewards",
+        title: "Thank-You Page Offers",
         description: "Turn the order confirmation page into extra revenue: a unique next-order code, matching products, or a ship-together countdown, with conditions and translations.",
         route: "/app/thank-you",
         enabled: shopData?.thankYouEnabled ?? false,
@@ -55,7 +76,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       },
       shippingBar: {
         id: "shippingBar",
-        title: "Tiered Free Shipping Progress Bar",
+        title: "Free Shipping & Rewards Bar",
         description: "Motivate shoppers to increase cart totals with an interactive milestone bar showing progress toward free shipping and perks.",
         route: "/app/shipping-bar",
         enabled: shopData?.shippingBarEnabled ?? false,
@@ -63,7 +84,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       },
       quantityBreaks: {
         id: "quantityBreaks",
-        title: "Quantity Breaks & Tiered Pricing",
+        title: "Volume Discounts",
         description: "Incentivize larger orders by offering volume discounts with custom animated tier cards on product pages.",
         route: "/app/quantity-breaks",
         enabled: shopData?.quantityBreaksEnabled ?? false,
@@ -73,7 +94,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       },
       productScarcity: {
         id: "productScarcity",
-        title: "Product Stock Scarcity Block",
+        title: "Low Stock Meter",
         description: "Display live low-stock meters, flash demand bars, and urgency badges directly on your product pages with 4 high-converting designs.",
         route: "/app/product-scarcity",
         enabled: shopData?.productScarcityEnabled ?? false,
@@ -81,7 +102,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       },
       socialBar: {
         id: "socialBar",
-        title: "Customer Support & Social Bar",
+        title: "Chat & Social Bar",
         description: "Provide floating 1-click WhatsApp customer support, links to your official social channels, and VIP community access.",
         route: "/app/social-bar",
         enabled: shopData?.socialBarEnabled ?? false,
@@ -89,7 +110,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       },
       scarcity: {
         id: "scarcity",
-        title: "Urgency & Social Proof Notifications",
+        title: "Social Proof Popups",
         description: "Display recent purchase activity, stock scarcity alerts, and limited-time countdown offers in the corner of your store.",
         route: "/app/scarcity",
         enabled: shopData?.scarcityEnabled ?? false,
@@ -133,12 +154,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   } catch (err: any) {
     console.error("[ACTION_ERROR in app._index.tsx]", err?.stack || err?.message || err);
     if (err instanceof Response) throw err;
-    return { ok: false, error: err?.message || "Failed to update feature" };
+    return { ok: false, error: "Failed to update feature" };
   }
 };
 
 export default function XPoostDashboard() {
-  const { shopDomain, features } = useLoaderData<typeof loader>();
+  const { shopDomain, features, revenue } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const toggleFetcher = useFetcher();
   const shopify = useAppBridge();
@@ -163,10 +184,12 @@ export default function XPoostDashboard() {
       <div className="xp-hero">
         <HeroBanner onBrowse={scrollToFeatures} />
 
+        <RevenueBox revenue={revenue} />
+
         <div className="xp-spot-grid">
           <div className="xp-spot">
             <span className="xp-spot-badge xp-spot-badge--amber" aria-hidden="true"><FeatureIcon id="quantityBreaks" /></span>
-            <h3 className="xp-spot-title"><Translate text='Your toolkit' /></h3>
+            <h3 className="xp-spot-title"><Translate text='Features' /></h3>
             <div className="xp-spot-metric">
               <span className="xp-spot-num">{activeCount}</span>
               <span className="xp-spot-of"><Translate text='of' /> {featureList.length} <Translate text='features live' /></span>
@@ -198,7 +221,7 @@ export default function XPoostDashboard() {
           <div className="xp-spot">
             <span className="xp-spot-badge xp-spot-badge--orange" aria-hidden="true"><FeatureIcon id="analytics" /></span>
             <h3 className="xp-spot-title">
-              <Translate text="See what's paying off" />
+              <Translate text='Analytics' />
               <span className="xp-spot-new"><Translate text='New' /></span>
             </h3>
             <ul className="xp-spot-list">
@@ -212,7 +235,7 @@ export default function XPoostDashboard() {
 
           <div className="xp-spot">
             <span className="xp-spot-badge xp-spot-badge--light" aria-hidden="true"><FeatureIcon id="plan" /></span>
-            <h3 className="xp-spot-title"><Translate text='Every feature, every plan' /></h3>
+            <h3 className="xp-spot-title"><Translate text='Plan management' /></h3>
             <ul className="xp-spot-list">
               <li><span className="xp-check" aria-hidden="true"><FeatureIcon id="check" /></span><Translate text='No caps on views or orders' /></li>
               <li><span className="xp-check" aria-hidden="true"><FeatureIcon id="check" /></span><Translate text='Nothing locked behind a tier' /></li>
@@ -223,7 +246,6 @@ export default function XPoostDashboard() {
           </div>
         </div>
 
-        <CaseStudyStrip />
       </div>
 
       <section className="xp-panel" id="xp-features">
@@ -242,7 +264,7 @@ export default function XPoostDashboard() {
               <FeatureDemo id={f.id as DemoId} size="sm" />
               <p className="xp-card-desc"><Translate text={f.description} /></p>
               <div className="xp-card-actions">
-                <button className={`xp-toggle-btn ${f.enabled ? "xp-toggle-btn--off" : "xp-toggle-btn--on"}`} disabled={isSubmitting} onClick={async (e) => { const btn = e.currentTarget; btn.disabled = true; btn.innerText = "Saving..."; try { const token = await shopify.idToken(); const res = await fetch("/api/toggle", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded", "Authorization": `Bearer ${token}` }, body: new URLSearchParams({ featureKey: f.id, enable: f.enabled ? "false" : "true" }) }); if (!res.ok) { shopify.toast.show("Network Error: " + res.status); btn.disabled = false; btn.innerText = f.enabled ? "Disable" : "Enable"; return; } const json = await res.json(); if (!json.ok) { shopify.toast.show("Action Error: " + (json.error || "Unknown error")); btn.disabled = false; btn.innerText = f.enabled ? "Disable" : "Enable"; return; } window.location.reload(); } catch (err) { shopify.toast.show("Error: " + err.message); btn.disabled = false; btn.innerText = f.enabled ? "Disable" : "Enable"; } }}>{f.enabled ? "Disable" : "Enable"}</button>
+                <button className={`xp-toggle-btn ${f.enabled ? "xp-toggle-btn--off" : "xp-toggle-btn--on"}`} disabled={isSubmitting} onClick={async (e) => { const btn = e.currentTarget; btn.disabled = true; btn.innerText = "Saving..."; try { const token = await shopify.idToken(); const res = await fetch("/api/toggle", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded", "Authorization": `Bearer ${token}` }, body: new URLSearchParams({ featureKey: f.id, enable: f.enabled ? "false" : "true" }) }); if (!res.ok) { shopify.toast.show("Network Error: " + res.status); btn.disabled = false; btn.innerText = f.enabled ? "Disable" : "Enable"; return; } const json = await res.json(); if (!json.ok) { shopify.toast.show("Action Error: " + (json.error || "Unknown error")); btn.disabled = false; btn.innerText = f.enabled ? "Disable" : "Enable"; return; } window.location.reload(); } catch (err: any) { shopify.toast.show("Error: " + (err?.message || String(err))); btn.disabled = false; btn.innerText = f.enabled ? "Disable" : "Enable"; } }}>{f.enabled ? "Disable" : "Enable"}</button>
                 <Link to={f.route} className="xp-config-link">
                   
                                             <Translate text='Configure Settings &rarr;' />
@@ -267,7 +289,7 @@ export default function XPoostDashboard() {
             <div className="xp-step-num">2</div>
             <div>
               <strong><Translate text='Turn on App Embeds' /></strong>
-              <p><Translate text='Click the' /> <strong><Translate text='App embeds' /></strong>  <Translate text='tab on the left sidebar and toggle on the XPoost blocks (Scarcity Toast, Social Bar, Cart Engine, Retention Triggers).' /></p>
+              <p><Translate text='Click the' /> <strong><Translate text='App embeds' /></strong>  <Translate text='tab on the left sidebar and toggle on the XPoost blocks (Cart Engine, Social Proof Popups, Chat &amp; Social Bar).' /></p>
             </div>
           </div>
           <div className="xp-step">
@@ -279,6 +301,10 @@ export default function XPoostDashboard() {
           </div>
         </div>
       </section>
+
+      <div className="xp-bench-wrap">
+        <CaseStudyStrip />
+      </div>
     </s-page>
   );
 }
@@ -287,16 +313,62 @@ export default function XPoostDashboard() {
    Hero: short pitch per feature (used for the "Next up" hint)
    ───────────────────────────────────────────────────────────── */
 
+function formatMoney(amount: number, currency: string) {
+  try {
+    return new Intl.NumberFormat(undefined, { style: "currency", currency, maximumFractionDigits: amount >= 1000 ? 0 : 2 }).format(amount);
+  } catch {
+    return `${currency} ${Math.round(amount).toLocaleString()}`;
+  }
+}
+
+function RevenueBox({ revenue }: { revenue: { direct: number; store: number; orders: number; xpOrders: number; currency: string } }) {
+  const share = revenue.store > 0 ? (revenue.direct / revenue.store) * 100 : 0;
+  const avg = revenue.xpOrders > 0 ? revenue.direct / revenue.xpOrders : 0;
+  const empty = revenue.orders === 0 || revenue.direct === 0;
+  return (
+    <div className="xp-rev" role="group" aria-label="Revenue from XPoost">
+      <div className="xp-rev-main">
+        <span className="xp-rev-label"><Translate text='Total revenue from XPoost' /> <span className="xp-rev-range"><Translate text='last 30 days' /></span></span>
+        <span className="xp-rev-num">{formatMoney(revenue.direct, revenue.currency)}</span>
+        <span className="xp-rev-sub">
+          {empty ? (
+            <Translate text='Revenue from items XPoost adds to carts appears here as orders come in.' />
+          ) : (
+            <>{share >= 0.1 ? `${share.toFixed(1)}%` : "<0.1%"} <Translate text="of your store's revenue" /></>
+          )}
+        </span>
+      </div>
+      <div className="xp-rev-stats">
+        <div className="xp-rev-stat">
+          <b>{revenue.xpOrders.toLocaleString()}</b>
+          <span><Translate text='Orders with an XPoost item' /></span>
+        </div>
+        <div className="xp-rev-stat">
+          <b>{avg > 0 ? formatMoney(avg, revenue.currency) : "\u2014"}</b>
+          <span><Translate text='Average per order' /></span>
+        </div>
+        <div className="xp-rev-stat">
+          <b>{formatMoney(revenue.store, revenue.currency)}</b>
+          <span><Translate text='Store revenue' /></span>
+        </div>
+      </div>
+      <Link to="/app/analytics" className="xp-btn xp-btn--soft xp-rev-cta">
+        <Translate text='Open analytics &rarr;' />
+      </Link>
+    </div>
+  );
+}
+
 const FEATURE_PITCH: Record<string, { name: string; pitch: string }> = {
-  scarcity: { name: "Urgency & Social Proof", pitch: "Live purchase and stock alerts that build trust while shoppers browse." },
-  productScarcity: { name: "Stock Scarcity Block", pitch: "Low-stock meters on product pages that nudge hesitant buyers to act." },
-  quantityBreaks: { name: "Quantity Breaks", pitch: "Tiered volume pricing that moves buyers from 1 unit to 2 or 3." },
+  scarcity: { name: "Social Proof Popups", pitch: "Live purchase and stock alerts that build trust while shoppers browse." },
+  productScarcity: { name: "Low Stock Meter", pitch: "Low-stock meters on product pages that nudge hesitant buyers to act." },
+  quantityBreaks: { name: "Volume Discounts", pitch: "Tiered volume pricing that moves buyers from 1 unit to 2 or 3." },
   prePurchase: { name: "Pre-Purchase Upsell", pitch: "A complementary bundle offer right after Add to Cart, without blocking the cart." },
-  inCart: { name: "Cart Drawer Upsell", pitch: "One-click add-ons inside the slide-out cart, where intent is highest." },
-  shippingBar: { name: "Free Shipping Bar", pitch: "A milestone bar that pulls cart totals up toward free shipping." },
+  inCart: { name: "Cart Upsell", pitch: "One-click add-ons inside the slide-out cart, where intent is highest." },
+  shippingBar: { name: "Free Shipping & Rewards Bar", pitch: "A milestone bar that pulls cart totals up toward free shipping." },
   exitIntent: { name: "Exit-Intent Saver", pitch: "A last-chance offer that catches shoppers before they leave." },
-  thankYou: { name: "Thank-You Page Upsell", pitch: "A reward for the next order or a ship-together offer, right after checkout." },
-  socialBar: { name: "Support & Social Bar", pitch: "WhatsApp support and your social channels, one tap away." },
+  thankYou: { name: "Thank-You Page Offers", pitch: "A reward for the next order or a ship-together offer, right after checkout." },
+  socialBar: { name: "Chat & Social Bar", pitch: "WhatsApp support and your social channels, one tap away." },
 };
 
 /* ─────────────────────────────────────────────────────────────
@@ -328,7 +400,7 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
     url: "https://www.digismoothie.com/blog/upsell-benchmarks",
   },
   {
-    feature: "Cart Drawer Upsell",
+    feature: "Cart Upsell",
     route: "/app/in-cart",
     headline: "Relevance beat discounts: upsells without a discount were accepted more often.",
     detail: "2.3% median take rate with no discount vs 1.5% at 21–50% off. Pick the right product before cutting the price.",
@@ -344,7 +416,7 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
     url: "https://www.digismoothie.com/blog/upsell-benchmarks",
   },
   {
-    feature: "Free Shipping Bar",
+    feature: "Free Shipping & Rewards Bar",
     route: "/app/shipping-bar",
     headline: "Extra costs are the #1 reason shoppers abandon checkout.",
     detail: "Cited by 40% of shoppers who abandoned. Average documented cart abandonment is 70.22%.",
@@ -376,7 +448,7 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
     url: "https://wisepops.com/blog/popup-stats",
   },
   {
-    feature: "Thank-You Page Upsell",
+    feature: "Thank-You Page Offers",
     route: "/app/thank-you",
     headline: "Offers with 3 products were taken twice as often as offers with 1.",
     detail: "2.9% vs 1.5%. On the thank-you page the bigger win is the next-order reward, which brings the customer back.",
@@ -718,7 +790,7 @@ const DASHBOARD_STYLES = `
     color: #E8C872;
     font-variant-numeric: tabular-nums;
   }
-  .xp-spot-of { font-size: 13px; color: #B2A88B; }
+  .xp-spot-of { font-size: 13px; color: #DDD4BA; }
   .xp-meter {
     height: 6px;
     border-radius: 999px;
@@ -736,7 +808,7 @@ const DASHBOARD_STYLES = `
     margin: 0;
     font-size: 13px;
     line-height: 1.5;
-    color: #B2A88B;
+    color: #DDD4BA;
     flex: 1;
   }
   .xp-spot-note a { color: #E8C872; font-weight: 700; text-decoration: none; }
@@ -750,7 +822,7 @@ const DASHBOARD_STYLES = `
     gap: 9px;
     font-size: 13px;
     line-height: 1.4;
-    color: #B2A88B;
+    color: #DDD4BA;
     flex: 1;
   }
   .xp-spot-list li { align-items: flex-start; }
@@ -783,13 +855,13 @@ const DASHBOARD_STYLES = `
   .xp-case-count {
     margin-inline-start: auto;
     font-size: 11px;
-    color: #6A6453;
+    color: #BDB398;
     font-variant-numeric: tabular-nums;
   }
   .xp-case-next {
     background: none;
     border: 1px solid #43331D;
-    color: #9E957B;
+    color: #CFC6AC;
     font-size: 11px;
     font-weight: 600;
     padding: 4px 10px;
@@ -815,7 +887,7 @@ const DASHBOARD_STYLES = `
   .xp-case-detail {
     margin: 0 0 16px;
     font-size: 13.5px;
-    color: #B2A88B;
+    color: #DDD4BA;
     line-height: 1.55;
     max-width: 760px;
   }
@@ -825,14 +897,14 @@ const DASHBOARD_STYLES = `
     gap: 16px;
     flex-wrap: wrap;
   }
-  .xp-case-source { margin: 0; font-size: 11px; color: #6A6453; }
+  .xp-case-source { margin: 0; font-size: 11px; color: #BDB398; }
   .xp-case-source a {
-    color: #8A826C;
+    color: #C9BFA3;
     text-decoration: underline;
     text-decoration-color: #4E4427;
     text-underline-offset: 2px;
   }
-  .xp-case-source a:hover { color: #B2A88B; }
+  .xp-case-source a:hover { color: #DDD4BA; }
 
   @media (max-width: 900px) {
     .xp-spot-grid { grid-template-columns: 1fr; }
@@ -892,12 +964,12 @@ const DASHBOARD_STYLES = `
   }
   .xp-pill--inactive {
     background: #2F2314;
-    color: #8A826C;
+    color: #C9BFA3;
     border: 1px solid #43331D;
   }
   .xp-card-desc {
     font-size: 13px;
-    color: #B2A88B;
+    color: #DDD4BA;
     line-height: 1.5;
     margin: 0 0 16px;
     flex: 1;
@@ -929,7 +1001,7 @@ const DASHBOARD_STYLES = `
   }
   .xp-toggle-btn--off {
     background: #1D150C;
-    color: #8A826C;
+    color: #C9BFA3;
     border: 1px solid #43331D;
   }
   .xp-toggle-btn--off:hover {
@@ -980,7 +1052,7 @@ const DASHBOARD_STYLES = `
   }
   .xp-step p {
     font-size: 12px;
-    color: #B2A88B;
+    color: #DDD4BA;
     margin: 4px 0 0;
     line-height: 1.4;
   }
@@ -1048,4 +1120,57 @@ const DASHBOARD_STYLES = `
   .xp-toggle-btn--on:hover { background: linear-gradient(135deg, #FFEB97 0%, #E8C872 48%, #B8863B 100%); color: #2A1805; }
   .xp-step-num { background: linear-gradient(160deg, #FFEB97, #B8863B); color: #2A1805; border: none; }
   .xp-case-headline { color: #FFF3C4; }
+
+  /* Revenue box */
+  .xp-rev {
+    display: grid;
+    grid-template-columns: minmax(220px, 1.15fr) 2fr auto;
+    gap: 24px;
+    align-items: center;
+    margin: 0 0 16px;
+    padding: 22px 26px;
+    border-radius: 14px;
+    border: 1px solid #3A2B17;
+    background:
+      radial-gradient(520px 200px at 0% 0%, rgba(255,235,151,0.10), transparent 70%),
+      #150E07;
+  }
+  .xp-rev-main { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .xp-rev-label { font-size: 13px; font-weight: 700; color: #FFF3C4; }
+  .xp-rev-range { margin-left: 6px; font-weight: 600; color: #DDD4BA; font-size: 12px; }
+  .xp-rev-num {
+    font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+    font-size: 40px;
+    line-height: 1.05;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    background: linear-gradient(180deg, #FFF3B2, #D9B363);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .xp-rev-sub { font-size: 13px; color: #DDD4BA; }
+  .xp-rev-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .xp-rev-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: rgba(255,235,151,0.05);
+    border: 1px solid rgba(232,200,114,0.18);
+    min-width: 0;
+  }
+  .xp-rev-stat b { font-size: 18px; color: #FFFFFF; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .xp-rev-stat span { font-size: 12px; color: #DDD4BA; }
+  .xp-rev-cta { white-space: nowrap; }
+  .xp-bench-wrap { margin-top: 24px; }
+  @media (max-width: 980px) {
+    .xp-rev { grid-template-columns: 1fr; gap: 16px; }
+    .xp-rev-cta { justify-self: start; }
+  }
+  @media (max-width: 560px) {
+    .xp-rev-stats { grid-template-columns: 1fr; }
+    .xp-rev-num { font-size: 32px; }
+  }
 `;

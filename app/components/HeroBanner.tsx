@@ -145,7 +145,7 @@ function ArtUpsell() {
       <rect x="36" y="122" width="58" height="6" rx="3" fill="#443A22" />
       <rect x="36" y="134" width="38" height="6" rx="3" fill="#3A2B17" />
       <rect x="36" y="152" width="78" height="18" rx="9" fill="#443A22" />
-      <rect x="56" y="159" width="38" height="4" rx="2" fill="#8A826C" />
+      <rect x="56" y="159" width="38" height="4" rx="2" fill="#C9BFA3" />
       <path className="a-flow" d="M118 161 C 134 161 132 128 148 128" fill="none" stroke="#E8C872" strokeWidth="2" strokeDasharray="3 5" strokeLinecap="round" />
       <g className="a-drawer">
         <rect x="146" y="26" width="116" height="178" rx="10" fill="#150E07" stroke="#443A22" />
@@ -283,7 +283,9 @@ const SLIDES: Slide[] = [
 
 export function HeroBanner({ onBrowse }: { onBrowse: (e: { preventDefault: () => void }) => void }) {
   const [index, setIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
+  const [hoverPaused, setHoverPaused] = useState(false);
+  const [userPaused, setUserPaused] = useState(false);
+  const paused = hoverPaused || userPaused;
   const [reduced, setReduced] = useState(false);
   const count = SLIDES.length;
 
@@ -310,10 +312,10 @@ export function HeroBanner({ onBrowse }: { onBrowse: (e: { preventDefault: () =>
       role="region"
       aria-roledescription="carousel"
       aria-label="XPoost highlights"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocus={() => setPaused(true)}
-      onBlur={() => setPaused(false)}
+      onMouseEnter={() => setHoverPaused(true)}
+      onMouseLeave={() => setHoverPaused(false)}
+      onFocus={() => setHoverPaused(true)}
+      onBlur={() => setHoverPaused(false)}
     >
       <style>{HERO_STYLES}</style>
       <GradientDefs />
@@ -374,6 +376,22 @@ export function HeroBanner({ onBrowse }: { onBrowse: (e: { preventDefault: () =>
           <span className="xp-bcount">
             {String(index + 1).padStart(2, "0")} / {String(count).padStart(2, "0")}
           </span>
+          {!reduced && (
+            <button
+              type="button"
+              className="xp-bpause"
+              onClick={() => setUserPaused((v) => !v)}
+              aria-pressed={userPaused}
+              aria-label={userPaused ? "Play slideshow" : "Pause slideshow"}
+              title={userPaused ? "Play slideshow" : "Pause slideshow"}
+            >
+              {userPaused ? (
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+              ) : (
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z" /></svg>
+              )}
+            </button>
+          )}
         </div>
       </div>
       <div className="xp-banner-art" aria-hidden="true">
@@ -464,7 +482,7 @@ const HERO_STYLES = `
   }
   .xp-hero-subtitle {
     font-size: 15px;
-    color: #B2A88B;
+    color: #DDD4BA;
     margin: 0 0 24px;
     line-height: 1.6;
     max-width: 540px;
@@ -483,17 +501,33 @@ const HERO_STYLES = `
     padding: 0;
     border: none;
     border-radius: 999px;
-    background: #443A22;
+    background: #7A6A3A;
     cursor: pointer;
     transition: width 0.3s ease, background 0.3s ease;
   }
-  .xp-bdot:hover { background: #645A34; }
+  .xp-bdot:hover { background: #B09A55; }
   .xp-bdot.is-active {
     width: 26px;
     background: linear-gradient(90deg, #FFEB97, #C9A152);
   }
   .xp-bdot:focus-visible { outline: 2px solid #E8C872; outline-offset: 2px; }
-  .xp-bcount { font-size: 11px; color: #6A6453; font-variant-numeric: tabular-nums; }
+  .xp-bcount { font-size: 11px; color: #BDB398; font-variant-numeric: tabular-nums; }
+  .xp-bpause {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid rgba(232,200,114,0.55);
+    background: rgba(232,200,114,0.08);
+    color: #FFEB97;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .xp-bpause:hover { background: linear-gradient(135deg, #FFEB97 0%, #E8C872 48%, #B8863B 100%); color: #2A1805; }
+  .xp-bpause:focus-visible { outline: 2px solid #E8C872; outline-offset: 2px; }
   .xp-bprog {
     position: absolute;
     inset-inline: 0;

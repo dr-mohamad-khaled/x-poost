@@ -11,7 +11,7 @@ import {
   sanitizeTier,
   syncPerksDiscount,
 } from "../perks.server";
-import type { PerkSettings } from "../perks.server";
+import type { PerkSettings, PerkTier } from "../perks.server";
 import { FeatureLanguageSwitcher } from "../components/FeatureLanguageSwitcher";
 import {
   type SupportedLanguage,
@@ -24,7 +24,7 @@ type Tier = {
   targetAmount: number;
   rewardTitle: string;
   unlockedMessage: string;
-  rewardType?: string;
+  rewardType?: PerkTier["rewardType"];
   rewardValue?: number;
   rewardCap?: number;
   rewardLabel?: string;
@@ -425,7 +425,7 @@ export default function ShippingBarSettings() {
   const remaining = nextTier ? (nextTier.targetAmount - testCartValue).toFixed(2) : "0.00";
 
   return (
-    <s-page heading="Smart Tiered Shipping & Rewards Bar">
+    <s-page heading="Free Shipping & Rewards Bar">
       <style>{SHIPPING_BAR_STYLES}</style>
 
       {actionData && "ok" in actionData ? (
@@ -1219,7 +1219,7 @@ function RewardFields({
           className="xp-input"
           value={type}
           onChange={(e) => {
-            const nextType = e.target.value;
+            const nextType = e.target.value as NonNullable<PerkTier["rewardType"]>;
             onChange({
               rewardType: nextType,
               rewardValue: nextType === "display" || nextType === "free_shipping" ? undefined : tier.rewardValue || (nextType.endsWith("percent") ? 10 : 5),
@@ -1510,7 +1510,7 @@ const SHIPPING_BAR_STYLES = `
   }
   .xp-sub {
     font-size: 12px;
-    color: #8A8A8A;
+    color: #CFC6AC;
     margin: 4px 0 12px;
   }
   .xp-row {
@@ -1628,7 +1628,7 @@ const SHIPPING_BAR_STYLES = `
   .xp-layout-desc {
     margin: 0;
     font-size: 11px;
-    color: #8A8A8A;
+    color: #CFC6AC;
     line-height: 1.35;
   }
 

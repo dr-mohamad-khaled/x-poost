@@ -19,17 +19,12 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     });
 
   const url = new URL(request.url);
-  const shopDomain =
-    session?.shop ||
-    url.searchParams.get("shop") ||
-    request.headers.get("x-shop-domain");
+  // Only the signed `shop` parameter of a verified app-proxy request is trusted (never a header).
+  const shopDomain = session?.shop || url.searchParams.get("shop");
 
   let shop = null;
   if (shopDomain) {
     shop = await prisma.shop.findUnique({ where: { shopDomain } });
-  }
-  if (!shop) {
-    shop = await prisma.shop.findFirst();
   }
   if (!shop) return inactive();
 

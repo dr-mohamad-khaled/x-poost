@@ -292,7 +292,7 @@ export default function TranslationsPage() {
         }
         .xpp-card-desc {
           font-size: 13px;
-          color: #B2A88B;
+          color: #DDD4BA;
           margin: 0 0 16px;
           line-height: 1.5;
         }
@@ -308,7 +308,7 @@ export default function TranslationsPage() {
         }
         .xpp-hint {
           font-size: 12px;
-          color: #8A826C;
+          color: #C9BFA3;
           margin-top: 4px;
         }
         .xpp-input {
@@ -565,7 +565,7 @@ export default function TranslationsPage() {
                 className={`xpp-tab-btn ${activeTab === "productScarcity" ? "is-active" : ""}`}
                 onClick={() => setActiveTab("productScarcity")}
               >
-                {isRtl ? "ندرة مخزون المنتج" : "Product Stock Scarcity"}
+                {isRtl ? "ندرة مخزون المنتج" : "Low Stock Meter"}
               </button>
               <button
                 type="button"
@@ -579,14 +579,14 @@ export default function TranslationsPage() {
                 className={`xpp-tab-btn ${activeTab === "inCart" ? "is-active" : ""}`}
                 onClick={() => setActiveTab("inCart")}
               >
-                {isRtl ? "عروض سلة الشراء" : "Cart Drawer Upsells"}
+                {isRtl ? "عروض سلة الشراء" : "Cart Upsell"}
               </button>
               <button
                 type="button"
                 className={`xpp-tab-btn ${activeTab === "shippingBar" ? "is-active" : ""}`}
                 onClick={() => setActiveTab("shippingBar")}
               >
-                {isRtl ? "شريط الشحن المجاني" : "Free Shipping Bar"}
+                {isRtl ? "شريط الشحن المجاني" : "Free Shipping & Rewards Bar"}
               </button>
               {EXIT_INTENT_AVAILABLE ? (
               <button
@@ -602,14 +602,14 @@ export default function TranslationsPage() {
                 className={`xpp-tab-btn ${activeTab === "socialBar" ? "is-active" : ""}`}
                 onClick={() => setActiveTab("socialBar")}
               >
-                {isRtl ? "شريط الدعم والتواصل" : "Support & Social Bar"}
+                {isRtl ? "شريط الدعم والتواصل" : "Chat & Social Bar"}
               </button>
               <button
                 type="button"
                 className={`xpp-tab-btn ${activeTab === "scarcityToast" ? "is-active" : ""}`}
                 onClick={() => setActiveTab("scarcityToast")}
               >
-                {isRtl ? "إشعارات الشراء العاجلة" : "Urgency Toasts"}
+                {isRtl ? "إشعارات الشراء العاجلة" : "Social Proof Popups"}
               </button>
               <button
                 type="button"
@@ -624,7 +624,7 @@ export default function TranslationsPage() {
             {activeTab === "productScarcity" && (
               <div dir={isEditRtl ? "rtl" : "ltr"}>
                 <div style={{ marginBottom: 12 }}>
-                  <span style={{ fontSize: 12, color: "#9E957B" }}>
+                  <span style={{ fontSize: 12, color: "#CFC6AC" }}>
                     {isRtl ? "المتغيرات المتاحة:" : "Available Placeholders:"}
                   </span>
                   <span

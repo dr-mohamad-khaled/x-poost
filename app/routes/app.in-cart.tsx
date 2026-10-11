@@ -1,4 +1,4 @@
-﻿import { Translate } from "../components/Translate";
+import { Translate } from "../components/Translate";
 import { ColorPresets } from "../components/ColorPresets";
 import { useState, useEffect, useMemo } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
@@ -93,7 +93,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           }
         }`
       );
-      const json = await response.json();
+      const json: any = await response.json();
       if (json.errors) {
         console.error("[XPoost] GraphQL errors querying products for in-cart:", json.errors);
       }
@@ -880,7 +880,7 @@ export default function InCartUpsellSettings() {
   };
 
   return (
-    <s-page heading="In-Cart Drawer Upsells">
+    <s-page heading="Cart Upsell">
       <style>{IN_CART_STYLES}</style>
 
       {actionData && "error" in actionData ? (
@@ -938,7 +938,7 @@ export default function InCartUpsellSettings() {
                   
                                                     <Translate text='In-Cart Drawer Appearance & Colors' />
                                                   </h3>
-                <p style={{ fontSize: "12px", color: "#919191", margin: 0 }}>
+                <p style={{ fontSize: "12px", color: "#CFC6AC", margin: 0 }}>
                   
                                                     <Translate text='Customize the background, accent, and text colors of in-cart drawer recommendations.' />
                                                   </p>
@@ -1028,7 +1028,7 @@ export default function InCartUpsellSettings() {
           <div className="xp-index-header">
             <div className="xp-search-box">
               <span className="xp-search-icon">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#919191" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#CFC6AC" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="11" cy="11" r="8"/>
                   <line x1="21" y1="21" x2="16.65" y2="16.65"/>
                 </svg>
@@ -1097,7 +1097,7 @@ export default function InCartUpsellSettings() {
           {filteredRules.length === 0 ? (
             <div className="xp-empty-state">
               <div className="xp-empty-icon">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#919191" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#CFC6AC" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="8" cy="21" r="1"/>
                   <circle cx="19" cy="21" r="1"/>
                   <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
@@ -1164,7 +1164,7 @@ export default function InCartUpsellSettings() {
                               <img src={rule.targetProductImage} alt="" className="xp-table-thumb" />
                             ) : (
                               <div className="xp-table-thumb-placeholder">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#919191" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#CFC6AC" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
                                   <path d="m16.5 9.4-9-5.19M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
                                   <polyline points="3.29 7 12 12 20.71 7"/>
                                   <line x1="12" y1="22" x2="12" y2="12"/>
@@ -1472,7 +1472,7 @@ export default function InCartUpsellSettings() {
                             onChange={(e) => setTriggerSearch(e.target.value)}
                           />
                           {isSearchingTrigger && (
-                            <span style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", fontSize: "11px", color: "#919191" }}>
+                            <span style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", fontSize: "11px", color: "#CFC6AC" }}>
                               
                                                                                             <Translate text='Searching store...' />
                                                                                           </span>
@@ -1491,7 +1491,7 @@ export default function InCartUpsellSettings() {
                           <button
                             type="button"
                             className="xp-btn-text"
-                            style={{ fontSize: "11px", color: "#717171" }}
+                            style={{ fontSize: "11px", color: "#C2B89C" }}
                             onClick={clearTriggerSelection}
                           >
                             
@@ -1509,7 +1509,7 @@ export default function InCartUpsellSettings() {
                         <div className="xp-trigger-selected-wrap">
                           <div className="xp-trigger-count-bar">
                             <span>{selectedTriggerProductsList.length}  <Translate text='Trigger Product' />{selectedTriggerProductsList.length > 1 ? "s" : ""}  <Translate text='Selected:' /></span>
-                            <span style={{ fontSize: "11px", color: "#717171" }}><Translate text='Shows when ANY of these are in the cart' /></span>
+                            <span style={{ fontSize: "11px", color: "#C2B89C" }}><Translate text='Shows when ANY of these are in the cart' /></span>
                           </div>
                           <div className="xp-trigger-chips-list">
                             {selectedTriggerProductsList.map((p) => (
@@ -1517,7 +1517,7 @@ export default function InCartUpsellSettings() {
                                 {p.imageUrl ? (
                                   <img src={p.imageUrl} alt="" className="xp-trigger-chip-thumb" />
                                 ) : (
-                                  <span style={{ width: "20px", height: "20px", display: "inline-flex", alignItems: "center", justifyContent: "center", background: "#2F2314", color: "#8A8A8A", borderRadius: "50%", fontSize: "10px" }}>
+                                  <span style={{ width: "20px", height: "20px", display: "inline-flex", alignItems: "center", justifyContent: "center", background: "#2F2314", color: "#CFC6AC", borderRadius: "50%", fontSize: "10px" }}>
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="18" height="18" x="3" y="3" rx="2"/></svg>
                                   </span>
                                 )}
@@ -1544,7 +1544,7 @@ export default function InCartUpsellSettings() {
                       {/* Catalog Checklist */}
                       <div className="xp-picker-list" style={{ maxHeight: "240px", overflowY: "auto", border: "1px solid #3A2B17", borderRadius: "6px" }}>
                         {filteredTriggerProducts.length === 0 ? (
-                          <div style={{ padding: "20px", textAlign: "center", color: "#919191", fontSize: "12px" }}>
+                          <div style={{ padding: "20px", textAlign: "center", color: "#CFC6AC", fontSize: "12px" }}>
                             {isSearchingTrigger ? "Searching store catalog..." : `No products found matching "${triggerSearch}"`}
                           </div>
                         ) : (
@@ -1567,7 +1567,7 @@ export default function InCartUpsellSettings() {
                                 <img src={p.imageUrl} alt="" className="xp-picker-thumb" />
                               ) : (
                                 <div className="xp-picker-thumb-placeholder">
-                                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#919191" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#CFC6AC" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
                                     <path d="m16.5 9.4-9-5.19M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
                                     <polyline points="3.29 7 12 12 20.71 7"/>
                                     <line x1="12" y1="22" x2="12" y2="12"/>
@@ -1611,7 +1611,7 @@ export default function InCartUpsellSettings() {
                         <img src={selectedProduct.imageUrl} alt="" className="xp-picker-thumb" />
                       ) : (
                         <div className="xp-picker-thumb-placeholder">
-                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#919191" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#CFC6AC" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
                             <path d="m16.5 9.4-9-5.19M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
                             <polyline points="3.29 7 12 12 20.71 7"/>
                             <line x1="12" y1="22" x2="12" y2="12"/>
@@ -1644,7 +1644,7 @@ export default function InCartUpsellSettings() {
                           autoFocus
                         />
                         {isSearchingTarget && (
-                          <span style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", fontSize: "11px", color: "#919191" }}>
+                          <span style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", fontSize: "11px", color: "#CFC6AC" }}>
                             
                                                                                       <Translate text='Searching store...' />
                                                                                     </span>
@@ -1652,7 +1652,7 @@ export default function InCartUpsellSettings() {
                       </div>
                       <div className="xp-picker-list">
                         {filteredTargetProducts.length === 0 ? (
-                          <div style={{ padding: "20px", textAlign: "center", color: "#919191", fontSize: "12px" }}>
+                          <div style={{ padding: "20px", textAlign: "center", color: "#CFC6AC", fontSize: "12px" }}>
                             {isSearchingTarget ? "Searching store catalog..." : `No products found matching "${targetSearch}"`}
                           </div>
                         ) : (
@@ -1671,7 +1671,7 @@ export default function InCartUpsellSettings() {
                               <img src={p.imageUrl} alt="" className="xp-picker-thumb" />
                             ) : (
                               <div className="xp-picker-thumb-placeholder">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#919191" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#CFC6AC" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
                                   <path d="m16.5 9.4-9-5.19M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
                                   <polyline points="3.29 7 12 12 20.71 7"/>
                                   <line x1="12" y1="22" x2="12" y2="12"/>
@@ -1764,7 +1764,7 @@ export default function InCartUpsellSettings() {
                         />
                         <div className="xp-picker-list">
                           {filteredExtraProducts.length === 0 ? (
-                            <div style={{ padding: "20px", textAlign: "center", color: "#919191", fontSize: "12px" }}>
+                            <div style={{ padding: "20px", textAlign: "center", color: "#CFC6AC", fontSize: "12px" }}>
                               
                                                                                             <Translate text='No products found' />
                                                                                           </div>
@@ -1925,7 +1925,7 @@ export default function InCartUpsellSettings() {
                       />
                     ) : (
                       <div className="xp-addon-placeholder">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#919191" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#CFC6AC" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
                           <path d="M3 6h18"/>
                           <path d="M16 10a4 4 0 0 1-8 0"/>
@@ -2096,7 +2096,7 @@ const IN_CART_STYLES = `
     box-shadow: 0 0 0 3px #cbf4c9;
   }
   .xp-status-dot.is-disabled {
-    background: #919191;
+    background: #CFC6AC;
     box-shadow: 0 0 0 3px #e5e5e5;
   }
   .xp-global-actions {
@@ -2169,7 +2169,7 @@ const IN_CART_STYLES = `
     position: absolute;
     left: 10px;
     font-size: 13px;
-    color: #8A8A8A;
+    color: #CFC6AC;
   }
   .xp-search-input {
     width: 100%;
@@ -2190,7 +2190,7 @@ const IN_CART_STYLES = `
     background: none;
     border: none;
     font-size: 16px;
-    color: #8A8A8A;
+    color: #CFC6AC;
     cursor: pointer;
   }
   .xp-filter-tabs {
@@ -2204,7 +2204,7 @@ const IN_CART_STYLES = `
     border-radius: 20px;
     border: 1px solid transparent;
     background: #1D150C;
-    color: #8A8A8A;
+    color: #CFC6AC;
     cursor: pointer;
     transition: all 0.15s ease;
   }
@@ -2291,7 +2291,7 @@ const IN_CART_STYLES = `
   }
   .xp-table-sub {
     font-size: 11px;
-    color: #8A8A8A;
+    color: #CFC6AC;
   }
   .xp-badge-status {
     display: inline-block;
@@ -2306,7 +2306,7 @@ const IN_CART_STYLES = `
   }
   .xp-badge-paused {
     background: #2F2314;
-    color: #8A8A8A;
+    color: #CFC6AC;
   }
   .xp-trigger-badge {
     background: #1D150C;
@@ -2333,7 +2333,7 @@ const IN_CART_STYLES = `
   }
   .xp-promoted-names {
     font-size: 11px;
-    color: #8A8A8A;
+    color: #CFC6AC;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -2349,7 +2349,7 @@ const IN_CART_STYLES = `
   }
   .xp-text-muted {
     font-size: 12px;
-    color: #8A8A8A;
+    color: #CFC6AC;
   }
   .xp-actions-cell {
     display: inline-flex;
@@ -2390,7 +2390,7 @@ const IN_CART_STYLES = `
     align-items: center;
     border-top: 1px solid #3A2B17;
     font-size: 12px;
-    color: #8A8A8A;
+    color: #CFC6AC;
   }
   .xp-pagination-controls {
     display: flex;
@@ -2491,7 +2491,7 @@ const IN_CART_STYLES = `
   }
   .xp-sub {
     font-size: 12px;
-    color: #8A8A8A;
+    color: #CFC6AC;
     margin: 4px 0 0;
   }
   .xp-form {
@@ -2511,7 +2511,7 @@ const IN_CART_STYLES = `
   }
   .xp-field small {
     font-size: 11px;
-    color: #8A8A8A;
+    color: #CFC6AC;
   }
   .xp-input {
     padding: 8px 12px;
@@ -2627,7 +2627,7 @@ const IN_CART_STYLES = `
     cursor: pointer;
     font-size: 14px;
     line-height: 1;
-    color: #8A8A8A;
+    color: #CFC6AC;
     padding: 0 2px;
     display: inline-flex;
     align-items: center;
@@ -2757,7 +2757,7 @@ const IN_CART_STYLES = `
   }
   .xp-picker-item-price {
     font-size: 12px;
-    color: #8A8A8A;
+    color: #CFC6AC;
   }
   .xp-check-label {
     display: flex;

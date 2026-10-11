@@ -1,4 +1,4 @@
-﻿import { Translate } from "../components/Translate";
+import { Translate } from "../components/Translate";
 import { ColorPresets } from "../components/ColorPresets";
 import { useState, useMemo, useEffect } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
@@ -528,7 +528,7 @@ export default function QuantityBreaksPage() {
   const isPreviewRtl = selectedLang === "ar";
 
   return (
-    <s-page heading="Quantity Breaks & Volume Discounts">
+    <s-page heading="Volume Discounts">
       <style>{`
         .xpp-qb-admin {
           max-width: 1100px;
@@ -555,7 +555,7 @@ export default function QuantityBreaksPage() {
         }
         .xpp-card-desc {
           font-size: 13px;
-          color: #9e9e9e;
+          color: #D2C8AC;
           margin: 0 0 20px;
           line-height: 1.5;
         }
@@ -614,7 +614,7 @@ export default function QuantityBreaksPage() {
         }
         .xpp-hint {
           font-size: 12px;
-          color: #8A8A8A;
+          color: #CFC6AC;
           margin-top: 4px;
         }
         .xpp-table {
@@ -655,7 +655,7 @@ export default function QuantityBreaksPage() {
         }
         .xpp-badge--draft {
           background: rgba(161, 161, 170, 0.15);
-          color: #9e9e9e;
+          color: #D2C8AC;
           border: 1px solid rgba(161, 161, 170, 0.3);
         }
         .xpp-preset-grid {
@@ -865,7 +865,7 @@ export default function QuantityBreaksPage() {
                     </svg>
                   </div>
                   <h4 style={{ fontSize: 16, fontWeight: 700, margin: "0 0 6px", color: "#fff" }}><Translate text='No quantity break offers yet' /></h4>
-                  <p style={{ fontSize: 13, color: "#9e9e9e", maxWidth: 420, margin: "0 auto 20px" }}>
+                  <p style={{ fontSize: 13, color: "#D2C8AC", maxWidth: 420, margin: "0 auto 20px" }}>
                     
                                                           <Translate text='Create your first volume discount offer to reward customers who buy 2, 3, or more items together.' />
                                                         </p>
@@ -902,7 +902,7 @@ export default function QuantityBreaksPage() {
                           <tr key={offer.id}>
                             <td>
                               <div style={{ fontWeight: 700, color: "#ffffff" }}>{offer.title}</div>
-                              <div style={{ fontSize: 11, color: "#7f7f7f" }}><Translate text='Preset:' /> {offer.designPreset}</div>
+                              <div style={{ fontSize: 11, color: "#C9BFA3" }}><Translate text='Preset:' /> {offer.designPreset}</div>
                             </td>
                             <td>
                               {offer.targetMode === "ALL" ? (
@@ -1023,15 +1023,15 @@ export default function QuantityBreaksPage() {
                     
                                                           <Translate text='Multi-Language Translation Customization' />
                                                         </h3>
-                  <p style={{ fontSize: 12, color: "#9e9e9e", margin: 0 }}>
+                  <p style={{ fontSize: 12, color: "#D2C8AC", margin: 0 }}>
                     
                                                           <Translate text='Customize the widget&apos;s copy for each storefront language.' />
                                                         </p>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <FeatureLanguageSwitcher
-                    currentLanguage={selectedLang}
-                    onLanguageChange={(lang) => setSelectedLang(lang)}
+                    selectedLang={selectedLang}
+                    onSelectLang={(lang) => setSelectedLang(lang)}
                   />
                   <button
                     type="button"
@@ -1104,7 +1104,7 @@ export default function QuantityBreaksPage() {
                     style={{ marginRight: 8 }}
                   />
                   <span style={{ fontWeight: 800, color: "#fff" }}><Translate text='Specific Products' /></span>
-                  <p style={{ margin: "4px 0 0 22px", fontSize: 12, color: "#9e9e9e" }}>
+                  <p style={{ margin: "4px 0 0 22px", fontSize: 12, color: "#D2C8AC" }}>
                     
                                                           <Translate text='Apply terms only to chosen products (single product or multiple).' />
                                                         </p>
@@ -1128,7 +1128,7 @@ export default function QuantityBreaksPage() {
                     style={{ marginRight: 8 }}
                   />
                   <span style={{ fontWeight: 800, color: "#fff" }}><Translate text='All Store Products' /></span>
-                  <p style={{ margin: "4px 0 0 22px", fontSize: 12, color: "#9e9e9e" }}>
+                  <p style={{ margin: "4px 0 0 22px", fontSize: 12, color: "#D2C8AC" }}>
                     
                                                           <Translate text='Enable this volume tier structure across your entire catalog.' />
                                                         </p>
@@ -1177,7 +1177,7 @@ export default function QuantityBreaksPage() {
 
                   {/* Selected Products Chips */}
                   <div>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: "#9e9e9e" }}>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: "#D2C8AC" }}>
                       
                                                                 <Translate text='Selected Products (' />{selectedProductIds.length}):
                     </span>
@@ -1192,7 +1192,7 @@ export default function QuantityBreaksPage() {
                         </div>
                       ))}
                       {selectedProductIds.length === 0 && (
-                        <span style={{ fontSize: 12, color: "#8A8A8A", fontStyle: "italic", marginLeft: 4 }}>
+                        <span style={{ fontSize: 12, color: "#CFC6AC", fontStyle: "italic", marginLeft: 4 }}>
                           
                                                                             <Translate text='No products selected yet. Search above to add items.' />
                                                                           </span>
@@ -1227,7 +1227,7 @@ export default function QuantityBreaksPage() {
                     style={{ marginRight: 8 }}
                   />
                   <span style={{ fontWeight: 800, color: "#fff" }}><Translate text='Percentage Discount (%)' /></span>
-                  <p style={{ margin: "4px 0 0 22px", fontSize: 12, color: "#9e9e9e" }}>
+                  <p style={{ margin: "4px 0 0 22px", fontSize: 12, color: "#D2C8AC" }}>
                     
                                                           <Translate text='e.g. Buy 2 get 10% off each, Buy 3 get 20% off each.' />
                                                         </p>
@@ -1251,7 +1251,7 @@ export default function QuantityBreaksPage() {
                     style={{ marginRight: 8 }}
                   />
                   <span style={{ fontWeight: 800, color: "#fff" }}><Translate text='Fixed Amount Deducted Per Item ($)' /></span>
-                  <p style={{ margin: "4px 0 0 22px", fontSize: 12, color: "#9e9e9e" }}>
+                  <p style={{ margin: "4px 0 0 22px", fontSize: 12, color: "#D2C8AC" }}>
                     
                                                           <Translate text='e.g. Buy 2 save $5.00 each, Buy 3 save $10.00 each.' />
                                                         </p>
@@ -1367,7 +1367,7 @@ export default function QuantityBreaksPage() {
                   onClick={() => setDesignPreset("modern_cards")}
                 >
                   <div style={{ fontWeight: 800, color: "#fff", marginBottom: 4 }}><Translate text='Modern Stacked Cards' /></div>
-                  <p style={{ fontSize: 12, color: "#9e9e9e", margin: 0 }}>
+                  <p style={{ fontSize: 12, color: "#D2C8AC", margin: 0 }}>
                     
                                                           <Translate text='Vertical stacked tiles with custom radio selectors, subtle gradient borders, and highlight badge.' />
                                                         </p>
@@ -1378,7 +1378,7 @@ export default function QuantityBreaksPage() {
                   onClick={() => setDesignPreset("grid_boxes")}
                 >
                   <div style={{ fontWeight: 800, color: "#fff", marginBottom: 4 }}><Translate text='Compact Grid Boxes' /></div>
-                  <p style={{ fontSize: 12, color: "#9e9e9e", margin: 0 }}>
+                  <p style={{ fontSize: 12, color: "#D2C8AC", margin: 0 }}>
                     
                                                           <Translate text='Horizontal side-by-side cards with prominent quantity count and top banner discount tags.' />
                                                         </p>
@@ -1389,7 +1389,7 @@ export default function QuantityBreaksPage() {
                   onClick={() => setDesignPreset("minimal_table")}
                 >
                   <div style={{ fontWeight: 800, color: "#fff", marginBottom: 4 }}><Translate text='Minimalist Sleek Rows' /></div>
-                  <p style={{ fontSize: 12, color: "#9e9e9e", margin: 0 }}>
+                  <p style={{ fontSize: 12, color: "#D2C8AC", margin: 0 }}>
                     
                                                           <Translate text='Clean compact rows with circular indicator, aligned pricing, and subtle outline hover.' />
                                                         </p>
@@ -1400,7 +1400,7 @@ export default function QuantityBreaksPage() {
                   onClick={() => setDesignPreset("luxury_gold")}
                 >
                   <div style={{ fontWeight: 800, color: "#fff", marginBottom: 4 }}><Translate text='Luxury Gold Vault' /></div>
-                  <p style={{ fontSize: 12, color: "#9e9e9e", margin: 0 }}>
+                  <p style={{ fontSize: 12, color: "#D2C8AC", margin: 0 }}>
                     
                                                           <Translate text='Deep obsidian card framing with gleaming gold accents, metallic badges, and live savings indicator.' />
                                                         </p>
@@ -1428,7 +1428,7 @@ export default function QuantityBreaksPage() {
                       style={{ marginRight: 6 }}
                     />
                     <span style={{ fontWeight: 700, color: "#fff", fontSize: 13 }}><Translate text='Shimmer Light Sweep' /></span>
-                    <p style={{ margin: "2px 0 0 20px", fontSize: 11, color: "#9e9e9e" }}>
+                    <p style={{ margin: "2px 0 0 20px", fontSize: 11, color: "#D2C8AC" }}>
                       
                                                                 <Translate text='A continuous smooth light reflection gliding across the popular tier.' />
                                                               </p>
@@ -1452,7 +1452,7 @@ export default function QuantityBreaksPage() {
                       style={{ marginRight: 6 }}
                     />
                     <span style={{ fontWeight: 700, color: "#fff", fontSize: 13 }}><Translate text='Glowing Pulse' /></span>
-                    <p style={{ margin: "2px 0 0 20px", fontSize: 11, color: "#9e9e9e" }}>
+                    <p style={{ margin: "2px 0 0 20px", fontSize: 11, color: "#D2C8AC" }}>
                       
                                                                 <Translate text='A soft breathing neon ambient glow around the selected tier.' />
                                                               </p>
@@ -1476,7 +1476,7 @@ export default function QuantityBreaksPage() {
                       style={{ marginRight: 6 }}
                     />
                     <span style={{ fontWeight: 700, color: "#fff", fontSize: 13 }}><Translate text='Floating Badge' /></span>
-                    <p style={{ margin: "2px 0 0 20px", fontSize: 11, color: "#9e9e9e" }}>
+                    <p style={{ margin: "2px 0 0 20px", fontSize: 11, color: "#D2C8AC" }}>
                       
                                                                 <Translate text='An animated floating bob effect on highlight badges.' />
                                                               </p>
@@ -1557,7 +1557,7 @@ export default function QuantityBreaksPage() {
                     onChange={(e) => setShowAddToCartBtn(e.target.checked)}
                     style={{ width: 18, height: 18, accentColor: "#F2F2F2", cursor: "pointer" }}
                   />
-                  <span style={{ fontSize: 13, fontWeight: 700, color: showAddToCartBtn ? "#4ade80" : "#9e9e9e" }}>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: showAddToCartBtn ? "#4ade80" : "#D2C8AC" }}>
                     {showAddToCartBtn ? "Enabled" : "Disabled"}
                   </span>
                 </label>
@@ -1660,7 +1660,7 @@ export default function QuantityBreaksPage() {
                   
                                                     <Translate text='Real-Time Storefront Interactive Preview (' />{selectedLang.toUpperCase()})
                 </span>
-                <span style={{ fontSize: 12, color: "#8A8A8A" }}>
+                <span style={{ fontSize: 12, color: "#CFC6AC" }}>
                   
                                                     <Translate text='Layout:' /> {designPreset}  <Translate text='| Effect:' /> {animationStyle}
                 </span>
@@ -1753,7 +1753,7 @@ export default function QuantityBreaksPage() {
                             </div>
                             <div>
                               <div style={{ fontSize: 14, fontWeight: 800, color: textColor }}>{tier.title}</div>
-                              {tier.subtitle && <div style={{ fontSize: 12, color: "rgba(255,255,255,0.6)" }}>{tier.subtitle}</div>}
+                              {tier.subtitle && <div style={{ fontSize: 12, color: "rgba(255,255,255,0.85)" }}>{tier.subtitle}</div>}
                             </div>
                           </div>
 
@@ -1761,7 +1761,7 @@ export default function QuantityBreaksPage() {
                             <div style={{ fontSize: 15, fontWeight: 900, color: accentColor }}>
                               ${totalPrice.toFixed(2)}
                             </div>
-                            <div style={{ fontSize: 11, color: "rgba(255,255,255,0.6)" }}>
+                            <div style={{ fontSize: 11, color: "rgba(255,255,255,0.85)" }}>
                               ${discountedUnit.toFixed(2)} {currentTranslations.eachLabel}
                             </div>
                             {totalSavings > 0 && (
@@ -1838,7 +1838,7 @@ export default function QuantityBreaksPage() {
                           <div style={{ fontSize: 14, fontWeight: 800, color: "#ffffff" }}>
                             ${totalPrice.toFixed(2)}
                           </div>
-                          <div style={{ fontSize: 11, color: "rgba(255,255,255,0.6)" }}>
+                          <div style={{ fontSize: 11, color: "rgba(255,255,255,0.85)" }}>
                             ${discountedUnit.toFixed(2)}<Translate text='/ea' />
                                                             </div>
                         </div>
@@ -1938,7 +1938,7 @@ export default function QuantityBreaksPage() {
                                 </span>
                               )}
                             </div>
-                            {tier.subtitle && <div style={{ fontSize: 12, color: "rgba(255,255,255,0.6)", marginTop: 2 }}>{tier.subtitle}</div>}
+                            {tier.subtitle && <div style={{ fontSize: 12, color: "rgba(255,255,255,0.85)", marginTop: 2 }}>{tier.subtitle}</div>}
                           </div>
 
                           <div style={{ textAlign: isPreviewRtl ? "left" : "right" }}>

@@ -60,11 +60,14 @@ export function handleError(
   error: unknown,
   { request }: { request: Request }
 ) {
+  // Log the path only: query strings and headers can carry session tokens, cookies and HMAC signatures.
+  let path = "";
+  try {
+    path = new URL(request.url).pathname;
+  } catch {}
   console.error("[SERVER_HANDLE_ERROR]", {
-    url: request?.url,
+    path,
     method: request?.method,
-    headers: Object.fromEntries(request?.headers ? request.headers.entries() : []),
-    error: error instanceof Error ? error.stack || error.message : error,
+    error: error instanceof Error ? error.stack || error.message : String(error),
   });
 }
-

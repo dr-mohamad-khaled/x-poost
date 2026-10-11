@@ -417,7 +417,7 @@ export default function SocialBarSettings() {
   };
 
   return (
-    <s-page heading="Omnichannel Social & Support Action Bar">
+    <s-page heading="Chat & Social Bar">
       <style>{SOCIAL_BAR_STYLES}</style>
 
       {actionData && "ok" in actionData ? (
@@ -1254,7 +1254,7 @@ const SOCIAL_BAR_STYLES = `
   }
   .xp-sub {
     font-size: 12px;
-    color: #8A8A8A;
+    color: #CFC6AC;
     margin: 4px 0 0;
   }
   .xp-row {
@@ -1285,7 +1285,7 @@ const SOCIAL_BAR_STYLES = `
   }
   .xp-field small {
     font-size: 11px;
-    color: #8A8A8A;
+    color: #CFC6AC;
   }
   .xp-input {
     padding: 8px 12px;
@@ -1371,7 +1371,7 @@ const SOCIAL_BAR_STYLES = `
   .xp-layout-desc {
     margin: 0;
     font-size: 11px;
-    color: #8A8A8A;
+    color: #CFC6AC;
     line-height: 1.35;
   }
 
@@ -1437,7 +1437,7 @@ const SOCIAL_BAR_STYLES = `
   .xp-theme-desc {
     margin: 0;
     font-size: 11px;
-    color: #8A8A8A;
+    color: #CFC6AC;
     line-height: 1.35;
     flex-grow: 1;
   }
@@ -1478,7 +1478,7 @@ const SOCIAL_BAR_STYLES = `
   }
   .xp-offset-header small {
     font-size: 11px;
-    color: #8A8A8A;
+    color: #CFC6AC;
   }
   .xp-offset-val-wrap {
     display: flex;
@@ -1510,7 +1510,7 @@ const SOCIAL_BAR_STYLES = `
   }
   .xp-preset-label {
     font-size: 11px;
-    color: #8A8A8A;
+    color: #CFC6AC;
   }
   .xp-preset-btn {
     background: #150E07;
@@ -1525,7 +1525,7 @@ const SOCIAL_BAR_STYLES = `
   }
   .xp-preset-btn:hover {
     background: #1D150C;
-    border-color: #8A8A8A;
+    border-color: #CFC6AC;
   }
 
   .xp-color-wrap {
@@ -1787,7 +1787,7 @@ const SOCIAL_BAR_STYLES = `
   .xp-chips-label {
     font-size: 11px;
     font-weight: 600;
-    color: #8A8A8A;
+    color: #CFC6AC;
     margin-bottom: 6px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -1865,7 +1865,7 @@ const SOCIAL_BAR_STYLES = `
   }
   .xp-concierge-social-label {
     font-size: 11px;
-    color: #8A8A8A;
+    color: #CFC6AC;
   }
 
   /* VIP Funnel */
@@ -1951,7 +1951,7 @@ const SOCIAL_BAR_STYLES = `
     padding-top: 10px;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
     font-size: 11px;
-    color: #8A8A8A;
+    color: #CFC6AC;
   }
   .xp-concierge-social-row {
     display: flex;

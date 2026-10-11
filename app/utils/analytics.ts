@@ -38,14 +38,14 @@ export const FEATURE_KEYS: Exclude<FeatureKey, "_store">[] = ALL_FEATURE_KEYS.fi
 
 export const FEATURE_LABELS: Record<string, string> = {
   prePurchase: "Pre-Purchase Upsell",
-  inCart: "Cart Drawer Upsell",
-  quantityBreaks: "Quantity Breaks",
-  shippingBar: "Free Shipping Bar",
+  inCart: "Cart Upsell",
+  quantityBreaks: "Volume Discounts",
+  shippingBar: "Free Shipping & Rewards Bar",
   exitIntent: "Exit-Intent Saver",
-  scarcity: "Urgency Notifications",
-  productScarcity: "Stock Scarcity Block",
-  socialBar: "Support & Social Bar",
-  thankYou: "Thank-You Page Upsell",
+  scarcity: "Social Proof Popups",
+  productScarcity: "Low Stock Meter",
+  socialBar: "Chat & Social Bar",
+  thankYou: "Thank-You Page Offers",
   upsellLegacy: "Upsells (untagged)",
 };
 

@@ -71,6 +71,7 @@ model Shop {
   analyticsTimezone     String? // IANA timezone used to bucket analytics days
   analyticsCurrency     String? // Shop currency code for revenue display
   analyticsBackfilledAt DateTime? // When the 60-day order import finished
+  lifetimePurchasedAt   DateTime? // Set when the shop's Founder's Lifetime Pass is seen as active (caps the offer at 100 stores)
   xpDailyStats          XpDailyStat[]
   xpExposures           XpExposure[]
   xpOrders              XpOrder[]

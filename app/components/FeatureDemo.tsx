@@ -21,7 +21,7 @@ export type DemoId =
 
 export const DEMO_INFO: Record<DemoId, { title: string; steps: string[] }> = {
   prePurchase: {
-    title: "Pre-Purchase Interceptor",
+    title: "Pre-Purchase Upsell",
     steps: [
       "The shopper clicks Add to cart",
       "A popup shows products that go with it",
@@ -29,7 +29,7 @@ export const DEMO_INFO: Record<DemoId, { title: string; steps: string[] }> = {
     ],
   },
   inCart: {
-    title: "In-Cart Offer",
+    title: "Cart Upsell",
     steps: [
       "The shopper adds a product",
       "The cart drawer opens",
@@ -37,7 +37,7 @@ export const DEMO_INFO: Record<DemoId, { title: string; steps: string[] }> = {
     ],
   },
   shippingBar: {
-    title: "Free Shipping Bar",
+    title: "Free Shipping & Rewards Bar",
     steps: [
       "The shopper adds more items",
       "The bar fills toward each reward tier",
@@ -45,7 +45,7 @@ export const DEMO_INFO: Record<DemoId, { title: string; steps: string[] }> = {
     ],
   },
   scarcity: {
-    title: "Urgency Notifications",
+    title: "Social Proof Popups",
     steps: [
       "Small toasts appear on the storefront",
       "Recent orders, live viewers and low stock build urgency",
@@ -53,7 +53,7 @@ export const DEMO_INFO: Record<DemoId, { title: string; steps: string[] }> = {
     ],
   },
   socialBar: {
-    title: "Support & Social Bar",
+    title: "Chat & Social Bar",
     steps: [
       "A floating button stays on every page",
       "The shopper taps it to open your channels",
@@ -61,7 +61,7 @@ export const DEMO_INFO: Record<DemoId, { title: string; steps: string[] }> = {
     ],
   },
   productScarcity: {
-    title: "Product Stock Scarcity",
+    title: "Low Stock Meter",
     steps: [
       "A stock meter shows on the product page",
       "The bar drops as inventory goes down",
@@ -69,7 +69,7 @@ export const DEMO_INFO: Record<DemoId, { title: string; steps: string[] }> = {
     ],
   },
   thankYou: {
-    title: "Thank-you Page Upsell",
+    title: "Thank-You Page Offers",
     steps: [
       "The customer places an order",
       "An offer shows on the confirmation page",
@@ -77,7 +77,7 @@ export const DEMO_INFO: Record<DemoId, { title: string; steps: string[] }> = {
     ],
   },
   quantityBreaks: {
-    title: "Quantity Breaks",
+    title: "Volume Discounts",
     steps: [
       "The shopper sees volume tiers",
       "Picking a bigger tier saves more",

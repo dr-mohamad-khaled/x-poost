@@ -142,7 +142,15 @@ type VerifiedOrder = {
   productIds: string[];
   tags: string[];
   collectionIds: string[];
+  createdAtMs: number;
 };
+
+/** A thank-you offer is only ever shown right after checkout. Anything older is not a genuine request. */
+const MAX_ORDER_AGE_MS = 3 * 60 * 60_000;
+/** Existing claims can be re-shown (page refresh) for a limited time only. */
+const MAX_CLAIM_REPLAY_MS = 12 * 60 * 60_000;
+/** Hard ceiling of new reward/add-on claims per shop per hour (stops code-minting loops). */
+const MAX_CLAIMS_PER_SHOP_HOUR = 600;
 
 async function fetchOrder(admin: AdminGraphql, orderId: string, catalog: boolean): Promise<VerifiedOrder | null> {
   const d = await gql(
@@ -152,6 +160,7 @@ async function fetchOrder(admin: AdminGraphql, orderId: string, catalog: boolean
       order(id: $id) {
         id
         name
+        createdAt
         presentmentCurrencyCode
         discountCodes
         subtotalPriceSet { shopMoney { amount currencyCode } }
@@ -199,6 +208,7 @@ async function fetchOrder(admin: AdminGraphql, orderId: string, catalog: boolean
     productIds: [...prods],
     tags: [...tags],
     collectionIds: [...cols],
+    createdAtMs: Date.parse(String(o.createdAt || "")) || 0,
   };
 }
 
@@ -475,6 +485,7 @@ export async function resolveThankYou(input: {
 
   // ── A claim already exists for this order: show the same offer again (refresh-safe) ──
   if (existing) {
+    if (Date.now() - existing.createdAt.getTime() > MAX_CLAIM_REPLAY_MS) return none;
     const parsedCodes: IssuedCode[] = safeJson(existing.codesJson) as IssuedCode[];
     if (!Array.isArray(parsedCodes) || parsedCodes.length === 0) {
       // another request is creating it right now
@@ -505,6 +516,14 @@ export async function resolveThankYou(input: {
   const needCatalog = offers.some((o) => conditionNeedsCatalog(o.conditions));
   const order = await fetchOrder(admin, input.orderId, needCatalog);
   if (!order) return { show: false, retry: true }; // not visible to the API yet
+  const ageMs = Date.now() - order.createdAtMs;
+  if (!order.createdAtMs || ageMs > MAX_ORDER_AGE_MS || ageMs < -10 * 60_000) return none; // not a fresh checkout
+
+  const claimsLastHour = await prisma.tyClaim.count({ where: { shopId: shop.id, createdAt: { gte: new Date(Date.now() - 3_600_000) } } });
+  if (claimsLastHour >= MAX_CLAIMS_PER_SHOP_HOUR) {
+    console.warn(`[XPoost thank-you] claim ceiling reached for ${input.shopDomain}`);
+    return none;
+  }
 
   const ctx: TyContext = {
     subtotal: order.subtotal,

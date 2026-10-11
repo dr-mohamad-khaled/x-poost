@@ -894,8 +894,8 @@ const STYLES = `
     --xpa-surface-2: #190F09;
     --xpa-border: #3A2B17;
     --xpa-ink: #ffffff;
-    --xpa-ink-2: #C2B797;
-    --xpa-muted: #878069;
+    --xpa-ink-2: #E2D9BE;
+    --xpa-muted: #CFC6AC;
     --xpa-grid: #352B19;
     --xpa-axis: #423820;
     --xpa-gold: #E8C872;
@@ -1016,7 +1016,7 @@ const STYLES = `
   .xpa-bench-you-num { font-size: 26px; font-weight: 700; }
   .xpa-bench-you-note { font-size: 12px; color: var(--xpa-ink-2); }
   .xpa .xpa-source { margin: 4px 0 0; font-size: 11px; color: var(--xpa-muted); }
-  .xpa-source a { color: #989077; text-underline-offset: 2px; }
+  .xpa-source a { color: #CFC6AC; text-underline-offset: 2px; }
 
   .xpa-grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
   .xpa-devices, .xpa-barlist { display: flex; flex-direction: column; gap: 14px; list-style: none; margin: 0; padding: 0; }

@@ -37,19 +37,20 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     if (error instanceof Response) {
       const isXhr = Boolean(request.headers.get("authorization"));
       console.error("[AUTH_FAIL_RESPONSE]", {
-        url: request.url,
+        path: new URL(request.url).pathname,
         status: error.status,
         statusText: error.statusText,
         isXhr,
-        headers: Object.fromEntries(error.headers.entries()),
       });
 
       const url = new URL(request.url);
-      const shop = url.searchParams.get("shop");
+      const rawShop = url.searchParams.get("shop") || "";
+      // Only a plain shop handle / myshopify domain may end up in the redirect URL.
+      const shop = /^[a-z0-9][a-z0-9-]*(\.myshopify\.com)?$/i.test(rawShop) ? rawShop : null;
       if (error.status === 401 && shop && !isXhr) {
         const cleanShop = shop.replace(".myshopify.com", "");
         const installUrl = `https://admin.shopify.com/store/${cleanShop}/oauth/install?client_id=${currentApiKey}`;
-        console.log("[AUTH_RECOVERY] Breaking out of iframe to install URL:", installUrl);
+        
         throw new Response(
           `<!DOCTYPE html><html><head><script>window.top.location.href = ${JSON.stringify(installUrl)};</script></head><body>Redirecting to Shopify authorization...</body></html>`,
           {
@@ -148,13 +149,13 @@ export default function App() {
         <a href="/app/pricing">{i18n.navPricing || "Plans & Pricing"}</a>
         <a href="/app/translations">{i18n.navTranslations || "Translations & Languages"}</a>
         <a href="/app/pre-purchase">{i18n.navPrePurchase || "Pre-Purchase Upsell"}</a>
-        <a href="/app/in-cart">{i18n.navInCart || "Cart Drawer Upsell"}</a>
-        <a href="/app/thank-you">{(i18n as any).navThankYou || "Thank-you Page Upsell"}</a>
-        <a href="/app/shipping-bar">{i18n.navShippingBar || "Free Shipping Bar"}</a>
-        <a href="/app/quantity-breaks">{i18n.navQuantityBreaks || "Quantity Breaks"}</a>
-        <a href="/app/product-scarcity">{i18n.navProductScarcity || "Product Stock Scarcity"}</a>
-        <a href="/app/social-bar">{i18n.navSocialBar || "Support & Social Bar"}</a>
-        <a href="/app/scarcity">{i18n.navUrgency || "Urgency Notifications"}</a>
+        <a href="/app/in-cart">{i18n.navInCart || "Cart Upsell"}</a>
+        <a href="/app/thank-you">{(i18n as any).navThankYou || "Thank-You Page Offers"}</a>
+        <a href="/app/shipping-bar">{i18n.navShippingBar || "Free Shipping & Rewards Bar"}</a>
+        <a href="/app/quantity-breaks">{i18n.navQuantityBreaks || "Volume Discounts"}</a>
+        <a href="/app/product-scarcity">{i18n.navProductScarcity || "Low Stock Meter"}</a>
+        <a href="/app/social-bar">{i18n.navSocialBar || "Chat & Social Bar"}</a>
+        <a href="/app/scarcity">{i18n.navUrgency || "Social Proof Popups"}</a>
         <a href="/app/help">{i18n.navHelp || "Help & Guide"}</a>
         {EXIT_INTENT_AVAILABLE ? <a href="/app/exit-intent">{i18n.navExitIntent || "Exit-Intent Recovery"}</a> : null}
       </NavMenu>

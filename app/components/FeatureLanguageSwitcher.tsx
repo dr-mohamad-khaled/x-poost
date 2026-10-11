@@ -54,7 +54,7 @@ export function FeatureLanguageSwitcher({
             >
               {i18n.featureLangTitle || "Feature Copy Language"}
             </label>
-            <div style={{ fontSize: "11px", color: "#9E957B" }}>
+            <div style={{ fontSize: "11px", color: "#CFC6AC" }}>
               {i18n.featureLangSubtitle || "Select a language to edit its text or load predefined copy:"}
             </div>
           </div>

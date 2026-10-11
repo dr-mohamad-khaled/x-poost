@@ -272,7 +272,7 @@ export default function ScarcityToastSettings() {
   }
 
   return (
-    <s-page heading="Scarcity & Social Proof Toast">
+    <s-page heading="Social Proof Popups">
       <style>{ADMIN_STYLES}</style>
 
       {actionData && "error" in actionData ? (
@@ -661,7 +661,7 @@ s-card {
 .xps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin: 8px 0; }
 .xps-field { display: flex; flex-direction: column; gap: 6px; margin: 8px 0; }
 .xps-field label { font-size: 13px; font-weight: 700; color: #ffffff; }
-.xps-field small { font-size: 12px; color: #8A8A8A; }
+.xps-field small { font-size: 12px; color: #CFC6AC; }
 .xps-input {
   border: 1px solid #43331D;
   border-radius: 8px;
@@ -720,5 +720,5 @@ s-card {
   color: #0C0803; font-size: 9.5px; font-weight: 800; margin-bottom: 2px;
 }
 .xps-toast-preview__text { font-size: 12.5px; line-height: 1.45; word-break: break-word; white-space: normal; }
-.xps-preview-hint { font-size: 12px; color: #8A8A8A; margin-top: 10px; }
+.xps-preview-hint { font-size: 12px; color: #CFC6AC; margin-top: 10px; }
 `;

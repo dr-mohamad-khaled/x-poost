@@ -20,10 +20,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     );
 
   const url = new URL(request.url);
-  const shopDomain =
-    session?.shop ||
-    url.searchParams.get("shop") ||
-    request.headers.get("x-shop-domain");
+  // Only the signed `shop` parameter of a verified app-proxy request is trusted (never a header).
+  const shopDomain = session?.shop || url.searchParams.get("shop");
 
   let shop = null;
   const include = {
@@ -43,9 +41,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       where: { shopDomain },
       include,
     });
-  }
-  if (!shop) {
-    shop = await prisma.shop.findFirst({ include });
   }
 
   if (!shop) return emptyResponse();
@@ -442,7 +437,7 @@ function parseSocialPosition(rawPos: string | null | undefined) {
   // Quantity Breaks Offers
   let quantityBreaks = null;
   if (shop.quantityBreaksEnabled && shop.quantityBreaksOffers && shop.quantityBreaksOffers.length > 0) {
-    const globalQbTranslations = translations?.quantityBreaks || {};
+    const globalQbTranslations: any = translations?.quantityBreaks || {};
     const offers = shop.quantityBreaksOffers.map((offer: any) => {
       let productIds: string[] = [];
       let tiers: any[] = [];
