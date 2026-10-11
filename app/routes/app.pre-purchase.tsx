@@ -2654,9 +2654,6 @@ export default function PrePurchaseSettings() {
                                           </svg>
                                         </div>
                                       )}
-                                      {isDiscounted && (
-                                        <span className="xp-bundle-thumb-save">-{discountPercent}%</span>
-                                      )}
                                     </div>
                                     <div className="xp-bundle-card-info">
                                       <span className="xp-bundle-step-tag">{stepLabel}</span>
@@ -2969,20 +2966,18 @@ export default function PrePurchaseSettings() {
                                     </div>
                                   )}
                                   <div className="xp-modal-details">
-                                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "6px" }}>
-                                      <strong>
-                                        <a
-                                          href={p.handle ? `/products/${p.handle}` : "#"}
-                                          target="_blank"
-                                          rel="noreferrer"
-                                          className="xp-product-link"
-                                          onClick={(e) => e.stopPropagation()}
-                                        >
-                                          {p.title}
-                                        </a>
-                                      </strong>
-                                      <span className="xp-flash-item-badge"><Translate text='LIMITED' /></span>
-                                    </div>
+                                    <span className="xp-flash-item-badge"><Translate text='LIMITED' /></span>
+                                    <strong>
+                                      <a
+                                        href={p.handle ? `/products/${p.handle}` : "#"}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="xp-product-link"
+                                        onClick={(e) => e.stopPropagation()}
+                                      >
+                                        {p.title}
+                                      </a>
+                                    </strong>
                                     <div className="xp-modal-pricing">
                                       <span className="xp-price-sale">${isDiscounted ? sale : orig.toFixed(2)}</span>
                                       {isDiscounted && <span className="xp-price-orig">${orig.toFixed(2)}</span>}
@@ -3961,10 +3956,10 @@ const PRE_PURCHASE_STYLES = `
     display: flex;
     flex-direction: column;
     gap: 8px;
-    max-height: 240px;
+    max-height: min(380px, 52vh);
     overflow-y: auto;
     margin-bottom: 16px;
-    padding-right: 4px;
+    padding-inline-end: 4px;
   }
   .xp-modal-scroll-list::-webkit-scrollbar {
     width: 4px;
@@ -4015,7 +4010,7 @@ const PRE_PURCHASE_STYLES = `
     min-width: 0;
   }
   .xp-modal-details strong {
-    font-size: 12px;
+    font-size: 13px;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -4025,28 +4020,49 @@ const PRE_PURCHASE_STYLES = `
     white-space: normal;
     word-break: break-word;
   }
+  /* The preview container uses overflow-wrap:anywhere so long product names
+     never overflow. That also lets flex items shrink to a single character, which
+     split prices ("$1143.0 / 0") and badges ("LIMI / TED"). Prices, pills and
+     badges are atomic: they never shrink or break, the row wraps instead. */
   .xp-modal-pricing {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 6px;
+    gap: 3px 8px;
   }
   .xp-price-sale {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 800;
+    line-height: 1.2;
     color: var(--pm-accent, #F2F2F2);
   }
   .xp-price-orig {
-    font-size: 11px;
-    color: color-mix(in srgb, var(--pm-text, #FFFFFF) 55%, transparent);
+    font-size: 12px;
+    line-height: 1.2;
+    color: color-mix(in srgb, var(--pm-text, #FFFFFF) 70%, transparent);
     text-decoration: line-through;
   }
   .xp-discount-pill {
     background: var(--pm-accent, #F2F2F2);
     color: var(--pm-bg, #141414);
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 800;
-    padding: 1px 5px;
-    border-radius: 3px;
+    letter-spacing: 0.3px;
+    line-height: 1.4;
+    padding: 2px 8px;
+    border-radius: 999px;
+  }
+  .xp-price-sale,
+  .xp-price-orig,
+  .xp-discount-pill,
+  .xp-flash-item-badge,
+  .xp-bundle-toggle-pill,
+  .xp-bundle-sum-orig,
+  .xp-bundle-sum-sale {
+    flex-shrink: 0;
+    white-space: nowrap;
+    overflow-wrap: normal;
+    word-break: normal;
   }
   .xp-modal-actions {
     display: flex;
@@ -4208,21 +4224,25 @@ const PRE_PURCHASE_STYLES = `
   .xp-flash-urgency-banner {
     background: color-mix(in srgb, var(--pm-accent, #F2F2F2) 12%, transparent);
     border: 1px solid color-mix(in srgb, var(--pm-accent, #F2F2F2) 35%, transparent);
-    border-radius: 6px;
-    padding: 8px 12px;
+    border-radius: 8px;
+    padding: 9px 12px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 10px;
     margin-bottom: 12px;
   }
   .xp-flash-urgency-left {
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 11px;
+    min-width: 0;
+    font-size: 12px;
     font-weight: 700;
+    line-height: 1.3;
     color: var(--pm-accent, #F2F2F2);
   }
+  .xp-urgency-timer-text { flex-shrink: 0; white-space: nowrap; }
   .xp-urgency-timer-text {
     font-family: monospace;
     font-size: 13px;
@@ -4397,14 +4417,17 @@ const PRE_PURCHASE_STYLES = `
   display: flex;
   flex-direction: column;
   gap: 8px;
-  max-height: 280px;
+  max-height: min(440px, 56vh);
   overflow-y: auto;
   overflow-x: hidden;
-  padding-right: 4px;
+  padding-inline-end: 4px;
   width: 100%;
   box-sizing: border-box;
   min-width: 0;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  /* lets the cards below switch layout based on the modal's real width */
+  container-type: inline-size;
 }
 
 .xp-bundle-routine-deck::-webkit-scrollbar {
@@ -4530,11 +4553,15 @@ const PRE_PURCHASE_STYLES = `
 }
 
 .xp-bundle-step-tag {
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.6px;
   text-transform: uppercase;
   color: var(--pm-accent, #F2F2F2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .xp-bundle-card-title {
@@ -4559,13 +4586,13 @@ const PRE_PURCHASE_STYLES = `
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
-  padding: 6px 11px;
+  padding: 7px 12px;
   border-radius: 20px;
-  border: 1px solid color-mix(in srgb, var(--pm-accent, #F2F2F2) 40%, transparent);
+  border: 1px solid color-mix(in srgb, var(--pm-accent, #F2F2F2) 45%, transparent);
   background: color-mix(in srgb, var(--pm-text, #FFFFFF) 5%, transparent);
-  color: color-mix(in srgb, var(--pm-text, #FFFFFF) 72%, transparent);
+  color: color-mix(in srgb, var(--pm-text, #FFFFFF) 88%, transparent);
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
@@ -4598,40 +4625,45 @@ const PRE_PURCHASE_STYLES = `
 
 .xp-bundle-summary-row {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
-  align-items: center;
+  align-items: baseline;
+  gap: 2px 12px;
 }
 
 .xp-bundle-summary-label {
-  font-size: 12px;
-  color: color-mix(in srgb, var(--pm-text, #FFFFFF) 72%, transparent);
+  font-size: 13px;
+  color: color-mix(in srgb, var(--pm-text, #FFFFFF) 82%, transparent);
   font-weight: 600;
+  min-width: 0;
 }
 
 .xp-bundle-summary-prices {
   display: flex;
-  align-items: center;
-  gap: 6px;
+  align-items: baseline;
+  gap: 8px;
+  margin-inline-start: auto;
 }
 
 .xp-bundle-sum-orig {
-  font-size: 11px;
-  color: color-mix(in srgb, var(--pm-text, #FFFFFF) 55%, transparent);
+  font-size: 12px;
+  color: color-mix(in srgb, var(--pm-text, #FFFFFF) 70%, transparent);
   text-decoration: line-through;
 }
 
 .xp-bundle-sum-sale {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 800;
   color: var(--pm-accent, #F2F2F2);
 }
 
 .xp-bundle-savings-highlight {
   display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 11px;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 12px;
   font-weight: 700;
+  line-height: 1.35;
   color: #25D366;
   color: color-mix(in srgb, #25D366 62%, var(--pm-text, #fff));
   margin-top: 2px;
@@ -4642,15 +4674,36 @@ const PRE_PURCHASE_STYLES = `
   width: 12px;
   height: 12px;
   flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Narrow modal (phones, small admin column): the Add/Added button drops under the
+   product details instead of squeezing the name and price into a sliver. */
+@container (max-width: 340px) {
+  .xp-bundle-item-card {
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr);
+    column-gap: 12px;
+    row-gap: 8px;
+    align-items: start;
+  }
+  .xp-bundle-card-thumb-wrap { grid-row: 1 / span 2; }
+  .xp-bundle-card-info,
+  .xp-bundle-action-cell { grid-column: 2; }
 }
 
   .xp-flash-item-badge {
-    font-size: 9px;
+    align-self: flex-start;
+    font-size: 10px;
     font-weight: 800;
-    background: color-mix(in srgb, var(--pm-accent, #F2F2F2) 20%, transparent);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    line-height: 1.4;
+    background: color-mix(in srgb, var(--pm-accent, #F2F2F2) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--pm-accent, #F2F2F2) 35%, transparent);
     color: var(--pm-accent, #F2F2F2);
-    padding: 1px 5px;
-    border-radius: 3px;
+    padding: 1px 8px;
+    border-radius: 999px;
   }
 
   /* Layouts 5 and 6 (preview) */
