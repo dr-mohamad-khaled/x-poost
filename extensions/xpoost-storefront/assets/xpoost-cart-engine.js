@@ -1109,7 +1109,6 @@
           '<a href="' + pUrl + '" target="_blank" class="xpc-product-link">' +
           (rule.targetProductImage ? '<img class="xpc-bundle-card-img" src="' + escapeHtml(rule.targetProductImage) + '" alt="" />' : '<div class="xpc-bundle-img-placeholder">' + VECTOR_ICONS.gift + '</div>') +
           '</a>' +
-          (hasDiscount ? '<span class="xpc-bundle-thumb-save">-' + discount + '%</span>' : '') +
           '</div>' +
           '<div class="xpc-bundle-card-info">' +
           '<span class="xpc-bundle-step-tag">' + stepLabel + '</span>' +
