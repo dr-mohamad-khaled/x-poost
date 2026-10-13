@@ -993,7 +993,7 @@ export default function ProductScarcityPage() {
                     onChange={() => setTargetMode(m.key)}
                     style={{ marginRight: 6 }}
                   />
-                  <strong style={{ color: "#fff", fontSize: 13 }}>{m.label}</strong>
+                  <strong style={{ color: "#fff", fontSize: 13 }}>{t(m.label)}</strong>
                   <div style={{ fontSize: 11, color: "#D2C8AC", marginTop: 2 }}>{m.desc}</div>
                 </label>
               ))}

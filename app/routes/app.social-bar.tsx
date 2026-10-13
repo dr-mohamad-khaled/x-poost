@@ -466,11 +466,11 @@ export default function SocialBarSettings() {
                       tabIndex={0}
                     >
                       <div className="xp-layout-header">
-                        <span className="xp-layout-badge">{layout.badge}</span>
+                        <span className="xp-layout-badge">{t(layout.badge)}</span>
                         {isSelected && <span className="xp-theme-check"><Translate text='Selected' /></span>}
                       </div>
-                      <h4 className="xp-layout-title">{layout.name}</h4>
-                      <p className="xp-layout-desc">{layout.description}</p>
+                      <h4 className="xp-layout-title">{t(layout.name)}</h4>
+                      <p className="xp-layout-desc">{t(layout.description)}</p>
                     </div>
                   );
                 })}
@@ -495,11 +495,11 @@ export default function SocialBarSettings() {
                       tabIndex={0}
                     >
                       <div className="xp-theme-header">
-                        <span className="xp-theme-badge">{theme.badge}</span>
+                        <span className="xp-theme-badge">{t(theme.badge)}</span>
                         {isSelected && <span className="xp-theme-check"><Translate text='Selected' /></span>}
                       </div>
-                      <h4 className="xp-theme-title">{theme.name}</h4>
-                      <p className="xp-theme-desc">{theme.description}</p>
+                      <h4 className="xp-theme-title">{t(theme.name)}</h4>
+                      <p className="xp-theme-desc">{t(theme.description)}</p>
                       <div className="xp-theme-palette">
                         <span className="xp-swatch" style={{ background: theme.bg }} title={t("Background")} />
                         <span className="xp-swatch" style={{ background: theme.accent }} title={t("Accent")} />
@@ -749,7 +749,7 @@ export default function SocialBarSettings() {
               </div>
               {EXTRA_NETWORKS.map((n) => (
                 <div className="xp-field" key={n.key}>
-                  <label>{n.label}</label>
+                  <label>{t(n.label)}</label>
                   <input
                     type="text"
                     name={`net_${n.key}`}

@@ -270,6 +270,7 @@ export default function Analytics() {
 }
 
 function Notices({ report, hasOrdersScope, importing }: { report: Report; hasOrdersScope: boolean; importing: boolean }) {
+  const { t } = useTranslations();
   const items: { tone: "info" | "warn"; title: string; body: string }[] = [];
   if (!hasOrdersScope) {
     items.push({
@@ -294,8 +295,8 @@ function Notices({ report, hasOrdersScope, importing }: { report: Report; hasOrd
         <div key={n.title} className={`xpa-notice xpa-notice--${n.tone}`} role="status">
           <span className="xpa-notice-icon" aria-hidden="true">{n.tone === "warn" ? "!" : "i"}</span>
           <div>
-            <strong>{n.title}</strong>
-            <p>{n.body}</p>
+            <strong>{t(n.title)}</strong>
+            <p>{t(n.body)}</p>
           </div>
         </div>
       ))}
@@ -313,7 +314,7 @@ function Overview({ report, money }: { report: Report; money: (n: number) => str
   const share = o.storeRevenue > 0 ? (o.directRevenue / o.storeRevenue) * 100 : 0;
   const aovLift = o.aovWithout > 0 && o.aovWith > 0 ? ((o.aovWith - o.aovWithout) / o.aovWithout) * 100 : null;
   const ctr = rate(o.clicks, o.views);
-  const highlights = buildHighlights(report, money);
+  const highlights = buildHighlights(report, money, t);
 
   return (
     <>
@@ -322,12 +323,12 @@ function Overview({ report, money }: { report: Report; money: (n: number) => str
           <div className="xpa-eyebrow"><Translate text='XPoost direct revenue · last' /> {report.rangeDays}  <Translate text='days' /></div>
           <div className="xpa-hero-row">
             <span className="xpa-hero-num">{money(o.directRevenue)}</span>
-            <Delta d={delta(o.directRevenue, o.prevDirectRevenue)} suffix="vs previous period" />
+            <Delta d={delta(o.directRevenue, o.prevDirectRevenue)} suffix={t("vs previous period")} />
           </div>
           <p className="xpa-hero-sub">
             {o.storeRevenue > 0
-              ? `${fmtPct(share)} of your store's revenue · ${fmtInt(o.ordersWithXp)} order${o.ordersWithXp === 1 ? "" : "s"} included an XPoost item`
-              : "Revenue from items XPoost added to carts appears here as orders come in."}
+              ? t(o.ordersWithXp === 1 ? "{pct} of your store's revenue · {n} order included an XPoost item" : "{pct} of your store's revenue · {n} orders included an XPoost item", { pct: fmtPct(share), n: fmtInt(o.ordersWithXp) })
+              : t("Revenue from items XPoost added to carts appears here as orders come in.")}
           </p>
         </div>
         <div className="xpa-hero-side">
@@ -338,14 +339,14 @@ function Overview({ report, money }: { report: Report; money: (n: number) => str
       </section>
 
       <div className="xpa-tiles">
-        <Tile label="Orders with XPoost items" value={fmtInt(o.ordersWithXp)} d={delta(o.ordersWithXp, o.prevOrdersWithXp)} hint={o.orders ? `of ${fmtInt(o.orders)} orders` : undefined} />
+        <Tile label="Orders with XPoost items" value={fmtInt(o.ordersWithXp)} d={delta(o.ordersWithXp, o.prevOrdersWithXp)} hint={o.orders ? t("of {n} orders", { n: fmtInt(o.orders) }) : undefined} />
         <Tile
           label="Average order with XPoost items"
           value={o.aovWith ? money(o.aovWith) : "—"}
-          hint={aovLift !== null ? `${aovLift >= 0 ? "+" : ""}${aovLift.toFixed(0)}% vs orders without (${money(o.aovWithout)})` : "Needs orders with and without XPoost items"}
+          hint={aovLift !== null ? t("{pct}% vs orders without ({amount})", { pct: `${aovLift >= 0 ? "+" : ""}${aovLift.toFixed(0)}`, amount: money(o.aovWithout) }) : t("Needs orders with and without XPoost items")}
         />
-        <Tile label="Views" value={fmtInt(o.views)} d={delta(o.views, o.prevViews)} hint={o.sessions ? `${fmtInt(o.sessions)} store sessions` : undefined} />
-        <Tile label="Click rate" value={ctr === null ? "—" : fmtPct(ctr)} hint={ctr === null ? `Shown after ${MIN_VIEWS_FOR_RATE} views` : `${fmtInt(o.clicks)} clicks`} />
+        <Tile label="Views" value={fmtInt(o.views)} d={delta(o.views, o.prevViews)} hint={o.sessions ? t("{n} store sessions", { n: fmtInt(o.sessions) }) : undefined} />
+        <Tile label="Click rate" value={ctr === null ? "—" : fmtPct(ctr)} hint={ctr === null ? t("Shown after {n} views", { n: MIN_VIEWS_FOR_RATE }) : t("{n} clicks", { n: fmtInt(o.clicks) })} />
         <Tile
           label="Discount cost"
           value={money(o.discountCost)}
@@ -357,7 +358,7 @@ function Overview({ report, money }: { report: Report; money: (n: number) => str
         <div className="xpa-card-head">
           <h2><Translate text='Direct revenue per day' /></h2>
         </div>
-        <ColumnChart days={report.days} values={o.daily} format={money} seriesLabel="Direct revenue" />
+        <ColumnChart days={report.days} values={o.daily} format={money} seriesLabel={t("Direct revenue")} />
       </section>
 
       {highlights.length > 0 && (
@@ -373,7 +374,7 @@ function Overview({ report, money }: { report: Report; money: (n: number) => str
                   {h.text}{" "}
                   {h.link ? (
                     <Link to={h.link} className="xpa-link">
-                      {h.linkText}  <Translate text='&rarr;' />
+                      {t(h.linkText || "")}  <Translate text='&rarr;' />
                                                     </Link>
                   ) : null}
                 </span>
@@ -418,17 +419,18 @@ function Overview({ report, money }: { report: Report; money: (n: number) => str
 }
 
 function FeatureTableRow({ row, range, money }: { row: FeatureRow; range: number; money: (n: number) => string }) {
+  const { t } = useTranslations();
   const r = rate(row.actions, row.views);
   const isLegacy = row.key === "upsellLegacy";
   return (
     <tr>
       <th scope="row">
         {isLegacy ? (
-          <span className="xpa-feature-cell">{row.label}</span>
+          <span className="xpa-feature-cell">{t(row.label)}</span>
         ) : (
           <Link to={`?range=${range}&f=${row.key}`} className="xpa-feature-cell xpa-link-plain">
             <span className={`xpa-dot ${row.enabled ? "is-on" : ""}`} aria-hidden="true" />
-            {row.label}
+            {t(row.label)}
             {!row.enabled && <span className="xpa-off"><Translate text='Off' /></span>}
           </Link>
         )}
@@ -436,7 +438,7 @@ function FeatureTableRow({ row, range, money }: { row: FeatureRow; range: number
       <td className="num">{isLegacy ? "—" : fmtInt(row.views)}</td>
       <td className="num">
         {isLegacy ? "—" : fmtInt(row.actions)}
-        {!isLegacy && <span className="xpa-cell-sub">{row.actionLabel.toLowerCase()}</span>}
+        {!isLegacy && <span className="xpa-cell-sub">{t(row.actionLabel).toLowerCase()}</span>}
       </td>
       <td className="num">{r === null ? <span className="xpa-muted">—</span> : fmtPct(r)}</td>
       <td className="num strong">{row.directRevenue ? money(row.directRevenue) : <span className="xpa-muted">—</span>}</td>
@@ -447,23 +449,23 @@ function FeatureTableRow({ row, range, money }: { row: FeatureRow; range: number
 
 type Highlight = { tone: "good" | "warn" | "info"; text: string; link?: string; linkText?: string };
 
-function buildHighlights(report: Report, money: (n: number) => string): Highlight[] {
+function buildHighlights(report: Report, money: (n: number) => string, t: (s: string, p?: Record<string, string | number>) => string): Highlight[] {
   const o = report.overview;
   const out: Highlight[] = [];
   const top = o.features.find((f) => f.directRevenue > 0 && f.key !== "upsellLegacy");
   if (top) {
-    out.push({ tone: "good", text: `${top.label} is your top earner with ${money(top.directRevenue)} in direct revenue.`, link: `?range=${report.rangeDays}&f=${top.key}`, linkText: "See details" });
+    out.push({ tone: "good", text: t("{label} is your top earner with {amount} in direct revenue.", { label: t(top.label), amount: money(top.directRevenue) }), link: `?range=${report.rangeDays}&f=${top.key}`, linkText: "See details" });
   }
   if (o.aovWith > 0 && o.aovWithout > 0 && o.aovWith > o.aovWithout) {
     const lift = ((o.aovWith - o.aovWithout) / o.aovWithout) * 100;
-    out.push({ tone: "good", text: `Orders that include an XPoost item are ${lift.toFixed(0)}% larger on average (${money(o.aovWith)} vs ${money(o.aovWithout)}).` });
+    out.push({ tone: "good", text: t("Orders that include an XPoost item are {lift}% larger on average ({withXp} vs {without}).", { lift: lift.toFixed(0), withXp: money(o.aovWith), without: money(o.aovWithout) }) });
   }
   if (o.hasStorefrontData) {
     for (const f of o.features) {
       if (f.enabled && f.views === 0 && FEATURE_ROUTES[f.key]) {
         out.push({
           tone: "warn",
-          text: `${f.label} is turned on but had no views in this period. Check that its app embed or theme block is added in the theme editor.`,
+          text: t("{label} is turned on but had no views in this period. Check that its app embed or theme block is added in the theme editor.", { label: t(f.label) }),
           link: FEATURE_ROUTES[f.key],
           linkText: "Open settings",
         });
@@ -474,7 +476,7 @@ function buildHighlights(report: Report, money: (n: number) => string): Highligh
     if (f.views >= MIN_VIEWS_FOR_RATE && f.dismissals > f.actions * 3 && f.dismissals / f.views > 0.5) {
       out.push({
         tone: "warn",
-        text: `${f.label} is closed by more than half of the shoppers who see it. Consider showing it less often or later.`,
+        text: t("{label} is closed by more than half of the shoppers who see it. Consider showing it less often or later.", { label: t(f.label) }),
         link: FEATURE_ROUTES[f.key],
         linkText: "Adjust",
       });
@@ -504,7 +506,7 @@ function FeatureView({ report, f, money }: { report: Report; f: FeatureDetail; m
                                   <Translate text='&larr; All features' />
                                 </Link>
           <h2 className="xpa-feature-title">
-            {f.label}
+            {t(f.label)}
             <span className={`xpa-status ${f.enabled ? "is-on" : ""}`}>{f.enabled ? t("Active") : t("Off")}</span>
           </h2>
         </div>
@@ -516,16 +518,16 @@ function FeatureView({ report, f, money }: { report: Report; f: FeatureDetail; m
 
       <div className="xpa-tiles">
         <Tile label="Views" value={fmtInt(f.views)} d={delta(f.views, f.prev.views)} />
-        <Tile label={f.actionLabel} value={fmtInt(f.actions)} d={delta(f.actions, f.prev.actions)} />
+        <Tile label={t(f.actionLabel)} value={fmtInt(f.actions)} d={delta(f.actions, f.prev.actions)} />
         <Tile
           label="Action rate"
           value={actionRate === null ? "—" : fmtPct(actionRate)}
-          hint={actionRate === null ? `Needs ${fmtInt(Math.max(0, MIN_VIEWS_FOR_RATE - f.views))} more views` : `${f.actionLabel.toLowerCase()} ÷ views`}
+          hint={actionRate === null ? t("Needs {n} more views", { n: fmtInt(Math.max(0, MIN_VIEWS_FOR_RATE - f.views)) }) : t("{action} ÷ views", { action: t(f.actionLabel).toLowerCase() })}
         />
-        {earns && <Tile label="Direct revenue" value={money(f.directRevenue)} d={delta(f.directRevenue, f.prev.directRevenue)} hint={f.directOrders ? `${fmtInt(f.directOrders)} orders` : undefined} />}
-        <Tile label="Influenced revenue" value={money(f.influencedRevenue)} hint="Orders from shoppers who saw it" />
-        {showClosed && <Tile label="Closed" value={fmtInt(f.dismissals)} hint={f.views ? `${fmtPct((f.dismissals / f.views) * 100)} of views` : undefined} />}
-        {earns && f.discountCost > 0 && <Tile label="Discount cost" value={money(f.discountCost)} hint="Discounts on these items" />}
+        {earns && <Tile label="Direct revenue" value={money(f.directRevenue)} d={delta(f.directRevenue, f.prev.directRevenue)} hint={f.directOrders ? t("{n} orders", { n: fmtInt(f.directOrders) }) : undefined} />}
+        <Tile label="Influenced revenue" value={money(f.influencedRevenue)} hint={t("Orders from shoppers who saw it")} />
+        {showClosed && <Tile label="Closed" value={fmtInt(f.dismissals)} hint={f.views ? t("{pct} of views", { pct: fmtPct((f.dismissals / f.views) * 100) }) : undefined} />}
+        {earns && f.discountCost > 0 && <Tile label="Discount cost" value={money(f.discountCost)} hint={t("Discounts on these items")} />}
       </div>
 
       {bench && (
@@ -533,13 +535,13 @@ function FeatureView({ report, f, money }: { report: Report; f: FeatureDetail; m
           <div>
             <div className="xpa-eyebrow"><Translate text='Benchmark' /></div>
             <p>
-              <strong>{bench.label}:</strong> {bench.low === bench.high ? `${bench.low}%` : `${bench.low}–${bench.high}%`} {bench.note}.
+              <strong>{t(bench.label)}:</strong> {bench.low === bench.high ? `${bench.low}%` : `${bench.low}–${bench.high}%`} {t(bench.note)}.
             </p>
             <p className="xpa-source">
               
                                         <Translate text='Source:' />{" "}
               <a href={bench.url} target="_blank" rel="noreferrer">
-                {bench.source}
+                {t(bench.source)}
               </a>
             </p>
           </div>
@@ -548,12 +550,12 @@ function FeatureView({ report, f, money }: { report: Report; f: FeatureDetail; m
             <span className="xpa-bench-you-num">{actionRate === null ? "—" : fmtPct(actionRate)}</span>
             <span className="xpa-bench-you-note">
               {actionRate === null
-                ? "Not enough views yet"
+                ? t("Not enough views yet")
                 : actionRate >= bench.high
-                  ? "At or above typical"
+                  ? t("At or above typical")
                   : actionRate >= bench.low * 0.6
-                    ? "Close to typical"
-                    : "Below typical"}
+                    ? t("Close to typical")
+                    : t("Below typical")}
             </span>
           </div>
         </section>
@@ -642,9 +644,9 @@ function FeatureView({ report, f, money }: { report: Report; f: FeatureDetail; m
         {f.dims && (
           <section className="xpa-card">
             <div className="xpa-card-head">
-              <h2>{f.dims.title}</h2>
+              <h2>{t(f.dims.title)}</h2>
             </div>
-            {f.dims.rows.length === 0 ? <p className="xpa-muted"><Translate text='No data in this period yet.' /></p> : <BarList rows={f.dims.rows} unit={f.dims.valueLabel} />}
+            {f.dims.rows.length === 0 ? <p className="xpa-muted"><Translate text='No data in this period yet.' /></p> : <BarList rows={f.dims.rows} unit={t(f.dims.valueLabel)} />}
           </section>
         )}
 
@@ -658,18 +660,18 @@ function FeatureView({ report, f, money }: { report: Report; f: FeatureDetail; m
 
       <section className="xpa-card xpa-tips">
         <div className="xpa-card-head">
-          <h2><Translate text='Tips to improve' /> {f.label}</h2>
+          <h2><Translate text='Tips to improve' /> {t(f.label)}</h2>
         </div>
         <ol>
-          {(TIPS[f.key] || []).map((t, i) => (
+          {(TIPS[f.key] || []).map((tip, i) => (
             <li key={i}>
-              <p>{t.text}</p>
-              {t.source && (
+              <p>{t(tip.text)}</p>
+              {tip.source && (
                 <p className="xpa-source">
                   
                                             <Translate text='Source:' />{" "}
-                  <a href={t.url} target="_blank" rel="noreferrer">
-                    {t.source}
+                  <a href={tip.url} target="_blank" rel="noreferrer">
+                    {t(tip.source)}
                   </a>
                 </p>
               )}
@@ -682,10 +684,11 @@ function FeatureView({ report, f, money }: { report: Report; f: FeatureDetail; m
 }
 
 function ShippingCard({ s, money }: { s: NonNullable<FeatureDetail["shipping"]>; money: (n: number) => string }) {
+  const { t } = useTranslations();
   const ratio = s.aov > 0 ? (s.threshold / s.aov - 1) * 100 : 0;
-  let verdict = "Your threshold is in a sensible range for your order sizes.";
-  if (ratio > 60) verdict = `Your threshold is ${ratio.toFixed(0)}% above your average order, which may feel out of reach. Consider testing about ${money(s.suggested)}.`;
-  else if (ratio < 10) verdict = `Your threshold is close to (or below) your average order, so many orders qualify without adding anything. Consider testing about ${money(s.suggested)}.`;
+  let verdict = t("Your threshold is in a sensible range for your order sizes.");
+  if (ratio > 60) verdict = t("Your threshold is {pct}% above your average order, which may feel out of reach. Consider testing about {amount}.", { pct: ratio.toFixed(0), amount: money(s.suggested) });
+  else if (ratio < 10) verdict = t("Your threshold is close to (or below) your average order, so many orders qualify without adding anything. Consider testing about {amount}.", { amount: money(s.suggested) });
   return (
     <section className="xpa-card">
       <div className="xpa-card-head">
@@ -694,7 +697,7 @@ function ShippingCard({ s, money }: { s: NonNullable<FeatureDetail["shipping"]>;
       </div>
       <div className="xpa-tiles xpa-tiles--inline">
         <Tile label="Average order" value={money(s.aov)} />
-        <Tile label="First reward at" value={money(s.threshold)} hint={`${ratio >= 0 ? "+" : ""}${ratio.toFixed(0)}% vs average order`} />
+        <Tile label="First reward at" value={money(s.threshold)} hint={t("{pct}% vs average order", { pct: `${ratio >= 0 ? "+" : ""}${ratio.toFixed(0)}` })} />
         <Tile label="Orders reaching it" value={`${s.reachedPct}%`} />
         <Tile label="Just missed (within 20%)" value={`${s.nearMissPct}%`} />
       </div>
@@ -704,9 +707,10 @@ function ShippingCard({ s, money }: { s: NonNullable<FeatureDetail["shipping"]>;
 }
 
 function DeviceSplit({ f }: { f: FeatureDetail }) {
+  const { t } = useTranslations();
   const rows = [
-    { key: "m", label: "Mobile", ...f.devices.m },
-    { key: "d", label: "Desktop", ...f.devices.d },
+    { key: "m", label: t("Mobile"), ...f.devices.m },
+    { key: "d", label: t("Desktop"), ...f.devices.d },
   ];
   const max = Math.max(1, ...rows.map((r) => r.views));
   return (
@@ -718,7 +722,7 @@ function DeviceSplit({ f }: { f: FeatureDetail }) {
             <div className="xpa-device-top">
               <span>{r.label}</span>
               <span className="xpa-device-val">
-                {fmtInt(r.views)}  <Translate text='views ·' /> {rt === null ? `rate after ${MIN_VIEWS_FOR_RATE} views` : `${fmtPct(rt)} ${f.actionLabel.toLowerCase()}`}
+                {fmtInt(r.views)}  <Translate text='views ·' /> {rt === null ? t("rate after {n} views", { n: MIN_VIEWS_FOR_RATE }) : `${fmtPct(rt)} ${t(f.actionLabel).toLowerCase()}`}
               </span>
             </div>
             <div className="xpa-bar-track" aria-hidden="true">
@@ -749,7 +753,7 @@ function Tile({ label, value, hint, d }: { label: string; value: string; hint?: 
   const { t } = useTranslations();
   return (
     <div className="xpa-tile">
-      <span className="xpa-tile-label">{label}</span>
+      <span className="xpa-tile-label">{t(label)}</span>
       <span className="xpa-tile-value">{value}</span>
       {d ? <Delta d={d} /> : null}
       {hint ? <span className="xpa-tile-hint">{t(hint)}</span> : null}
@@ -758,13 +762,14 @@ function Tile({ label, value, hint, d }: { label: string; value: string; hint?: 
 }
 
 function BarList({ rows, unit }: { rows: { label: string; value: number; sub?: string }[]; unit: string }) {
+  const { t } = useTranslations();
   const max = Math.max(1, ...rows.map((r) => r.value));
   return (
     <ul className="xpa-barlist">
       {rows.map((r) => (
         <li key={r.label}>
           <div className="xpa-device-top">
-            <span className="xpa-barlist-label">{r.label}</span>
+            <span className="xpa-barlist-label">{/^\d+ units?$/.test(r.label) ? t(r.label.endsWith("s") ? "{n} units" : "{n} unit", { n: parseInt(r.label, 10) }) : /^Reward \d+$/.test(r.label) ? t("Reward {n}", { n: r.label.split(" ")[1] }) : t(r.label)}</span>
             <span className="xpa-device-val">
               {fmtInt(r.value)} {unit}
               {r.sub ? ` · ${r.sub}` : ""}
@@ -788,6 +793,7 @@ function niceMax(v: number) {
 }
 
 function ColumnChart({ days, values, format, seriesLabel }: { days: string[]; values: number[]; format: (n: number) => string; seriesLabel: string }) {
+  const { t } = useTranslations();
   const [hover, setHover] = useState<number | null>(null);
   // Draw at the container's real pixel width so text and bars never scale
   const boxRef = useRef<HTMLDivElement>(null);
@@ -826,7 +832,7 @@ function ColumnChart({ days, values, format, seriesLabel }: { days: string[]; va
 
   return (
     <div ref={boxRef} className="xpa-chart">
-      <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`${seriesLabel} per day, ${shortDay(days[0])} to ${shortDay(days[days.length - 1])}. Total ${format(total)}.`}>
+      <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} role="img" aria-label={t("{series} per day, {from} to {to}. Total {total}.", { series: seriesLabel, from: shortDay(days[0]), to: shortDay(days[days.length - 1]), total: format(total) })}>
         {ticks.map((t) => (
           <g key={t}>
             <line x1={pad.l} x2={W - pad.r} y1={y(t)} y2={y(t)} className={t === 0 ? "xpa-axis" : "xpa-grid"} />

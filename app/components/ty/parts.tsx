@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "../Translate";
 import {
   COND_META,
   COND_TYPES,
@@ -122,6 +123,7 @@ export function DesignSchematic({ design }: { design: TyDesign }) {
 }
 
 export function DesignPicker({ kind, value, onChange }: { kind: TyKind; value: TyDesign; onChange: (d: TyDesign) => void }) {
+  const { t } = useTranslations();
   return (
     <div className="ty-design-grid">
       {TY_DESIGNS.map((d) => {
@@ -134,12 +136,12 @@ export function DesignPicker({ kind, value, onChange }: { kind: TyKind; value: T
             disabled={!ok}
             className={`ty-design ${value === d ? "on" : ""}`}
             onClick={() => ok && onChange(d)}
-            title={ok ? meta.blurb : `Not available for “${kind}” offers`}
+            title={ok ? t(meta.blurb) : t("Not available for “{kind}” offers", { kind })}
           >
             <DesignSchematic design={d} />
-            <div className="ty-design-name">{meta.name}</div>
-            <div className="ty-design-blurb">{meta.blurb}</div>
-            {!ok ? <div className="ty-design-lock">Other offer types only</div> : null}
+            <div className="ty-design-name">{t(meta.name)}</div>
+            <div className="ty-design-blurb">{t(meta.blurb)}</div>
+            {!ok ? <div className="ty-design-lock">{t("Other offer types only")}</div> : null}
           </button>
         );
       })}
@@ -193,6 +195,7 @@ function useSearch(url: "/api/products/search" | "/api/collections/search", q: s
 // ─────────────────────────────────────────────────────────────
 
 export function ProductPicker({ value, onChange, max }: { value: TyProduct[]; onChange: (v: TyProduct[]) => void; max: number }) {
+  const { t } = useTranslations();
   const [q, setQ] = useState("");
   const { results, loading } = useSearch("/api/products/search", q);
   const full = value.length >= max;
@@ -224,22 +227,22 @@ export function ProductPicker({ value, onChange, max }: { value: TyProduct[]; on
                 <div>{p.title}</div>
                 <small>${Number(p.price).toFixed(2)}</small>
               </div>
-              <button type="button" className="ty-icon" onClick={() => move(i, -1)} disabled={i === 0} aria-label="Move up">↑</button>
-              <button type="button" className="ty-icon" onClick={() => move(i, 1)} disabled={i === value.length - 1} aria-label="Move down">↓</button>
-              <button type="button" className="ty-icon danger" onClick={() => onChange(value.filter((x) => x.productId !== p.productId))} aria-label="Remove">✕</button>
+              <button type="button" className="ty-icon" onClick={() => move(i, -1)} disabled={i === 0} aria-label={t("Move up")}>↑</button>
+              <button type="button" className="ty-icon" onClick={() => move(i, 1)} disabled={i === value.length - 1} aria-label={t("Move down")}>↓</button>
+              <button type="button" className="ty-icon danger" onClick={() => onChange(value.filter((x) => x.productId !== p.productId))} aria-label={t("Remove")}>✕</button>
             </div>
           ))}
         </div>
       ) : (
-        <div className="ty-empty">No products yet. Search below to add up to {max}.</div>
+        <div className="ty-empty">{t("No products yet. Search below to add up to {max}.", { max })}</div>
       )}
       {!full ? (
         <>
-          <input className="ty-input" placeholder="Search your products…" value={q} onChange={(e) => setQ(e.target.value)} />
+          <input className="ty-input" placeholder={t("Search your products…")} value={q} onChange={(e) => setQ(e.target.value)} />
           {q.trim() ? (
             <div className="ty-results">
-              {loading ? <div className="ty-muted pad">Searching…</div> : null}
-              {!loading && !results.length ? <div className="ty-muted pad">No matches</div> : null}
+              {loading ? <div className="ty-muted pad">{t("Searching…")}</div> : null}
+              {!loading && !results.length ? <div className="ty-muted pad">{t("No matches")}</div> : null}
               {results.slice(0, 8).map((r) => (
                 <button type="button" key={r.id} className="ty-result" onClick={() => add(r)} disabled={value.some((p) => p.productId === r.id)}>
                   {r.imageUrl ? <img src={r.imageUrl} alt="" /> : <div className="ph" />}
@@ -251,7 +254,7 @@ export function ProductPicker({ value, onChange, max }: { value: TyProduct[]; on
           ) : null}
         </>
       ) : (
-        <div className="ty-muted">Maximum of {max} products for this design.</div>
+        <div className="ty-muted">{t("Maximum of {max} products for this design.", { max })}</div>
       )}
     </div>
   );
@@ -270,6 +273,7 @@ function ResourceChips({
   value: { id: string; label: string }[];
   onChange: (v: { id: string; label: string }[]) => void;
 }) {
+  const { t } = useTranslations();
   const [q, setQ] = useState("");
   const url = kind === "products" ? "/api/products/search" : "/api/collections/search";
   const { results, loading } = useSearch(url, q);
@@ -279,14 +283,14 @@ function ResourceChips({
         {value.map((v) => (
           <span key={v.id} className="ty-chip">
             {v.label || v.id}
-            <button type="button" onClick={() => onChange(value.filter((x) => x.id !== v.id))} aria-label="Remove">✕</button>
+            <button type="button" onClick={() => onChange(value.filter((x) => x.id !== v.id))} aria-label={t("Remove")}>✕</button>
           </span>
         ))}
       </div>
-      <input className="ty-input" placeholder={kind === "products" ? "Search products…" : "Search collections…"} value={q} onChange={(e) => setQ(e.target.value)} />
+      <input className="ty-input" placeholder={kind === "products" ? t("Search products…") : t("Search collections…")} value={q} onChange={(e) => setQ(e.target.value)} />
       {q.trim() || kind === "collections" ? (
         <div className="ty-results">
-          {loading ? <div className="ty-muted pad">Searching…</div> : null}
+          {loading ? <div className="ty-muted pad">{t("Searching…")}</div> : null}
           {results.slice(0, 8).map((r) => (
             <button
               type="button"
@@ -310,17 +314,18 @@ function ResourceChips({
 const newRule = (type: CondType = "subtotal_gte"): TyCondition => ({ id: Math.random().toString(36).slice(2, 8), type });
 
 export function ConditionBuilder({ value, onChange, currency }: { value: TyConditions; onChange: (v: TyConditions) => void; currency: string }) {
+  const { t } = useTranslations();
   const setRule = (id: string, patch: Partial<TyCondition>) => onChange({ ...value, rules: value.rules.map((r) => (r.id === id ? { ...r, ...patch } : r)) });
   return (
     <div className="ty-conds">
       {value.rules.length === 0 ? (
-        <div className="ty-empty">No conditions: this offer shows for <b>every order</b>. Add a condition to target it.</div>
+        <div className="ty-empty">{t("No conditions: this offer shows for every order. Add a condition to target it.")}</div>
       ) : (
         <div className="ty-match">
-          Show this offer when
+          {t("Show this offer when")}
           <select className="ty-input sm" value={value.match} onChange={(e) => onChange({ ...value, match: e.target.value === "any" ? "any" : "all" })}>
-            <option value="all">ALL of these are true</option>
-            <option value="any">ANY of these is true</option>
+            <option value="all">{t("ALL of these are true")}</option>
+            <option value="any">{t("ANY of these is true")}</option>
           </select>
         </div>
       )}
@@ -334,17 +339,17 @@ export function ConditionBuilder({ value, onChange, currency }: { value: TyCondi
                 className="ty-input"
                 value={r.type}
                 onChange={(e) => {
-                  const t = e.target.value as CondType;
-                  onChange({ ...value, rules: value.rules.map((x) => (x.id === r.id ? { id: r.id, type: t } : x)) });
+                  const nt = e.target.value as CondType;
+                  onChange({ ...value, rules: value.rules.map((x) => (x.id === r.id ? { id: r.id, type: nt } : x)) });
                 }}
               >
-                {COND_TYPES.map((t) => (
-                  <option key={t} value={t}>
-                    {COND_META[t].label}
+                {COND_TYPES.map((ct) => (
+                  <option key={ct} value={ct}>
+                    {t(COND_META[ct].label)}
                   </option>
                 ))}
               </select>
-              <button type="button" className="ty-icon danger" onClick={() => onChange({ ...value, rules: value.rules.filter((x) => x.id !== r.id) })} aria-label="Remove condition">✕</button>
+              <button type="button" className="ty-icon danger" onClick={() => onChange({ ...value, rules: value.rules.filter((x) => x.id !== r.id) })} aria-label={t("Remove condition")}>✕</button>
             </div>
             <div className="ty-rule-body">
               {meta.input === "num" ? (
@@ -356,10 +361,10 @@ export function ConditionBuilder({ value, onChange, currency }: { value: TyCondi
                     min={0}
                     step={r.type.startsWith("subtotal") ? "1" : "1"}
                     value={r.num ?? ""}
-                    placeholder={r.type.startsWith("subtotal") ? "e.g. 75" : "e.g. 2"}
+                    placeholder={r.type.startsWith("subtotal") ? t("e.g. 75") : t("e.g. 2")}
                     onChange={(e) => setRule(r.id, { num: e.target.value === "" ? undefined : Number(e.target.value) })}
                   />
-                  {r.type.startsWith("subtotal") ? <span className="ty-muted">(before shipping & tax, in your store currency)</span> : null}
+                  {r.type.startsWith("subtotal") ? <span className="ty-muted">{t("(before shipping & tax, in your store currency)")}</span> : null}
                 </div>
               ) : null}
               {meta.input === "products" ? <ResourceChips kind="products" value={r.items || []} onChange={(items) => setRule(r.id, { items })} /> : null}
@@ -369,24 +374,24 @@ export function ConditionBuilder({ value, onChange, currency }: { value: TyCondi
                   className="ty-input"
                   value={(r.values || []).join(", ")}
                   placeholder={
-                    meta.input === "tags" ? "e.g. serum, bestseller" : meta.input === "countries" ? "e.g. US, CA, GB" : meta.input === "currencies" ? "e.g. USD, EUR" : "e.g. WELCOME10 (leave empty for any code)"
+                    meta.input === "tags" ? t("e.g. serum, bestseller") : meta.input === "countries" ? t("e.g. US, CA, GB") : meta.input === "currencies" ? t("e.g. USD, EUR") : t("e.g. WELCOME10 (leave empty for any code)")
                   }
                   onChange={(e) => setRule(r.id, { values: e.target.value.split(",").map((s) => s.trim()).filter(Boolean) })}
                 />
               ) : null}
               {meta.input === "choice" ? (
                 <select className="ty-input sm" value={r.choice || "first"} onChange={(e) => setRule(r.id, { choice: e.target.value })}>
-                  <option value="first">A first-time customer</option>
-                  <option value="returning">A returning customer</option>
+                  <option value="first">{t("A first-time customer")}</option>
+                  <option value="returning">{t("A returning customer")}</option>
                 </select>
               ) : null}
-              {meta.input === "none" ? <span className="ty-muted">Nothing to set.</span> : null}
+              {meta.input === "none" ? <span className="ty-muted">{t("Nothing to set.")}</span> : null}
             </div>
           </div>
         );
       })}
       <button type="button" className="ty-btn ghost" onClick={() => onChange({ ...value, rules: [...value.rules, newRule()] })} disabled={value.rules.length >= 12}>
-        + Add condition
+        {t("+ Add condition")}
       </button>
     </div>
   );
@@ -409,6 +414,7 @@ export function TextsEditor({
   lang: TyLang;
   onLang: (l: TyLang) => void;
 }) {
+  const { t } = useTranslations();
   const effective = resolveTexts(kind, texts, lang);
   const defaults = defaultTexts(kind, lang);
   const focused = useRef<keyof TyTexts | null>(null);
@@ -449,18 +455,18 @@ export function TextsEditor({
         {TY_LANGS.map((l) => (
           <button key={l} type="button" role="tab" aria-selected={l === lang} className={`ty-lang ${l === lang ? "on" : ""}`} onClick={() => onLang(l)}>
             {TY_LANG_META[l].native}
-            {texts[l] && Object.keys(texts[l] as object).length ? <span className="dot" title="Customised" /> : null}
+            {texts[l] && Object.keys(texts[l] as object).length ? <span className="dot" title={t("Customised")} /> : null}
           </button>
         ))}
       </div>
       <div className="ty-hint">
-        Customers see the language of their checkout. Every language comes with ready-made copy; edit any line to make it yours.
-        {lang !== "en" ? " Languages you don't edit use the built-in translation. Customers in other languages see English." : ""}
+        {t("Customers see the language of their checkout. Every language comes with ready-made copy; edit any line to make it yours.")}
+        {lang !== "en" ? " " + t("Languages you don't edit use the built-in translation. Customers in other languages see English.") : ""}
       </div>
       <div className="ty-ph">
-        <span className="ty-muted">Click to insert:</span>
+        <span className="ty-muted">{t("Click to insert:")}</span>
         {TY_PLACEHOLDERS.map((ph) => (
-          <button key={ph.key} type="button" className="ty-ph-chip" title={ph.hint} onClick={() => insert(ph.key)}>
+          <button key={ph.key} type="button" className="ty-ph-chip" title={t(ph.hint)} onClick={() => insert(ph.key)}>
             {ph.key}
           </button>
         ))}
@@ -477,10 +483,10 @@ export function TextsEditor({
           return (
             <div key={f.key} className="ty-field">
               <label>
-                {f.label}
+                {t(f.label)}
                 {edited(f.key) ? (
                   <button type="button" className="ty-link" onClick={() => setField(f.key, defaults[f.key])}>
-                    Reset
+                    {t("Reset")}
                   </button>
                 ) : null}
               </label>
@@ -489,7 +495,7 @@ export function TextsEditor({
               ) : (
                 <input type="text" {...common} ref={(el) => { refs.current[f.key] = el; }} />
               )}
-              {f.hint ? <small>{f.hint}</small> : null}
+              {f.hint ? <small>{t(f.hint)}</small> : null}
             </div>
           );
         })}
@@ -504,7 +510,7 @@ export function TextsEditor({
             onChange(next);
           }}
         >
-          Reset all {TY_LANG_META[lang].label} text to the built-in copy
+          {t("Reset all {lang} text to the built-in copy", { lang: TY_LANG_META[lang].label })}
         </button>
       ) : null}
     </div>

@@ -460,10 +460,10 @@ export default function ShippingBarSettings() {
                       tabIndex={0}
                     >
                       <div className="xp-layout-header">
-                        <span className="xp-layout-name">{layout.name}</span>
-                        <span className="xp-layout-badge">{layout.badge}</span>
+                        <span className="xp-layout-name">{t(layout.name)}</span>
+                        <span className="xp-layout-badge">{t(layout.badge)}</span>
                       </div>
-                      <p className="xp-layout-desc">{layout.description}</p>
+                      <p className="xp-layout-desc">{t(layout.description)}</p>
                     </div>
                   );
                 })}
@@ -686,7 +686,7 @@ export default function ShippingBarSettings() {
                       checked={targetMode === o.id}
                       onChange={() => setTargetMode(o.id)}
                     />
-                    <span>{o.label}</span>
+                    <span>{t(o.label)}</span>
                   </label>
                 ))}
               </div>
@@ -1231,7 +1231,7 @@ function RewardFields({
           }}
         >
           {REWARD_OPTIONS.map((o) => (
-            <option key={o.id} value={o.id}>{o.label}</option>
+            <option key={o.id} value={o.id}>{t(o.label)}</option>
           ))}
         </select>
       </div>
@@ -1360,7 +1360,7 @@ function CountryPicker({
         <span className="xp-sub" style={{ alignSelf: "center" }}><Translate text='Quick add:' /></span>
         {COUNTRY_GROUPS.map((g) => (
           <button key={g.label} type="button" className="xp-btn-secondary" onClick={() => add(g.codes)}>
-            {g.label}
+            {t(g.label)}
           </button>
         ))}
       </div>

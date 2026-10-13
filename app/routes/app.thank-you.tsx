@@ -379,7 +379,7 @@ function ListView({ data }: { data: LoaderData }) {
                             className="ty-btn ghost sm danger"
                             disabled={busy}
                             onClick={() => {
-                              if (window.confirm(`Delete "${o.name}"? Codes already issued keep working until they expire.`)) send({ intent: "deleteOffer", id: o.id });
+                              if (window.confirm(t("Delete \"{name}\"? Codes already issued keep working until they expire.", { name: o.name }))) send({ intent: "deleteOffer", id: o.id });
                             }}
                           >
                             
@@ -749,10 +749,10 @@ function Editor({ data, offerParam, tpl }: { data: LoaderData; offerParam: strin
           <div className="ty-card">
             <h3 className="ty-title"><Translate text='Suggestions for this offer' /></h3>
             <ul className="ty-tips">
-              {tips.map((t, i) => (
-                <li key={i} className={t.level}>
-                  <span className="ico">{t.level === "good" ? "✓" : t.level === "warn" ? "!" : "→"}</span>
-                  {t.text}
+              {tips.map((tip, i) => (
+                <li key={i} className={tip.level}>
+                  <span className="ico">{tip.level === "good" ? "✓" : tip.level === "warn" ? "!" : "→"}</span>
+                  {t(tip.text, tip.params)}
                 </li>
               ))}
             </ul>

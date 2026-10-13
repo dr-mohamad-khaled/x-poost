@@ -504,7 +504,7 @@ export default function ScarcityToastSettings() {
                     <label><Translate text='Icon' /></label>
                     <select className="xps-input" value={msg.icon} onChange={(e) => updateMessage(i, { icon: e.target.value })}>
                       {ICON_OPTIONS.map((opt) => (
-                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                        <option key={opt.value} value={opt.value}>{t(opt.label)}</option>
                       ))}
                     </select>
                   </div>

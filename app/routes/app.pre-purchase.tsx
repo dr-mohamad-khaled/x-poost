@@ -2115,9 +2115,9 @@ export default function PrePurchaseSettings() {
                         >
                           <div className="xp-layout-card-top">
                             <div className="xp-layout-card-icon">{layout.icon}</div>
-                            <span className="xp-layout-card-badge">{layout.badge}</span>
+                            <span className="xp-layout-card-badge">{t(layout.badge)}</span>
                           </div>
-                          <strong className="xp-layout-card-title">{layout.name}</strong>
+                          <strong className="xp-layout-card-title">{t(layout.name)}</strong>
                           <p className="xp-sub xp-layout-card-desc">{layout.desc}</p>
                           <div className="xp-layout-card-footer">
                             <span className={`xp-layout-radio ${isSelected ? "is-checked" : ""}`}>

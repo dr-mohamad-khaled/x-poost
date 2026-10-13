@@ -112,7 +112,7 @@ export const TEMPLATES: TyTemplate[] = [
   },
 ];
 
-export type Suggestion = { level: "good" | "tip" | "warn"; text: string };
+export type Suggestion = { level: "good" | "tip" | "warn"; text: string; params?: Record<string, string | number> };
 
 /** Plain-language coaching for the offer being edited. */
 export function coach(
@@ -127,7 +127,7 @@ export function coach(
   if (d.kind === "reward") {
     const top = r.tiers[0];
     if (top && top.valueType === "percent" && top.value > 25) {
-      out.push({ level: "warn", text: `${top.value}% is generous. Rewards between 10% and 20% bring customers back without teaching them to wait for discounts.` });
+      out.push({ level: "warn", text: "{pct}% is generous. Rewards between 10% and 20% bring customers back without teaching them to wait for discounts.", params: { pct: top.value } });
     }
     if (r.expiryDays > 60) out.push({ level: "tip", text: "Codes that last over 60 days feel optional. 14–30 days is the sweet spot between urgency and fairness." });
     if (r.expiryDays < 7) out.push({ level: "tip", text: "Under a week is tight for a next purchase. Most customers need 2–4 weeks." });
@@ -135,8 +135,9 @@ export function coach(
       out.push({
         level: "tip",
         text: aov
-          ? `Set a minimum spend a little above your average order (${money(aov)}), for example ${money(Math.round(aov * 1.2))}, so the reward lifts the next basket.`
+          ? "Set a minimum spend a little above your average order ({avg}), for example {example}, so the reward lifts the next basket."
           : "Set a minimum spend a little above your average order so the reward lifts the next basket instead of just cutting its price.",
+        params: aov ? { avg: money(aov), example: money(Math.round(aov * 1.2)) } : undefined,
       });
     }
     if (d.design === "vip_ladder") {
@@ -153,10 +154,10 @@ export function coach(
     if (a.products.length >= 1 && a.products.length < 3 && d.design === "ship_timer") out.push({ level: "tip", text: "Offers with 3 products convert about twice as well as a single product." });
     if (a.windowMinutes > 60) out.push({ level: "tip", text: "Long windows lose urgency and keep your fulfilment team waiting. 15–30 minutes works best for ship-together." });
     if (d.kind === "shiptogether" && a.benefit === "free_shipping") out.push({ level: "good", text: "Free shipping on the added items matches the promise “no extra shipping fee”. The code is single-use and expires with the timer." });
-    if (a.benefit === "percent" && a.percent > 25) out.push({ level: "warn", text: `${a.percent}% off add-ons can cut deeply into margin. 10–20% is usually enough right after a purchase.` });
+    if (a.benefit === "percent" && a.percent > 25) out.push({ level: "warn", text: "{pct}% off add-ons can cut deeply into margin. 10–20% is usually enough right after a purchase.", params: { pct: a.percent } });
     if (aov) {
       const dear = a.products.filter((p) => Number(p.price) > aov * 0.6);
-      if (dear.length) out.push({ level: "tip", text: `${dear.map((p) => p.title).slice(0, 2).join(", ")} costs more than 60% of your average order. After a purchase, small add-ons (refills, minis, accessories) get the most takes.` });
+      if (dear.length) out.push({ level: "tip", text: "{names} costs more than 60% of your average order. After a purchase, small add-ons (refills, minis, accessories) get the most takes.", params: { names: dear.map((p) => p.title).slice(0, 2).join(", ") } });
     }
     out.push({ level: "tip", text: "Items added from this page become a second order. XPoost links it to the first (note “Ship together with #1042” in the order's additional details) so you can pack both in one box." });
   }
