@@ -4,6 +4,84 @@
   if (window.__xpoost_cart_engine_initialized) return;
   window.__xpoost_cart_engine_initialized = true;
 
+  /* ─────────────────────────────────────────────────────────────
+     Intro animations. Widgets arrive after a network round trip, so they ease in
+     (grow, fade, rise, stagger) instead of popping. Uses the Web Animations API:
+     it never fights the widgets' own CSS animations, and it is skipped entirely
+     when the shopper has "reduce motion" turned on.
+     ───────────────────────────────────────────────────────────── */
+  var XP_EASE = "cubic-bezier(0.16, 1, 0.3, 1)";
+  function xpMotionOk() {
+    try {
+      return !(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    } catch (e) { return true; }
+  }
+  function xpIntro(el, o) {
+    try {
+      if (!el || !el.animate || !xpMotionOk()) return;
+      o = o || {};
+      var h = el.offsetHeight;
+      if (o.grow !== false && h > 0) {
+        var cs = window.getComputedStyle(el);
+        var oVal = el.style.getPropertyValue("overflow"), oPri = el.style.getPropertyPriority("overflow");
+        el.style.setProperty("overflow", "hidden", "important");
+        var restore = function () {
+          if (oVal) el.style.setProperty("overflow", oVal, oPri); else el.style.removeProperty("overflow");
+        };
+        var a = el.animate([
+          { height: "0px", marginTop: "0px", marginBottom: "0px", paddingTop: "0px", paddingBottom: "0px", opacity: 0, transform: "translateY(14px)" },
+          { height: h + "px", marginTop: cs.marginTop, marginBottom: cs.marginBottom, paddingTop: cs.paddingTop, paddingBottom: cs.paddingBottom, opacity: 1, transform: "translateY(0)" }
+        ], { duration: 520, easing: XP_EASE });
+        a.onfinish = restore; a.oncancel = restore;
+      } else {
+        el.animate([{ opacity: 0, transform: "translateY(14px)" }, { opacity: 1, transform: "translateY(0)" }], { duration: 480, easing: XP_EASE });
+      }
+      Array.prototype.forEach.call(o.kids || [], function (k, i) {
+        if (!k || !k.animate) return;
+        k.animate([{ opacity: 0, transform: "translateY(10px)" }, { opacity: 1, transform: "translateY(0)" }],
+          { duration: 420, delay: 140 + Math.min(i, 8) * 70, easing: XP_EASE, fill: "backwards" });
+      });
+      Array.prototype.forEach.call(o.fills || [], function (f) {
+        var w = f && f.style && f.style.width;
+        if (!w || !f.animate) return;
+        f.animate([{ width: "0%" }, { width: w }], { duration: 900, delay: 320, easing: XP_EASE, fill: "backwards" });
+      });
+    } catch (e) {}
+  }
+  // Plays the intro once per piece of content (key changes when the content changes)
+  function xpIntroOnce(el, key, o) {
+    if (!el || el.getAttribute("data-xp-intro") === key) return;
+    el.setAttribute("data-xp-intro", key);
+    xpIntro(el, o);
+  }
+  function xpQ(el, sel) { return el ? el.querySelectorAll(sel) : []; }
+  function xpModalIntro(modalEl) {
+    if (!modalEl || !modalEl.animate || !xpMotionOk()) return;
+    var kids = [];
+    Array.prototype.forEach.call(modalEl.children, function (c) {
+      var cl = c.className || "";
+      if (c.children.length >= 2 && !/actions/.test(cl) && !/header|head/.test(cl)) {
+        Array.prototype.forEach.call(c.children, function (cc) { kids.push(cc); });
+      } else {
+        kids.push(c);
+      }
+    });
+    kids.forEach(function (k, i) {
+      k.animate([{ opacity: 0, transform: "translateY(14px)" }, { opacity: 1, transform: "translateY(0)" }],
+        { duration: 460, delay: 180 + Math.min(i, 9) * 65, easing: XP_EASE, fill: "backwards" });
+    });
+  }
+  function xpBarIntro(el) {
+    if (!el) return;
+    xpIntro(el, {
+      kids: xpQ(el, ".xpc-shipping-headline, .xpc-luxury-headline, .xpc-split-ribbon-top, .xpc-stepper-node, .xpc-reward-card-item, .xpc-luxury-footer"),
+      fills: xpQ(el, ".xpc-stepper-line-fill, .xpc-cards-progress-fill, .xpc-luxury-bar-fill, .xpc-split-fill")
+    });
+  }
+  function xpInCartIntro(el, key) {
+    xpIntroOnce(el, key, { kids: xpQ(el, ".xpc-in-cart-title, .xpc-in-cart-item") });
+  }
+
   function ensureCartDrawerAutoOpen() {
     try {
       var drawer = document.querySelector("cart-drawer-component");
@@ -1380,6 +1458,7 @@
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
         modalEl.classList.add("is-open");
+        xpModalIntro(modalEl);
       });
     });
 
@@ -1840,8 +1919,10 @@
     // 1. Explicit Theme App Blocks
     var blockContainers = document.querySelectorAll(".xpoost-shipping-bar-block");
     blockContainers.forEach(function (c) {
+      var xpFirst = !c.firstElementChild;
       c.innerHTML = barInnerHtml;
       xpObserve(c, "sb");
+      if (xpFirst) xpBarIntro(c);
     });
 
     // 2. Cart Drawer Auto-Injection
@@ -1886,6 +1967,7 @@
           drawerHeader.parentNode.insertBefore(autoBarWrap, drawerHeader.nextSibling);
         }
         xpObserve(autoBarWrap, "sb");
+        xpBarIntro(autoBarWrap);
       } else {
         // Smart in-place update: avoid wiping innerHTML and causing flashes
         var prevTotal = existingDrawerBar.getAttribute("data-rendered-total");
@@ -1915,6 +1997,7 @@
         pageBarWrap.innerHTML = barInnerHtml;
         cartPageForm.parentNode.insertBefore(pageBarWrap, cartPageForm);
         xpObserve(pageBarWrap, "sb");
+        xpBarIntro(pageBarWrap);
       } else {
         existingPageBar.innerHTML = barInnerHtml;
       }
@@ -2150,7 +2233,7 @@
     }).join("");
 
     var cardInnerHtml =
-      '<div class="xpc-in-cart-upsell xpc-animate-in"' + (configStore.isRtl ? ' dir="rtl"' : '') + ' style="--xpc-bg:' + inCartBg + ';--xpc-gold:' + inCartAccent + ';--xpc-text:' + inCartText + ';display:block!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;margin:0 auto!important;min-width:0!important;overflow:hidden!important;">' +
+      '<div class="xpc-in-cart-upsell"' + (configStore.isRtl ? ' dir="rtl"' : '') + ' style="--xpc-bg:' + inCartBg + ';--xpc-gold:' + inCartAccent + ';--xpc-text:' + inCartText + ';display:block!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;margin:0 auto!important;min-width:0!important;overflow:hidden!important;">' +
       '<div class="xpc-in-cart-title">' + escapeHtml(inCartTitle) + '</div>' +
       itemsHtml +
       '</div>';
@@ -2174,6 +2257,7 @@
         c.setAttribute("data-variant-id", targetVariant);
         c.innerHTML = cardInnerHtml;
         attachAddEvent(c, targetVariant, activeRule.discountCode, activeRule.discountPercent, activeRule);
+        xpInCartIntro(c, targetVariant);
       }
     });
 
@@ -2232,6 +2316,7 @@
     // Move the card directly below the cart line that triggered it (drawer first, then the cart page)
     var placedDrawer = document.getElementById("xpc-in-cart-drawer");
     if (placedDrawer) xpcPositionUnderTrigger(placedDrawer, activeRule);
+    if (placedDrawer) xpInCartIntro(placedDrawer, targetVariant);
 
     // 3. Cart Page Auto-Injection
     var cartPageItems = document.querySelector(".cart__items, table.cart-items, form[action*='/cart'] .cart__footer");
@@ -2251,6 +2336,7 @@
         attachAddEvent(existingPageUpsell, targetVariant, activeRule.discountCode, activeRule.discountPercent, activeRule);
       }
       xpcPositionUnderTrigger(document.getElementById("xpc-in-cart-page"), activeRule);
+      xpInCartIntro(document.getElementById("xpc-in-cart-page"), targetVariant);
     }
   }
 

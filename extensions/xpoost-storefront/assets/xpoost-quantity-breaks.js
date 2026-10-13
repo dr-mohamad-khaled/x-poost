@@ -229,6 +229,33 @@
       });
   }
 
+  /* Intro animation: the offer arrives after a network round trip, so it eases in
+     (grow, fade, rise, stagger) instead of popping. Skipped when "reduce motion" is on. */
+  function xpIntro(el, kids) {
+    try {
+      if (!el || !el.animate) return;
+      if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      var ease = "cubic-bezier(0.16, 1, 0.3, 1)";
+      var h = el.offsetHeight;
+      if (h > 0) {
+        var cs = window.getComputedStyle(el);
+        var oVal = el.style.getPropertyValue("overflow"), oPri = el.style.getPropertyPriority("overflow");
+        el.style.setProperty("overflow", "hidden", "important");
+        var restore = function () { if (oVal) el.style.setProperty("overflow", oVal, oPri); else el.style.removeProperty("overflow"); };
+        var a = el.animate([
+          { height: "0px", marginTop: "0px", marginBottom: "0px", opacity: 0, transform: "translateY(14px)" },
+          { height: h + "px", marginTop: cs.marginTop, marginBottom: cs.marginBottom, opacity: 1, transform: "translateY(0)" }
+        ], { duration: 520, easing: ease });
+        a.onfinish = restore; a.oncancel = restore;
+      }
+      Array.prototype.forEach.call(kids || [], function (k, i) {
+        if (!k || !k.animate) return;
+        k.animate([{ opacity: 0, transform: "translateY(10px)" }, { opacity: 1, transform: "translateY(0)" }],
+          { duration: 420, delay: 140 + Math.min(i, 8) * 70, easing: ease, fill: "backwards" });
+      });
+    } catch (e) {}
+  }
+
   function renderOffer(root, container, offer, initialPrice, currencySymbol, locale, isRtl) {
     var tiers = offer.tiers || [];
     if (tiers.length === 0) return;
@@ -405,6 +432,10 @@
       container.innerHTML = buildHtml();
       root.style.display = "block";
       xpObserve(root, "qb", { o: offer.id });
+      if (!root.getAttribute("data-xp-intro")) {
+        root.setAttribute("data-xp-intro", "1");
+        xpIntro(root, container.querySelectorAll(".xpp-qb-header, .xpp-qb-tier-item, .xpp-qb-atc-btn"));
+      }
 
       // Attach click listeners to tier elements
       var tierEls = container.querySelectorAll(".xpp-qb-tier-item");
