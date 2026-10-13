@@ -15,6 +15,7 @@ import {
   type SupportedLanguage,
   DASHBOARD_I18N,
 } from "../utils/translations";
+import { TranslationProvider, translateText } from "../components/Translate";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const currentApiKey = (process.env.SHOPIFY_API_KEY || "872f7f6415d1c243c11ccdfe9426b07f").trim().replace(/^["']|["']$/g, "").trim();
@@ -169,6 +170,7 @@ export default function App() {
 
   const currentIsAr = currentLocale === "ar";
   const currentI18n = DASHBOARD_I18N[currentLocale] || DASHBOARD_I18N.en;
+  const t = (text: string) => translateText(text, currentLocale);
 
   const handleLanguageChange = (newLang: SupportedLanguage) => {
     setCurrentLocale(newLang);
@@ -181,23 +183,24 @@ export default function App() {
   return (
     <AppProvider embedded apiKey={apiKey}>
       <NavMenu>
-        <a href="/app" rel="home">{currentI18n.navOverview || "Overview"}</a>
-        <a href="/app/analytics">{(currentI18n as any).navAnalytics || "Analytics"}</a>
-        <a href="/app/pricing">{currentI18n.navPricing || "Plans & Pricing"}</a>
-        <a href="/app/translations">{currentI18n.navTranslations || "Translations & Languages"}</a>
-        <a href="/app/pre-purchase">{currentI18n.navPrePurchase || "Pre-Purchase Upsell"}</a>
-        <a href="/app/in-cart">{currentI18n.navInCart || "Cart Upsell"}</a>
-        <a href="/app/thank-you">{(currentI18n as any).navThankYou || "Thank-You Page Offers"}</a>
-        <a href="/app/shipping-bar">{currentI18n.navShippingBar || "Free Shipping & Rewards Bar"}</a>
-        <a href="/app/quantity-breaks">{currentI18n.navQuantityBreaks || "Volume Discounts"}</a>
-        <a href="/app/product-scarcity">{currentI18n.navProductScarcity || "Low Stock Meter"}</a>
-        <a href="/app/social-bar">{currentI18n.navSocialBar || "Chat & Social Bar"}</a>
-        <a href="/app/scarcity">{currentI18n.navUrgency || "Social Proof Popups"}</a>
-        <a href="/app/help">{currentI18n.navHelp || "Help & Guide"}</a>
-        {EXIT_INTENT_AVAILABLE ? <a href="/app/exit-intent">{currentI18n.navExitIntent || "Exit-Intent Recovery"}</a> : null}
+        <a href="/app" rel="home">{t("Overview")}</a>
+        <a href="/app/analytics">{t("Analytics")}</a>
+        <a href="/app/pricing">{t("Plans & Pricing")}</a>
+        <a href="/app/translations">{t("Translations & Languages")}</a>
+        <a href="/app/pre-purchase">{t("Pre-Purchase Upsell")}</a>
+        <a href="/app/in-cart">{t("Cart Upsell")}</a>
+        <a href="/app/thank-you">{t("Thank-You Page Offers")}</a>
+        <a href="/app/shipping-bar">{t("Free Shipping & Rewards Bar")}</a>
+        <a href="/app/quantity-breaks">{t("Volume Discounts")}</a>
+        <a href="/app/product-scarcity">{t("Low Stock Meter")}</a>
+        <a href="/app/social-bar">{t("Chat & Social Bar")}</a>
+        <a href="/app/scarcity">{t("Social Proof Popups")}</a>
+        <a href="/app/help">{t("Help & Guide")}</a>
+        {EXIT_INTENT_AVAILABLE ? <a href="/app/exit-intent">{t("Exit-Intent Recovery")}</a> : null}
       </NavMenu>
 
-      <div dir={currentIsAr ? "rtl" : "ltr"} style={{ width: "100%", minHeight: "100vh", background: "radial-gradient(900px 520px at 8% -6%, rgba(255,235,151,0.085), transparent 62%), radial-gradient(820px 620px at 100% 0%, rgba(88,55,20,0.42), transparent 62%), linear-gradient(180deg, #120B05 0%, #0C0803 480px)" }}>
+      <TranslationProvider locale={currentLocale}>
+        <div dir={currentIsAr ? "rtl" : "ltr"} style={{ width: "100%", minHeight: "100vh", background: "radial-gradient(900px 520px at 8% -6%, rgba(255,235,151,0.085), transparent 62%), radial-gradient(820px 620px at 100% 0%, rgba(88,55,20,0.42), transparent 62%), linear-gradient(180deg, #120B05 0%, #0C0803 480px)" }}>
         <style>{`
           /* GLOBAL DARK THEME RESETS */
           
@@ -287,7 +290,7 @@ export default function App() {
             </span>
             <span style={{ fontSize: "12px", color: "#7F7863" }}>|</span>
             <span style={{ fontSize: "12px", color: "#9E957B", fontWeight: 500 }}>
-              {currentI18n.dashboardLangTitle || "Dashboard Language"}:
+              {t("Dashboard Language")}:
             </span>
           </div>
 
@@ -296,10 +299,10 @@ export default function App() {
             <Link
               to="/app/help"
               className={`xp-help-link${pathname.startsWith("/app/help") ? " is-active" : ""}`}
-              aria-label={currentI18n.navHelp || "Help & Guide"}
+              aria-label={t("Help & Guide")}
             >
               <span className="xp-help-q">?</span>
-              {currentI18n.navHelp || "Help & Guide"}
+              {t("Help & Guide")}
             </Link>
             <select
               id="top-dashboard-lang-select"
@@ -337,6 +340,7 @@ export default function App() {
           <Outlet context={{ dashboardLocale: currentLocale, isAr: currentIsAr, i18n: currentI18n }} />
         </main>
       </div>
+      </TranslationProvider>
     </AppProvider>
   );
 }

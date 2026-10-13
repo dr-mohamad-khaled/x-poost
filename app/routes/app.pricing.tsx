@@ -1,4 +1,4 @@
-﻿import { Translate } from "../components/Translate";
+﻿import { Translate, useTranslations } from "../components/Translate";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { useEffect } from "react";
 import { Form, useActionData, useLoaderData, useNavigation } from "react-router";
@@ -29,6 +29,7 @@ export default function Pricing() {
   const actionData = useActionData<typeof action>();
   const nav = useNavigation();
   const isSubmitting = nav.state === "submitting";
+  const { t } = useTranslations();
 
   // The billing action returns Shopify's approval URL; open it at the top level
   // (a plain redirect can't leave the embedded iframe).
@@ -44,7 +45,7 @@ export default function Pricing() {
   }, [confirmationUrl]);
 
   return (
-    <s-page heading="Plans & Pricing">
+    <s-page heading={t("Plans & Pricing")}>
       <style>{`
         /* â”€â”€ Reset & Base â”€â”€ */
         .xpp-container {
@@ -910,7 +911,7 @@ export default function Pricing() {
                 className={`xpp-btn ${isLifetime || lifetimeSoldOut ? "xpp-btn--disabled" : "xpp-btn--secondary"}`}
                 disabled={Boolean(isLifetime) || lifetimeSoldOut || isSubmitting}
               >
-                {isLifetime ? "Lifetime Access Active" : lifetimeSoldOut ? "Sold out" : "Claim Lifetime Access"}
+                {isLifetime ? t("Lifetime Access Active") : lifetimeSoldOut ? t("Sold out") : t("Claim Lifetime Access")}
               </button>
             </Form>
             <span className="xpp-btn-sub"><Translate text='One payment.' /> <span className="xpp-hl-gold"><Translate text='Yours forever' /></span><Translate text='. No recurring charges.' /></span>

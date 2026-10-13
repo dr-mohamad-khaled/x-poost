@@ -1,4 +1,4 @@
-import { Translate } from "../components/Translate";
+import { Translate, useTranslations } from "../components/Translate";
 import { useEffect, useState } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Form, useActionData, useLoaderData, useNavigation } from "react-router";
@@ -145,6 +145,7 @@ export default function ExitIntentSettings() {
   const actionData = useActionData<typeof action>();
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
+  const { t } = useTranslations();
 
   const [selectedLang, setSelectedLang] = useState<SupportedLanguage>(dashboardLocale || "ar");
   const [translationsMap, setTranslationsMap] = useState(allTranslations);
@@ -200,7 +201,7 @@ export default function ExitIntentSettings() {
   }
 
   return (
-    <s-page heading="Exit-Intent Countdown Saver Modal">
+    <s-page heading={t("Exit-Intent Countdown Saver Modal")}>
       <style>{EXIT_INTENT_STYLES}</style>
 
       {actionData && "ok" in actionData ? (
@@ -356,7 +357,7 @@ export default function ExitIntentSettings() {
             </div>
 
             <button type="submit" className="xp-btn-gold" disabled={isSubmitting}>
-              {isSubmitting ? "Saving..." : "Save Exit Saver"}
+              {isSubmitting ? t("Saving...") : t("Save Exit Saver")}
             </button>
           </Form>
         </div>

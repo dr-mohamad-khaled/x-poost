@@ -1,4 +1,4 @@
-import { Translate } from "../components/Translate";
+import { Translate, useTranslations } from "../components/Translate";
 import { useEffect, useState } from "react";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
@@ -163,6 +163,7 @@ export default function XPoostDashboard() {
   const actionData = useActionData<typeof action>();
   const toggleFetcher = useFetcher();
   const shopify = useAppBridge();
+  const { t } = useTranslations();
   const isSubmitting = toggleFetcher.state !== "idle";
 
   const featureList = Object.values(features);
@@ -174,7 +175,7 @@ export default function XPoostDashboard() {
   };
 
   return (
-    <s-page heading="XPoost — Conversion Suite">
+    <s-page heading={t("XPoost — Conversion Suite")}>
       <style>{DASHBOARD_STYLES}</style>
 
       {actionData && "ok" in actionData ? (
@@ -264,7 +265,7 @@ export default function XPoostDashboard() {
               <FeatureDemo id={f.id as DemoId} size="sm" />
               <p className="xp-card-desc"><Translate text={f.description} /></p>
               <div className="xp-card-actions">
-                <button className={`xp-toggle-btn ${f.enabled ? "xp-toggle-btn--off" : "xp-toggle-btn--on"}`} disabled={isSubmitting} onClick={async (e) => { const btn = e.currentTarget; btn.disabled = true; btn.innerText = "Saving..."; try { const token = await shopify.idToken(); const res = await fetch("/api/toggle", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded", "Authorization": `Bearer ${token}` }, body: new URLSearchParams({ featureKey: f.id, enable: f.enabled ? "false" : "true" }) }); if (!res.ok) { shopify.toast.show("Network Error: " + res.status); btn.disabled = false; btn.innerText = f.enabled ? "Disable" : "Enable"; return; } const json = await res.json(); if (!json.ok) { shopify.toast.show("Action Error: " + (json.error || "Unknown error")); btn.disabled = false; btn.innerText = f.enabled ? "Disable" : "Enable"; return; } window.location.reload(); } catch (err: any) { shopify.toast.show("Error: " + (err?.message || String(err))); btn.disabled = false; btn.innerText = f.enabled ? "Disable" : "Enable"; } }}>{f.enabled ? "Disable" : "Enable"}</button>
+                <button className={`xp-toggle-btn ${f.enabled ? "xp-toggle-btn--off" : "xp-toggle-btn--on"}`} disabled={isSubmitting} onClick={async (e) => { const btn = e.currentTarget; btn.disabled = true; btn.innerText = t("Saving..."); try { const token = await shopify.idToken(); const res = await fetch("/api/toggle", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded", "Authorization": `Bearer ${token}` }, body: new URLSearchParams({ featureKey: f.id, enable: f.enabled ? "false" : "true" }) }); if (!res.ok) { shopify.toast.show("Network Error: " + res.status); btn.disabled = false; btn.innerText = f.enabled ? t("Disable") : t("Enable"); return; } const json = await res.json(); if (!json.ok) { shopify.toast.show("Action Error: " + (json.error || "Unknown error")); btn.disabled = false; btn.innerText = f.enabled ? "Disable" : "Enable"; return; } window.location.reload(); } catch (err: any) { shopify.toast.show("Error: " + (err?.message || String(err))); btn.disabled = false; btn.innerText = f.enabled ? "Disable" : "Enable"; } }}>{f.enabled ? t("Disable") : t("Enable")}</button>
                 <Link to={f.route} className="xp-config-link">
                   
                                             <Translate text='Configure Settings &rarr;' />
@@ -322,11 +323,12 @@ function formatMoney(amount: number, currency: string) {
 }
 
 function RevenueBox({ revenue }: { revenue: { direct: number; store: number; orders: number; xpOrders: number; currency: string } }) {
+  const { t } = useTranslations();
   const share = revenue.store > 0 ? (revenue.direct / revenue.store) * 100 : 0;
   const avg = revenue.xpOrders > 0 ? revenue.direct / revenue.xpOrders : 0;
   const empty = revenue.orders === 0 || revenue.direct === 0;
   return (
-    <div className="xp-rev" role="group" aria-label="Revenue from XPoost">
+    <div className="xp-rev" role="group" aria-label={t("Revenue from XPoost")}>
       <div className="xp-rev-main">
         <span className="xp-rev-label"><Translate text='Total revenue from XPoost' /> <span className="xp-rev-range"><Translate text='last 30 days' /></span></span>
         <span className="xp-rev-num">{formatMoney(revenue.direct, revenue.currency)}</span>
@@ -459,6 +461,7 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
 const CASE_STUDIES: CaseStudy[] = ALL_CASE_STUDIES.filter((c) => EXIT_INTENT_AVAILABLE || c.route !== "/app/exit-intent");
 
 function CaseStudyStrip() {
+  const { t } = useTranslations();
   const total = CASE_STUDIES.length;
   // null until mounted: the starting study comes from localStorage (client only)
   const [index, setIndex] = useState<number | null>(null);
@@ -484,8 +487,8 @@ function CaseStudyStrip() {
     } catch {
       /* storage unavailable: rotation still works for this view */
     }
-    const t = window.setTimeout(() => setIndex((i) => ((i ?? 0) + 1) % total), CASE_STUDY_MS);
-    return () => window.clearTimeout(t);
+    const timer = window.setTimeout(() => setIndex((i) => ((i ?? 0) + 1) % total), CASE_STUDY_MS);
+    return () => window.clearTimeout(timer);
   }, [index, total]);
 
   const shown = index ?? 0;
@@ -503,7 +506,7 @@ function CaseStudyStrip() {
           type="button"
           className="xp-case-next"
           onClick={() => setIndex((i) => ((i ?? 0) + 1) % total)}
-          aria-label="Next benchmark"
+          aria-label={t("Next benchmark")}
         >
           <Translate text='Next &rarr;' />
         </button>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { ReactElement, ReactNode } from "react";
 import { Link } from "react-router";
-import { Translate } from "./Translate";
+import { Translate, useTranslations } from "./Translate";
 
 /* ─────────────────────────────────────────────────────────────
    Dashboard hero: fixed line + rotating headline with its own
@@ -305,13 +305,14 @@ export function HeroBanner({ onBrowse }: { onBrowse: (e: { preventDefault: () =>
   }, [index, paused, reduced, count]);
 
   const autoplay = !paused && !reduced;
+  const { t } = useTranslations();
 
   return (
     <div
       className="xp-banner"
       role="region"
       aria-roledescription="carousel"
-      aria-label="XPoost highlights"
+      aria-label={t("XPoost highlights")}
       onMouseEnter={() => setHoverPaused(true)}
       onMouseLeave={() => setHoverPaused(false)}
       onFocus={() => setHoverPaused(true)}
@@ -360,14 +361,14 @@ export function HeroBanner({ onBrowse }: { onBrowse: (e: { preventDefault: () =>
           })}
         </div>
         <div className="xp-bfoot">
-          <div className="xp-bdots" role="tablist" aria-label="Choose highlight">
+          <div className="xp-bdots" role="tablist" aria-label={t("Choose highlight")}>
             {SLIDES.map((s, i) => (
               <button
                 key={s.key}
                 type="button"
                 role="tab"
                 aria-selected={i === index}
-                aria-label={s.title}
+                aria-label={t(s.title)}
                 className={`xp-bdot ${i === index ? "is-active" : ""}`}
                 onClick={() => setIndex(i)}
               />
@@ -382,8 +383,8 @@ export function HeroBanner({ onBrowse }: { onBrowse: (e: { preventDefault: () =>
               className="xp-bpause"
               onClick={() => setUserPaused((v) => !v)}
               aria-pressed={userPaused}
-              aria-label={userPaused ? "Play slideshow" : "Pause slideshow"}
-              title={userPaused ? "Play slideshow" : "Pause slideshow"}
+              aria-label={userPaused ? t("Play slideshow") : t("Pause slideshow")}
+              title={userPaused ? t("Play slideshow") : t("Pause slideshow")}
             >
               {userPaused ? (
                 <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>

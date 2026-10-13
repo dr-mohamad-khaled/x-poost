@@ -1,4 +1,4 @@
-import { Translate } from "../components/Translate";
+import { Translate, useTranslations } from "../components/Translate";
 import { ColorPresets } from "../components/ColorPresets";
 import { useState, useMemo, useEffect } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
@@ -196,6 +196,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function ProductScarcityPage() {
+  const { t } = useTranslations();
   const { shopDomain, config, products: initialProducts, allTranslations, dashboardLocale } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const nav = useNavigation();
@@ -346,7 +347,7 @@ export default function ProductScarcityPage() {
   const previewPercent = Math.min(100, Math.max(10, Math.round((previewStock / maxStock) * 100)));
 
   return (
-    <s-page heading="Low Stock Meter">
+    <s-page heading={t("Low Stock Meter")}>
       <style>{`
         .xpp-ps-admin {
           max-width: 1040px;
@@ -1008,7 +1009,7 @@ export default function ProductScarcityPage() {
                   <input
                     type="text"
                     className="xpp-input"
-                    placeholder="Search by title or keyword..."
+                    placeholder={t("Search by title or keyword...")}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
@@ -1147,7 +1148,7 @@ export default function ProductScarcityPage() {
               className="xpp-btn xpp-btn--primary"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Saving Changes..." : "Save Configuration"}
+              {isSubmitting ? t("Saving Changes...") : t("Save Configuration")}
             </button>
           </div>
         </Form>

@@ -4,6 +4,7 @@ import {
   type SupportedLanguage,
   DASHBOARD_I18N,
 } from "../utils/translations";
+import { useTranslations } from "./Translate";
 
 interface FeatureLanguageSwitcherProps {
   selectedLang: SupportedLanguage;
@@ -18,6 +19,7 @@ export function FeatureLanguageSwitcher({
   onLoadPredefined,
   dashboardLocale = "en",
 }: FeatureLanguageSwitcherProps) {
+  const { t } = useTranslations();
   const i18n = DASHBOARD_I18N[dashboardLocale] || DASHBOARD_I18N.en;
   const activeMeta = SUPPORTED_LANGUAGES.find((l) => l.code === selectedLang) || SUPPORTED_LANGUAGES[0];
 
@@ -52,10 +54,10 @@ export function FeatureLanguageSwitcher({
                 marginBottom: "3px",
               }}
             >
-              {i18n.featureLangTitle || "Feature Copy Language"}
+              {t("Feature Copy Language")}
             </label>
             <div style={{ fontSize: "11px", color: "#CFC6AC" }}>
-              {i18n.featureLangSubtitle || "Select a language to edit its text or load predefined copy:"}
+              {t("Select a language to edit its text or load predefined copy:")}
             </div>
           </div>
 
@@ -127,7 +129,7 @@ export function FeatureLanguageSwitcher({
               e.currentTarget.style.color = "#E5D8B3";
             }}
           >
-            {i18n.btnLoadPredefined || "Load Predefined Values for this Language"}
+            {t("Load Predefined Values for this Language")}
           </button>
         )}
       </div>

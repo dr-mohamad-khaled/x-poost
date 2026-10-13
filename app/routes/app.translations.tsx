@@ -17,6 +17,7 @@ import {
   type FeatureTranslations,
 } from "../utils/translations";
 import { FeatureLanguageSwitcher } from "../components/FeatureLanguageSwitcher";
+import { useTranslations } from "../components/Translate";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { session } = await authenticate.admin(request);
@@ -203,6 +204,7 @@ export default function TranslationsPage() {
 
   const actionData = useActionData<typeof action>();
   const navigation = useNavigation();
+  const { t } = useTranslations();
   const isSaving = navigation.state === "submitting";
 
   const [dashboardLocale, setDashboardLocale] = useState<SupportedLanguage>(initialDashLocale);
@@ -232,9 +234,7 @@ export default function TranslationsPage() {
         [editLang]: { ...defaultCopy },
       }));
       setFeedbackNotice(
-        isRtl
-          ? "تم تحميل النصوص النموذجية الجاهزة لهذه اللغة. انقر على حفظ التغييرات لتأكيدها."
-          : "Predefined copy loaded for this language. Click Save to persist."
+        t("Predefined copy loaded for this language. Click Save to persist.")
       );
       setTimeout(() => setFeedbackNotice(""), 5000);
     }
@@ -243,9 +243,7 @@ export default function TranslationsPage() {
   const handleResetAllLanguages = () => {
     setAllTranslations({ ...defaultsByLang });
     setFeedbackNotice(
-      isRtl
-        ? "تم تحميل النصوص النموذجية لكافة اللغات الـ 7. انقر على حفظ التغييرات لتأكيدها."
-        : "Predefined copy loaded for all 7 languages. Click Save to persist."
+      t("Predefined copy loaded for all 7 languages. Click Save to persist.")
     );
     setTimeout(() => setFeedbackNotice(""), 5000);
   };
@@ -268,7 +266,7 @@ export default function TranslationsPage() {
   };
 
   return (
-    <s-page heading={isRtl ? "إدارة اللغات والترجمة" : "Translations & Language Settings"}>
+    <s-page heading={t("Translations & Language Settings")}>
       <style>{`
         .xpp-trans-container {
           max-width: 1060px;
@@ -429,10 +427,10 @@ export default function TranslationsPage() {
             }}
           >
             <div style={{ fontWeight: 800, color: "#4ade80" }}>
-              {isRtl ? "تم التحديث" : "Success"}
+              {t("Success")}
             </div>
             <p style={{ margin: "4px 0 0", color: "#ffffff", fontSize: 13 }}>
-              {actionData.message}
+              {t(actionData.message)}
             </p>
           </div>
         )}
@@ -463,7 +461,7 @@ export default function TranslationsPage() {
           {/* 1. Global Language Settings Card */}
           <div className="xpp-card">
             <h2 className="xpp-card-title">
-              {isRtl ? "إعدادات اللغة والاتجاه العامة" : "Global Language & Locale Settings"}
+              {t("Global Language & Locale Settings")}
             </h2>
             <p className="xpp-card-desc">
               {isRtl
@@ -488,7 +486,7 @@ export default function TranslationsPage() {
                 }}
               >
                 <label className="xpp-label" htmlFor="dash-locale-select">
-                  {isRtl ? "لغة لوحة التحكم" : "Dashboard Language"}
+                  {t("Dashboard Language")}
                 </label>
                 <div style={{ marginTop: 10 }}>
                   <select
@@ -517,7 +515,7 @@ export default function TranslationsPage() {
                 }}
               >
                 <label className="xpp-label" htmlFor="sf-locale-select">
-                  {isRtl ? "لغة واجهة المتجر الافتراضية للعملاء" : "Default Storefront Language"}
+                  {t("Default Storefront Language")}
                 </label>
                 <div style={{ marginTop: 10 }}>
                   <select
@@ -542,7 +540,7 @@ export default function TranslationsPage() {
           {/* 2. Feature Translation Editor Card with 7-Language Switcher */}
           <div className="xpp-card">
             <h2 className="xpp-card-title">
-              {isRtl ? "تخصيص نصوص ميزات المتجر" : "Feature Translation Editor"}
+              {t("Feature Translation Editor")}
             </h2>
             <p className="xpp-card-desc">
               {isRtl
@@ -565,28 +563,28 @@ export default function TranslationsPage() {
                 className={`xpp-tab-btn ${activeTab === "productScarcity" ? "is-active" : ""}`}
                 onClick={() => setActiveTab("productScarcity")}
               >
-                {isRtl ? "ندرة مخزون المنتج" : "Low Stock Meter"}
+                {t("Low Stock Meter")}
               </button>
               <button
                 type="button"
                 className={`xpp-tab-btn ${activeTab === "prePurchase" ? "is-active" : ""}`}
                 onClick={() => setActiveTab("prePurchase")}
               >
-                {isRtl ? "عروض ما قبل الدفع" : "Pre-Purchase Upsell"}
+                {t("Pre-Purchase Upsell")}
               </button>
               <button
                 type="button"
                 className={`xpp-tab-btn ${activeTab === "inCart" ? "is-active" : ""}`}
                 onClick={() => setActiveTab("inCart")}
               >
-                {isRtl ? "عروض سلة الشراء" : "Cart Upsell"}
+                {t("Cart Upsell")}
               </button>
               <button
                 type="button"
                 className={`xpp-tab-btn ${activeTab === "shippingBar" ? "is-active" : ""}`}
                 onClick={() => setActiveTab("shippingBar")}
               >
-                {isRtl ? "شريط الشحن المجاني" : "Free Shipping & Rewards Bar"}
+                {t("Free Shipping & Rewards Bar")}
               </button>
               {EXIT_INTENT_AVAILABLE ? (
               <button
@@ -594,7 +592,7 @@ export default function TranslationsPage() {
                 className={`xpp-tab-btn ${activeTab === "exitIntent" ? "is-active" : ""}`}
                 onClick={() => setActiveTab("exitIntent")}
               >
-                {isRtl ? "استعادة الزوار" : "Exit-Intent Recovery"}
+                {t("Exit-Intent Recovery")}
               </button>
               ) : null}
               <button
@@ -602,21 +600,21 @@ export default function TranslationsPage() {
                 className={`xpp-tab-btn ${activeTab === "socialBar" ? "is-active" : ""}`}
                 onClick={() => setActiveTab("socialBar")}
               >
-                {isRtl ? "شريط الدعم والتواصل" : "Chat & Social Bar"}
+                {t("Chat & Social Bar")}
               </button>
               <button
                 type="button"
                 className={`xpp-tab-btn ${activeTab === "scarcityToast" ? "is-active" : ""}`}
                 onClick={() => setActiveTab("scarcityToast")}
               >
-                {isRtl ? "إشعارات الشراء العاجلة" : "Social Proof Popups"}
+                {t("Social Proof Popups")}
               </button>
               <button
                 type="button"
                 className={`xpp-tab-btn ${activeTab === "quantityBreaks" ? "is-active" : ""}`}
                 onClick={() => setActiveTab("quantityBreaks")}
               >
-                {isRtl ? "خصومات الكمية والكراتين" : "Quantity Breaks"}
+                {t("Quantity Breaks")}
               </button>
             </div>
 
@@ -625,7 +623,7 @@ export default function TranslationsPage() {
               <div dir={isEditRtl ? "rtl" : "ltr"}>
                 <div style={{ marginBottom: 12 }}>
                   <span style={{ fontSize: 12, color: "#CFC6AC" }}>
-                    {isRtl ? "المتغيرات المتاحة:" : "Available Placeholders:"}
+                    {t("Available Placeholders:")}
                   </span>
                   <span
                     className="xpp-chip"
@@ -654,7 +652,7 @@ export default function TranslationsPage() {
                 </div>
                 <div className="xpp-field-group">
                   <label className="xpp-label">
-                    {isRtl ? "عنوان ندرة المخزون" : "Headline Template"}
+                    {t("Headline Template")}
                   </label>
                   <input
                     type="text"
@@ -674,7 +672,7 @@ export default function TranslationsPage() {
                 </div>
                 <div className="xpp-field-group">
                   <label className="xpp-label">
-                    {isRtl ? "النص الفرعي / إشعار الإقبال" : "Subtitle / Reassurance Note"}
+                    {t("Subtitle / Reassurance Note")}
                   </label>
                   <input
                     type="text"
@@ -687,12 +685,12 @@ export default function TranslationsPage() {
                     }
                   />
                   <div className="xpp-hint">
-                    {isRtl ? "مثال: طلب مرتفع: ينفد سريعاً" : "Default: High demand: selling fast"}
+                    {t("Default: High demand: selling fast")}
                   </div>
                 </div>
                 <div className="xpp-row">
                   <div className="xpp-field-group" style={{ flex: 1 }}>
-                    <label className="xpp-label">{isRtl ? "شارة التنبيه" : "Badge Tag Label"}</label>
+                    <label className="xpp-label">{t("Badge Tag Label")}</label>
                     <input
                       type="text"
                       name="ps_badge"
@@ -706,7 +704,7 @@ export default function TranslationsPage() {
                   </div>
                   <div className="xpp-field-group" style={{ flex: 1 }}>
                     <label className="xpp-label">
-                      {isRtl ? "نص المشاهدين المباشر" : "Live Viewers Suffix"}
+                      {t("Live Viewers Suffix")}
                     </label>
                     <input
                       type="text"
@@ -729,7 +727,7 @@ export default function TranslationsPage() {
                 <div className="xpp-row">
                   <div className="xpp-field-group" style={{ flex: 1 }}>
                     <label className="xpp-label">
-                      {isRtl ? "شارة العرض العلوية" : "Modal Top Tag"}
+                      {t("Modal Top Tag")}
                     </label>
                     <input
                       type="text"
@@ -744,7 +742,7 @@ export default function TranslationsPage() {
                   </div>
                   <div className="xpp-field-group" style={{ flex: 1 }}>
                     <label className="xpp-label">
-                      {isRtl ? "عنوان نافذة العرض" : "Offer Headline"}
+                      {t("Offer Headline")}
                     </label>
                     <input
                       type="text"
@@ -760,7 +758,7 @@ export default function TranslationsPage() {
                 </div>
                 <div className="xpp-field-group">
                   <label className="xpp-label">
-                    {isRtl ? "وصف العرض" : "Offer Description"}
+                    {t("Offer Description")}
                   </label>
                   <input
                     type="text"
@@ -776,7 +774,7 @@ export default function TranslationsPage() {
                 <div className="xpp-row">
                   <div className="xpp-field-group" style={{ flex: 1 }}>
                     <label className="xpp-label">
-                      {isRtl ? "زر قبول العرض والإضافة" : "Accept Button Label"}
+                      {t("Accept Button Label")}
                     </label>
                     <input
                       type="text"
@@ -791,7 +789,7 @@ export default function TranslationsPage() {
                   </div>
                   <div className="xpp-field-group" style={{ flex: 1 }}>
                     <label className="xpp-label">
-                      {isRtl ? "زر تخطي العرض" : "Decline Button Label"}
+                      {t("Decline Button Label")}
                     </label>
                     <input
                       type="text"
@@ -808,7 +806,7 @@ export default function TranslationsPage() {
                 <div className="xpp-row">
                   <div className="xpp-field-group" style={{ flex: 1 }}>
                     <label className="xpp-label">
-                      {isRtl ? "نص عداد الحجز الزمني" : "Urgency Timer Label"}
+                      {t("Urgency Timer Label")}
                     </label>
                     <input
                       type="text"
@@ -823,7 +821,7 @@ export default function TranslationsPage() {
                   </div>
                   <div className="xpp-field-group" style={{ flex: 1 }}>
                     <label className="xpp-label">
-                      {isRtl ? "ملاحظة حجز الكمية" : "Scarcity Allocation Note"}
+                      {t("Scarcity Allocation Note")}
                     </label>
                     <input
                       type="text"
@@ -845,7 +843,7 @@ export default function TranslationsPage() {
               <div dir={isEditRtl ? "rtl" : "ltr"}>
                 <div className="xpp-field-group">
                   <label className="xpp-label">
-                    {isRtl ? "عنوان قسم المنتجات المقترحة" : "In-Cart Drawer Section Title"}
+                    {t("In-Cart Drawer Section Title")}
                   </label>
                   <input
                     type="text"
@@ -858,13 +856,13 @@ export default function TranslationsPage() {
                     }
                   />
                   <div className="xpp-hint">
-                    {isRtl ? "مثال: منتجات يشتريها العملاء أيضاً" : "Default: Frequently Bought Together"}
+                    {t("Default: Frequently Bought Together")}
                   </div>
                 </div>
                 <div className="xpp-row">
                   <div className="xpp-field-group" style={{ flex: 1 }}>
                     <label className="xpp-label">
-                      {isRtl ? "نص زر الإضافة السريعة" : "Add to Cart Button Label"}
+                      {t("Add to Cart Button Label")}
                     </label>
                     <input
                       type="text"
@@ -879,7 +877,7 @@ export default function TranslationsPage() {
                   </div>
                   <div className="xpp-field-group" style={{ flex: 1 }}>
                     <label className="xpp-label">
-                      {isRtl ? "شارة التوفير / الخصم" : "Savings Badge Template"}
+                      {t("Savings Badge Template")}
                     </label>
                     <input
                       type="text"
@@ -892,7 +890,7 @@ export default function TranslationsPage() {
                       }
                     />
                     <div className="xpp-hint">
-                      {isRtl ? "استخدم {discount} لنسبة الخصم" : "Use {discount} for percentage"}
+                      {t("Use {discount} for percentage")}
                     </div>
                   </div>
                 </div>
@@ -919,7 +917,7 @@ export default function TranslationsPage() {
                 </div>
                 <div className="xpp-field-group">
                   <label className="xpp-label">
-                    {isRtl ? "رسالة التقدم نحو المكافأة التالية" : "Progress Toward Reward Message"}
+                    {t("Progress Toward Reward Message")}
                   </label>
                   <input
                     type="text"
@@ -939,7 +937,7 @@ export default function TranslationsPage() {
                 </div>
                 <div className="xpp-field-group">
                   <label className="xpp-label">
-                    {isRtl ? "رسالة اكتمال كافة المكافآت" : "All Rewards Unlocked Message"}
+                    {t("All Rewards Unlocked Message")}
                   </label>
                   <input
                     type="text"
@@ -960,7 +958,7 @@ export default function TranslationsPage() {
               <div dir={isEditRtl ? "rtl" : "ltr"}>
                 <div className="xpp-field-group">
                   <label className="xpp-label">
-                    {isRtl ? "عنوان نافذة الاستعادة" : "Modal Headline"}
+                    {t("Modal Headline")}
                   </label>
                   <input
                     type="text"
@@ -975,7 +973,7 @@ export default function TranslationsPage() {
                 </div>
                 <div className="xpp-field-group">
                   <label className="xpp-label">
-                    {isRtl ? "نص الرسالة والخصم" : "Body Text"}
+                    {t("Body Text")}
                   </label>
                   <input
                     type="text"
@@ -991,7 +989,7 @@ export default function TranslationsPage() {
                 <div className="xpp-row">
                   <div className="xpp-field-group" style={{ flex: 1 }}>
                     <label className="xpp-label">
-                      {isRtl ? "زر تفعيل الخصم وإتمام الطلب" : "Claim Discount Button Label"}
+                      {t("Claim Discount Button Label")}
                     </label>
                     <input
                       type="text"
@@ -1006,7 +1004,7 @@ export default function TranslationsPage() {
                   </div>
                   <div className="xpp-field-group" style={{ flex: 1 }}>
                     <label className="xpp-label">
-                      {isRtl ? "رابط رفض الخصم والإغلاق" : "Dismiss / Decline Text"}
+                      {t("Dismiss / Decline Text")}
                     </label>
                     <input
                       type="text"
@@ -1028,7 +1026,7 @@ export default function TranslationsPage() {
               <div dir={isEditRtl ? "rtl" : "ltr"}>
                 <div className="xpp-field-group">
                   <label className="xpp-label">
-                    {isRtl ? "نص شارة المساعدة السريعة" : "Badge Help Text"}
+                    {t("Badge Help Text")}
                   </label>
                   <input
                     type="text"
@@ -1044,7 +1042,7 @@ export default function TranslationsPage() {
                 <div className="xpp-row">
                   <div className="xpp-field-group" style={{ flex: 1 }}>
                     <label className="xpp-label">
-                      {isRtl ? "اسم مجتمع الـ VIP" : "VIP Community Label"}
+                      {t("VIP Community Label")}
                     </label>
                     <input
                       type="text"
@@ -1059,7 +1057,7 @@ export default function TranslationsPage() {
                   </div>
                   <div className="xpp-field-group" style={{ flex: 1 }}>
                     <label className="xpp-label">
-                      {isRtl ? "رسالة الواتساب التلقائية" : "Default WhatsApp Message"}
+                      {t("Default WhatsApp Message")}
                     </label>
                     <input
                       type="text"
@@ -1082,7 +1080,7 @@ export default function TranslationsPage() {
                 <div className="xpp-row">
                   <div className="xpp-field-group" style={{ flex: 1 }}>
                     <label className="xpp-label">
-                      {isRtl ? "شارة كود الخصم" : "Discount Badge"}
+                      {t("Discount Badge")}
                     </label>
                     <input
                       type="text"
@@ -1097,7 +1095,7 @@ export default function TranslationsPage() {
                   </div>
                   <div className="xpp-field-group" style={{ flex: 2 }}>
                     <label className="xpp-label">
-                      {isRtl ? "نص إشعار الخصم" : "Discount Toast Text"}
+                      {t("Discount Toast Text")}
                     </label>
                     <input
                       type="text"
@@ -1114,7 +1112,7 @@ export default function TranslationsPage() {
                 <div className="xpp-row">
                   <div className="xpp-field-group" style={{ flex: 1 }}>
                     <label className="xpp-label">
-                      {isRtl ? "شارة كمية المخزون" : "Stock Badge"}
+                      {t("Stock Badge")}
                     </label>
                     <input
                       type="text"
@@ -1129,7 +1127,7 @@ export default function TranslationsPage() {
                   </div>
                   <div className="xpp-field-group" style={{ flex: 2 }}>
                     <label className="xpp-label">
-                      {isRtl ? "نص إشعار ندرة المخزون" : "Stock Toast Text"}
+                      {t("Stock Toast Text")}
                     </label>
                     <input
                       type="text"
@@ -1146,7 +1144,7 @@ export default function TranslationsPage() {
                 <div className="xpp-row">
                   <div className="xpp-field-group" style={{ flex: 1 }}>
                     <label className="xpp-label">
-                      {isRtl ? "شارة الشراء المباشر" : "Trending Badge"}
+                      {t("Trending Badge")}
                     </label>
                     <input
                       type="text"
@@ -1161,7 +1159,7 @@ export default function TranslationsPage() {
                   </div>
                   <div className="xpp-field-group" style={{ flex: 2 }}>
                     <label className="xpp-label">
-                      {isRtl ? "نص إشعار الشراء الحديث" : "Trending Toast Text"}
+                      {t("Trending Toast Text")}
                     </label>
                     <input
                       type="text"
@@ -1178,7 +1176,7 @@ export default function TranslationsPage() {
                 <div className="xpp-row">
                   <div className="xpp-field-group" style={{ flex: 1 }}>
                     <label className="xpp-label">
-                      {isRtl ? "شارة الشحن السريع" : "Shipping Badge"}
+                      {t("Shipping Badge")}
                     </label>
                     <input
                       type="text"
@@ -1193,7 +1191,7 @@ export default function TranslationsPage() {
                   </div>
                   <div className="xpp-field-group" style={{ flex: 2 }}>
                     <label className="xpp-label">
-                      {isRtl ? "نص إشعار الشحن المجاني" : "Shipping Toast Text"}
+                      {t("Shipping Toast Text")}
                     </label>
                     <input
                       type="text"
@@ -1216,7 +1214,7 @@ export default function TranslationsPage() {
                 <div className="xpp-row">
                   <div className="xpp-field-group" style={{ flex: 1 }}>
                     <label className="xpp-label">
-                      {isRtl ? "عنوان القسم الرئيسي" : "Section Main Title"}
+                      {t("Section Main Title")}
                     </label>
                     <input
                       type="text"
@@ -1231,7 +1229,7 @@ export default function TranslationsPage() {
                   </div>
                   <div className="xpp-field-group" style={{ flex: 1 }}>
                     <label className="xpp-label">
-                      {isRtl ? "العنوان الفرعي" : "Subtitle / Tagline"}
+                      {t("Subtitle / Tagline")}
                     </label>
                     <input
                       type="text"
@@ -1248,7 +1246,7 @@ export default function TranslationsPage() {
                 <div className="xpp-row">
                   <div className="xpp-field-group" style={{ flex: 1 }}>
                     <label className="xpp-label">
-                      {isRtl ? "نص زر إضافة للسلة" : "Add to Cart Button Text"}
+                      {t("Add to Cart Button Text")}
                     </label>
                     <input
                       type="text"
@@ -1263,7 +1261,7 @@ export default function TranslationsPage() {
                   </div>
                   <div className="xpp-field-group" style={{ flex: 1 }}>
                     <label className="xpp-label">
-                      {isRtl ? "كلمة 'للقطعة'" : "'Each' Suffix Label"}
+                      {t("'Each' Suffix Label")}
                     </label>
                     <input
                       type="text"
@@ -1280,7 +1278,7 @@ export default function TranslationsPage() {
                 <div className="xpp-row">
                   <div className="xpp-field-group" style={{ flex: 1 }}>
                     <label className="xpp-label">
-                      {isRtl ? "كلمة 'الإجمالي'" : "'Total' Label"}
+                      {t("'Total' Label")}
                     </label>
                     <input
                       type="text"
@@ -1295,7 +1293,7 @@ export default function TranslationsPage() {
                   </div>
                   <div className="xpp-field-group" style={{ flex: 1 }}>
                     <label className="xpp-label">
-                      {isRtl ? "كلمة 'وفر'" : "'Save' Prefix Label"}
+                      {t("'Save' Prefix Label")}
                     </label>
                     <input
                       type="text"
@@ -1332,7 +1330,7 @@ export default function TranslationsPage() {
             >
               <div>
                 <h2 className="xpp-card-title">
-                  {isRtl ? "إعادة تعيين النصوص النموذجية" : "Reset to Predefined Defaults"}
+                  {t("Reset to Predefined Defaults")}
                 </h2>
                 <p className="xpp-card-desc" style={{ margin: 0 }}>
                   {isRtl
@@ -1370,8 +1368,7 @@ export default function TranslationsPage() {
               style={{ padding: "14px 36px", fontSize: 15 }}
             >
               {isSaving
-                ? (isRtl ? "جارٍ الحفظ..." : "Saving...")
-                : (isRtl ? "حفظ كافة التغييرات" : "Save All Translations")}
+                ? t("Saving...") : t("Save All Translations")}
             </button>
           </div>
         </Form>

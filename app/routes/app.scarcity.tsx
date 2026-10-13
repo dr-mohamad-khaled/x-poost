@@ -1,4 +1,4 @@
-import { Translate } from "../components/Translate";
+import { Translate, useTranslations } from "../components/Translate";
 import { ColorPresets } from "../components/ColorPresets";
 import { useMemo, useState } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
@@ -161,6 +161,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function ScarcityToastSettings() {
+  const { t } = useTranslations();
   const { config, allTranslations, dashboardLocale } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const navigation = useNavigation();
@@ -272,7 +273,7 @@ export default function ScarcityToastSettings() {
   }
 
   return (
-    <s-page heading="Social Proof Popups">
+    <s-page heading={t("Social Proof Popups")}>
       <style>{ADMIN_STYLES}</style>
 
       {actionData && "error" in actionData ? (
@@ -493,9 +494,9 @@ export default function ScarcityToastSettings() {
                 <div className="xps-message-card__head">
                   <strong><Translate text='Message' /> {i + 1}</strong>
                   <div className="xps-message-card__actions">
-                    <button type="button" className="xps-icon-btn" onClick={() => moveMessage(i, -1)} disabled={i === 0} aria-label="Move up">↑</button>
-                    <button type="button" className="xps-icon-btn" onClick={() => moveMessage(i, 1)} disabled={i === messages.length - 1} aria-label="Move down">↓</button>
-                    <button type="button" className="xps-icon-btn xps-icon-btn--danger" onClick={() => removeMessage(i)} disabled={messages.length <= 1} aria-label="Remove">✕</button>
+                    <button type="button" className="xps-icon-btn" onClick={() => moveMessage(i, -1)} disabled={i === 0} aria-label={t("Move up")}>↑</button>
+                    <button type="button" className="xps-icon-btn" onClick={() => moveMessage(i, 1)} disabled={i === messages.length - 1} aria-label={t("Move down")}>↓</button>
+                    <button type="button" className="xps-icon-btn xps-icon-btn--danger" onClick={() => removeMessage(i)} disabled={messages.length <= 1} aria-label={t("Remove")}>✕</button>
                   </div>
                 </div>
                 <div className="xps-grid">
@@ -509,20 +510,20 @@ export default function ScarcityToastSettings() {
                   </div>
                   <div className="xps-field">
                     <label><Translate text='Small label (optional)' /></label>
-                    <input className="xps-input" dir={selectedLang === "ar" ? "rtl" : "ltr"} value={msg.badge ?? ""} onChange={(e) => updateMessage(i, { badge: e.target.value })} placeholder="e.g. Exclusive code:" />
+                    <input className="xps-input" dir={selectedLang === "ar" ? "rtl" : "ltr"} value={msg.badge ?? ""} onChange={(e) => updateMessage(i, { badge: e.target.value })} placeholder={t("e.g. Exclusive code:")} />
                   </div>
                   <div className="xps-field">
                     <label><Translate text='Highlight pill (optional)' /></label>
-                    <input className="xps-input" dir={selectedLang === "ar" ? "rtl" : "ltr"} value={msg.pill ?? ""} onChange={(e) => updateMessage(i, { pill: e.target.value })} placeholder="e.g. SAVE15" />
+                    <input className="xps-input" dir={selectedLang === "ar" ? "rtl" : "ltr"} value={msg.pill ?? ""} onChange={(e) => updateMessage(i, { pill: e.target.value })} placeholder={t("e.g. SAVE15")} />
                   </div>
                 </div>
                 <div className="xps-field">
                   <label><Translate text='Message text' /></label>
-                  <input className="xps-input" dir={selectedLang === "ar" ? "rtl" : "ltr"} value={msg.text} onChange={(e) => updateMessage(i, { text: e.target.value })} placeholder="What the customer sees" />
+                  <input className="xps-input" dir={selectedLang === "ar" ? "rtl" : "ltr"} value={msg.text} onChange={(e) => updateMessage(i, { text: e.target.value })} placeholder={t("What the customer sees")} />
                 </div>
                 <div className="xps-field">
                   <label><Translate text='Link on click (optional)' /></label>
-                  <input className="xps-input" value={msg.url ?? ""} onChange={(e) => updateMessage(i, { url: e.target.value })} placeholder="https://…" />
+                  <input className="xps-input" value={msg.url ?? ""} onChange={(e) => updateMessage(i, { url: e.target.value })} placeholder={t("https://…")} />
                 </div>
                 <button type="button" className="xps-link-btn" onClick={() => setPreviewIndex(i)}><Translate text='Preview this message →' /></button>
               </div>

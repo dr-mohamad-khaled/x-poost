@@ -108,7 +108,7 @@ export function ColorPresets({ onApply }: { onApply: (p: Palette) => void }) {
                 />
               ))}
             </span>
-            {p.name}
+            <Translate text={p.name} />
           </button>
         ))}
       </div>

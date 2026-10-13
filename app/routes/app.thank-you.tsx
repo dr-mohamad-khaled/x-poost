@@ -1,4 +1,4 @@
-﻿import { Translate } from "../components/Translate";
+﻿import { Translate, useTranslations } from "../components/Translate";
 import { useEffect, useMemo, useState } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Link, useFetcher, useLoaderData, useNavigate, useSearchParams } from "react-router";
@@ -235,11 +235,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 type LoaderData = ReturnType<typeof useLoaderData<typeof loader>>;
 
 export default function ThankYouPage() {
+  const { t } = useTranslations();
   const data = useLoaderData<typeof loader>();
   const [params] = useSearchParams();
   const editing = params.get("offer");
   return (
-    <s-page heading="Thank-You Page Offers">
+    <s-page heading={t("Thank-You Page Offers")}>
       <style>{TY_CSS}</style>
       <style>{PREVIEW_CSS}</style>
       {editing ? <Editor key={`${editing}:${params.get("tpl") || ""}`} data={data} offerParam={editing} tpl={params.get("tpl")} /> : <ListView data={data} />}
@@ -254,6 +255,7 @@ export default function ThankYouPage() {
 const pct = (n: number, d: number) => (d > 0 ? `${((n / d) * 100).toFixed(1)}%` : "–");
 
 function ListView({ data }: { data: LoaderData }) {
+  const { t } = useTranslations();
   const fetcher = useFetcher<typeof action>();
   const navigate = useNavigate();
   const busy = fetcher.state !== "idle";
@@ -281,7 +283,7 @@ function ListView({ data }: { data: LoaderData }) {
                                   <Translate text='Customers are most open to your brand right after they pay. Give them a unique code for next time, offer matching products, or open a short window where anything they add ships in the same box.' />
                                 </p>
         </div>
-        <label className="ty-switch" title="Turn the whole feature on or off">
+        <label className="ty-switch" title={t("Turn the whole feature on or off")}>
           <input type="checkbox" checked={data.enabled} disabled={busy} onChange={(e) => send({ intent: "toggleFeature", enable: String(e.target.checked) })} />
           <span className="knob" />
           <b>{data.enabled ? "On" : "Off"}</b>
@@ -347,8 +349,8 @@ function ListView({ data }: { data: LoaderData }) {
                     return (
                       <tr key={o.id}>
                         <td className="mv">
-                          <button className="ty-icon" disabled={i === 0 || busy} onClick={() => send({ intent: "moveOffer", id: o.id, dir: "up" })} aria-label="Move up">↑</button>
-                          <button className="ty-icon" disabled={i === offers.length - 1 || busy} onClick={() => send({ intent: "moveOffer", id: o.id, dir: "down" })} aria-label="Move down">↓</button>
+                          <button className="ty-icon" disabled={i === 0 || busy} onClick={() => send({ intent: "moveOffer", id: o.id, dir: "up" })} aria-label={t("Move up")}>↑</button>
+                          <button className="ty-icon" disabled={i === offers.length - 1 || busy} onClick={() => send({ intent: "moveOffer", id: o.id, dir: "down" })} aria-label={t("Move down")}>↓</button>
                         </td>
                         <td>
                           <Link to={`/app/thank-you?offer=${o.id}`} className="ty-name">{o.name}</Link>
@@ -468,6 +470,7 @@ function blankDraft(): Draft {
 }
 
 function Editor({ data, offerParam, tpl }: { data: LoaderData; offerParam: string; tpl: string | null }) {
+  const { t } = useTranslations();
   const navigate = useNavigate();
   const fetcher = useFetcher<typeof action>();
   const money = (n: number) => formatMoney(n, data.currency);
@@ -479,12 +482,12 @@ function Editor({ data, offerParam, tpl }: { data: LoaderData; offerParam: strin
       if (o) return { id: o.id, name: o.name, kind: o.kind, design: o.design, enabled: o.enabled, config: o.config, conditions: o.conditions, texts: o.texts };
     }
     const d = blankDraft();
-    const t = TEMPLATES.find((x) => x.key === tpl);
-    if (t) {
-      const built = t.build(data.aov);
-      d.name = t.name;
-      d.kind = t.kind;
-      d.design = t.design;
+    const tmpl = TEMPLATES.find((x) => x.key === tpl);
+    if (tmpl) {
+      const built = tmpl.build(data.aov);
+      d.name = tmpl.name;
+      d.kind = tmpl.kind;
+      d.design = tmpl.design;
       d.config = built.config;
       d.conditions = built.conditions;
       d.texts = built.texts || {};
@@ -570,7 +573,7 @@ function Editor({ data, offerParam, tpl }: { data: LoaderData; offerParam: strin
                           </Link>
         <div className="ty-topbar-r">
           {result?.message ? <span className={`ty-flash ${result.ok ? "ok" : "bad"}`}>{result.message}</span> : dirty ? <span className="ty-flash"><Translate text='Unsaved changes' /></span> : null}
-          <label className="ty-switch" title="Offer on/off">
+          <label className="ty-switch" title={t("Offer on/off")}>
             <input type="checkbox" checked={draft.enabled} onChange={(e) => patch({ enabled: e.target.checked })} />
             <span className="knob" />
             <b>{draft.enabled ? "On" : "Paused"}</b>

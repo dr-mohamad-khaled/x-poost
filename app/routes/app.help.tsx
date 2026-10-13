@@ -3,6 +3,7 @@ import type { LoaderFunctionArgs } from "react-router";
 import { Link, useLoaderData, useOutletContext } from "react-router";
 import { authenticate } from "../shopify.server";
 import { getOrCreateShop } from "../shop.server";
+import { useTranslations } from "../components/Translate";
 
 type Bi = { en: string; ar: string };
 type FeatureId =
@@ -689,11 +690,12 @@ function CountUp({ to, ms = 1100 }: { to: number; ms?: number }) {
 
 /** Looping CSS mini-animations that mimic each feature on a storefront. */
 function Demo({ id, isAr }: { id: FeatureId; isAr: boolean }) {
+  const { t } = useTranslations();
   switch (id) {
     case "shippingBar":
       return (
         <div className="xh-demo xh-d-ship" aria-hidden="true">
-          <div className="xh-d-ship-label">{isAr ? "أضف 120 لتفتح الشحن المجاني" : "Add 120 to unlock free shipping"}</div>
+          <div className="xh-d-ship-label">{isAr ? "أضف 120 لتفتح الشحن المجاني" : t("Add 120 to unlock free shipping")}</div>
           <div className="xh-d-ship-track"><i /></div>
           <div className="xh-d-ship-dots"><b>1</b><b>2</b><b>3</b></div>
         </div>
@@ -705,7 +707,7 @@ function Demo({ id, isAr }: { id: FeatureId; isAr: boolean }) {
             <span className="xh-d-line w60" />
             <div className="xh-d-pre-row"><i className="xh-d-img" /><span className="xh-d-line w40" /><em /></div>
             <div className="xh-d-pre-row"><i className="xh-d-img" /><span className="xh-d-line w50" /><em /></div>
-            <div className="xh-d-pre-btn">{isAr ? "أضف الاثنين ووفّر" : "Add both & save"}</div>
+            <div className="xh-d-pre-btn">{isAr ? "أضف الاثنين ووفّر" : t("Add both & save")}</div>
           </div>
         </div>
       );
@@ -722,7 +724,7 @@ function Demo({ id, isAr }: { id: FeatureId; isAr: boolean }) {
       return (
         <div className="xh-demo xh-d-qty" aria-hidden="true">
           <div className="xh-d-q q1"><small>1x</small></div>
-          <div className="xh-d-q q2"><small>2x</small><u>{isAr ? "الأشهر" : "Popular"}</u></div>
+          <div className="xh-d-q q2"><small>2x</small><u>{isAr ? "الأشهر" : t("Popular")}</u></div>
           <div className="xh-d-q q3"><small>3x</small></div>
         </div>
       );
@@ -730,13 +732,13 @@ function Demo({ id, isAr }: { id: FeatureId; isAr: boolean }) {
       return (
         <div className="xh-demo xh-d-toast-wrap" aria-hidden="true">
           <div className="xh-d-page"><span className="xh-d-line w60" /><span className="xh-d-line w40" /></div>
-          <div className="xh-d-toast"><i /> <span>{isAr ? "شخص ما اشترى هذا للتو" : "Someone just ordered this"}</span></div>
+          <div className="xh-d-toast"><i /> <span>{isAr ? "شخص ما اشترى هذا للتو" : t("Someone just ordered this")}</span></div>
         </div>
       );
     case "productScarcity":
       return (
         <div className="xh-demo xh-d-stock" aria-hidden="true">
-          <div className="xh-d-stock-msg">{isAr ? "تبقّت قطع قليلة" : "Only a few left"}</div>
+          <div className="xh-d-stock-msg">{isAr ? "تبقّت قطع قليلة" : t("Only a few left")}</div>
           <div className="xh-d-stock-track"><i /></div>
         </div>
       );
@@ -744,9 +746,9 @@ function Demo({ id, isAr }: { id: FeatureId; isAr: boolean }) {
       return (
         <div className="xh-demo xh-d-social" aria-hidden="true">
           <div className="xh-d-social-list">
-            <span>{isAr ? "تتبع طلبي" : "Track my order"}</span>
-            <span>{isAr ? "نصيحة عن منتج" : "Product advice"}</span>
-            <span>{isAr ? "طلب إرجاع" : "Return request"}</span>
+            <span>{isAr ? "تتبع طلبي" : t("Track my order")}</span>
+            <span>{isAr ? "نصيحة عن منتج" : t("Product advice")}</span>
+            <span>{isAr ? "طلب إرجاع" : t("Return request")}</span>
           </div>
           <div className="xh-d-social-btn"><i /></div>
         </div>
@@ -774,9 +776,13 @@ function FeatureCard({
   onToggle: () => void;
   enabled: boolean;
 }) {
-  const L = (b: Bi) => (isAr ? b.ar : b.en);
-  const how = isAr ? f.how.ar : f.how.en;
-  const tips = isAr ? f.tips.ar : f.tips.en;
+  const { t } = useTranslations();
+  const L = (b: Bi | string) => {
+    if (typeof b === "string") return t(b);
+    return isAr ? b.ar : t(b.en);
+  };
+  const how = isAr ? f.how.ar : f.how.en.map((s) => t(s));
+  const tips = isAr ? f.tips.ar : f.tips.en.map((s) => t(s));
   return (
     <article id={f.id} className={`xh-card xh-reveal ${open ? "is-open" : ""}`}>
       <button type="button" className="xh-card-head" aria-expanded={open} aria-controls={`${f.id}-body`} onClick={onToggle}>
@@ -825,9 +831,11 @@ function FeatureCard({
 
 export default function HelpGuide() {
   const { enabled } = useLoaderData<typeof loader>();
-  const ctx = useOutletContext<{ isAr?: boolean } | undefined>();
-  const isAr = !!ctx?.isAr;
-  const L = (b: Bi) => (isAr ? b.ar : b.en);
+  const { t, isAr } = useTranslations();
+  const L = (b: Bi | string) => {
+    if (typeof b === "string") return t(b);
+    return isAr ? b.ar : t(b.en);
+  };
 
   const [category, setCategory] = useState<"all" | Category>("all");
   const [query, setQuery] = useState("");

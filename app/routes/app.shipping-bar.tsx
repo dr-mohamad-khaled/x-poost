@@ -1,4 +1,4 @@
-import { Translate } from "../components/Translate";
+import { Translate, useTranslations } from "../components/Translate";
 import { useMemo, useState, type CSSProperties } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Form, useActionData, useLoaderData, useNavigation } from "react-router";
@@ -337,6 +337,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function ShippingBarSettings() {
+  const { t } = useTranslations();
   const { config, allTranslations, dashboardLocale } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const navigation = useNavigation();
@@ -425,7 +426,7 @@ export default function ShippingBarSettings() {
   const remaining = nextTier ? (nextTier.targetAmount - testCartValue).toFixed(2) : "0.00";
 
   return (
-    <s-page heading="Free Shipping & Rewards Bar">
+    <s-page heading={t("Free Shipping & Rewards Bar")}>
       <style>{SHIPPING_BAR_STYLES}</style>
 
       {actionData && "ok" in actionData ? (
@@ -726,12 +727,12 @@ export default function ShippingBarSettings() {
                     value={ov.countries}
                     onChange={(countries) => updateOverride(oi, { countries })}
                     names={countryNames}
-                    label="Countries for this rule"
+                    label={t("Countries for this rule")}
                   />
 
                   <div style={{ marginTop: 12 }}>
                     <label style={{ fontWeight: 600, display: "block", marginBottom: 6 }}><Translate text='Rewards for these countries' /></label>
-                    {ov.tiers.map((t, ti) => (
+                    {ov.tiers.map((ovTier, ti) => (
                       <div key={ti} style={{ marginBottom: 14, paddingBottom: 10, borderBottom: "1px dashed rgba(255,255,255,0.12)" }}>
                       <div
                         style={{ display: "grid", gridTemplateColumns: "110px 1fr 1fr auto", gap: 8, marginBottom: 8, alignItems: "center" }}
@@ -740,7 +741,7 @@ export default function ShippingBarSettings() {
                           type="number"
                           min="1"
                           className="xp-input"
-                          value={t.targetAmount}
+                          value={ovTier.targetAmount}
                           onChange={(e) =>
                             updateOverride(oi, {
                               tiers: ov.tiers.map((x, i) => (i === ti ? { ...x, targetAmount: parseFloat(e.target.value) || 0 } : x)),
@@ -750,8 +751,8 @@ export default function ShippingBarSettings() {
                         <input
                           type="text"
                           className="xp-input"
-                          placeholder="Reward title"
-                          value={t.rewardTitle}
+                          placeholder={t("Reward title")}
+                          value={ovTier.rewardTitle}
                           onChange={(e) =>
                             updateOverride(oi, {
                               tiers: ov.tiers.map((x, i) => (i === ti ? { ...x, rewardTitle: sanitizeText(e.target.value) } : x)),
@@ -761,8 +762,8 @@ export default function ShippingBarSettings() {
                         <input
                           type="text"
                           className="xp-input"
-                          placeholder="Unlocked message"
-                          value={t.unlockedMessage}
+                          placeholder={t("Unlocked message")}
+                          value={ovTier.unlockedMessage}
                           onChange={(e) =>
                             updateOverride(oi, {
                               tiers: ov.tiers.map((x, i) => (i === ti ? { ...x, unlockedMessage: sanitizeText(e.target.value) } : x)),
@@ -772,7 +773,7 @@ export default function ShippingBarSettings() {
                         <button
                           type="button"
                           className="xp-btn-secondary"
-                          aria-label="Remove reward"
+                          aria-label={t("Remove reward")}
                           disabled={ov.tiers.length <= 1}
                           onClick={() => updateOverride(oi, { tiers: ov.tiers.filter((_, i) => i !== ti) })}
                         >
@@ -780,7 +781,7 @@ export default function ShippingBarSettings() {
                                                               <Translate text='&times;' />
                                                             </button>
                       </div>
-                      <RewardFields tier={t} symbol={currencySymbol} onChange={(patch) => patchOverrideTier(oi, ti, patch)} />
+                      <RewardFields tier={ovTier} symbol={currencySymbol} onChange={(patch) => patchOverrideTier(oi, ti, patch)} />
                       </div>
                     ))}
                     <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
@@ -955,7 +956,7 @@ export default function ShippingBarSettings() {
             </div>
 
             <button type="submit" className="xp-btn-submit" disabled={isSubmitting}>
-              {isSubmitting ? "Saving..." : "Save Shipping Bar"}
+              {isSubmitting ? t("Saving...") : t("Save Shipping Bar")}
             </button>
           </Form>
         </div>
@@ -1194,6 +1195,7 @@ function RewardFields({
   symbol: string;
   onChange: (patch: Partial<Tier>) => void;
 }) {
+  const { t } = useTranslations();
   const type = tier.rewardType || "display";
   const needsValue = type !== "display" && type !== "free_shipping";
   const isPercent = type === "shipping_percent" || type === "order_percent";
@@ -1259,7 +1261,7 @@ function RewardFields({
                 min="0"
                 className="xp-input"
                 value={tier.rewardCap ?? ""}
-                placeholder="No cap"
+                placeholder={t("No cap")}
                 onChange={(e) => {
                   const v = parseFloat(e.target.value);
                   onChange({ rewardCap: Number.isFinite(v) && v > 0 ? v : undefined });
@@ -1315,6 +1317,7 @@ function CountryPicker({
   names: Record<string, string>;
   label?: string;
 }) {
+  const { t } = useTranslations();
   const [search, setSearch] = useState("");
   const matches = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -1334,7 +1337,7 @@ function CountryPicker({
           className="xp-input"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Type a country name or code (e.g. Egypt, SA)"
+          placeholder={t("Type a country name or code (e.g. Egypt, SA)")}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               e.preventDefault();

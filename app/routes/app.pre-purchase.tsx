@@ -1,4 +1,4 @@
-import { Translate } from "../components/Translate";
+import { Translate, useTranslations } from "../components/Translate";
 import { ColorPresets } from "../components/ColorPresets";
 import { useState, useEffect, useMemo, Fragment } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
@@ -774,6 +774,7 @@ const PREVIEW_I18N: Record<SupportedLanguage, {
 };
 
 export default function PrePurchaseSettings() {
+  const { t } = useTranslations();
   const { enabled, rules, products, styleConfig, allTranslations, dashboardLocale } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const navigation = useNavigation();
@@ -1325,7 +1326,7 @@ export default function PrePurchaseSettings() {
   };
 
   return (
-    <s-page heading="Pre-Purchase Upsell">
+    <s-page heading={t("Pre-Purchase Upsell")}>
       <style>{PRE_PURCHASE_STYLES}</style>
 
       {actionData && "error" in actionData ? (
@@ -1340,7 +1341,7 @@ export default function PrePurchaseSettings() {
         <div className="xp-global-info">
           <div className="xp-status-indicator">
             <span className={`xp-status-dot ${enabled ? "is-active" : "is-disabled"}`} />
-            <strong><Translate text='Pre-Purchase Interceptor:' /> {enabled ? "Active" : "Disabled"}</strong>
+            <strong><Translate text='Pre-Purchase Interceptor:' /> {enabled ? t("Active") : t("Disabled")}</strong>
           </div>
           <p className="xp-sub">
             
@@ -1356,7 +1357,7 @@ export default function PrePurchaseSettings() {
               className={`xp-btn-status-toggle ${enabled ? "is-enabled" : "is-disabled"}`}
               disabled={isSubmitting}
             >
-              {enabled ? "Pause Feature" : "Enable Feature"}
+              {enabled ? t("Pause Feature") : t("Enable Feature")}
             </button>
           </Form>
           {viewMode === "index" && (
@@ -1480,7 +1481,7 @@ export default function PrePurchaseSettings() {
               <input
                 type="text"
                 className="xp-search-input"
-                placeholder="Filter offers by title, trigger, or product..."
+                placeholder={t("Filter offers by title, trigger, or product...")}
                 value={tableSearch}
                 onChange={(e) => {
                   setTableSearch(e.target.value);
@@ -1966,7 +1967,7 @@ export default function PrePurchaseSettings() {
                             type="text"
                             className="xp-input xp-picker-search"
                             style={{ width: "100%" }}
-                            placeholder="Search all 900+ products by title (e.g. Anua)..."
+                            placeholder={t("Search all 900+ products by title (e.g. Anua)...")}
                             value={triggerSearch}
                             onChange={(e) => setTriggerSearch(e.target.value)}
                           />
@@ -2027,7 +2028,7 @@ export default function PrePurchaseSettings() {
                                   type="button"
                                   className="xp-trigger-chip-remove"
                                   onClick={() => toggleTriggerProduct(p.id)}
-                                  title="Remove trigger"
+                                  title={t("Remove trigger")}
                                 >
                                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                     <line x1="18" y1="6" x2="6" y2="18"/>
@@ -2120,7 +2121,7 @@ export default function PrePurchaseSettings() {
                           <p className="xp-sub xp-layout-card-desc">{layout.desc}</p>
                           <div className="xp-layout-card-footer">
                             <span className={`xp-layout-radio ${isSelected ? "is-checked" : ""}`}>
-                              {isSelected ? "Selected" : "Select"}
+                              {isSelected ? t("Selected") : t("Select")}
                             </span>
                           </div>
                         </div>
@@ -2154,7 +2155,7 @@ export default function PrePurchaseSettings() {
                             dir={offerLang === "ar" ? "rtl" : "ltr"}
                             value={activeOfferCopy.feature1}
                             onChange={(e) => updateOfferCopy("feature1", e.target.value)}
-                            placeholder="Recommended addition to your selection"
+                            placeholder={t("Recommended addition to your selection")}
                           />
                         </div>
                         <div>
@@ -2169,7 +2170,7 @@ export default function PrePurchaseSettings() {
                             dir={offerLang === "ar" ? "rtl" : "ltr"}
                             value={activeOfferCopy.feature2}
                             onChange={(e) => updateOfferCopy("feature2", e.target.value)}
-                            placeholder="Premium dermatologically evaluated formula"
+                            placeholder={t("Premium dermatologically evaluated formula")}
                           />
                         </div>
                         <div>
@@ -2184,7 +2185,7 @@ export default function PrePurchaseSettings() {
                             dir={offerLang === "ar" ? "rtl" : "ltr"}
                             value={activeOfferCopy.feature3}
                             onChange={(e) => updateOfferCopy("feature3", e.target.value)}
-                            placeholder="Exclusive single-order promotion price"
+                            placeholder={t("Exclusive single-order promotion price")}
                           />
                         </div>
                       </div>
@@ -2230,7 +2231,7 @@ export default function PrePurchaseSettings() {
                     <input
                       type="text"
                       className="xp-input xp-picker-search"
-                      placeholder="Search all 900+ products to promote (e.g. Anua)..."
+                      placeholder={t("Search all 900+ products to promote (e.g. Anua)...")}
                       value={promotedSearch}
                       onChange={(e) => setPromotedSearch(e.target.value)}
                     />
@@ -2366,7 +2367,7 @@ export default function PrePurchaseSettings() {
                             name="discountCode"
                             className="xp-input"
                             value={discountCode}
-                            placeholder="e.g. SAVE15"
+                            placeholder={t("e.g. SAVE15")}
                             onChange={(e) => setDiscountCode(e.target.value)}
                           />
                         </div>

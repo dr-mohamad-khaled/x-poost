@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
+import { Translate, useTranslations } from "./Translate";
 
 /**
  * Looping, CSS-only explainer animations (mini storefront + moving cursor)
@@ -377,15 +378,15 @@ function prePurchase(): Scene {
       <AtcBtn style={k.press(21)} />
       <B l={0} t={0} w={40} h={25} s={{ background: "rgba(0,0,0,.55)", ...k.win(24, 30, 80, 86) }} />
       <B l={6} t={3.5} w={28} h={18} s={{ background: DARK, border: `.12em solid ${GOLD}`, borderRadius: "1em", boxShadow: "0 1em 3em rgba(0,0,0,.5)", ...k.win(25, 31, 76, 81, "transform:scale(.88)", "transform:none") }}>
-        <B l={1.5} t={1.3} s={{ fontSize: "1.7em", fontWeight: 800, color: GOLD }}>Add these before you go</B>
+        <B l={1.5} t={1.3} s={{ fontSize: "1.7em", fontWeight: 800, color: GOLD }}><Translate text="Add these before you go" /></B>
         {row(4.2, "Hydrating Serum", "$18.00", 1, k.win(43, 45, 96, 98))}
         {row(9.2, "Gel Cleanser", "$22.00", 2, k.win(56, 58, 96, 98))}
         <B l={1.5} t={14.4} w={25} h={3} s={{ background: GOLD, color: "#111", borderRadius: ".6em", fontSize: "1.5em", fontWeight: 800, ...center, ...k.press(70) }}>
-          Add selected to cart
+          <Translate text="Add selected to cart" />
         </B>
       </B>
       <B l={11} t={20.6} w={18} h={2.8} s={{ background: DARK, color: "#fff", border: `.1em solid ${GOLD}`, borderRadius: "1.4em", fontSize: "1.4em", fontWeight: 700, ...center, ...k.win(76, 80, 90, 94, "transform:translateY(1em)", "transform:none") }}>
-        <span style={{ color: GOLD, marginRight: ".4em" }}>✓</span> 2 items added
+        <span style={{ color: GOLD, marginRight: ".4em" }}>✓</span> <Translate text="2 items added" />
       </B>
       <Ripple x={28.8} y={18.2} style={k.rip(21)} />
       <Ripple x={30.9} y={9.8} style={k.rip(43)} />
@@ -422,23 +423,23 @@ function inCart(): Scene {
       <AtcBtn style={k.press(19)} />
       <B l={0} t={0} w={40} h={25} s={{ background: "rgba(0,0,0,.45)", ...k.win(22, 29, 90, 95) }} />
       <B l={22} t={0} w={18} h={25} s={{ background: "#fff", boxShadow: "-.6em 0 2em rgba(0,0,0,.25)", ...k.win(22, 30, 90, 95, "transform:translateX(100%)", "transform:none") }}>
-        <B l={1.2} t={1.2} s={{ fontSize: "1.7em", fontWeight: 800, color: "#111" }}>Your cart</B>
+        <B l={1.2} t={1.2} s={{ fontSize: "1.7em", fontWeight: 800, color: "#111" }}><Translate text="Your cart" /></B>
         <B l={1.2} t={3.4} w={15.6} h={0.1} s={{ background: "#eee" }} />
         {item(4.2, "Vitamin C", "$49.00", 0, {})}
         <B l={1.2} t={9} w={15.6} h={7.4} s={{ background: DARK, border: `.12em solid ${GOLD}`, borderRadius: ".8em", ...k.win(36, 42, 58, 62, "transform:translateY(-.8em)", "transform:none") }}>
-          <B l={1} t={0.9} s={{ fontSize: "1.25em", fontWeight: 800, color: GOLD }}>Pairs well with this</B>
+          <B l={1} t={0.9} s={{ fontSize: "1.25em", fontWeight: 800, color: GOLD }}><Translate text="Pairs well with this" /></B>
           <Thumb l={1} t={3} size={3.4} tone={2} />
-          <B l={4.8} t={3} s={{ fontSize: "1.25em", fontWeight: 700, color: "#fff" }}>Gel Cleanser</B>
+          <B l={4.8} t={3} s={{ fontSize: "1.25em", fontWeight: 700, color: "#fff" }}><Translate text="Gel Cleanser" /></B>
           <B l={4.8} t={4.9} s={{ fontSize: "1.15em", fontWeight: 700, color: GOLD }}>
             <span style={{ color: "#8A8A8A", textDecoration: "line-through", marginRight: ".4em", fontWeight: 400 }}>$22</span>$18
           </B>
-          <B l={10.8} t={4.6} w={4.2} h={2.2} s={{ background: GOLD, color: "#111", borderRadius: ".5em", fontSize: "1.3em", fontWeight: 800, ...center, ...k.press(56) }}>Add</B>
+          <B l={10.8} t={4.6} w={4.2} h={2.2} s={{ background: GOLD, color: "#111", borderRadius: ".5em", fontSize: "1.3em", fontWeight: 800, ...center, ...k.press(56) }}><Translate text="Add" /></B>
         </B>
         {item(9, "Gel Cleanser", "$18.00", 2, k.win(60, 66, 92, 96))}
-        <B l={1.2} t={17.4} s={{ fontSize: "1.3em", color: "#6A6A6A" }}>Subtotal</B>
+        <B l={1.2} t={17.4} s={{ fontSize: "1.3em", color: "#6A6A6A" }}><Translate text="Subtotal" /></B>
         <B l={9.8} t={17.3} w={7} s={{ fontSize: "1.5em", fontWeight: 800, color: "#111", textAlign: "right", ...k.until(58, 62) }}>$49.00</B>
         <B l={9.8} t={17.3} w={7} s={{ fontSize: "1.5em", fontWeight: 800, color: "#111", textAlign: "right", opacity: 0, ...k.win(58, 62, 92, 96) }}>$67.00</B>
-        <B l={1.2} t={20} w={15.6} h={3} s={{ background: "#111", color: "#fff", borderRadius: ".6em", fontSize: "1.4em", fontWeight: 700, ...center }}>Checkout</B>
+        <B l={1.2} t={20} w={15.6} h={3} s={{ background: "#111", color: "#fff", borderRadius: ".6em", fontSize: "1.4em", fontWeight: 700, ...center }}><Translate text="Checkout" /></B>
       </B>
       <Ripple x={28.8} y={18.2} style={k.rip(19)} />
       <Ripple x={35.2} y={14.6} style={k.rip(56)} />
@@ -475,21 +476,21 @@ function shippingBar(): Scene {
       <PageBg />
       <B l={0} t={0} w={40} h={25} s={{ background: "rgba(0,0,0,.4)" }} />
       <B l={8} t={2} w={24} h={21} s={{ background: "#fff", borderRadius: "1em", boxShadow: "0 1em 3em rgba(0,0,0,.35)" }}>
-        <B l={1.5} t={1.1} s={{ fontSize: "1.7em", fontWeight: 800, color: "#111" }}>Your cart</B>
+        <B l={1.5} t={1.1} s={{ fontSize: "1.7em", fontWeight: 800, color: "#111" }}><Translate text="Your cart" /></B>
       </B>
       {msg("Add $50 more for 10% off", k.until(26, 30))}
       {msg("Add $25 more for free shipping", { opacity: 0, ...k.track([[0, "opacity:0"], [27, "opacity:0"], [31, "opacity:1"], [52, "opacity:1"], [56, "opacity:0"], [100, "opacity:0"]]) })}
-      {msg(<span style={{ color: "#1d7a3f" }}>Free shipping unlocked!</span>, { opacity: 0, ...k.win(57, 61, 90, 95) })}
+      {msg(<span style={{ color: "#1d7a3f" }}><Translate text="Free shipping unlocked!" /></span>, { opacity: 0, ...k.win(57, 61, 90, 95) })}
       <B l={9.5} t={8.6} w={21} h={1.1} s={{ background: "#e8e8e8", borderRadius: ".6em", overflow: "hidden" }}>
         <B l={0} t={0} h={1.1} s={{ background: `${GOLD}`, borderRadius: ".6em", ...k.track([[0, "width:8%"], [22, "width:8%"], [30, "width:50%"], [52, "width:50%"], [60, "width:100%"], [92, "width:100%"], [100, "width:8%"]]) }} />
       </B>
       {dot(19.6, k.track([[0, "opacity:0"], [29, "opacity:0"], [31, "opacity:1"], [94, "opacity:1"], [98, "opacity:0"], [100, "opacity:0"]]))}
       {dot(29.6, k.track([[0, "opacity:0"], [59, "opacity:0"], [61, "opacity:1"], [94, "opacity:1"], [98, "opacity:0"], [100, "opacity:0"]]))}
-      <B l={16.5} t={10.5} s={{ fontSize: "1.1em", color: "#757575" }}>10% off</B>
-      <B l={26.5} t={10.5} s={{ fontSize: "1.1em", color: "#757575" }}>Free ship</B>
+      <B l={16.5} t={10.5} s={{ fontSize: "1.1em", color: "#757575" }}><Translate text="10% off" /></B>
+      <B l={26.5} t={10.5} s={{ fontSize: "1.1em", color: "#757575" }}><Translate text="Free ship" /></B>
       <B l={9.5} t={12.4} w={21} h={4.6} s={{ border: ".1em solid #eee", borderRadius: ".7em" }}>
         <Thumb l={0.4} t={0.4} size={3.8} tone={0} />
-        <B l={5} t={0.5} s={{ fontSize: "1.4em", fontWeight: 700, color: "#2F2314" }}>Face Serum</B>
+        <B l={5} t={0.5} s={{ fontSize: "1.4em", fontWeight: 700, color: "#2F2314" }}><Translate text="Face Serum" /></B>
         <B l={5} t={2.5} s={{ fontSize: "1.2em", color: "#6A6A6A" }}>$25.00</B>
         <B l={14.6} t={1.1} w={1.9} h={1.9} s={{ border: ".1em solid #C4C4C4", borderRadius: ".4em", fontSize: "1.4em", ...center }}>–</B>
         <B l={18.2} t={1.1} w={1.9} h={1.9} s={{ border: ".1em solid #C4C4C4", borderRadius: ".4em", fontSize: "1.4em", ...center, ...k.press(20) }}>+</B>
@@ -497,7 +498,7 @@ function shippingBar(): Scene {
       {qty("1", { left: "25.75em", color: "#111", ...k.until(22, 24) })}
       {qty("2", { left: "25.75em", color: "#111", opacity: 0, ...k.track([[0, "opacity:0"], [22, "opacity:0"], [24, "opacity:1"], [52, "opacity:1"], [54, "opacity:0"], [100, "opacity:0"]]) })}
       {qty("3", { left: "25.75em", color: "#111", opacity: 0, ...k.win(54, 56, 94, 97) })}
-      <B l={9.5} t={18.2} s={{ fontSize: "1.3em", color: "#6A6A6A" }}>Total</B>
+      <B l={9.5} t={18.2} s={{ fontSize: "1.3em", color: "#6A6A6A" }}><Translate text="Total" /></B>
       {[
         ["$25.00", k.until(22, 24)],
         ["$50.00", k.track([[0, "opacity:0"], [22, "opacity:0"], [24, "opacity:1"], [52, "opacity:1"], [54, "opacity:0"], [100, "opacity:0"]])],
@@ -507,7 +508,7 @@ function shippingBar(): Scene {
           {txt as string}
         </B>
       ))}
-      <B l={9.5} t={20.3} w={21} h={2.2} s={{ background: "#111", color: "#fff", borderRadius: ".6em", fontSize: "1.3em", fontWeight: 700, ...center }}>Checkout</B>
+      <B l={9.5} t={20.3} w={21} h={2.2} s={{ background: "#111", color: "#fff", borderRadius: ".6em", fontSize: "1.3em", fontWeight: 700, ...center }}><Translate text="Checkout" /></B>
       <Ripple x={28.7} y={14.4} style={k.rip(20)} />
       <Ripple x={28.7} y={14.4} style={k.rip(50)} />
       <Cursor style={cur} />
@@ -563,7 +564,7 @@ function socialBar(): Scene {
       <Price />
       <AtcBtn />
       <B l={20.5} t={3} w={15.5} h={16} s={{ background: DARK, border: `.12em solid ${GOLD}`, borderRadius: "1em", boxShadow: "0 1em 3em rgba(0,0,0,.4)", ...k.win(27, 33, 80, 86, "transform:translateY(1em) scale(.95)", "transform:none") }}>
-        <B l={1} t={1.2} s={{ fontSize: "1.6em", fontWeight: 800, color: GOLD }}>Chat with us</B>
+        <B l={1} t={1.2} s={{ fontSize: "1.6em", fontWeight: 800, color: GOLD }}><Translate text="Chat with us" /></B>
         {row(4.2, "WhatsApp", "Reply in minutes", "#25D366", k.track([[0, "opacity:0"], [56, "opacity:0"], [58, "opacity:1"], [68, "opacity:1"], [72, "opacity:0"], [100, "opacity:0"]]))}
         {row(7.9, "Instagram", "DM us anytime", "#d6249f")}
         {row(11.6, "VIP Group", "Early access & deals", GOLD)}
@@ -597,7 +598,7 @@ function productScarcity(): Scene {
         <B l={0} t={0} h={1.1} s={{ borderRadius: ".6em", ...k.track([[0, "width:80%;background:#E8C872"], [30, "width:80%;background:#E8C872"], [40, "width:46%;background:#e07b2a"], [58, "width:46%;background:#e07b2a"], [68, "width:24%;background:#c0392b"], [92, "width:24%;background:#c0392b"], [100, "width:80%;background:#E8C872"]]) }} />
       </B>
       <AtcBtn t={17.4} style={k.track([[0, "transform:none"], [72, "transform:none"], [78, "transform:scale(1.04)"], [84, "transform:none"], [90, "transform:scale(1.04)"], [96, "transform:none"], [100, "transform:none"]])} />
-      <B l={3.6} t={5.6} w={7.4} h={2.4} s={{ background: "#c0392b", color: "#fff", borderRadius: "1.2em", fontSize: "1.2em", fontWeight: 800, ...center, ...k.win(64, 68, 92, 96, "transform:scale(.6)", "transform:none") }}>Low stock</B>
+      <B l={3.6} t={5.6} w={7.4} h={2.4} s={{ background: "#c0392b", color: "#fff", borderRadius: "1.2em", fontSize: "1.2em", fontWeight: 800, ...center, ...k.win(64, 68, 92, 96, "transform:scale(.6)", "transform:none") }}><Translate text="Low stock" /></B>
     </>
   );
   return { css: k.css(), node };
@@ -619,17 +620,17 @@ function thankYou(): Scene {
       <B l={0} t={0} w={40} h={2.8} s={{ background: "#f4f4f4", borderBottom: ".1em solid #e3e3e3" }} />
       <B l={1.5} t={1} w={6} h={0.9} s={{ background: "#d4d4d4", borderRadius: ".5em" }} />
       <B l={3} t={4.6} w={3.4} h={3.4} s={{ background: "#1d7a3f", color: "#fff", borderRadius: "50%", fontSize: "1.8em", fontWeight: 900, ...center }}>✓</B>
-      <B l={7.4} t={4.5} s={{ fontSize: "1.25em", fontWeight: 800, color: "#111" }}>Order confirmed</B>
-      <B l={7.4} t={6.6} s={{ fontSize: "1.1em", color: "#757575" }}>Thank you!</B>
+      <B l={7.4} t={4.5} s={{ fontSize: "1.25em", fontWeight: 800, color: "#111" }}><Translate text="Order confirmed" /></B>
+      <B l={7.4} t={6.6} s={{ fontSize: "1.1em", color: "#757575" }}><Translate text="Thank you!" /></B>
       {[10.5, 12.7, 14.9, 17.1].map((y, i) => (
         <B key={y} l={3} t={y} w={i === 3 ? 9 : 13} h={1} s={{ background: "#e8e8e8", borderRadius: ".5em" }} />
       ))}
       <B l={19.5} t={3.2} w={18.5} h={18.4} s={{ background: DARK, border: `.12em solid ${GOLD}`, borderRadius: "1em", boxShadow: "0 1em 2.5em rgba(0,0,0,.25)", ...k.win(12, 20, 94, 98, "transform:translateY(1.2em)", "transform:none") }}>
-        <B l={1.3} t={1.3} s={{ fontSize: "1.3em", fontWeight: 800, color: GOLD }}>Add to your shipment</B>
-        <B l={1.3} t={3.4} s={{ fontSize: "1.1em", color: "#9e9e9e" }}>Ships with your order</B>
+        <B l={1.3} t={1.3} s={{ fontSize: "1.3em", fontWeight: 800, color: GOLD }}><Translate text="Add to your shipment" /></B>
+        <B l={1.3} t={3.4} s={{ fontSize: "1.1em", color: "#9e9e9e" }}><Translate text="Ships with your order" /></B>
         <B l={1.3} t={5.4} w={15.9} h={4.6} s={{ background: "#1e1e1e", border: ".1em solid #363636", borderRadius: ".7em" }}>
           <Thumb l={0.5} t={0.5} size={3.6} tone={2} />
-          <B l={4.9} t={0.6} s={{ fontSize: "1.4em", fontWeight: 700, color: "#fff" }}>Gel Cleanser</B>
+          <B l={4.9} t={0.6} s={{ fontSize: "1.4em", fontWeight: 700, color: "#fff" }}><Translate text="Gel Cleanser" /></B>
           <B l={4.9} t={2.5} s={{ fontSize: "1.3em", fontWeight: 700, color: GOLD }}>
             <span style={{ color: "#8A8A8A", textDecoration: "line-through", marginRight: ".4em", fontWeight: 400 }}>$22</span>$14
           </B>
@@ -685,7 +686,7 @@ function QtyBreaksScene({ k, cur }: { k: Kf; cur: CSSProperties }) {
   return (
     <>
       <PageBg />
-      <B l={20} t={9.5} s={{ fontSize: "1.2em", fontWeight: 700, color: "#545454" }}>Choose your bundle</B>
+      <B l={20} t={9.5} s={{ fontSize: "1.2em", fontWeight: 700, color: "#545454" }}><Translate text="Choose your bundle" /></B>
       {tier(11.4, "Buy 1", "", "$20", k.until(27, 29))}
       {tier(14.7, "Buy 2", "Save 10%", "$36", k.track([[0, "opacity:0"], [27, "opacity:0"], [29, "opacity:1"], [56, "opacity:1"], [58, "opacity:0"], [100, "opacity:0"]]), "Popular")}
       {tier(18.0, "Buy 3", "Save 20%", "$48", k.win(58, 60, 94, 97))}
@@ -749,9 +750,10 @@ function scene(id: DemoId): Scene {
 
 export function FeatureDemo({ id, size = "sm" }: { id: DemoId; size?: "sm" | "lg" }) {
   if (!DEMO_INFO[id]) return null;
+  const { t } = useTranslations();
   const s = scene(id);
   return (
-    <div className={`xd ${size === "sm" ? "xd-sm" : ""}`} role="img" aria-label={`${DEMO_INFO[id].title} animated demo`}>
+    <div className={`xd ${size === "sm" ? "xd-sm" : ""}`} role="img" aria-label={`${t(DEMO_INFO[id].title)}`}>
       <style>{BASE_CSS + s.css}</style>
       <div className="xd-stage">{s.node}</div>
     </div>
@@ -760,21 +762,22 @@ export function FeatureDemo({ id, size = "sm" }: { id: DemoId; size?: "sm" | "lg
 
 export function FeatureDemoBanner({ id }: { id: DemoId | null }) {
   if (!id || !DEMO_INFO[id]) return null;
+  const { t } = useTranslations();
   const info = DEMO_INFO[id];
   return (
     <details className="xd-banner" open>
       <style>{BANNER_CSS}</style>
       <summary>
-        How {info.title} works
-        <small>click to show / hide</small>
+        <Translate text="How {title} works" params={{ title: t(info.title) }} />
+        <small><Translate text="click to show / hide" /></small>
       </summary>
       <div className="xd-banner-body">
         <div className="xd-banner-stage">
           <FeatureDemo id={id} size="lg" />
         </div>
         <ol className="xd-steps">
-          {info.steps.map((t) => (
-            <li key={t}>{t}</li>
+          {info.steps.map((step) => (
+            <li key={step}><Translate text={step} /></li>
           ))}
         </ol>
       </div>

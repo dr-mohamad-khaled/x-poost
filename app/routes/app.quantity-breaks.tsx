@@ -1,4 +1,4 @@
-import { Translate } from "../components/Translate";
+import { Translate, useTranslations } from "../components/Translate";
 import { ColorPresets } from "../components/ColorPresets";
 import { useState, useMemo, useEffect } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
@@ -276,6 +276,7 @@ const DEFAULT_TIERS: QuantityBreakTier[] = [
 ];
 
 export default function QuantityBreaksPage() {
+  const { t } = useTranslations();
   const {
     shopDomain,
     offers,
@@ -528,7 +529,7 @@ export default function QuantityBreaksPage() {
   const isPreviewRtl = selectedLang === "ar";
 
   return (
-    <s-page heading="Volume Discounts">
+    <s-page heading={t("Volume Discounts")}>
       <style>{`
         .xpp-qb-admin {
           max-width: 1100px;
@@ -934,7 +935,7 @@ export default function QuantityBreaksPage() {
                                   type="submit"
                                   className={`xpp-badge ${offer.status === "ACTIVE" ? "xpp-badge--active" : "xpp-badge--draft"}`}
                                   style={{ cursor: "pointer", border: "none" }}
-                                  title="Click to toggle status"
+                                  title={t("Click to toggle status")}
                                 >
                                   {offer.status}
                                 </button>
@@ -1010,7 +1011,7 @@ export default function QuantityBreaksPage() {
                   disabled={isSubmitting}
                   className="xpp-btn xpp-btn--primary"
                 >
-                  {isSubmitting ? "Saving..." : "Save Offer"}
+                  {isSubmitting ? t("Saving...") : t("Save Offer")}
                 </button>
               </div>
             </div>
@@ -1059,7 +1060,7 @@ export default function QuantityBreaksPage() {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     className="xpp-input"
-                    placeholder="e.g. Summer T-Shirt Tiered Savings"
+                    placeholder={t("e.g. Summer T-Shirt Tiered Savings")}
                     required
                   />
                   <div className="xpp-hint"><Translate text='For your reference in the admin dashboard.' /></div>
@@ -1142,7 +1143,7 @@ export default function QuantityBreaksPage() {
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Type product title to search..."
+                    placeholder={t("Type product title to search...")}
                     className="xpp-input"
                     style={{ marginBottom: 10 }}
                   />
@@ -1326,7 +1327,7 @@ export default function QuantityBreaksPage() {
                         value={tier.title}
                         onChange={(e) => handleUpdateTier(idx, "title", e.target.value)}
                         className="xpp-input"
-                        placeholder="e.g. Buy 2 Items"
+                        placeholder={t("e.g. Buy 2 Items")}
                       />
                     </div>
 
@@ -1337,7 +1338,7 @@ export default function QuantityBreaksPage() {
                         value={tier.subtitle}
                         onChange={(e) => handleUpdateTier(idx, "subtitle", e.target.value)}
                         className="xpp-input"
-                        placeholder="e.g. Save 10% each"
+                        placeholder={t("e.g. Save 10% each")}
                       />
                     </div>
 
@@ -1348,7 +1349,7 @@ export default function QuantityBreaksPage() {
                         value={tier.badge}
                         onChange={(e) => handleUpdateTier(idx, "badge", e.target.value)}
                         className="xpp-input"
-                        placeholder="e.g. Most Popular"
+                        placeholder={t("e.g. Most Popular")}
                       />
                     </div>
                   </div>
@@ -1572,7 +1573,7 @@ export default function QuantityBreaksPage() {
                       className="xpp-input"
                       value={addToCartBtnText}
                       onChange={(e) => setAddToCartBtnText(e.target.value)}
-                      placeholder="Add to Cart"
+                      placeholder={t("Add to Cart")}
                     />
                   </div>
                   <div>
@@ -1991,7 +1992,7 @@ export default function QuantityBreaksPage() {
                 className="xpp-btn xpp-btn--primary"
                 style={{ padding: "12px 32px", fontSize: 15 }}
               >
-                {isSubmitting ? "Saving..." : "Save Quantity Breaks Offer"}
+                {isSubmitting ? t("Saving...") : t("Save Quantity Breaks Offer")}
               </button>
             </div>
           </Form>

@@ -1,4 +1,4 @@
-import { Translate } from "../components/Translate";
+import { Translate, useTranslations } from "../components/Translate";
 import { useEffect, useRef, useState } from "react";
 import type { LoaderFunctionArgs } from "react-router";
 import { Link, useLoaderData, useNavigation } from "react-router";
@@ -224,6 +224,7 @@ const TIPS: Record<string, Tip[]> = {
 // ─────────────────────────────────────────────────────────────
 
 export default function Analytics() {
+  const { t } = useTranslations();
   const { report, currency, hasOrdersScope, importing } = useLoaderData<typeof loader>();
   const navigation = useNavigation();
   const money = makeMoney(currency);
@@ -231,19 +232,19 @@ export default function Analytics() {
   const qs = (range: number, feat?: string | null) => `?range=${range}${feat ? `&f=${feat}` : ""}`;
 
   return (
-    <s-page heading="Analytics">
+    <s-page heading={t("Analytics")}>
       <style>{STYLES}</style>
       <div className={`xpa ${navigation.state === "loading" ? "is-loading" : ""}`}>
         {/* Filters: one row above everything they scope */}
         <div className="xpa-filters">
-          <div className="xpa-seg" role="group" aria-label="Date range">
+          <div className="xpa-seg" role="group" aria-label={t("Date range")}>
             {RANGES.map((r) => (
               <Link key={r} to={qs(r, f?.key)} className={`xpa-seg-btn ${report.rangeDays === r ? "is-active" : ""}`} preventScrollReset>
-                {`Last ${r} days`}
+                {t(`Last ${r} days`)}
               </Link>
             ))}
           </div>
-          <div className="xpa-chips" role="group" aria-label="Feature">
+          <div className="xpa-chips" role="group" aria-label={t("Feature")}>
             <Link to={qs(report.rangeDays)} className={`xpa-chip ${!f ? "is-active" : ""}`} preventScrollReset>
               
                                         <Translate text='All features' />
@@ -307,6 +308,7 @@ function Notices({ report, hasOrdersScope, importing }: { report: Report; hasOrd
 // ─────────────────────────────────────────────────────────────
 
 function Overview({ report, money }: { report: Report; money: (n: number) => string }) {
+  const { t } = useTranslations();
   const o = report.overview;
   const share = o.storeRevenue > 0 ? (o.directRevenue / o.storeRevenue) * 100 : 0;
   const aovLift = o.aovWithout > 0 && o.aovWith > 0 ? ((o.aovWith - o.aovWithout) / o.aovWithout) * 100 : null;
@@ -315,7 +317,7 @@ function Overview({ report, money }: { report: Report; money: (n: number) => str
 
   return (
     <>
-      <section className="xpa-hero" aria-label="XPoost revenue">
+      <section className="xpa-hero" aria-label={t("XPoost revenue")}>
         <div>
           <div className="xpa-eyebrow"><Translate text='XPoost direct revenue · last' /> {report.rangeDays}  <Translate text='days' /></div>
           <div className="xpa-hero-row">
@@ -486,6 +488,7 @@ function buildHighlights(report: Report, money: (n: number) => string): Highligh
 // ─────────────────────────────────────────────────────────────
 
 function FeatureView({ report, f, money }: { report: Report; f: FeatureDetail; money: (n: number) => string }) {
+  const { t } = useTranslations();
   const actionRate = rate(f.actions, f.views);
   const bench = BENCHMARKS[f.key];
   const earns = f.dailyMetric === "revenue";
@@ -502,7 +505,7 @@ function FeatureView({ report, f, money }: { report: Report; f: FeatureDetail; m
                                 </Link>
           <h2 className="xpa-feature-title">
             {f.label}
-            <span className={`xpa-status ${f.enabled ? "is-on" : ""}`}>{f.enabled ? "Active" : "Off"}</span>
+            <span className={`xpa-status ${f.enabled ? "is-on" : ""}`}>{f.enabled ? t("Active") : t("Off")}</span>
           </h2>
         </div>
         <Link to={FEATURE_ROUTES[f.key]} className="xpa-btn">
@@ -558,19 +561,19 @@ function FeatureView({ report, f, money }: { report: Report; f: FeatureDetail; m
 
       <section className="xpa-card">
         <div className="xpa-card-head">
-          <h2>{earns ? "Direct revenue per day" : "Views per day"}</h2>
+          <h2>{earns ? t("Direct revenue per day") : t("Views per day")}</h2>
           <button type="button" className="xpa-text-btn" onClick={() => setShowTable((v) => !v)} aria-expanded={showTable}>
-            {showTable ? "Hide table" : "View as table"}
+            {showTable ? t("Hide table") : t("View as table")}
           </button>
         </div>
-        <ColumnChart days={report.days} values={f.daily} format={earns ? money : fmtInt} seriesLabel={earns ? "Direct revenue" : "Views"} />
+        <ColumnChart days={report.days} values={f.daily} format={earns ? money : fmtInt} seriesLabel={earns ? t("Direct revenue") : t("Views")} />
         {showTable && (
           <div className="xpa-table-wrap xpa-mini-table">
             <table className="xpa-table">
               <thead>
                 <tr>
                   <th scope="col"><Translate text='Day' /></th>
-                  <th scope="col" className="num">{earns ? "Direct revenue" : "Views"}</th>
+                  <th scope="col" className="num">{earns ? t("Direct revenue") : t("Views")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -609,11 +612,11 @@ function FeatureView({ report, f, money }: { report: Report; f: FeatureDetail; m
               <table className="xpa-table">
                 <thead>
                   <tr>
-                    <th scope="col">{f.key === "scarcity" ? "Message" : f.key === "prePurchase" ? "Product" : "Offer"}</th>
+                    <th scope="col">{f.key === "scarcity" ? t("Message") : f.key === "prePurchase" ? t("Product") : t("Offer")}</th>
                     <th scope="col" className="num"><Translate text='Views' /></th>
-                    <th scope="col" className="num">{f.key === "scarcity" ? "Clicks" : "Adds"}</th>
+                    <th scope="col" className="num">{f.key === "scarcity" ? t("Clicks") : t("Adds")}</th>
                     <th scope="col" className="num"><Translate text='Rate' /></th>
-                    <th scope="col" className="num">{f.key === "scarcity" ? "Closed" : "Revenue"}</th>
+                    <th scope="col" className="num">{f.key === "scarcity" ? t("Closed") : t("Revenue")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -743,12 +746,13 @@ function Delta({ d, suffix }: { d: DeltaT; suffix?: string }) {
 }
 
 function Tile({ label, value, hint, d }: { label: string; value: string; hint?: string; d?: DeltaT }) {
+  const { t } = useTranslations();
   return (
     <div className="xpa-tile">
       <span className="xpa-tile-label">{label}</span>
       <span className="xpa-tile-value">{value}</span>
       {d ? <Delta d={d} /> : null}
-      {hint ? <span className="xpa-tile-hint">{hint}</span> : null}
+      {hint ? <span className="xpa-tile-hint">{t(hint)}</span> : null}
     </div>
   );
 }

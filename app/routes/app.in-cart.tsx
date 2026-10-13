@@ -1,4 +1,4 @@
-import { Translate } from "../components/Translate";
+import { Translate, useTranslations } from "../components/Translate";
 import { ColorPresets } from "../components/ColorPresets";
 import { useState, useEffect, useMemo } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
@@ -495,6 +495,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function InCartUpsellSettings() {
+  const { t } = useTranslations();
   const { enabled, rules, products, styleConfig, allTranslations, dashboardLocale } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const navigation = useNavigation();
@@ -880,7 +881,7 @@ export default function InCartUpsellSettings() {
   };
 
   return (
-    <s-page heading="Cart Upsell">
+    <s-page heading={t("Cart Upsell")}>
       <style>{IN_CART_STYLES}</style>
 
       {actionData && "error" in actionData ? (
@@ -895,7 +896,7 @@ export default function InCartUpsellSettings() {
         <div className="xp-global-info">
           <div className="xp-status-indicator">
             <span className={`xp-status-dot ${enabled ? "is-active" : "is-disabled"}`} />
-            <strong><Translate text='In-Cart Drawer Add-Ons:' /> {enabled ? "Active" : "Disabled"}</strong>
+            <strong><Translate text='In-Cart Drawer Add-Ons:' /> {enabled ? t("Active") : t("Disabled")}</strong>
           </div>
           <p className="xp-sub">
             
@@ -911,7 +912,7 @@ export default function InCartUpsellSettings() {
               className={`xp-btn-status-toggle ${enabled ? "is-enabled" : "is-disabled"}`}
               disabled={isSubmitting}
             >
-              {enabled ? "Pause Feature" : "Enable Feature"}
+              {enabled ? t("Pause Feature") : t("Enable Feature")}
             </button>
           </Form>
           {viewMode === "index" && (
@@ -1036,7 +1037,7 @@ export default function InCartUpsellSettings() {
               <input
                 type="text"
                 className="xp-search-input"
-                placeholder="Filter in-cart offers by title, trigger, or product..."
+                placeholder={t("Filter in-cart offers by title, trigger, or product...")}
                 value={tableSearch}
                 onChange={(e) => {
                   setTableSearch(e.target.value);
@@ -1291,7 +1292,7 @@ export default function InCartUpsellSettings() {
                     className="xp-page-btn"
                     disabled={currentPage <= 1}
                     onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                    aria-label="Previous Page"
+                    aria-label={t("Previous Page")}
                   >
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
                   </button>
@@ -1304,7 +1305,7 @@ export default function InCartUpsellSettings() {
                     className="xp-page-btn"
                     disabled={currentPage >= totalPages}
                     onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                    aria-label="Next Page"
+                    aria-label={t("Next Page")}
                   >
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
                   </button>
@@ -1378,7 +1379,7 @@ export default function InCartUpsellSettings() {
                       className="xp-input"
                       dir={selectedLang === "ar" ? "rtl" : "ltr"}
                       value={activeOfferCopy.headline}
-                      placeholder="e.g. Frequently Bought Together or Complete Your Routine"
+                      placeholder={t("e.g. Frequently Bought Together or Complete Your Routine")}
                       onChange={(e) => {
                         updateOfferCopy("headline", e.target.value);
                         setHeadline(e.target.value);
@@ -1396,7 +1397,7 @@ export default function InCartUpsellSettings() {
                         className="xp-input"
                         dir={selectedLang === "ar" ? "rtl" : "ltr"}
                         value={activeOfferCopy.addButton}
-                        placeholder="e.g. + Add to Cart"
+                        placeholder={t("e.g. + Add to Cart")}
                         onChange={(e) => updateOfferCopy("addButton", e.target.value)}
                       />
                     </div>
@@ -1408,7 +1409,7 @@ export default function InCartUpsellSettings() {
                         className="xp-input"
                         dir={selectedLang === "ar" ? "rtl" : "ltr"}
                         value={activeOfferCopy.saveBadge}
-                        placeholder="e.g. SAVE {discount}%"
+                        placeholder={t("e.g. SAVE {discount}%")}
                         onChange={(e) => updateOfferCopy("saveBadge", e.target.value)}
                       />
                       <small><Translate text='Use' /> {"{discount}"}  <Translate text='as placeholder for percentage' /></small>
@@ -1467,7 +1468,7 @@ export default function InCartUpsellSettings() {
                             type="text"
                             className="xp-input xp-picker-search"
                             style={{ width: "100%" }}
-                            placeholder="Search all 900+ products by title (e.g. Anua)..."
+                            placeholder={t("Search all 900+ products by title (e.g. Anua)...")}
                             value={triggerSearch}
                             onChange={(e) => setTriggerSearch(e.target.value)}
                           />
@@ -1528,7 +1529,7 @@ export default function InCartUpsellSettings() {
                                   type="button"
                                   className="xp-trigger-chip-remove"
                                   onClick={() => toggleTriggerProduct(p.id)}
-                                  title="Remove trigger"
+                                  title={t("Remove trigger")}
                                 >
                                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                     <line x1="18" y1="6" x2="6" y2="18"/>
@@ -1628,7 +1629,7 @@ export default function InCartUpsellSettings() {
                       className="xp-btn-text"
                       onClick={() => setIsTargetDropdownOpen(!isTargetDropdownOpen)}
                     >
-                      {isTargetDropdownOpen ? "Close Search" : "Change Product"}
+                      {isTargetDropdownOpen ? t("Close Search") : t("Change Product")}
                     </button>
                   </div>
 
@@ -1638,7 +1639,7 @@ export default function InCartUpsellSettings() {
                         <input
                           type="text"
                           className="xp-input xp-picker-search"
-                          placeholder="Search all 900+ products to promote (e.g. Anua)..."
+                          placeholder={t("Search all 900+ products to promote (e.g. Anua)...")}
                           value={targetSearch}
                           onChange={(e) => setTargetSearch(e.target.value)}
                           autoFocus
@@ -1757,7 +1758,7 @@ export default function InCartUpsellSettings() {
                         <input
                           type="text"
                           className="xp-input xp-picker-search"
-                          placeholder="Search products to add as an extra add-on..."
+                          placeholder={t("Search products to add as an extra add-on...")}
                           value={extraSearch}
                           onChange={(e) => setExtraSearch(e.target.value)}
                           autoFocus
@@ -1834,7 +1835,7 @@ export default function InCartUpsellSettings() {
                             name="discountCode"
                             className="xp-input"
                             value={discountCode}
-                            placeholder="e.g. SAVE10"
+                            placeholder={t("e.g. SAVE10")}
                             onChange={(e) => setDiscountCode(e.target.value)}
                           />
                         </div>
