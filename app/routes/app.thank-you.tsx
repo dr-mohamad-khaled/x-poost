@@ -34,9 +34,9 @@ import { PREVIEW_CSS, ThankYouPreview } from "../components/ty/ThankYouPreview";
 
 const MAX_OFFERS = 20;
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 // Loader
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { session, admin } = await authenticate.admin(request);
@@ -114,9 +114,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   };
 };
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 // Action
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const { session } = await authenticate.admin(request);
@@ -228,9 +228,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   return { ok: false, message: "Unknown action." };
 };
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 // Page
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 
 type LoaderData = ReturnType<typeof useLoaderData<typeof loader>>;
 
@@ -247,11 +247,11 @@ export default function ThankYouPage() {
   );
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 // List view
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 
-const pct = (n: number, d: number) => (d > 0 ? `${((n / d) * 100).toFixed(1)}%` : "â€“");
+const pct = (n: number, d: number) => (d > 0 ? `${((n / d) * 100).toFixed(1)}%` : "–");
 
 function ListView({ data }: { data: LoaderData }) {
   const fetcher = useFetcher<typeof action>();
@@ -295,7 +295,7 @@ function ListView({ data }: { data: LoaderData }) {
             <b><Translate text='Add the block to your Thank-you page.' /></b>{" "}
             <a href={data.checkoutEditorUrl} target="_blank" rel="noreferrer">
               
-                                        <Translate text='Open the checkout editor â†’ Thank-you page â†’ Add app block â†’ â€œXPoost Thank-you Upsellâ€' />
+                                        <Translate text='Open the checkout editor → Thank-you page → Add app block → "XPoost Thank-you Upsell"' />
                                       </a>
             
                                   <Translate text='. Drag it where you like (under the order summary works well), then save.' />
@@ -347,23 +347,23 @@ function ListView({ data }: { data: LoaderData }) {
                     return (
                       <tr key={o.id}>
                         <td className="mv">
-                          <button className="ty-icon" disabled={i === 0 || busy} onClick={() => send({ intent: "moveOffer", id: o.id, dir: "up" })} aria-label="Move up">â†‘</button>
-                          <button className="ty-icon" disabled={i === offers.length - 1 || busy} onClick={() => send({ intent: "moveOffer", id: o.id, dir: "down" })} aria-label="Move down">â†“</button>
+                          <button className="ty-icon" disabled={i === 0 || busy} onClick={() => send({ intent: "moveOffer", id: o.id, dir: "up" })} aria-label="Move up">↑</button>
+                          <button className="ty-icon" disabled={i === offers.length - 1 || busy} onClick={() => send({ intent: "moveOffer", id: o.id, dir: "down" })} aria-label="Move down">↓</button>
                         </td>
                         <td>
                           <Link to={`/app/thank-you?offer=${o.id}`} className="ty-name">{o.name}</Link>
                           <div className="ty-muted sm">
-                            {TY_KIND_META[o.kind].name} Â· {TY_DESIGN_META[o.design].name}
+                            {TY_KIND_META[o.kind].name} · {TY_DESIGN_META[o.design].name}
                           </div>
                         </td>
                         <td className="ty-muted sm">{describeConditions(o.conditions, money)}</td>
                         <td className="r">{s.views.toLocaleString()}</td>
-                        <td className="r">{s.views >= 50 ? pct(s.clicks, s.views) : "â€“"}</td>
+                        <td className="r">{s.views >= 50 ? pct(s.clicks, s.views) : "–"}</td>
                         <td className="r">
-                          {s.issued ? `${s.redeemed}/${s.issued}` : "â€“"}
+                          {s.issued ? `${s.redeemed}/${s.issued}` : "–"}
                           {s.issued ? <div className="ty-muted sm"><Translate text='used' /></div> : null}
                         </td>
-                        <td className="r">{s.revenue ? money(s.revenue) : "â€“"}</td>
+                        <td className="r">{s.revenue ? money(s.revenue) : "–"}</td>
                         <td>
                           <label className="ty-switch sm">
                             <input type="checkbox" checked={o.enabled} disabled={busy} onChange={(e) => send({ intent: "toggleOffer", id: o.id, enable: String(e.target.checked) })} />
@@ -377,7 +377,7 @@ function ListView({ data }: { data: LoaderData }) {
                             className="ty-btn ghost sm danger"
                             disabled={busy}
                             onClick={() => {
-                              if (window.confirm(`Delete â€œ${o.name}â€? Codes already issued keep working until they expire.`)) send({ intent: "deleteOffer", id: o.id });
+                              if (window.confirm(`Delete "${o.name}"? Codes already issued keep working until they expire.`)) send({ intent: "deleteOffer", id: o.id });
                             }}
                           >
                             
@@ -390,7 +390,7 @@ function ListView({ data }: { data: LoaderData }) {
                 </tbody>
               </table>
             </div>
-            <p className="ty-muted sm"><Translate text='Last 30 days. â€œCodesâ€ shows issued codes and how many were used. Full revenue breakdown is in the Analytics tab.' /></p>
+            <p className="ty-muted sm"><Translate text='Last 30 days. "Codes" shows issued codes and how many were used. Full revenue breakdown is in the Analytics tab.' /></p>
           </>
         )}
       </div>
@@ -419,13 +419,13 @@ function ListView({ data }: { data: LoaderData }) {
             <b><Translate text='Show 3 products, not 1.' /></b>  <Translate text='The same study found offers with 3 products were taken about 2.9% of the time versus 1.5% for a single product.' />
                                 </li>
           <li>
-            <b><Translate text='Keep the timer honest and short.' /></b>  <Translate text='XPoost makes the code really expire when the timer ends. 15â€“30 minutes is enough to feel urgent while your team can still pack one box.' />
+            <b><Translate text='Keep the timer honest and short.' /></b>  <Translate text='XPoost makes the code really expire when the timer ends. 15–30 minutes is enough to feel urgent while your team can still pack one box.' />
                                 </li>
           <li>
             <b><Translate text='Use conditions.' /></b>  <Translate text='Different offers for first-time and returning customers, and a product-specific add-on for what was just bought, are the two highest-value splits.' />
                                 </li>
           <li>
-            <b><Translate text='Small add-ons win after checkout.' /></b>  <Translate text='Refills, minis and accessories at 10â€“20% off sell better than another full-price item.' />
+            <b><Translate text='Small add-ons win after checkout.' /></b>  <Translate text='Refills, minis and accessories at 10–20% off sell better than another full-price item.' />
                                 </li>
           <li>
             <b><Translate text='Make codes single-use and unique.' /></b>  <Translate text='XPoost creates a one-time code per order, so codes can&apos;t leak to coupon sites.' />
@@ -440,9 +440,9 @@ function ListView({ data }: { data: LoaderData }) {
   );
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 // Editor
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 
 type Draft = {
   id?: string;
@@ -566,7 +566,7 @@ function Editor({ data, offerParam, tpl }: { data: LoaderData; offerParam: strin
       <div className="ty-topbar">
         <Link to="/app/thank-you" className="ty-btn ghost" onClick={(e) => { if (dirty && !window.confirm("Discard unsaved changes?")) e.preventDefault(); }}>
           
-                            <Translate text='â† All offers' />
+                            <Translate text='← All offers' />
                           </Link>
         <div className="ty-topbar-r">
           {result?.message ? <span className={`ty-flash ${result.ok ? "ok" : "bad"}`}>{result.message}</span> : dirty ? <span className="ty-flash"><Translate text='Unsaved changes' /></span> : null}
@@ -576,7 +576,7 @@ function Editor({ data, offerParam, tpl }: { data: LoaderData; offerParam: strin
             <b>{draft.enabled ? "On" : "Paused"}</b>
           </label>
           <button type="button" className="ty-btn gold" onClick={save} disabled={saving}>
-            {saving ? "Savingâ€¦" : "Save offer"}
+            {saving ? "Saving…" : "Save offer"}
           </button>
         </div>
       </div>
@@ -584,7 +584,7 @@ function Editor({ data, offerParam, tpl }: { data: LoaderData; offerParam: strin
       <div className="ty-layout">
         <div className="ty-main">
           <div className="ty-card">
-            <h3 className="ty-title"><Translate text='1 Â· Name & type' /></h3>
+            <h3 className="ty-title"><Translate text='1 · Name & type' /></h3>
             <div className="ty-field">
               <label><Translate text='Offer name (only you see this)' /></label>
               <input className="ty-input" value={draft.name} maxLength={80} onChange={(e) => patch({ name: e.target.value })} />
@@ -600,14 +600,14 @@ function Editor({ data, offerParam, tpl }: { data: LoaderData; offerParam: strin
           </div>
 
           <div className="ty-card">
-            <h3 className="ty-title"><Translate text='2 Â· Design' /></h3>
+            <h3 className="ty-title"><Translate text='2 · Design' /></h3>
             <DesignPicker kind={draft.kind} value={draft.design} onChange={(design) => patch({ design })} />
             <p className="ty-muted sm"><Translate text='Colors, fonts and corners come from your checkout branding (Shopify&apos;s rule for checkout extensions), so every design matches your store.' /></p>
           </div>
 
           {isReward ? (
             <div className="ty-card">
-              <h3 className="ty-title"><Translate text='3 Â· The reward' /></h3>
+              <h3 className="ty-title"><Translate text='3 · The reward' /></h3>
               <div className="ty-field">
                 <label><Translate text='Reward type' /></label>
                 <div className="ty-seg">
@@ -671,7 +671,7 @@ function Editor({ data, offerParam, tpl }: { data: LoaderData; offerParam: strin
             </div>
           ) : (
             <div className="ty-card">
-              <h3 className="ty-title"><Translate text='3 Â· Products & benefit' /></h3>
+              <h3 className="ty-title"><Translate text='3 · Products & benefit' /></h3>
               <div className="ty-field">
                 <label>
                   
@@ -725,21 +725,21 @@ function Editor({ data, offerParam, tpl }: { data: LoaderData; offerParam: strin
               {draft.kind === "shiptogether" ? (
                 <div className="ty-note">
                   
-                                                        <Translate text='How it works: added items open a new checkout with the code applied. XPoost links that order to the original (an additional-details line â€œShip together with #1042â€), so you can pack both in one box and the customer pays no extra shipping.' />
+                                                        <Translate text='How it works: added items open a new checkout with the code applied. XPoost links that order to the original (an additional-details line "Ship together with #1042"), so you can pack both in one box and the customer pays no extra shipping.' />
                                                       </div>
               ) : null}
             </div>
           )}
 
           <div className="ty-card">
-            <h3 className="ty-title"><Translate text='4 Â· Who sees it' /></h3>
+            <h3 className="ty-title"><Translate text='4 · Who sees it' /></h3>
             <p className="ty-muted sm"><Translate text='Leave empty to show to every order. Example: subtotal at least' /> {money(Math.round((data.aov || 60) * 1.3))}  <Translate text='AND customer is a first-time customer.' /></p>
             <ConditionBuilder value={draft.conditions} onChange={(conditions) => patch({ conditions })} currency={data.currency} />
             <p className="ty-muted sm"><Translate text='Shown to:' /> <b>{describeConditions(draft.conditions, money)}</b></p>
           </div>
 
           <div className="ty-card">
-            <h3 className="ty-title"><Translate text='5 Â· Text & translations' /></h3>
+            <h3 className="ty-title"><Translate text='5 · Text & translations' /></h3>
             <TextsEditor kind={draft.kind} texts={draft.texts} onChange={(texts) => patch({ texts })} lang={lang} onLang={setLang} />
           </div>
 
@@ -748,7 +748,7 @@ function Editor({ data, offerParam, tpl }: { data: LoaderData; offerParam: strin
             <ul className="ty-tips">
               {tips.map((t, i) => (
                 <li key={i} className={t.level}>
-                  <span className="ico">{t.level === "good" ? "âœ“" : t.level === "warn" ? "!" : "â†’"}</span>
+                  <span className="ico">{t.level === "good" ? "✓" : t.level === "warn" ? "!" : "→"}</span>
                   {t.text}
                 </li>
               ))}
@@ -786,9 +786,9 @@ function Editor({ data, offerParam, tpl }: { data: LoaderData; offerParam: strin
   );
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 // Styles
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────
 
 const TY_CSS = `
 .ty-wrap{display:flex;flex-direction:column;gap:16px;padding:16px 8px 48px;color:#fff}

@@ -849,9 +849,9 @@ export default function PrePurchaseSettings() {
       declineButton: def.declineButton,
       urgencyLabel: def.urgencyLabel,
       scarcityNotice: def.scarcityNotice,
-      feature1: lang === "ar" ? "Ø¥Ø¶Ø§ÙØ© Ù…Ù…ÙŠØ²Ø© ÙˆÙ…ÙˆØµÙ‰ Ø¨Ù‡Ø§ Ù„Ø·Ù„Ø¨Ùƒ" : "Recommended addition to your selection",
-      feature2: lang === "ar" ? "ØªØ±ÙƒÙŠØ¨Ø© Ø£ØµÙ„ÙŠØ© Ù…Ø¹ØªÙ…Ø¯Ø© ÙˆÙ…Ø¶Ù…ÙˆÙ†Ø©" : "Premium dermatologically evaluated formula",
-      feature3: lang === "ar" ? "Ø³Ø¹Ø± ØªØ±ÙˆÙŠØ¬ÙŠ Ø­ØµØ±ÙŠ Ù„Ù‡Ø°Ø§ Ø§Ù„Ø·Ù„Ø¨ ÙÙ‚Ø·" : "Exclusive single-order promotion price",
+      feature1: lang === "ar" ? "إضافة مميزة وموصى بها لطلبك" : "Recommended addition to your selection",
+      feature2: lang === "ar" ? "تركيبة أصلية معتمدة ومضمونة" : "Premium dermatologically evaluated formula",
+      feature3: lang === "ar" ? "سعر ترويجي حصري لهذا الطلب فقط" : "Exclusive single-order promotion price",
     };
     setOfferI18n((prev) => ({
       ...prev,

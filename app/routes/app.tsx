@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import type { ActionFunctionArgs, HeadersFunction, LoaderFunctionArgs } from "react-router";
 import { Link, Outlet, useFetcher, useLoaderData, useLocation, useRouteError } from "react-router";
 import { boundary } from "@shopify/shopify-app-react-router/server";
@@ -157,9 +158,20 @@ export default function App() {
   const fetcher = useFetcher();
   const { pathname } = useLocation();
   const demoId = demoIdFromPath(pathname);
-  const isAr = dashboardLocale === "ar";
+
+  const [currentLocale, setCurrentLocale] = useState<SupportedLanguage>(dashboardLocale || "en");
+
+  useEffect(() => {
+    if (dashboardLocale) {
+      setCurrentLocale(dashboardLocale);
+    }
+  }, [dashboardLocale]);
+
+  const currentIsAr = currentLocale === "ar";
+  const currentI18n = DASHBOARD_I18N[currentLocale] || DASHBOARD_I18N.en;
 
   const handleLanguageChange = (newLang: SupportedLanguage) => {
+    setCurrentLocale(newLang);
     fetcher.submit(
       { actionType: "setDashboardLocale", locale: newLang },
       { method: "post", action: "/app" }
@@ -169,23 +181,23 @@ export default function App() {
   return (
     <AppProvider embedded apiKey={apiKey}>
       <NavMenu>
-        <a href="/app" rel="home">{i18n.navOverview || "Overview"}</a>
-        <a href="/app/analytics">{(i18n as any).navAnalytics || "Analytics"}</a>
-        <a href="/app/pricing">{i18n.navPricing || "Plans & Pricing"}</a>
-        <a href="/app/translations">{i18n.navTranslations || "Translations & Languages"}</a>
-        <a href="/app/pre-purchase">{i18n.navPrePurchase || "Pre-Purchase Upsell"}</a>
-        <a href="/app/in-cart">{i18n.navInCart || "Cart Upsell"}</a>
-        <a href="/app/thank-you">{(i18n as any).navThankYou || "Thank-You Page Offers"}</a>
-        <a href="/app/shipping-bar">{i18n.navShippingBar || "Free Shipping & Rewards Bar"}</a>
-        <a href="/app/quantity-breaks">{i18n.navQuantityBreaks || "Volume Discounts"}</a>
-        <a href="/app/product-scarcity">{i18n.navProductScarcity || "Low Stock Meter"}</a>
-        <a href="/app/social-bar">{i18n.navSocialBar || "Chat & Social Bar"}</a>
-        <a href="/app/scarcity">{i18n.navUrgency || "Social Proof Popups"}</a>
-        <a href="/app/help">{i18n.navHelp || "Help & Guide"}</a>
-        {EXIT_INTENT_AVAILABLE ? <a href="/app/exit-intent">{i18n.navExitIntent || "Exit-Intent Recovery"}</a> : null}
+        <a href="/app" rel="home">{currentI18n.navOverview || "Overview"}</a>
+        <a href="/app/analytics">{(currentI18n as any).navAnalytics || "Analytics"}</a>
+        <a href="/app/pricing">{currentI18n.navPricing || "Plans & Pricing"}</a>
+        <a href="/app/translations">{currentI18n.navTranslations || "Translations & Languages"}</a>
+        <a href="/app/pre-purchase">{currentI18n.navPrePurchase || "Pre-Purchase Upsell"}</a>
+        <a href="/app/in-cart">{currentI18n.navInCart || "Cart Upsell"}</a>
+        <a href="/app/thank-you">{(currentI18n as any).navThankYou || "Thank-You Page Offers"}</a>
+        <a href="/app/shipping-bar">{currentI18n.navShippingBar || "Free Shipping & Rewards Bar"}</a>
+        <a href="/app/quantity-breaks">{currentI18n.navQuantityBreaks || "Volume Discounts"}</a>
+        <a href="/app/product-scarcity">{currentI18n.navProductScarcity || "Low Stock Meter"}</a>
+        <a href="/app/social-bar">{currentI18n.navSocialBar || "Chat & Social Bar"}</a>
+        <a href="/app/scarcity">{currentI18n.navUrgency || "Social Proof Popups"}</a>
+        <a href="/app/help">{currentI18n.navHelp || "Help & Guide"}</a>
+        {EXIT_INTENT_AVAILABLE ? <a href="/app/exit-intent">{currentI18n.navExitIntent || "Exit-Intent Recovery"}</a> : null}
       </NavMenu>
 
-      <div dir={isAr ? "rtl" : "ltr"} style={{ width: "100%", minHeight: "100vh", background: "radial-gradient(900px 520px at 8% -6%, rgba(255,235,151,0.085), transparent 62%), radial-gradient(820px 620px at 100% 0%, rgba(88,55,20,0.42), transparent 62%), linear-gradient(180deg, #120B05 0%, #0C0803 480px)" }}>
+      <div dir={currentIsAr ? "rtl" : "ltr"} style={{ width: "100%", minHeight: "100vh", background: "radial-gradient(900px 520px at 8% -6%, rgba(255,235,151,0.085), transparent 62%), radial-gradient(820px 620px at 100% 0%, rgba(88,55,20,0.42), transparent 62%), linear-gradient(180deg, #120B05 0%, #0C0803 480px)" }}>
         <style>{`
           /* GLOBAL DARK THEME RESETS */
           
@@ -275,7 +287,7 @@ export default function App() {
             </span>
             <span style={{ fontSize: "12px", color: "#7F7863" }}>|</span>
             <span style={{ fontSize: "12px", color: "#9E957B", fontWeight: 500 }}>
-              {i18n.dashboardLangTitle || "Dashboard Language"}:
+              {currentI18n.dashboardLangTitle || "Dashboard Language"}:
             </span>
           </div>
 
@@ -284,14 +296,14 @@ export default function App() {
             <Link
               to="/app/help"
               className={`xp-help-link${pathname.startsWith("/app/help") ? " is-active" : ""}`}
-              aria-label={i18n.navHelp || "Help & Guide"}
+              aria-label={currentI18n.navHelp || "Help & Guide"}
             >
               <span className="xp-help-q">?</span>
-              {i18n.navHelp || "Help & Guide"}
+              {currentI18n.navHelp || "Help & Guide"}
             </Link>
             <select
               id="top-dashboard-lang-select"
-              value={dashboardLocale}
+              value={currentLocale}
               onChange={(e) => handleLanguageChange(e.target.value as SupportedLanguage)}
               style={{
                 background: "#1D150C",
@@ -322,7 +334,7 @@ export default function App() {
 
         <main style={{ padding: "0 4px" }}>
           <FeatureDemoBanner id={demoId} />
-          <Outlet context={{ dashboardLocale, isAr, i18n }} />
+          <Outlet context={{ dashboardLocale: currentLocale, isAr: currentIsAr, i18n: currentI18n }} />
         </main>
       </div>
     </AppProvider>

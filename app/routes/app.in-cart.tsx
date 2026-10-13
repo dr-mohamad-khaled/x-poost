@@ -1941,7 +1941,7 @@ export default function InCartUpsellSettings() {
                           style={{ color: "var(--pm-text)", textDecoration: "none", fontWeight: "600" }}
                           onClick={(e) => e.stopPropagation()}
                         >
-                          {selectedProduct?.title || (selectedLang === "ar" ? "Ù…Ù†ØªØ¬ Ù…Ù…ÙŠØ² Ø¥Ø¶Ø§ÙÙŠ" : "Exclusive Add-on")}
+                  {selectedProduct?.title || (selectedLang === "ar" ? "منتج مميز إضافي" : "Exclusive Add-on")}
                         </a>
                       </div>
                       <div className="xp-addon-pricing">
@@ -1950,11 +1950,11 @@ export default function InCartUpsellSettings() {
                           <span className="xp-addon-orig">${originalPrice.toFixed(2)}</span>
                         )}
                         {isDiscounted && (
-                          <span className="xp-addon-badge">{(activeOfferCopy.saveBadge || (selectedLang === "ar" ? "ÙˆÙØ± {discount}%" : "SAVE {discount}%")).replace("{discount}", discountPercent)}</span>
+                        <span className="xp-addon-badge">{(activeOfferCopy.saveBadge || (selectedLang === "ar" ? "وفر {discount}%" : "SAVE {discount}%")).replace("{discount}", discountPercent)}</span>
                         )}
                       </div>
                       <button type="button" className="xp-addon-quickadd">
-                        {activeOfferCopy.addButton || (selectedLang === "ar" ? "+ Ø£Ø¶Ù Ù„Ù„Ø³Ù„Ø©" : "+ Add to Cart")}
+                        {activeOfferCopy.addButton || (selectedLang === "ar" ? "+ أضف للسلة" : "+ Add to Cart")}
                       </button>
                     </div>
                   </div>
@@ -1975,11 +1975,11 @@ export default function InCartUpsellSettings() {
                             <span className="xp-addon-sale">${pSale}</span>
                             {isDiscounted && <span className="xp-addon-orig">${pPrice.toFixed(2)}</span>}
                             {isDiscounted && (
-                              <span className="xp-addon-badge">{(activeOfferCopy.saveBadge || (selectedLang === "ar" ? "ÙˆÙØ± {discount}%" : "SAVE {discount}%")).replace("{discount}", discountPercent)}</span>
+                        <span className="xp-addon-badge">{(activeOfferCopy.saveBadge || (selectedLang === "ar" ? "وفر {discount}%" : "SAVE {discount}%")).replace("{discount}", discountPercent)}</span>
                             )}
                           </div>
                           <button type="button" className="xp-addon-quickadd">
-                            {activeOfferCopy.addButton || (selectedLang === "ar" ? "+ Ø£Ø¶Ù Ù„Ù„Ø³Ù„Ø©" : "+ Add to Cart")}
+                        {activeOfferCopy.addButton || (selectedLang === "ar" ? "+ أضف للسلة" : "+ Add to Cart")}
                           </button>
                         </div>
                       </div>
