@@ -110,6 +110,7 @@
   width: calc(100vw - 32px) !important;
   max-width: 440px !important;
   max-height: 88vh !important;
+  max-height: min(88vh, calc(100dvh - 32px)) !important;
   overflow-y: auto !important;
   margin: 0 auto !important;
   padding: 26px 22px !important;
@@ -886,9 +887,19 @@
   max-width: 100% !important;
   box-sizing: border-box !important;
   padding: 0 16px !important;
-  margin: 10px 0 !important;
+  margin: 10px auto !important;
   min-width: 0 !important;
   overflow: hidden !important;
+  /* Never let the offer's content widen the theme's cart drawer or its line-item table */
+  contain: inline-size !important;
+  /* Span the whole row when the theme lays its cart lines out in a grid */
+  grid-column: 1 / -1 !important;
+}
+.xpc-in-cart-row,
+.xpc-in-cart-row > td {
+  max-width: 100% !important;
+  min-width: 0 !important;
+  grid-column: 1 / -1 !important;
 }
 
 @keyframes xpcDrawerCardEnter {
@@ -1049,8 +1060,10 @@
 
 .xpc-in-cart-pricing {
   display: flex !important;
-  gap: 6px !important;
+  flex-wrap: wrap !important;
+  gap: 4px 6px !important;
   align-items: center !important;
+  min-width: 0 !important;
 }
 
 .xpc-in-cart-price {
@@ -1651,20 +1664,16 @@ body:has(.drawer--active) .xpoost-scarcity-toast {
   cursor: pointer !important;
 }
 
-/* Layout 3: Sleek Slide-Up Bottom Sheet */
+/* Layout 3: Slide-Up Drawer. Centered like every other popup (matches the admin preview). */
 .xpc-modal-layout--bottom_sheet {
-  align-items: flex-end !important;
-  padding: 0 !important;
+  align-items: center !important;
+  padding: 16px !important;
 }
 
 .xpc-modal-layout--bottom_sheet .xpc-modal {
   width: 100% !important;
   max-width: 500px !important;
-  border-bottom-left-radius: 0 !important;
-  border-bottom-right-radius: 0 !important;
-  margin-bottom: 0 !important;
-  border-bottom: none !important;
-  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.7) !important;
+  margin: 0 auto !important;
 }
 
 .xpc-sheet-handle {
