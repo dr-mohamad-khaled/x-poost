@@ -2194,7 +2194,7 @@
         autoUpsellWrap.id = "xpc-in-cart-drawer";
         autoUpsellWrap.setAttribute("data-variant-id", targetVariant);
         autoUpsellWrap.className = "xpoost-root xpc-in-cart-auto";
-        autoUpsellWrap.style.cssText = "display:block!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding:0 16px!important;margin:10px 0!important;min-width:0!important;overflow:hidden!important;";
+        autoUpsellWrap.style.cssText = "display:block!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding:0 16px!important;margin:10px auto!important;min-width:0!important;overflow:hidden!important;contain:inline-size!important;";
         autoUpsellWrap.innerHTML = cardInnerHtml;
         drawerTarget.parentNode.insertBefore(autoUpsellWrap, drawerTarget);
         attachAddEvent(autoUpsellWrap, targetVariant, activeRule.discountCode, activeRule.discountPercent, activeRule);
@@ -2217,7 +2217,7 @@
           autoItemsWrap.id = "xpc-in-cart-drawer";
           autoItemsWrap.setAttribute("data-variant-id", targetVariant);
           autoItemsWrap.className = "xpoost-root xpc-in-cart-auto";
-          autoItemsWrap.style.cssText = "display:block!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding:0 16px!important;margin:10px 0!important;min-width:0!important;overflow:hidden!important;";
+          autoItemsWrap.style.cssText = "display:block!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding:0 16px!important;margin:10px auto!important;min-width:0!important;overflow:hidden!important;contain:inline-size!important;";
           autoItemsWrap.innerHTML = cardInnerHtml;
           itemsTarget.parentNode.insertBefore(autoItemsWrap, itemsTarget.nextSibling);
           attachAddEvent(autoItemsWrap, targetVariant, activeRule.discountCode, activeRule.discountPercent, activeRule);
@@ -2241,12 +2241,12 @@
         var pageWrap = document.createElement("div");
         pageWrap.id = "xpc-in-cart-page";
         pageWrap.className = "xpoost-root xpc-in-cart-auto";
-        pageWrap.style.cssText = "display:block!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding:0 16px!important;margin:10px 0!important;min-width:0!important;overflow:hidden!important;";
+        pageWrap.style.cssText = "display:block!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding:0 16px!important;margin:10px auto!important;min-width:0!important;overflow:hidden!important;contain:inline-size!important;";
         pageWrap.innerHTML = cardInnerHtml;
         cartPageItems.parentNode.insertBefore(pageWrap, cartPageItems);
         attachAddEvent(pageWrap, targetVariant, activeRule.discountCode, activeRule.discountPercent, activeRule);
       } else {
-        existingPageUpsell.style.cssText = "display:block!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding:0 16px!important;margin:10px 0!important;min-width:0!important;overflow:hidden!important;";
+        existingPageUpsell.style.cssText = "display:block!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;padding:0 16px!important;margin:10px auto!important;min-width:0!important;overflow:hidden!important;contain:inline-size!important;";
         existingPageUpsell.innerHTML = cardInnerHtml;
         attachAddEvent(existingPageUpsell, targetVariant, activeRule.discountCode, activeRule.discountPercent, activeRule);
       }
