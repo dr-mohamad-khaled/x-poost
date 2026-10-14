@@ -1,0 +1,24 @@
+api_version = "2026-07"
+
+[[extensions]]
+name = "t:name"
+handle = "xpoost-bundles"
+type = "function"
+description = "t:description"
+
+  [[extensions.targeting]]
+  target = "cart.lines.discounts.generate.run"
+  input_query = "src/cart_lines_discounts_generate_run.graphql"
+  export = "cart-lines-discounts-generate-run"
+
+  [extensions.input.variables]
+  namespace = "$app:bundles"
+  key = "vars"
+
+  [extensions.build]
+  command = ""
+  path = "dist/function.wasm"
+
+  [extensions.ui.paths]
+  create = "/app/bundles"
+  details = "/app/bundles"

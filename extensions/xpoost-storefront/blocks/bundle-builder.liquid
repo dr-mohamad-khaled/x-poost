@@ -1,0 +1,53 @@
+{% comment %}
+  XPoost - Bundle Builder
+  Works on product pages (shows the first bundle that matches the product) and on any other
+  page when a Bundle ID is entered. Bundles, products, designs and texts are set in the XPoost app.
+{% endcomment %}
+
+{%- liquid
+  assign xpb_collections = ''
+  if product
+    for c in product.collections limit: 30
+      assign xpb_collections = xpb_collections | append: c.id | append: ','
+    endfor
+  endif
+-%}
+
+<div
+  class="xpb-mount"
+  data-xpb-root
+  data-proxy="/apps/xpoost/bundles"
+  data-product-id="{% if product %}{{ product.id }}{% endif %}"
+  data-collections="{{ xpb_collections }}"
+  data-bundle-id="{{ block.settings.bundle_id | strip | escape }}"
+  data-locale="{{ request.locale.iso_code }}"
+  data-country="{{ localization.country.iso_code }}"
+  data-market="{{ localization.market.handle }}"
+  data-currency="{{ cart.currency.iso_code }}"
+  data-money-format="{{ shop.money_format | escape }}"
+  hidden
+  {{ block.shopify_attributes }}
+></div>
+
+{{ 'xpoost-bundles.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'xpoost-track.js' | asset_url }}" defer></script>
+<script src="{{ 'xpoost-bundles.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "XPoost: Bundle Builder",
+  "target": "section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Create bundles in the XPoost app. On product pages the first matching bundle shows automatically."
+    },
+    {
+      "type": "text",
+      "id": "bundle_id",
+      "label": "Bundle ID (optional)",
+      "info": "Show one specific bundle here, for example on a landing page. Copy the ID from the bundle in XPoost."
+    }
+  ]
+}
+{% endschema %}

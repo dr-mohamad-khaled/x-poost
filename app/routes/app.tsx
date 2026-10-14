@@ -16,6 +16,7 @@ import {
   DASHBOARD_I18N,
 } from "../utils/translations";
 import { TranslationProvider, translateText } from "../components/Translate";
+import { SupportChat } from "../components/SupportChat";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const currentApiKey = (process.env.SHOPIFY_API_KEY || "872f7f6415d1c243c11ccdfe9426b07f").trim().replace(/^["']|["']$/g, "").trim();
@@ -34,7 +35,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
     const i18n = DASHBOARD_I18N[dashboardLocale] || DASHBOARD_I18N.en;
 
-    return { apiKey: currentApiKey, dashboardLocale, i18n };
+    // Merchant support chat (tawk.to). Public widget IDs, kept in the environment like every other setting.
+    const supportChat = {
+      propertyId: (process.env.TAWK_PROPERTY_ID || "").trim(),
+      widgetId: (process.env.TAWK_WIDGET_ID || "").trim(),
+      shop: session.shop,
+    };
+
+    return { apiKey: currentApiKey, dashboardLocale, i18n, supportChat };
   } catch (error: any) {
     if (error instanceof Response) {
       const isXhr = Boolean(request.headers.get("authorization"));
@@ -134,6 +142,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       productScarcity: "productScarcityEnabled",
       quantityBreaks: "quantityBreaksEnabled",
       thankYou: "thankYouEnabled",
+      bundles: "bundlesEnabled",
     };
 
     const field = featureFieldMap[featureKey];
@@ -155,7 +164,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function App() {
-  const { apiKey, dashboardLocale, i18n } = useLoaderData<typeof loader>();
+  const { apiKey, dashboardLocale, i18n, supportChat } = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
   const { pathname } = useLocation();
   const demoId = demoIdFromPath(pathname);
@@ -189,6 +198,7 @@ export default function App() {
         <a href="/app/translations">{t("Translations & Languages")}</a>
         <a href="/app/pre-purchase">{t("Pre-Purchase Upsell")}</a>
         <a href="/app/in-cart">{t("Cart Upsell")}</a>
+        <a href="/app/bundles">{t("Bundle Builder")}</a>
         <a href="/app/thank-you">{t("Thank-You Page Offers")}</a>
         <a href="/app/shipping-bar">{t("Free Shipping & Rewards Bar")}</a>
         <a href="/app/quantity-breaks">{t("Volume Discounts")}</a>
@@ -339,6 +349,7 @@ export default function App() {
           <FeatureDemoBanner id={demoId} />
           <Outlet context={{ dashboardLocale: currentLocale, isAr: currentIsAr, i18n: currentI18n }} />
         </main>
+        {supportChat ? <SupportChat propertyId={supportChat.propertyId} widgetId={supportChat.widgetId} shop={supportChat.shop} /> : null}
       </div>
       </TranslationProvider>
     </AppProvider>

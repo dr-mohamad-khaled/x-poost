@@ -11,7 +11,7 @@ export default function PrivacyPolicy() {
   return (
     <div style={{ fontFamily: "sans-serif", maxWidth: "800px", margin: "40px auto", padding: "0 20px", lineHeight: "1.6", color: "#333" }}>
       <h1 style={{ borderBottom: "2px solid #eaeaea", paddingBottom: "10px" }}>Privacy Policy</h1>
-      <p><strong>Last Updated: September 29, 2026</strong></p>
+      <p><strong>Last Updated: October 15, 2026</strong></p>
 
       <p>
         This Privacy Policy describes how your personal information is collected, used, and shared when you install or use 
@@ -26,6 +26,7 @@ export default function PrivacyPolicy() {
         <li><strong>Shop Information:</strong> such as your domain, store name, and email address, used to identify your store and send essential communications.</li>
         <li><strong>Products and Collections:</strong> to allow the App to function and apply conversion tools like scarcity timers or quantity breaks to your merchandise.</li>
         <li><strong>Orders and Carts:</strong> anonymized cart interactions are monitored to power features like the shipping bar and in-cart upsells.</li>
+        <li><strong>Customer tags and order history (Bundle Builder):</strong> when a merchant limits a bundle to certain customers, the App reads the logged-in customer's tags, number of orders and total spent at the moment the bundle is shown, only to decide whether that customer may see and buy it. This is not stored in our database; it is kept in server memory for at most 5 minutes. The same check runs at checkout inside Shopify.</li>
       </ul>
       <p>
         Additionally, we collect information automatically when you interact with the App using cookies and similar tracking technologies to improve performance.
@@ -46,6 +47,11 @@ export default function PrivacyPolicy() {
       <p>
         We may share your Personal Information to comply with applicable laws and regulations, to respond to a subpoena, search warrant or other lawful request for information we receive, or to otherwise protect our rights. 
         We do not sell your personal information or your customers' data to third parties.
+      </p>
+
+      <h2>Support Chat</h2>
+      <p>
+        The "Chat with support" button in the App dashboard uses tawk.to. Its script loads only when you open the chat. Your store domain is shared with the chat so we know which store we are helping; anything else you type in the chat is sent to tawk.to under its own privacy policy.
       </p>
 
       <h2>Data Retention</h2>

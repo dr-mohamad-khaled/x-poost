@@ -25,6 +25,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   }
 
   const tyActive = await prisma.tyOffer.count({ where: { shopId: shopData?.id ?? "", enabled: true } });
+  const bbActive = await prisma.bundle.count({ where: { shopId: shopData?.id ?? "", enabled: true } });
 
   // Revenue box: what XPoost added in the last 30 days (same source as the Analytics page)
   const revSince = new Date(Date.now() - 30 * 86_400_000);
@@ -74,6 +75,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         route: "/app/thank-you",
         enabled: shopData?.thankYouEnabled ?? false,
         badge: tyActive > 0 ? `${tyActive} Active` : "No active offers",
+      },
+      bundles: {
+        id: "bundles",
+        title: "Bundle Builder",
+        description: "Let shoppers build their own bundle: mix & match, build-a-box, fixed bundles and multipacks, with tiered prices, free gifts and customer rules.",
+        route: "/app/bundles",
+        enabled: (shopData as any)?.bundlesEnabled ?? false,
+        badge: bbActive > 0 ? `${bbActive} Active` : "No active bundles",
       },
       shippingBar: {
         id: "shippingBar",
@@ -139,6 +148,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       productScarcity: "productScarcityEnabled",
       quantityBreaks: "quantityBreaksEnabled",
       thankYou: "thankYouEnabled",
+      bundles: "bundlesEnabled",
     };
 
     const field = featureFieldMap[featureKey];
@@ -305,6 +315,7 @@ function ThemeSetupGuide({ apiKey }: { apiKey: string }) {
   const blocks = [
     { name: "XPoost: Quantity Breaks", what: "Volume discount options on the product page.", where: "Product page", href: blockLink("quantity-breaks", "product", "mainSection") },
     { name: "XPoost: Product Scarcity", what: "Low stock meter on the product page.", where: "Product page", href: blockLink("product-scarcity", "product", "mainSection") },
+    { name: "XPoost: Bundle Builder", what: "Mix & match, build-a-box, fixed bundles and multipacks. Also works on any page with a bundle ID.", where: "Product page", href: blockLink("bundle-builder", "product", "mainSection") },
     { name: "XPoost: Shipping Bar", what: "Free shipping and rewards bar placed inside the cart page. Optional: the Cart Engine already shows it in the cart drawer.", where: "Cart page (optional)", href: blockLink("shipping-bar", "cart", "newAppsSection") },
     { name: "XPoost: In-Cart Upsell", what: "Add-on offers placed inside the cart page. Optional: the Cart Engine already shows them in the cart drawer.", where: "Cart page (optional)", href: blockLink("in-cart-upsell", "cart", "newAppsSection") },
   ];
@@ -424,6 +435,7 @@ const FEATURE_PITCH: Record<string, { name: string; pitch: string }> = {
   shippingBar: { name: "Free Shipping & Rewards Bar", pitch: "A milestone bar that pulls cart totals up toward free shipping." },
   exitIntent: { name: "Exit-Intent Saver", pitch: "A last-chance offer that catches shoppers before they leave." },
   thankYou: { name: "Thank-You Page Offers", pitch: "A reward for the next order or a ship-together offer, right after checkout." },
+  bundles: { name: "Bundle Builder", pitch: "Shoppers build their own bundle and get the bundle price at checkout." },
   socialBar: { name: "Chat & Social Bar", pitch: "WhatsApp support and your social channels, one tap away." },
 };
 
@@ -650,6 +662,15 @@ function FeatureIcon({ id }: { id: string }) {
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
           <path d="m16 17 5-5-5-5" />
           <path d="M21 12H9" />
+        </svg>
+      );
+    case "bundles":
+      return (
+        <svg {...common}>
+          <path d="M21 8 12 3 3 8l9 5 9-5z" />
+          <path d="M3 8v8l9 5 9-5V8" />
+          <path d="M12 13v8" />
+          <path d="m7.5 5.5 9 5" />
         </svg>
       );
     case "thankYou":

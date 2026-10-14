@@ -28,6 +28,7 @@ const FEATURE_ROUTES: Record<string, string> = {
   productScarcity: "/app/product-scarcity",
   socialBar: "/app/social-bar",
   thankYou: "/app/thank-you",
+  bundles: "/app/bundles",
 };
 
 const dayStr = (d: Date) => d.toISOString().slice(0, 10);
@@ -51,7 +52,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const today = localDay(Date.now(), shop.analyticsTimezone);
   const from = new Date(`${addDays(today, -(2 * rangeDays - 1))}T00:00:00.000Z`);
 
-  const [stats, orders, rules, qbOffers, scarcityCfg, shippingCfg, tyOffers] = await Promise.all([
+  const [stats, orders, rules, qbOffers, scarcityCfg, shippingCfg, tyOffers, bundleRows] = await Promise.all([
     prisma.xpDailyStat.findMany({ where: { shopId: shop.id, day: { gte: from } } }),
     prisma.xpOrder.findMany({
       where: { shopId: shop.id, day: { gte: from }, cancelled: false },
@@ -62,12 +63,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     prisma.scarcityWidgetConfig.findUnique({ where: { shopId: shop.id }, select: { messagesJson: true } }),
     prisma.shippingBarConfig.findUnique({ where: { shopId: shop.id }, select: { tiersJson: true } }),
     prisma.tyOffer.findMany({ where: { shopId: shop.id }, select: { id: true, name: true } }),
+    prisma.bundle.findMany({ where: { shopId: shop.id }, select: { id: true, name: true } }),
   ]);
 
   const offerNames: Record<string, string> = {};
   for (const r of rules) offerNames[r.id] = r.targetProductTitle || r.offerHeadline || "Offer";
   for (const o of qbOffers) offerNames[o.id] = o.title;
   for (const o of tyOffers) offerNames[o.id] = o.name;
+  for (const b of bundleRows) offerNames[b.id] = b.name;
 
   const messageNames: Record<string, string> = {};
   try {
@@ -97,6 +100,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       productScarcity: shop.productScarcityEnabled,
       socialBar: shop.socialBarEnabled,
       thankYou: shop.thankYouEnabled,
+      bundles: shop.bundlesEnabled,
     },
     offerNames,
     messageNames,
@@ -211,6 +215,11 @@ const TIPS: Record<string, Tip[]> = {
     { text: "Offers with 3 products were taken about twice as often as 1 (2.9% vs 1.5%). If your add-on offer shows one product, try three.", ...DIGI },
     { text: "Compare offers in the table: a reward that is redeemed rarely may have a minimum spend that is too high, or an expiry that is too short or too long." },
     { text: "Use conditions to give first-time and returning customers different offers, then compare their numbers here." },
+  ],
+  bundles: [
+    { text: "Compare bundles by add-to-cart rate in the table. Keep the strongest design and pause the rest." },
+    { text: "A bundle that is viewed often but rarely added may ask for too many items. Try a smaller size or tiered savings that reward each extra item." },
+    { text: "Use customer rules to give returning customers or tagged VIPs their own bundle, then compare the two here." },
   ],
   socialBar: [
     { text: "WhatsApp questions usually point to missing information. Put answers to the most common questions on your product pages." },

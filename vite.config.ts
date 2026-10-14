@@ -45,7 +45,8 @@ export default defineConfig({
     hmr: hmrConfig,
     fs: {
       // See https://vitejs.dev/config/server-options.html#server-fs-allow for more information
-      allow: ["app", "node_modules"],
+      // "extensions" lets the Bundle Builder preview load the storefront script as raw text
+      allow: ["app", "node_modules", "extensions"],
     },
   },
   plugins: [

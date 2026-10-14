@@ -51,6 +51,8 @@ model Shop {
   quantityBreaksEnabled  Boolean @default(true)
   thankYouEnabled        Boolean @default(false)
   checkoutUpsellEnabled  Boolean @default(false)
+  bundlesEnabled         Boolean @default(false)
+  bundlesSettingsJson    String  @default("{}") // BbSettings (discount combinations)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -79,6 +81,9 @@ model Shop {
   // Thank-you page upsell
   tyOffers TyOffer[]
   tyClaims TyClaim[]
+
+  // Bundle Builder
+  bundles Bundle[]
 
   @@index([shopDomain])
 }
@@ -504,4 +509,28 @@ model TyCode {
 
   @@unique([shopId, code])
   @@index([claimId])
+}
+
+// ─────────────────────────────────────────────────────────────
+// Bundle Builder
+// ─────────────────────────────────────────────────────────────
+
+model Bundle {
+  id            String   @id @default(cuid())
+  shopId        String
+  shop          Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  name          String
+  type          String // mix | box | fixed | multipack
+  design        String // slots | grid | stepper | list | classic | tiles
+  enabled       Boolean  @default(true)
+  priority      Int      @default(100) // lower number = checked first
+  configJson    String   @default("{}") // BbConfig
+  placementJson String   @default("{}") // BbPlacement
+  conditionsJson String  @default("{}") // BbConditions
+  styleJson     String   @default("{}") // BbStyle
+  textsJson     String   @default("{}") // BbTextsByLang
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([shopId, enabled, priority])
 }

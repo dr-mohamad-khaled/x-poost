@@ -1,0 +1,62 @@
+query CartLinesDiscountsInput($collectionIds: [ID!], $customerTags: [String!]) {
+  cart {
+    buyerIdentity {
+      isAuthenticated
+      customer {
+        numberOfOrders
+        amountSpent {
+          amount
+        }
+        hasTags(tags: $customerTags) {
+          tag
+          hasTag
+        }
+      }
+    }
+    lines {
+      id
+      quantity
+      bundle: attribute(key: "_xpb") {
+        value
+      }
+      cost {
+        amountPerQuantity {
+          amount
+        }
+      }
+      merchandise {
+        __typename
+        ... on ProductVariant {
+          id
+          product {
+            id
+            inCollections(ids: $collectionIds) {
+              collectionId
+              isMember
+            }
+          }
+        }
+      }
+    }
+  }
+  localization {
+    country {
+      isoCode
+    }
+    market {
+      handle
+    }
+  }
+  presentmentCurrencyRate
+  shop {
+    localTime {
+      date
+    }
+  }
+  discount {
+    discountClasses
+    metafield(namespace: "$app:bundles", key: "config") {
+      jsonValue
+    }
+  }
+}

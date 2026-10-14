@@ -627,6 +627,11 @@
       });
   }
 
+  // Shared with other XPoost blocks (Bundle Builder): add items and open the theme's cart drawer
+  window.XPoostCart = window.XPoostCart || {};
+  window.XPoostCart.sectionId = function () { return getCartSectionId(); };
+  window.XPoostCart.refresh = function (addResponse) { refreshDrawerAndOpen(addResponse || {}, getCartSectionId()); };
+
   // Apply a discount code to the cart via Shopify's /cart/update.js and /discount/ endpoints
   function applyDiscountCode(code) {
     if (!code) return;
