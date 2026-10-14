@@ -65,11 +65,7 @@
       data-available="{% if current_variant.available %}true{% else %}false{% endif %}"
       data-product-available="{% if product.available %}true{% else %}false{% endif %}"
       data-design-preset="{{ block.settings.design_preset | default: 'pulse_meter' }}"
-      data-stock-source="{{ block.settings.stock_source }}"
-      data-min-stock="{{ block.settings.min_stock | default: 3 }}"
-      data-max-stock="{{ block.settings.max_stock | default: 12 }}"
-      data-threshold="{{ block.settings.threshold | default: 0 }}"
-      data-initial-viewers="{{ viewers_count }}"
+      data-threshold="{{ block.settings.threshold | default: 20 }}"
       data-headline="{{ block.settings.headline | escape }}"
       data-subtext="{{ block.settings.subtext | escape }}"
       data-proxy-path="/apps/xpoost/config"
@@ -116,7 +112,7 @@
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                 <circle cx="12" cy="12" r="3"></circle>
               </svg>
-              <span><span class="xpp-ps-viewers-num">{{ viewers_count }}</span> viewing</span>
+              <span>Verified stock</span>
             </div>
           </div>
 
