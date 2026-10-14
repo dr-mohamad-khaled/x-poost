@@ -994,7 +994,7 @@ export default function ProductScarcityPage() {
                     style={{ marginRight: 6 }}
                   />
                   <strong style={{ color: "#fff", fontSize: 13 }}>{t(m.label)}</strong>
-                  <div style={{ fontSize: 11, color: "#D2C8AC", marginTop: 2 }}>{m.desc}</div>
+                  <div style={{ fontSize: 11, color: "#D2C8AC", marginTop: 2 }}>{t(m.desc)}</div>
                 </label>
               ))}
             </div>

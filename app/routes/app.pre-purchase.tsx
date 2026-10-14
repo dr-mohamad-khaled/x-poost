@@ -324,6 +324,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       } catch (e) {}
     }
 
+    const offerName = String(formData.get("offerName") || "").trim().slice(0, 80);
+    if (!offerName) {
+      return { error: "Please give this offer a name." };
+    }
+
     const offerHeadline = (
       offerI18n?.en?.headline ||
       offerI18n?.ar?.headline ||
@@ -516,6 +521,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
           targetVariantId: p.variantId || "",
           targetProductPrice: p.price || "29.99",
           targetProductImage: p.imageUrl || "",
+          offerName,
           offerHeadline,
           offerDescription: prodDesc,
           discountPercent,
@@ -534,8 +540,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     return {
       ok: true,
       message: isEdit
-        ? `Offer "${offerHeadline}" updated successfully!`
-        : `Offer "${offerHeadline}" with ${selectedProducts.length} product(s) created successfully!`,
+        ? `Offer "${offerName}" updated successfully!`
+        : `Offer "${offerName}" with ${selectedProducts.length} product(s) created successfully!`,
     };
   }
 
@@ -546,6 +552,7 @@ type OfferGroup = {
   id: string;
   i18n?: Record<SupportedLanguage, OfferI18nCopy> | null;
   ruleIds: string[];
+  name: string;
   headline: string;
   description: string;
   layoutStyle: string;
@@ -878,8 +885,9 @@ export default function PrePurchaseSettings() {
     const map = new Map<string, OfferGroup>();
     for (const r of rules) {
       const headline = (r.offerHeadline || "Special Upgrade Offer").trim();
+      const name = ((r as any).offerName || "").trim() || headline;
       const triggerKey = r.triggerProductId || "ALL";
-      const key = `${triggerKey}:::${headline}`;
+      const key = `${triggerKey}:::${name}:::${headline}`;
 
       const preselected = !r.offerDescription?.includes("<!--xp:preselect:false-->");
       const layoutMatch = (r.offerDescription || "").match(/<!--xp:layout:([a-z_]+)-->/);
@@ -927,6 +935,7 @@ export default function PrePurchaseSettings() {
         map.set(key, {
           id: r.id,
           ruleIds: [r.id],
+          name,
           headline,
           description: cleanDesc,
           layoutStyle,
@@ -988,7 +997,7 @@ export default function PrePurchaseSettings() {
       if (statusFilter === "paused" && offer.active) return false;
       if (tableSearch.trim()) {
         const q = tableSearch.toLowerCase();
-        const matchesHeadline = offer.headline.toLowerCase().includes(q);
+        const matchesHeadline = offer.name.toLowerCase().includes(q) || offer.headline.toLowerCase().includes(q);
         const matchesTrigger = offer.triggerProductTitle.toLowerCase().includes(q);
         const matchesProduct = offer.products.some((p) => p.title.toLowerCase().includes(q));
         if (!matchesHeadline && !matchesTrigger && !matchesProduct) return false;
@@ -1004,6 +1013,7 @@ export default function PrePurchaseSettings() {
   }, [filteredOffers, currentPage]);
 
   // Form Editor State
+  const [offerName, setOfferName] = useState("");
   const [headline, setHeadline] = useState("Exclusive Add-On Deal");
   const [description, setDescription] = useState("Add these complementary items to your order right now!");
   const [triggerType, setTriggerType] = useState<"ALL" | "SPECIFIC">("ALL");
@@ -1121,6 +1131,7 @@ export default function PrePurchaseSettings() {
   // Open Create Mode
   const openCreateMode = () => {
     setEditingOffer(null);
+    setOfferName("");
     const lang = dashboardLocale || "ar";
     setOfferLang(lang);
     const freshI18n = getDefaultOfferI18n();
@@ -1150,6 +1161,7 @@ export default function PrePurchaseSettings() {
   // Open Edit Mode with populated offer data
   const openEditMode = (offer: OfferGroup) => {
     setEditingOffer(offer);
+    setOfferName(offer.name);
     const lang = dashboardLocale || "ar";
     setOfferLang(lang);
     let mergedI18n = getDefaultOfferI18n();
@@ -1330,7 +1342,7 @@ export default function PrePurchaseSettings() {
       <style>{PRE_PURCHASE_STYLES}</style>
 
       {actionData && "error" in actionData ? (
-        <s-banner tone="critical">{actionData.error}</s-banner>
+        <s-banner tone="critical">{t(actionData.error)}</s-banner>
       ) : null}
       {actionData && "ok" in actionData ? (
         <s-banner tone="success">{actionData.message}</s-banner>
@@ -1623,7 +1635,7 @@ export default function PrePurchaseSettings() {
                               className="xp-table-title-link"
                               onClick={() => openEditMode(offer)}
                             >
-                              <strong>{offer.headline}</strong>
+                              <strong>{offer.name}</strong>
                               <span className="xp-table-sub">
                                 {offer.products.length}  <Translate text='product' />{offer.products.length > 1 ? "s" : ""}
                               </span>
@@ -1711,7 +1723,7 @@ export default function PrePurchaseSettings() {
                                 onClick={(e) => {
                                   if (
                                     !window.confirm(
-                                      `Are you sure you want to delete the offer "${offer.headline}"?`
+                                      t("Are you sure you want to delete the offer \"{name}\"?", { name: offer.name })
                                     )
                                   ) {
                                     e.preventDefault();
@@ -1789,7 +1801,7 @@ export default function PrePurchaseSettings() {
               
                                             <Translate text='Back to All Offers' />
                                           </button>
-            <h2>{viewMode === "edit" ? `Edit Offer: ${headline}` : "Create New Upsell Offer"}</h2>
+            <h2>{viewMode === "edit" ? t("Edit Offer: {name}", { name: offerName || headline }) : t("Create New Upsell Offer")}</h2>
           </div>
 
           <div className="xp-pre-layout">
@@ -1808,114 +1820,24 @@ export default function PrePurchaseSettings() {
                   />
                 )}
 
-                {/* Offer Details & In-Offer Multi-Language Switcher */}
+                {/* Offer Name */}
                 <div className="xp-editor-section">
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px", marginBottom: "12px" }}>
-                    <div>
-                      <h3 style={{ margin: "0 0 4px 0" }}><Translate text='1. Offer Details &amp; Multi-Language Copy' /></h3>
-                      <p className="xp-sub" style={{ margin: 0 }}>
-                        
-                                                                          <Translate text='Configure this offer&apos;s title, subtitle, buttons, badges, and features for each language.' />
-                                                                        </p>
-                    </div>
-                  </div>
-
-                  <FeatureLanguageSwitcher
-                    selectedLang={offerLang}
-                    onSelectLang={handleSelectOfferLang}
-                    onLoadPredefined={() => handleLoadPredefinedForOffer(offerLang)}
-                    dashboardLocale={dashboardLocale}
-                  />
-
-                  <input type="hidden" name="offerI18nJson" value={JSON.stringify(offerI18n)} />
-                  <input type="hidden" name="activeOfferLang" value={offerLang} />
-
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "12px" }}>
-                    <div className="xp-field">
-                      <label><Translate text='Offer Headline (' />{offerLang.toUpperCase()})</label>
-                      <input
-                        type="text"
-                        name="offerHeadline"
-                        className="xp-input"
-                        dir={offerLang === "ar" ? "rtl" : "ltr"}
-                        value={activeOfferCopy.headline}
-                        onChange={(e) => updateOfferCopy("headline", e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div className="xp-field">
-                      <label><Translate text='Special Offer Tag (' />{offerLang.toUpperCase()})</label>
-                      <input
-                        type="text"
-                        name="offerTag"
-                        className="xp-input"
-                        dir={offerLang === "ar" ? "rtl" : "ltr"}
-                        value={activeOfferCopy.offerTag}
-                        onChange={(e) => updateOfferCopy("offerTag", e.target.value)}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="xp-field" style={{ marginBottom: "12px" }}>
-                    <label><Translate text='Offer Subtitle / Description (' />{offerLang.toUpperCase()})</label>
-                    <textarea
-                      name="offerDescription"
+                  <h3><Translate text='1. Offer Name' /></h3>
+                  <p className="xp-sub" style={{ marginBottom: "12px" }}>
+                    <Translate text='Only you see this name. It identifies the offer in your list. Shoppers see the headline you write under Language and Copy.' />
+                  </p>
+                  <div className="xp-field">
+                    <label><Translate text='Offer name' /></label>
+                    <input
+                      type="text"
+                      name="offerName"
                       className="xp-input"
-                      dir={offerLang === "ar" ? "rtl" : "ltr"}
-                      rows={2}
-                      value={activeOfferCopy.description}
-                      onChange={(e) => updateOfferCopy("description", e.target.value)}
+                      required
+                      maxLength={80}
+                      value={offerName}
+                      onChange={(e) => setOfferName(e.target.value)}
+                      placeholder={t("e.g. Serum add-on for summer")}
                     />
-                  </div>
-
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "12px" }}>
-                    <div className="xp-field">
-                      <label><Translate text='Accept Button Label (' />{offerLang.toUpperCase()})</label>
-                      <input
-                        type="text"
-                        name="acceptButton"
-                        className="xp-input"
-                        dir={offerLang === "ar" ? "rtl" : "ltr"}
-                        value={activeOfferCopy.acceptButton}
-                        onChange={(e) => updateOfferCopy("acceptButton", e.target.value)}
-                      />
-                    </div>
-                    <div className="xp-field">
-                      <label><Translate text='Decline Button Label (' />{offerLang.toUpperCase()})</label>
-                      <input
-                        type="text"
-                        name="declineButton"
-                        className="xp-input"
-                        dir={offerLang === "ar" ? "rtl" : "ltr"}
-                        value={activeOfferCopy.declineButton}
-                        onChange={(e) => updateOfferCopy("declineButton", e.target.value)}
-                      />
-                    </div>
-                  </div>
-
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "12px" }}>
-                    <div className="xp-field">
-                      <label><Translate text='Urgency Countdown Label (' />{offerLang.toUpperCase()})</label>
-                      <input
-                        type="text"
-                        name="urgencyLabel"
-                        className="xp-input"
-                        dir={offerLang === "ar" ? "rtl" : "ltr"}
-                        value={activeOfferCopy.urgencyLabel}
-                        onChange={(e) => updateOfferCopy("urgencyLabel", e.target.value)}
-                      />
-                    </div>
-                    <div className="xp-field">
-                      <label><Translate text='Scarcity Notice (' />{offerLang.toUpperCase()})</label>
-                      <input
-                        type="text"
-                        name="scarcityNotice"
-                        className="xp-input"
-                        dir={offerLang === "ar" ? "rtl" : "ltr"}
-                        value={activeOfferCopy.scarcityNotice}
-                        onChange={(e) => updateOfferCopy("scarcityNotice", e.target.value)}
-                      />
-                    </div>
                   </div>
                 </div>
 
@@ -2097,112 +2019,10 @@ export default function PrePurchaseSettings() {
                   <input type="hidden" name="triggerProductTitle" value={computedTriggerProductTitle} />
                 </div>
 
-                {/* 3. Modal Presentation Layout */}
-                <div className="xp-editor-section">
-                  <h3><Translate text='3. Modal Presentation Layout' /></h3>
-                  <p className="xp-sub" style={{ marginBottom: "14px" }}>
-                    
-                                                              <Translate text='Select the visual architecture and style of the pre-purchase modal displayed to shoppers.' />
-                                                            </p>
-                  <div className="xp-layout-cards-grid">
-                    {PRE_PURCHASE_LAYOUTS.map((layout) => {
-                      const isSelected = modalLayout === layout.id;
-                      return (
-                        <div
-                          key={layout.id}
-                          className={`xp-layout-card ${isSelected ? "is-selected" : ""}`}
-                          onClick={() => setModalLayout(layout.id)}
-                        >
-                          <div className="xp-layout-card-top">
-                            <div className="xp-layout-card-icon">{layout.icon}</div>
-                            <span className="xp-layout-card-badge">{t(layout.badge)}</span>
-                          </div>
-                          <strong className="xp-layout-card-title">{t(layout.name)}</strong>
-                          <p className="xp-sub xp-layout-card-desc">{layout.desc}</p>
-                          <div className="xp-layout-card-footer">
-                            <span className={`xp-layout-radio ${isSelected ? "is-checked" : ""}`}>
-                              {isSelected ? t("Selected") : t("Select")}
-                            </span>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <input type="hidden" name="layoutStyle" value={modalLayout} />
-
-                  {modalLayout === "spotlight_hero" ? (
-                    <div style={{ marginTop: "16px", padding: "16px", background: "#1D150C", border: "1px solid #3A2B17", borderRadius: "8px" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "6px" }}>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E8C872" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                        </svg>
-                        <strong style={{ fontSize: "13px", color: "#ffffff" }}><Translate text='Spotlight Hero Value Highlights (3 Bullets)' /></strong>
-                      </div>
-                      <p className="xp-sub" style={{ marginBottom: "12px", fontSize: "12px" }}>
-                        
-                                                                          <Translate text='Customize the 3 feature highlight bullet points shown inside the primary spotlight hero card.' />
-                                                                        </p>
-                      <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                        <div>
-                          <label className="xp-label" style={{ fontSize: "12px", marginBottom: "4px" }}>
-                            
-                                                                                      <Translate text='Highlight 1 (' />{offerLang.toUpperCase()})
-                          </label>
-                          <input
-                            type="text"
-                            name="feature1"
-                            className="xp-input"
-                            dir={offerLang === "ar" ? "rtl" : "ltr"}
-                            value={activeOfferCopy.feature1}
-                            onChange={(e) => updateOfferCopy("feature1", e.target.value)}
-                            placeholder={t("Recommended addition to your selection")}
-                          />
-                        </div>
-                        <div>
-                          <label className="xp-label" style={{ fontSize: "12px", marginBottom: "4px" }}>
-                            
-                                                                                      <Translate text='Highlight 2 (' />{offerLang.toUpperCase()})
-                          </label>
-                          <input
-                            type="text"
-                            name="feature2"
-                            className="xp-input"
-                            dir={offerLang === "ar" ? "rtl" : "ltr"}
-                            value={activeOfferCopy.feature2}
-                            onChange={(e) => updateOfferCopy("feature2", e.target.value)}
-                            placeholder={t("Premium dermatologically evaluated formula")}
-                          />
-                        </div>
-                        <div>
-                          <label className="xp-label" style={{ fontSize: "12px", marginBottom: "4px" }}>
-                            
-                                                                                      <Translate text='Highlight 3 (' />{offerLang.toUpperCase()})
-                          </label>
-                          <input
-                            type="text"
-                            name="feature3"
-                            className="xp-input"
-                            dir={offerLang === "ar" ? "rtl" : "ltr"}
-                            value={activeOfferCopy.feature3}
-                            onChange={(e) => updateOfferCopy("feature3", e.target.value)}
-                            placeholder={t("Exclusive single-order promotion price")}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      <input type="hidden" name="feature1" value={feature1} />
-                      <input type="hidden" name="feature2" value={feature2} />
-                      <input type="hidden" name="feature3" value={feature3} />
-                    </>
-                  )}
-                </div>
-
                 {/* Promoted Products Multi-Picker */}
                 <div className="xp-editor-section">
                   <div className="xp-picker-header">
-                    <h3><Translate text='4. Promoted Upsell Products (' />{selectedProductIds.length}  <Translate text='Selected)' /></h3>
+                    <h3><Translate text='3. Promoted Upsell Products (' />{selectedProductIds.length}  <Translate text='Selected)' /></h3>
                     <div className="xp-picker-quickactions">
                       <button
                         type="button"
@@ -2291,9 +2111,143 @@ export default function PrePurchaseSettings() {
                   />
                 </div>
 
+                {/* 3. Modal Presentation Layout */}
+                <div className="xp-editor-section">
+                  <h3><Translate text='4. Modal Presentation Layout' /></h3>
+                  <p className="xp-sub" style={{ marginBottom: "14px" }}>
+                    
+                                                              <Translate text='Select the visual architecture and style of the pre-purchase modal displayed to shoppers.' />
+                                                            </p>
+                  <div className="xp-layout-cards-grid">
+                    {PRE_PURCHASE_LAYOUTS.map((layout) => {
+                      const isSelected = modalLayout === layout.id;
+                      return (
+                        <div
+                          key={layout.id}
+                          className={`xp-layout-card ${isSelected ? "is-selected" : ""}`}
+                          onClick={() => setModalLayout(layout.id)}
+                        >
+                          <div className="xp-layout-card-top">
+                            <div className="xp-layout-card-icon">{layout.icon}</div>
+                            <span className="xp-layout-card-badge">{t(layout.badge)}</span>
+                          </div>
+                          <strong className="xp-layout-card-title">{t(layout.name)}</strong>
+                          <p className="xp-sub xp-layout-card-desc">{t(layout.desc)}</p>
+                          <div className="xp-layout-card-footer">
+                            <span className={`xp-layout-radio ${isSelected ? "is-checked" : ""}`}>
+                              {isSelected ? t("Selected") : t("Select")}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <input type="hidden" name="layoutStyle" value={modalLayout} />
+
+                  {modalLayout === "spotlight_hero" ? (
+                    <div style={{ marginTop: "16px", padding: "16px", background: "#1D150C", border: "1px solid #3A2B17", borderRadius: "8px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "6px" }}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E8C872" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                        <strong style={{ fontSize: "13px", color: "#ffffff" }}><Translate text='Spotlight Hero Value Highlights (3 Bullets)' /></strong>
+                      </div>
+                      <p className="xp-sub" style={{ marginBottom: "12px", fontSize: "12px" }}>
+                        
+                                                                          <Translate text='Customize the 3 feature highlight bullet points shown inside the primary spotlight hero card.' />
+                                                                        </p>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                        <div>
+                          <label className="xp-label" style={{ fontSize: "12px", marginBottom: "4px" }}>
+                            
+                                                                                      <Translate text='Highlight 1 (' />{offerLang.toUpperCase()})
+                          </label>
+                          <input
+                            type="text"
+                            name="feature1"
+                            className="xp-input"
+                            dir={offerLang === "ar" ? "rtl" : "ltr"}
+                            value={activeOfferCopy.feature1}
+                            onChange={(e) => updateOfferCopy("feature1", e.target.value)}
+                            placeholder={t("Recommended addition to your selection")}
+                          />
+                        </div>
+                        <div>
+                          <label className="xp-label" style={{ fontSize: "12px", marginBottom: "4px" }}>
+                            
+                                                                                      <Translate text='Highlight 2 (' />{offerLang.toUpperCase()})
+                          </label>
+                          <input
+                            type="text"
+                            name="feature2"
+                            className="xp-input"
+                            dir={offerLang === "ar" ? "rtl" : "ltr"}
+                            value={activeOfferCopy.feature2}
+                            onChange={(e) => updateOfferCopy("feature2", e.target.value)}
+                            placeholder={t("Premium dermatologically evaluated formula")}
+                          />
+                        </div>
+                        <div>
+                          <label className="xp-label" style={{ fontSize: "12px", marginBottom: "4px" }}>
+                            
+                                                                                      <Translate text='Highlight 3 (' />{offerLang.toUpperCase()})
+                          </label>
+                          <input
+                            type="text"
+                            name="feature3"
+                            className="xp-input"
+                            dir={offerLang === "ar" ? "rtl" : "ltr"}
+                            value={activeOfferCopy.feature3}
+                            onChange={(e) => updateOfferCopy("feature3", e.target.value)}
+                            placeholder={t("Exclusive single-order promotion price")}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <input type="hidden" name="feature1" value={feature1} />
+                      <input type="hidden" name="feature2" value={feature2} />
+                      <input type="hidden" name="feature3" value={feature3} />
+                    </>
+                  )}
+                </div>
+
+                {/* Colors (live in the preview) */}
+                <div className="xp-editor-section">
+                  <h3><Translate text='5. Colors' /></h3>
+                  <p className="xp-sub" style={{ margin: "0 0 12px" }}>
+                    <Translate text='Pick a ready-made palette or set your own colors. The preview on the right updates instantly, and the colors apply to this popup on your store.' />
+                  </p>
+                  <ColorPresets onApply={(p) => { setModalBg(p.bg); setModalAccent(p.accent); setModalText(p.text); }} />
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "14px" }}>
+                    {[
+                      { label: "Background", name: "prePurchaseBg", value: modalBg, set: setModalBg },
+                      { label: "Accent / buttons", name: "prePurchaseAccent", value: modalAccent, set: setModalAccent },
+                      { label: "Text", name: "prePurchaseText", value: modalText, set: setModalText },
+                    ].map((f) => (
+                      <div key={f.name}>
+                        <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "#BCBAB5", marginBottom: "6px" }}>
+                          <Translate text={f.label} />
+                        </label>
+                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                          <input
+                            type="color"
+                            name={f.name}
+                            value={f.value}
+                            onChange={(e) => f.set(e.target.value)}
+                            style={{ width: "40px", height: "36px", padding: "2px", border: "1px solid #3A3A3A", borderRadius: "6px", background: "#111", cursor: "pointer" }}
+                          />
+                          <span style={{ fontSize: "13px", fontFamily: "monospace", color: "#fff" }}>{f.value}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
                 {/* Item Selection Option */}
                 <div className="xp-editor-section">
-                  <h3><Translate text='5. Modal Selection Behavior' /></h3>
+                  <h3><Translate text='6. Modal Selection Behavior' /></h3>
                   <div className="xp-radio-card-group">
                     <label className={`xp-radio-card ${preselectItems ? "is-selected" : ""}`}>
                       <input
@@ -2332,7 +2286,7 @@ export default function PrePurchaseSettings() {
 
                 {/* Promotional Discount */}
                 <div className="xp-editor-section">
-                  <h3><Translate text='6. Promotional Discount' /></h3>
+                  <h3><Translate text='7. Promotional Discount' /></h3>
                   <label className="xp-check-label" style={{ marginBottom: "12px" }}>
                     <input
                       type="checkbox"
@@ -2383,35 +2337,114 @@ export default function PrePurchaseSettings() {
                   )}
                 </div>
 
-                {/* Colors (live in the preview) */}
+                {/* Offer Details & In-Offer Multi-Language Switcher */}
                 <div className="xp-editor-section">
-                  <h3><Translate text='7. Colors' /></h3>
-                  <p className="xp-sub" style={{ margin: "0 0 12px" }}>
-                    <Translate text='Pick a ready-made palette or set your own colors. The preview on the right updates instantly, and the colors apply to this popup on your store.' />
-                  </p>
-                  <ColorPresets onApply={(p) => { setModalBg(p.bg); setModalAccent(p.accent); setModalText(p.text); }} />
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "14px" }}>
-                    {[
-                      { label: "Background", name: "prePurchaseBg", value: modalBg, set: setModalBg },
-                      { label: "Accent / buttons", name: "prePurchaseAccent", value: modalAccent, set: setModalAccent },
-                      { label: "Text", name: "prePurchaseText", value: modalText, set: setModalText },
-                    ].map((f) => (
-                      <div key={f.name}>
-                        <label style={{ display: "block", fontSize: "12px", fontWeight: 600, color: "#BCBAB5", marginBottom: "6px" }}>
-                          <Translate text={f.label} />
-                        </label>
-                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                          <input
-                            type="color"
-                            name={f.name}
-                            value={f.value}
-                            onChange={(e) => f.set(e.target.value)}
-                            style={{ width: "40px", height: "36px", padding: "2px", border: "1px solid #3A3A3A", borderRadius: "6px", background: "#111", cursor: "pointer" }}
-                          />
-                          <span style={{ fontSize: "13px", fontFamily: "monospace", color: "#fff" }}>{f.value}</span>
-                        </div>
-                      </div>
-                    ))}
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px", marginBottom: "12px" }}>
+                    <div>
+                      <h3 style={{ margin: "0 0 4px 0" }}><Translate text='8. Language and Copy' /></h3>
+                      <p className="xp-sub" style={{ margin: 0 }}>
+                        
+                                                                          <Translate text='Configure this offer&apos;s title, subtitle, buttons, badges, and features for each language.' />
+                                                                        </p>
+                    </div>
+                  </div>
+
+                  <FeatureLanguageSwitcher
+                    selectedLang={offerLang}
+                    onSelectLang={handleSelectOfferLang}
+                    onLoadPredefined={() => handleLoadPredefinedForOffer(offerLang)}
+                    dashboardLocale={dashboardLocale}
+                  />
+
+                  <input type="hidden" name="offerI18nJson" value={JSON.stringify(offerI18n)} />
+                  <input type="hidden" name="activeOfferLang" value={offerLang} />
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "12px" }}>
+                    <div className="xp-field">
+                      <label><Translate text='Offer Headline (' />{offerLang.toUpperCase()})</label>
+                      <input
+                        type="text"
+                        name="offerHeadline"
+                        className="xp-input"
+                        dir={offerLang === "ar" ? "rtl" : "ltr"}
+                        value={activeOfferCopy.headline}
+                        onChange={(e) => updateOfferCopy("headline", e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="xp-field">
+                      <label><Translate text='Special Offer Tag (' />{offerLang.toUpperCase()})</label>
+                      <input
+                        type="text"
+                        name="offerTag"
+                        className="xp-input"
+                        dir={offerLang === "ar" ? "rtl" : "ltr"}
+                        value={activeOfferCopy.offerTag}
+                        onChange={(e) => updateOfferCopy("offerTag", e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="xp-field" style={{ marginBottom: "12px" }}>
+                    <label><Translate text='Offer Subtitle / Description (' />{offerLang.toUpperCase()})</label>
+                    <textarea
+                      name="offerDescription"
+                      className="xp-input"
+                      dir={offerLang === "ar" ? "rtl" : "ltr"}
+                      rows={2}
+                      value={activeOfferCopy.description}
+                      onChange={(e) => updateOfferCopy("description", e.target.value)}
+                    />
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "12px" }}>
+                    <div className="xp-field">
+                      <label><Translate text='Accept Button Label (' />{offerLang.toUpperCase()})</label>
+                      <input
+                        type="text"
+                        name="acceptButton"
+                        className="xp-input"
+                        dir={offerLang === "ar" ? "rtl" : "ltr"}
+                        value={activeOfferCopy.acceptButton}
+                        onChange={(e) => updateOfferCopy("acceptButton", e.target.value)}
+                      />
+                    </div>
+                    <div className="xp-field">
+                      <label><Translate text='Decline Button Label (' />{offerLang.toUpperCase()})</label>
+                      <input
+                        type="text"
+                        name="declineButton"
+                        className="xp-input"
+                        dir={offerLang === "ar" ? "rtl" : "ltr"}
+                        value={activeOfferCopy.declineButton}
+                        onChange={(e) => updateOfferCopy("declineButton", e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "12px" }}>
+                    <div className="xp-field">
+                      <label><Translate text='Urgency Countdown Label (' />{offerLang.toUpperCase()})</label>
+                      <input
+                        type="text"
+                        name="urgencyLabel"
+                        className="xp-input"
+                        dir={offerLang === "ar" ? "rtl" : "ltr"}
+                        value={activeOfferCopy.urgencyLabel}
+                        onChange={(e) => updateOfferCopy("urgencyLabel", e.target.value)}
+                      />
+                    </div>
+                    <div className="xp-field">
+                      <label><Translate text='Scarcity Notice (' />{offerLang.toUpperCase()})</label>
+                      <input
+                        type="text"
+                        name="scarcityNotice"
+                        className="xp-input"
+                        dir={offerLang === "ar" ? "rtl" : "ltr"}
+                        value={activeOfferCopy.scarcityNotice}
+                        onChange={(e) => updateOfferCopy("scarcityNotice", e.target.value)}
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -2423,10 +2456,10 @@ export default function PrePurchaseSettings() {
                     disabled={isSubmitting || selectedProductIds.length === 0}
                   >
                     {isSubmitting
-                      ? "Saving Offer..."
+                      ? t("Saving Offer...")
                       : viewMode === "edit"
-                      ? "Save Changes"
-                      : `Create Offer (${selectedProductIds.length} Items)`}
+                      ? t("Save Changes")
+                      : t("Create Offer ({n} Items)", { n: selectedProductIds.length })}
                   </button>
                   <button
                     type="button"
@@ -2449,7 +2482,7 @@ export default function PrePurchaseSettings() {
                     <p className="xp-sub"><Translate text='Interactive preview of the selected pre-purchase modal architecture.' /></p>
                   </div>
                   <span className="xp-preview-layout-badge">
-                    {PRE_PURCHASE_LAYOUTS.find((l) => l.id === modalLayout)?.name || "Spotlight Hero"}
+                    {t(PRE_PURCHASE_LAYOUTS.find((l) => l.id === modalLayout)?.name || "Featured Product")}
                   </span>
                 </div>
 
@@ -2487,7 +2520,7 @@ export default function PrePurchaseSettings() {
 
                   {/* Empty state */}
                   {selectedProductsList.length === 0 ? (
-                    <div className="xp-preview-none"><Translate text='Select promoted products in step 4 to preview the modal.' /></div>
+                    <div className="xp-preview-none"><Translate text='Select promoted products in step 3 to preview the modal.' /></div>
                   ) : (
                     <>
                       {/* LAYOUT 1: Spotlight Hero */}

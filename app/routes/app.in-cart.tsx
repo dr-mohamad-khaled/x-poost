@@ -329,6 +329,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       } catch (e) {}
     }
 
+    const offerName = String(formData.get("offerName") || "").trim().slice(0, 80);
+    if (!offerName) {
+      return { error: "Please give this offer a name." };
+    }
+
     const offerHeadline = offerI18n?.ar?.headline || offerI18n?.en?.headline || String(formData.get("offerHeadline") || "Frequently Bought Together");
     const hasDiscount = formData.get("hasDiscount") === "true";
     const discountPercent = hasDiscount
@@ -454,6 +459,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
           targetVariantId,
           targetProductPrice,
           targetProductImage,
+          offerName,
           offerHeadline,
           offerDescription,
           discountPercent,
@@ -461,7 +467,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
           active: true,
         },
       });
-      return { ok: true, message: `In-cart upsell "${offerHeadline}" updated successfully!` };
+      return { ok: true, message: `In-cart upsell "${offerName}" updated successfully!` };
     } else {
       await prisma.upsellRule.create({
         data: {
@@ -474,6 +480,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
           targetVariantId,
           targetProductPrice,
           targetProductImage,
+          offerName,
           offerHeadline,
           offerDescription,
           discountPercent,
@@ -554,7 +561,7 @@ export default function InCartUpsellSettings() {
       if (statusFilter === "paused" && rule.active) return false;
       if (tableSearch.trim()) {
         const q = tableSearch.toLowerCase();
-        const matchesHeadline = (rule.offerHeadline || "").toLowerCase().includes(q);
+        const matchesHeadline = ((rule.offerName || "") + " " + (rule.offerHeadline || "")).toLowerCase().includes(q);
         const matchesTrigger = (rule.triggerProductTitle || "").toLowerCase().includes(q);
         const matchesTarget = (rule.targetProductTitle || "").toLowerCase().includes(q);
         if (!matchesHeadline && !matchesTrigger && !matchesTarget) return false;
@@ -570,6 +577,7 @@ export default function InCartUpsellSettings() {
   }, [filteredRules, currentPage]);
 
   // Form State
+  const [offerName, setOfferName] = useState("");
   const [headline, setHeadline] = useState("Frequently Bought Together");
   const [triggerType, setTriggerType] = useState<"ALL" | "SPECIFIC">("ALL");
   const [selectedTriggerProductIds, setSelectedTriggerProductIds] = useState<string[]>([]);
@@ -679,6 +687,7 @@ export default function InCartUpsellSettings() {
 
   const openCreateMode = () => {
     setEditingRule(null);
+    setOfferName("");
     setHeadline("Frequently Bought Together");
     setOfferI18n(getDefaultInCartI18n());
     setSelectedLang(dashboardLocale || "ar");
@@ -700,6 +709,7 @@ export default function InCartUpsellSettings() {
 
   const openEditMode = (rule: any) => {
     setEditingRule(rule);
+    setOfferName((rule.offerName || rule.offerHeadline || "").trim());
     setHeadline(rule.offerHeadline || "Frequently Bought Together");
 
     // Decode in-offer translations
@@ -885,7 +895,7 @@ export default function InCartUpsellSettings() {
       <style>{IN_CART_STYLES}</style>
 
       {actionData && "error" in actionData ? (
-        <s-banner tone="critical">{actionData.error}</s-banner>
+        <s-banner tone="critical">{t(actionData.error)}</s-banner>
       ) : null}
       {actionData && "ok" in actionData ? (
         <s-banner tone="success">{actionData.message}</s-banner>
@@ -1177,7 +1187,7 @@ export default function InCartUpsellSettings() {
                               className="xp-table-title-link"
                               onClick={() => openEditMode(rule)}
                             >
-                              <strong>{rule.offerHeadline || "In-Cart Add-on"}</strong>
+                              <strong>{rule.offerName || rule.offerHeadline || t("In-Cart Add-on")}</strong>
                               <span className="xp-table-sub">
                                 {rule.targetProductTitle}
                               </span>
@@ -1260,7 +1270,7 @@ export default function InCartUpsellSettings() {
                                 onClick={(e) => {
                                   if (
                                     !window.confirm(
-                                      `Are you sure you want to delete "${rule.offerHeadline || "this offer"}"?`
+                                      t("Are you sure you want to delete the offer \"{name}\"?", { name: rule.offerName || rule.offerHeadline || t("this offer") })
                                     )
                                   ) {
                                     e.preventDefault();
@@ -1330,7 +1340,7 @@ export default function InCartUpsellSettings() {
               
                                             <Translate text='Back to All Offers' />
                                           </button>
-            <h2>{viewMode === "edit" ? `Edit In-Cart Offer: ${headline}` : "Create In-Cart Drawer Offer"}</h2>
+            <h2>{viewMode === "edit" ? t("Edit In-Cart Offer: {name}", { name: offerName || headline }) : t("Create In-Cart Drawer Offer")}</h2>
           </div>
 
           <div className="xp-cart-layout">
@@ -1345,79 +1355,25 @@ export default function InCartUpsellSettings() {
                   <input type="hidden" name="ruleId" value={editingRule.id} />
                 )}
 
-                {/* Multi-Language In-Offer Configuration */}
-                <div className="xp-editor-section" style={{ borderLeft: "3px solid #E8C872", paddingLeft: "16px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                    <div>
-                      <h3 style={{ margin: 0, fontSize: "14px", fontWeight: "700" }}>
-                        
-                                                                          <Translate text='Offer Language &amp; Localized Content' />
-                                                                        </h3>
-                      <p className="xp-sub" style={{ margin: 0, fontSize: "12px" }}>
-                        
-                                                                          <Translate text='Select a language to customize this specific offer&apos;s headline, button, and badge for international buyers.' />
-                                                                        </p>
-                    </div>
-                  </div>
-
-                  <FeatureLanguageSwitcher
-                    selectedLang={selectedLang}
-                    onSelectLang={setSelectedLang}
-                    onLoadPredefined={handleLoadPredefined}
-                    dashboardLocale={dashboardLocale}
-                  />
-                </div>
-
-                {/* Section 1: Localized Headline & Text */}
+                {/* Offer Name */}
                 <div className="xp-editor-section">
-                  <h3><Translate text='1. Offer Headline &amp; Button Copy (' />{selectedLang.toUpperCase()})</h3>
-                  
-                  <div className="xp-field" style={{ marginBottom: "14px" }}>
-                    <label><Translate text='Header / Section Title (' />{selectedLang.toUpperCase()})</label>
+                  <h3><Translate text='1. Offer Name' /></h3>
+                  <p className="xp-sub" style={{ marginBottom: "12px" }}>
+                    <Translate text='Only you see this name. It identifies the offer in your list. Shoppers see the headline you write under Language and Copy.' />
+                  </p>
+                  <div className="xp-field">
+                    <label><Translate text='Offer name' /></label>
                     <input
                       type="text"
+                      name="offerName"
                       className="xp-input"
-                      dir={selectedLang === "ar" ? "rtl" : "ltr"}
-                      value={activeOfferCopy.headline}
-                      placeholder={t("e.g. Frequently Bought Together or Complete Your Routine")}
-                      onChange={(e) => {
-                        updateOfferCopy("headline", e.target.value);
-                        setHeadline(e.target.value);
-                      }}
                       required
+                      maxLength={80}
+                      value={offerName}
+                      onChange={(e) => setOfferName(e.target.value)}
+                      placeholder={t("e.g. Serum add-on for summer")}
                     />
-                    <small><Translate text='Appears above the add-on card inside the cart drawer.' /></small>
                   </div>
-
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
-                    <div className="xp-field">
-                      <label><Translate text='Quick-Add Button Label (' />{selectedLang.toUpperCase()})</label>
-                      <input
-                        type="text"
-                        className="xp-input"
-                        dir={selectedLang === "ar" ? "rtl" : "ltr"}
-                        value={activeOfferCopy.addButton}
-                        placeholder={t("e.g. + Add to Cart")}
-                        onChange={(e) => updateOfferCopy("addButton", e.target.value)}
-                      />
-                    </div>
-
-                    <div className="xp-field">
-                      <label><Translate text='Discount Badge Format (' />{selectedLang.toUpperCase()})</label>
-                      <input
-                        type="text"
-                        className="xp-input"
-                        dir={selectedLang === "ar" ? "rtl" : "ltr"}
-                        value={activeOfferCopy.saveBadge}
-                        placeholder={t("e.g. SAVE {discount}%")}
-                        onChange={(e) => updateOfferCopy("saveBadge", e.target.value)}
-                      />
-                      <small><Translate text='Use' /> {"{discount}"}  <Translate text='as placeholder for percentage' /></small>
-                    </div>
-                  </div>
-
-                  <input type="hidden" name="offerHeadline" value={activeOfferCopy.headline || headline} />
-                  <input type="hidden" name="offerI18nJson" value={JSON.stringify(offerI18n)} />
                 </div>
 
                 {/* Trigger Condition */}
@@ -1883,6 +1839,81 @@ export default function InCartUpsellSettings() {
                   </div>
                 </div>
 
+                {/* Multi-Language In-Offer Configuration */}
+                <div className="xp-editor-section" style={{ borderLeft: "3px solid #E8C872", paddingLeft: "16px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+                    <div>
+                      <h3 style={{ margin: 0, fontSize: "14px", fontWeight: "700" }}>
+                        
+                                                                          <Translate text='Offer Language &amp; Localized Content' />
+                                                                        </h3>
+                      <p className="xp-sub" style={{ margin: 0, fontSize: "12px" }}>
+                        
+                                                                          <Translate text='Select a language to customize this specific offer&apos;s headline, button, and badge for international buyers.' />
+                                                                        </p>
+                    </div>
+                  </div>
+
+                  <FeatureLanguageSwitcher
+                    selectedLang={selectedLang}
+                    onSelectLang={setSelectedLang}
+                    onLoadPredefined={handleLoadPredefined}
+                    dashboardLocale={dashboardLocale}
+                  />
+                </div>
+
+                {/* Section 1: Localized Headline & Text */}
+                <div className="xp-editor-section">
+                  <h3><Translate text='6. Offer Headline &amp; Button Copy (' />{selectedLang.toUpperCase()})</h3>
+                  
+                  <div className="xp-field" style={{ marginBottom: "14px" }}>
+                    <label><Translate text='Header / Section Title (' />{selectedLang.toUpperCase()})</label>
+                    <input
+                      type="text"
+                      className="xp-input"
+                      dir={selectedLang === "ar" ? "rtl" : "ltr"}
+                      value={activeOfferCopy.headline}
+                      placeholder={t("e.g. Frequently Bought Together or Complete Your Routine")}
+                      onChange={(e) => {
+                        updateOfferCopy("headline", e.target.value);
+                        setHeadline(e.target.value);
+                      }}
+                      required
+                    />
+                    <small><Translate text='Appears above the add-on card inside the cart drawer.' /></small>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
+                    <div className="xp-field">
+                      <label><Translate text='Quick-Add Button Label (' />{selectedLang.toUpperCase()})</label>
+                      <input
+                        type="text"
+                        className="xp-input"
+                        dir={selectedLang === "ar" ? "rtl" : "ltr"}
+                        value={activeOfferCopy.addButton}
+                        placeholder={t("e.g. + Add to Cart")}
+                        onChange={(e) => updateOfferCopy("addButton", e.target.value)}
+                      />
+                    </div>
+
+                    <div className="xp-field">
+                      <label><Translate text='Discount Badge Format (' />{selectedLang.toUpperCase()})</label>
+                      <input
+                        type="text"
+                        className="xp-input"
+                        dir={selectedLang === "ar" ? "rtl" : "ltr"}
+                        value={activeOfferCopy.saveBadge}
+                        placeholder={t("e.g. SAVE {discount}%")}
+                        onChange={(e) => updateOfferCopy("saveBadge", e.target.value)}
+                      />
+                      <small><Translate text='Use' /> {"{discount}"}  <Translate text='as placeholder for percentage' /></small>
+                    </div>
+                  </div>
+
+                  <input type="hidden" name="offerHeadline" value={activeOfferCopy.headline || headline} />
+                  <input type="hidden" name="offerI18nJson" value={JSON.stringify(offerI18n)} />
+                </div>
+
                 {/* Form Buttons */}
                 <div className="xp-form-actions">
                   <button
@@ -1891,10 +1922,10 @@ export default function InCartUpsellSettings() {
                     disabled={isSubmitting || !selectedTargetId}
                   >
                     {isSubmitting
-                      ? "Saving In-Cart Offer..."
+                      ? t("Saving In-Cart Offer...")
                       : viewMode === "edit"
-                      ? "Save Changes"
-                      : "Create In-Cart Offer"}
+                      ? t("Save Changes")
+                      : t("Create In-Cart Offer")}
                   </button>
                   <button
                     type="button"

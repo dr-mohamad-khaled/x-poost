@@ -512,7 +512,7 @@ function CaseStudyStrip() {
         </button>
       </div>
       <div key={shown} className="xp-case-body">
-        <p className="xp-case-headline">{study.headline}</p>
+        <p className="xp-case-headline"><Translate text={study.headline} /></p>
         <p className="xp-case-detail"><Translate text={study.detail} /></p>
         <div className="xp-case-foot">
           <Link to={study.route} className="xp-btn xp-btn--soft xp-btn--sm">
@@ -521,7 +521,7 @@ function CaseStudyStrip() {
           <p className="xp-case-source">
             <Translate text='Source:' />{" "}
             <a href={study.url} target="_blank" rel="noreferrer">
-              {study.source}
+              <Translate text={study.source} />
             </a>
           </p>
         </div>

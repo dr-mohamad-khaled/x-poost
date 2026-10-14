@@ -125,6 +125,7 @@ model UpsellRule {
   targetVariantId     String? // Shopify variant GID (optional pre-selection)
   targetProductPrice  String?
   targetProductImage  String?
+  offerName           String? // merchant-facing name shown in the offers list
   offerHeadline       String? @default("Special Upgrade Offer")
   offerDescription    String?
   discountPercent     Float?
