@@ -5,7 +5,7 @@
  * Three offer kinds:
  *  - reward        a unique, expiring code (or gift card) for the customer's NEXT order
  *  - addon         1–4 products shown on the thank-you page, opened as a new prefilled checkout with a benefit
- *  - shiptogether  same as addon, but with a real countdown: add items within the window and they ship together
+ *  - shiptogether  same as addon, but with a real expiring window: add items within the window and they ship together
  */
 
 // ─────────────────────────────────────────────────────────────
@@ -42,7 +42,7 @@ export const TY_KIND_META: Record<TyKind, { name: string; blurb: string }> = {
     blurb: "Show 1–4 products. One tap opens a prefilled checkout with a discount or free shipping.",
   },
   shiptogether: {
-    name: "Ship-together countdown",
+    name: "Ship Together",
     blurb: "“Add items within the time limit and they ship in one box, with no extra shipping.” Enforced by a real expiring code.",
   },
 };
@@ -66,8 +66,8 @@ export const TY_DESIGN_META: Record<TyDesign, { name: string; blurb: string; kin
     maxProducts: 0,
   },
   ship_timer: {
-    name: "Ship-Together Timer",
-    blurb: "A large live countdown, the benefit line, then product rows with one-tap add.",
+    name: "Product List",
+    blurb: "The benefit line, then product rows with one-tap add.",
     kinds: ["shiptogether", "addon"],
     minProducts: 1,
     maxProducts: 3,
@@ -108,7 +108,6 @@ export const TY_PLACEHOLDERS = [
   { key: "{order_number}", hint: "Order number, e.g. #1042" },
   { key: "{code}", hint: "The unique code" },
   { key: "{discount}", hint: "The benefit, e.g. 15% off" },
-  { key: "{time_left}", hint: "Live countdown, e.g. 09:41" },
   { key: "{minutes}", hint: "Window length in minutes" },
   { key: "{min_spend}", hint: "Minimum spend for the reward" },
   { key: "{expires}", hint: "Expiry date" },
@@ -120,7 +119,6 @@ export type TyTexts = {
   headline: string;
   subheadline: string;
   benefitLine: string;
-  timerLabel: string;
   timerExpired: string;
   productCta: string;
   bundleCta: string;
@@ -141,8 +139,6 @@ export const TY_TEXT_FIELDS: { key: keyof TyTexts; label: string; multiline?: bo
   { key: "headline", label: "Headline" },
   { key: "subheadline", label: "Sub-headline", multiline: true },
   { key: "benefitLine", label: "Benefit line", multiline: true, hint: "Shown under the headline, e.g. the free shipping promise." },
-  { key: "timerLabel", label: "Timer label", kinds: ["shiptogether"] },
-  { key: "timerExpired", label: "Text when the timer ends", kinds: ["shiptogether"], multiline: true },
   { key: "productCta", label: "Button on each product", kinds: ["addon", "shiptogether"] },
   { key: "bundleCta", label: "“Add all” / main button", kinds: ["addon", "shiptogether"] },
   { key: "savingsBadge", label: "Savings badge", kinds: ["addon", "shiptogether"] },
@@ -159,7 +155,6 @@ export const TY_TEXT_FIELDS: { key: keyof TyTexts; label: string; multiline?: bo
 
 type Common = Pick<
   TyTexts,
-  | "timerLabel"
   | "timerExpired"
   | "productCta"
   | "bundleCta"
@@ -177,7 +172,6 @@ type KindTexts = Pick<TyTexts, "eyebrow" | "headline" | "subheadline" | "benefit
 
 const COMMON: Record<TyLang, Common> = {
   en: {
-    timerLabel: "Offer ends in",
     timerExpired: "This offer has ended. Your order is on its way as planned.",
     productCta: "Add to my shipment",
     bundleCta: "Add all to my shipment",
@@ -192,7 +186,6 @@ const COMMON: Record<TyLang, Common> = {
     shopCta: "Use it on my next order",
   },
   ar: {
-    timerLabel: "ينتهي العرض خلال",
     timerExpired: "انتهى هذا العرض. طلبك في طريقه إليك كما هو مخطط.",
     productCta: "أضف إلى شحنتي",
     bundleCta: "أضف الكل إلى شحنتي",
@@ -207,7 +200,6 @@ const COMMON: Record<TyLang, Common> = {
     shopCta: "استخدمه في طلبي القادم",
   },
   fr: {
-    timerLabel: "L'offre se termine dans",
     timerExpired: "Cette offre est terminée. Votre commande suit son cours.",
     productCta: "Ajouter à mon envoi",
     bundleCta: "Tout ajouter à mon envoi",
@@ -222,7 +214,6 @@ const COMMON: Record<TyLang, Common> = {
     shopCta: "L'utiliser pour ma prochaine commande",
   },
   de: {
-    timerLabel: "Angebot endet in",
     timerExpired: "Dieses Angebot ist abgelaufen. Ihre Bestellung ist wie geplant unterwegs.",
     productCta: "Zu meiner Sendung hinzufügen",
     bundleCta: "Alles zu meiner Sendung hinzufügen",
@@ -237,7 +228,6 @@ const COMMON: Record<TyLang, Common> = {
     shopCta: "Für meine nächste Bestellung nutzen",
   },
   es: {
-    timerLabel: "La oferta termina en",
     timerExpired: "Esta oferta ha terminado. Tu pedido sigue su camino como estaba previsto.",
     productCta: "Añadir a mi envío",
     bundleCta: "Añadir todo a mi envío",
@@ -252,7 +242,6 @@ const COMMON: Record<TyLang, Common> = {
     shopCta: "Usarlo en mi próximo pedido",
   },
   it: {
-    timerLabel: "L'offerta termina tra",
     timerExpired: "Questa offerta è terminata. Il tuo ordine è in viaggio come previsto.",
     productCta: "Aggiungi alla mia spedizione",
     bundleCta: "Aggiungi tutto alla mia spedizione",
@@ -267,7 +256,6 @@ const COMMON: Record<TyLang, Common> = {
     shopCta: "Usalo sul mio prossimo ordine",
   },
   pt: {
-    timerLabel: "A oferta termina em",
     timerExpired: "Esta oferta terminou. O seu pedido segue a caminho como previsto.",
     productCta: "Adicionar ao meu envio",
     bundleCta: "Adicionar tudo ao meu envio",
@@ -392,49 +380,49 @@ const KIND_TEXT: Record<TyKind, Record<TyLang, KindTexts>> = {
       headline: "Forgot something? Ship it in the same box",
       subheadline: "Add new items within the time limit and they'll be included in one shipment, so you pay no extra shipping.",
       benefitLine: "{discount} on everything you add, shipped together with your order.",
-      footnote: "The offer is real: your code expires when the timer ends. Items added are linked to order {order_number}.",
+      footnote: "The offer is real: your code expires when the offer ends. Items added are linked to order {order_number}.",
     },
     ar: {
       eyebrow: "تم تأكيد الطلب {order_number}",
       headline: "نسيت شيئاً؟ سنشحنه في نفس الصندوق",
       subheadline: "أضف منتجات جديدة خلال المهلة وسيتم شحنها مع طلبك في شحنة واحدة، فلا تدفع أي رسوم شحن إضافية.",
       benefitLine: "{discount} على كل ما تضيفه، ويُشحن مع طلبك.",
-      footnote: "العرض حقيقي: ينتهي الكود عند انتهاء العداد. المنتجات المضافة مرتبطة بالطلب {order_number}.",
+      footnote: "العرض حقيقي: ينتهي الكود عند انتهاء العرض. المنتجات المضافة مرتبطة بالطلب {order_number}.",
     },
     fr: {
       eyebrow: "Commande {order_number} confirmée",
       headline: "Un oubli ? Il part dans le même colis",
       subheadline: "Ajoutez de nouveaux articles dans le temps imparti : ils seront inclus dans la même expédition, sans frais de livraison supplémentaires.",
       benefitLine: "{discount} sur tout ce que vous ajoutez, expédié avec votre commande.",
-      footnote: "L'offre est réelle : votre code expire à la fin du minuteur. Les articles ajoutés sont liés à la commande {order_number}.",
+      footnote: "L'offre est réelle : votre code expire à la fin de l'offre. Les articles ajoutés sont liés à la commande {order_number}.",
     },
     de: {
       eyebrow: "Bestellung {order_number} bestätigt",
       headline: "Etwas vergessen? Es reist im selben Paket mit",
       subheadline: "Fügen Sie innerhalb der Zeit neue Artikel hinzu – sie werden in einer Sendung verschickt, ohne zusätzliche Versandkosten.",
       benefitLine: "{discount} auf alles, was Sie hinzufügen, zusammen mit Ihrer Bestellung versendet.",
-      footnote: "Das Angebot ist echt: Ihr Code läuft mit dem Timer ab. Hinzugefügte Artikel werden mit Bestellung {order_number} verknüpft.",
+      footnote: "Das Angebot ist echt: Ihr Code läuft mit dem Angebot ab. Hinzugefügte Artikel werden mit Bestellung {order_number} verknüpft.",
     },
     es: {
       eyebrow: "Pedido {order_number} confirmado",
       headline: "¿Olvidaste algo? Va en la misma caja",
       subheadline: "Añade nuevos artículos dentro del tiempo límite y se incluirán en un solo envío, sin gastos de envío adicionales.",
       benefitLine: "{discount} en todo lo que añadas, enviado junto con tu pedido.",
-      footnote: "La oferta es real: tu código caduca cuando termina el temporizador. Los artículos añadidos se vinculan al pedido {order_number}.",
+      footnote: "La oferta es real: tu código caduca cuando termina la oferta. Los artículos añadidos se vinculan al pedido {order_number}.",
     },
     it: {
       eyebrow: "Ordine {order_number} confermato",
       headline: "Hai dimenticato qualcosa? Parte nella stessa scatola",
       subheadline: "Aggiungi nuovi articoli entro il tempo limite e saranno inclusi in un'unica spedizione, senza costi di spedizione aggiuntivi.",
       benefitLine: "{discount} su tutto ciò che aggiungi, spedito insieme al tuo ordine.",
-      footnote: "L'offerta è reale: il tuo codice scade quando finisce il timer. Gli articoli aggiunti sono collegati all'ordine {order_number}.",
+      footnote: "L'offerta è reale: il tuo codice scade quando finisce l'offerta. Gli articoli aggiunti sono collegati all'ordine {order_number}.",
     },
     pt: {
       eyebrow: "Pedido {order_number} confirmado",
       headline: "Esqueceu-se de algo? Vai na mesma caixa",
       subheadline: "Adicione novos artigos dentro do tempo limite e serão incluídos numa única expedição, sem custos de envio adicionais.",
       benefitLine: "{discount} em tudo o que adicionar, enviado junto com o seu pedido.",
-      footnote: "A oferta é real: o seu código expira quando o temporizador termina. Os artigos adicionados ficam ligados ao pedido {order_number}.",
+      footnote: "A oferta é real: o seu código expira quando a oferta termina. Os artigos adicionados ficam ligados ao pedido {order_number}.",
     },
   },
 };
@@ -467,10 +455,10 @@ export function pickLang(locale: string | undefined | null, available?: readonly
   return (pool as readonly string[]).includes(code) ? code : "en";
 }
 
-export type TyVars = Partial<Record<"first_name" | "order_number" | "code" | "discount" | "time_left" | "minutes" | "min_spend" | "expires" | "shop", string>>;
+export type TyVars = Partial<Record<"first_name" | "order_number" | "code" | "discount" | "minutes" | "min_spend" | "expires" | "shop", string>>;
 
 /**
- * Replace {placeholders}. `keep` lists placeholders to leave intact (the live {time_left}).
+ * Replace {placeholders}. `keep` lists placeholders to leave intact.
  * Unknown placeholders are dropped, stray spaces before punctuation are tidied and the first letter is capitalised.
  */
 export function fillTemplate(tpl: string, vars: TyVars, keep: string[] = []): string {
@@ -534,7 +522,6 @@ export type TyAddon = {
   benefit: "percent" | "free_shipping";
   percent: number;
   windowMinutes: number;
-  showTimer: boolean;
 };
 
 export type TyConfig = {
@@ -554,7 +541,6 @@ export const DEFAULT_CONFIG: TyConfig = {
     benefit: "percent",
     percent: 15,
     windowMinutes: 20,
-    showTimer: true,
   },
 };
 
@@ -607,7 +593,6 @@ export function sanitizeConfig(raw: any): TyConfig {
       benefit: a.benefit === "free_shipping" ? "free_shipping" : "percent",
       percent: clamp(a.percent, 1, 100, 15),
       windowMinutes: Math.round(clamp(a.windowMinutes, 2, 1440, 20)),
-      showTimer: a.showTimer !== false,
     },
   };
 }
@@ -880,16 +865,6 @@ export function buildAddLink(opts: {
   return `https://${opts.shopDomain}/cart/${items}?${q.join("&")}`;
 }
 
-export function formatCountdown(ms: number): string {
-  const s = Math.max(0, Math.ceil(ms / 1000));
-  const h = Math.floor(s / 3600);
-  const m = Math.floor((s % 3600) / 60);
-  const sec = s % 60;
-  const mm = String(m).padStart(2, "0");
-  const ss = String(sec).padStart(2, "0");
-  return h > 0 ? `${h}:${mm}:${ss}` : `${mm}:${ss}`;
-}
-
 // ─────────────────────────────────────────────────────────────
 // Payload sent to the checkout extension
 // ─────────────────────────────────────────────────────────────
@@ -903,11 +878,9 @@ export type TyRenderPayload = {
   design?: TyDesign;
   lang?: TyLang;
   dir?: "ltr" | "rtl";
-  /** Copy for the customer's language with every placeholder filled except {time_left}. */
+  /** Copy for the customer's language with every placeholder filled. */
   texts?: TyTexts;
   currency?: string;
-  /** server clock (ISO), so the countdown is right even when the customer's clock is off */
-  serverNow?: string;
   /** reward kinds */
   rewards?: { code: string; label: string; minSpend: number; discountText: string; minSpendText: string; minSpendLine: string; applyLink: string }[];
   /** reward expiry, or the end of the ship-together window (ISO) */
@@ -922,7 +895,6 @@ export type TyRenderPayload = {
   totalText?: string;
   benefit?: "percent" | "free_shipping";
   discountText?: string;
-  showTimer?: boolean;
   shopUrl?: string;
   /** true when this is a sample shown in the checkout editor / admin preview */
   sample?: boolean;

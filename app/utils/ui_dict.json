@@ -2033,7 +2033,14 @@
     "6. Offer Headline & Button Copy (": "6. Offer Headline & Button Copy (",
     "Select promoted products in step 3 to preview the modal.": "Select promoted products in step 3 to preview the modal.",
     "Switch to Yearly": "Switch to Yearly",
-    "30-day money-back guarantee": "30-day money-back guarantee"
+    "30-day money-back guarantee": "30-day money-back guarantee",
+    "Product List": "Product List",
+    "The benefit line, then product rows with one-tap add.": "The benefit line, then product rows with one-tap add.",
+    "Removes the fear of paying shipping twice. The code is real and expires when the offer window ends.": "Removes the fear of paying shipping twice. The code is real and expires when the offer window ends.",
+    "Free shipping on the added items matches the promise “no extra shipping fee”. The code is single-use and expires when the offer window ends.": "Free shipping on the added items matches the promise “no extra shipping fee”. The code is single-use and expires when the offer window ends.",
+    "Keep the offer window short.": "Keep the offer window short.",
+    "XPoost makes the code really expire when the offer window ends. 15–30 minutes keeps the offer relevant while your team can still pack one box.": "XPoost makes the code really expire when the offer window ends. 15–30 minutes keeps the offer relevant while your team can still pack one box.",
+    "Turn the order confirmation page into extra revenue: a unique next-order code, matching products, or a ship-together offer, with conditions and translations.": "Turn the order confirmation page into extra revenue: a unique next-order code, matching products, or a ship-together offer, with conditions and translations."
   },
   "ar": {
     "0": "إشعارات زاوية الاستعجال",
@@ -4069,7 +4076,14 @@
     "6. Offer Headline & Button Copy (": "6. نصوص العرض والزر (",
     "Select promoted products in step 3 to preview the modal.": "اختر المنتجات المروجة في خطوة 3 لمعاينة النافذة.",
     "Switch to Yearly": "التحويل إلى السنوي",
-    "30-day money-back guarantee": "ضمان استرجاع الأموال لمدة 30 يوماً"
+    "30-day money-back guarantee": "ضمان استرجاع الأموال لمدة 30 يوماً",
+    "Product List": "قائمة المنتجات",
+    "The benefit line, then product rows with one-tap add.": "سطر الميزة، ثم صفوف المنتجات مع إضافة بنقرة واحدة.",
+    "Removes the fear of paying shipping twice. The code is real and expires when the offer window ends.": "يزيل تردد العميل من دفع رسوم شحن إضافية. الكود حقيقي وينتهي بانتهاء مدة العرض.",
+    "Free shipping on the added items matches the promise “no extra shipping fee”. The code is single-use and expires when the offer window ends.": "الشحن المجاني على العناصر المضافة يطابق الوعد «بدون رسوم شحن إضافية». الكود للاستخدام مرة واحدة وينتهي بانتهاء مدة العرض.",
+    "Keep the offer window short.": "اجعل مدة العرض قصيرة.",
+    "XPoost makes the code really expire when the offer window ends. 15–30 minutes keeps the offer relevant while your team can still pack one box.": "XPoost يُنهي صلاحية الكود فعلياً بانتهاء مدة العرض. من 15 إلى 30 دقيقة تُبقي العرض مناسباً وتسمح لفريقك بتجهيز الشحنة في صندوق واحد.",
+    "Turn the order confirmation page into extra revenue: a unique next-order code, matching products, or a ship-together offer, with conditions and translations.": "حوّل صفحة تأكيد الطلب إلى إيرادات إضافية: كود حصري للطلب التالي، منتجات مكملة، أو عرض شحن مشترك مع شروط وترجمات متكاملة."
   },
   "fr": {
     "0": "Toasts d'urgence en coin",
@@ -6105,7 +6119,14 @@
     "6. Offer Headline & Button Copy (": "6. Titre de l'offre et copie du bouton (",
     "Select promoted products in step 3 to preview the modal.": "Sélectionnez des produits à promouvoir à l'étape 3 pour prévisualiser la modale.",
     "Switch to Yearly": "Passer à l'annuel",
-    "30-day money-back guarantee": "Garantie satisfait ou remboursé de 30 jours"
+    "30-day money-back guarantee": "Garantie satisfait ou remboursé de 30 jours",
+    "Product List": "Liste de produits",
+    "The benefit line, then product rows with one-tap add.": "La ligne d'avantage, puis des lignes de produits avec ajout en un clic.",
+    "Removes the fear of paying shipping twice. The code is real and expires when the offer window ends.": "Élimine la crainte de payer deux fois la livraison. Le code est réel et expire à la fin de la durée de l'offre.",
+    "Free shipping on the added items matches the promise “no extra shipping fee”. The code is single-use and expires when the offer window ends.": "La livraison gratuite sur les articles ajoutés correspond à la promesse « pas de frais de port supplémentaires ». Le code est à usage unique et expire à la fin de la durée de l'offre.",
+    "Keep the offer window short.": "Gardez une durée d'offre courte.",
+    "XPoost makes the code really expire when the offer window ends. 15–30 minutes keeps the offer relevant while your team can still pack one box.": "XPoost fait réellement expirer le code à la fin de la durée de l'offre. 15 à 30 minutes gardent l'offre pertinente tout en laissant à votre équipe le temps de préparer un seul colis.",
+    "Turn the order confirmation page into extra revenue: a unique next-order code, matching products, or a ship-together offer, with conditions and translations.": "Générez des revenus supplémentaires sur la page de confirmation : code promo pour la prochaine commande, produits complémentaires ou offre d'expédition groupée, avec règles et traductions."
   },
   "de": {
     "0": "Dringlichkeits-Eck-Toasts",
@@ -8141,7 +8162,14 @@
     "6. Offer Headline & Button Copy (": "6. Angebotsüberschrift & Button-Text (",
     "Select promoted products in step 3 to preview the modal.": "Wählen Sie in Schritt 3 empfohlene Produkte aus, um das Modal in der Vorschau anzuzeigen.",
     "Switch to Yearly": "Zu Jährlich wechseln",
-    "30-day money-back guarantee": "30 Tage Geld-zurück-Garantie"
+    "30-day money-back guarantee": "30 Tage Geld-zurück-Garantie",
+    "Product List": "Produktliste",
+    "The benefit line, then product rows with one-tap add.": "Die Vorteilszeile und dann Produktzeilen mit Ein-Tipp-Hinzufügen.",
+    "Removes the fear of paying shipping twice. The code is real and expires when the offer window ends.": "Nimmt die Angst vor doppelten Versandkosten. Der Code ist echt und verfällt, wenn das Angebotsfenster endet.",
+    "Free shipping on the added items matches the promise “no extra shipping fee”. The code is single-use and expires when the offer window ends.": "Kostenloser Versand für die hinzugefügten Artikel passt zum Versprechen „keine zusätzlichen Versandkosten“. Der Code ist einmalig nutzbar und verfällt, wenn das Angebotsfenster endet.",
+    "Keep the offer window short.": "Halten Sie das Angebotsfenster kurz.",
+    "XPoost makes the code really expire when the offer window ends. 15–30 minutes keeps the offer relevant while your team can still pack one box.": "XPoost lässt den Code nach Ablauf des Angebotsfensters wirklich verfallen. 15–30 Minuten halten das Angebot relevant, und Ihr Team kann trotzdem alles in einen Karton packen.",
+    "Turn the order confirmation page into extra revenue: a unique next-order code, matching products, or a ship-together offer, with conditions and translations.": "Machen Sie die Bestätigungsseite zu zusätzlichem Umsatz: ein einmaliger Code für die nächste Bestellung, passende Produkte oder ein Angebot für gemeinsamen Versand, mit Bedingungen und Übersetzungen."
   },
   "es": {
     "0": "Notificaciones de esquina de urgencia",
@@ -10177,7 +10205,14 @@
     "6. Offer Headline & Button Copy (": "6. Título de la oferta y texto del botón (",
     "Select promoted products in step 3 to preview the modal.": "Selecciona los productos promocionados en el paso 3 para previsualizar el modal.",
     "Switch to Yearly": "Cambiar a anual",
-    "30-day money-back guarantee": "Garantía de devolución de 30 días"
+    "30-day money-back guarantee": "Garantía de devolución de 30 días",
+    "Product List": "Lista de productos",
+    "The benefit line, then product rows with one-tap add.": "La línea de beneficio y filas de productos con añadido en un toque.",
+    "Removes the fear of paying shipping twice. The code is real and expires when the offer window ends.": "Elimina el temor a pagar dos veces el envío. El código es real y vence cuando termina el plazo de la oferta.",
+    "Free shipping on the added items matches the promise “no extra shipping fee”. The code is single-use and expires when the offer window ends.": "El envío gratuito en los artículos añadidos coincide con la promesa «sin gastos de envío adicionales». El código es de un solo uso y vence cuando termina el plazo de la oferta.",
+    "Keep the offer window short.": "Mantén el plazo de la oferta corto.",
+    "XPoost makes the code really expire when the offer window ends. 15–30 minutes keeps the offer relevant while your team can still pack one box.": "XPoost hace que el código venza de verdad cuando termina el plazo de la oferta. De 15 a 30 minutos mantiene la oferta relevante y tu equipo aún puede preparar una sola caja.",
+    "Turn the order confirmation page into extra revenue: a unique next-order code, matching products, or a ship-together offer, with conditions and translations.": "Convierte la página de confirmación en ingresos extra: un código único para el próximo pedido, productos complementarios o una oferta de envío conjunto, con condiciones y traducciones."
   },
   "it": {
     "0": "Notifiche angolari di urgenza",
@@ -12213,7 +12248,14 @@
     "6. Offer Headline & Button Copy (": "6. Titolo dell'offerta e copia del pulsante (",
     "Select promoted products in step 3 to preview the modal.": "Seleziona i prodotti in promozione nel passaggio 3 per vedere l'anteprima del modale.",
     "Switch to Yearly": "Passa ad annuale",
-    "30-day money-back guarantee": "Garanzia di rimborso di 30 giorni"
+    "30-day money-back guarantee": "Garanzia di rimborso di 30 giorni",
+    "Product List": "Elenco prodotti",
+    "The benefit line, then product rows with one-tap add.": "La riga del vantaggio e righe di prodotto con aggiunta in un tocco.",
+    "Removes the fear of paying shipping twice. The code is real and expires when the offer window ends.": "Elimina la paura di pagare la spedizione due volte. Il codice è reale e scade quando finisce la finestra dell'offerta.",
+    "Free shipping on the added items matches the promise “no extra shipping fee”. The code is single-use and expires when the offer window ends.": "La spedizione gratuita sugli articoli aggiunti rispecchia la promessa «nessun costo di spedizione aggiuntivo». Il codice è monouso e scade quando finisce la finestra dell'offerta.",
+    "Keep the offer window short.": "Mantieni breve la finestra dell'offerta.",
+    "XPoost makes the code really expire when the offer window ends. 15–30 minutes keeps the offer relevant while your team can still pack one box.": "XPoost fa scadere davvero il codice quando finisce la finestra dell'offerta. 15–30 minuti mantengono l'offerta rilevante e il tuo team può ancora preparare un solo pacco.",
+    "Turn the order confirmation page into extra revenue: a unique next-order code, matching products, or a ship-together offer, with conditions and translations.": "Trasforma la pagina di conferma in ricavi extra: un codice unico per il prossimo ordine, prodotti abbinati o un'offerta di spedizione combinata, con condizioni e traduzioni."
   },
   "pt": {
     "0": "Notificações de canto de urgência",
@@ -14249,6 +14291,13 @@
     "6. Offer Headline & Button Copy (": "6. Título da oferta e texto do botão (",
     "Select promoted products in step 3 to preview the modal.": "Selecione produtos promovidos no passo 3 para pré-visualizar o modal.",
     "Switch to Yearly": "Mudar para anual",
-    "30-day money-back guarantee": "Garantia de reembolso de 30 dias"
+    "30-day money-back guarantee": "Garantia de reembolso de 30 dias",
+    "Product List": "Lista de produtos",
+    "The benefit line, then product rows with one-tap add.": "A linha de benefício e linhas de produtos com adição num toque.",
+    "Removes the fear of paying shipping twice. The code is real and expires when the offer window ends.": "Elimina o receio de pagar frete duas vezes. O código é real e expira quando termina o prazo da oferta.",
+    "Free shipping on the added items matches the promise “no extra shipping fee”. The code is single-use and expires when the offer window ends.": "O frete grátis nos artigos adicionados corresponde à promessa «sem custos de envio adicionais». O código é de utilização única e expira quando termina o prazo da oferta.",
+    "Keep the offer window short.": "Mantenha o prazo da oferta curto.",
+    "XPoost makes the code really expire when the offer window ends. 15–30 minutes keeps the offer relevant while your team can still pack one box.": "O XPoost faz o código expirar de verdade quando termina o prazo da oferta. 15–30 minutos mantêm a oferta relevante e a sua equipa ainda consegue preparar uma só caixa.",
+    "Turn the order confirmation page into extra revenue: a unique next-order code, matching products, or a ship-together offer, with conditions and translations.": "Transforme a página de confirmação em receita extra: um código único para o próximo pedido, produtos complementares ou uma oferta de envio conjunto, com condições e traduções."
   }
 }

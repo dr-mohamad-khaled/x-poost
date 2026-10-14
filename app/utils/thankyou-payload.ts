@@ -100,7 +100,7 @@ export function buildPayload(opts: {
     shop: shop.name,
   };
   const filled = Object.fromEntries(
-    Object.entries(texts).map(([k, v]) => [k, fillTemplate(String(v), vars, ["time_left"])]),
+    Object.entries(texts).map(([k, v]) => [k, fillTemplate(String(v), vars)]),
   ) as unknown as typeof texts;
 
   const expired = !isReward && opts.expiresAt.getTime() <= now.getTime();
@@ -150,7 +150,6 @@ export function buildPayload(opts: {
           shipTogether: offer.kind === "shiptogether",
           })
         : undefined,
-    serverNow: now.toISOString(),
     linkTemplate: !isReward
       ? buildAddLink({
           shopDomain: new URL(shop.url).host,
@@ -168,7 +167,6 @@ export function buildPayload(opts: {
         : undefined,
     benefit: a.benefit,
     discountText,
-    showTimer: offer.kind === "shiptogether" ? true : a.showTimer,
     shopUrl: shop.url,
     sample: opts.sample || undefined,
   };

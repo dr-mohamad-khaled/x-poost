@@ -80,7 +80,6 @@ function track(p, event, dim = "") {
 function Extension() {
   const [payload, setPayload] = useState(null);
   const [problem, setProblem] = useState("");
-  const cd = useCountdown(payload);
   const inEditor = isEditor();
 
   useEffect(() => {
@@ -110,42 +109,17 @@ function Extension() {
     return problem ? <s-banner tone="warning" heading="XPoost preview">{problem}</s-banner> : null;
   }
 
-  // {time_left} is live: fill it into every text each second
-  const texts = Object.fromEntries(Object.entries(payload.texts || {}).map(([k, v]) => [k, withTime(v, cd.text)]));
+  // Older saved copy may still contain a {time_left} placeholder: drop it
+  const texts = Object.fromEntries(Object.entries(payload.texts || {}).map(([k, v]) => [k, dropTime(v)]));
   const Design = DESIGNS[payload.design] || Minimal;
-  return <Design p={{ ...payload, texts }} cd={cd} />;
+  return <Design p={{ ...payload, texts }} />;
 }
 
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Helpers
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-function formatCountdown(ms) {
-  const s = Math.max(0, Math.ceil(ms / 1000));
-  const h = Math.floor(s / 3600);
-  const m = Math.floor((s % 3600) / 60);
-  const sec = s % 60;
-  const mm = String(m).padStart(2, "0");
-  const ss = String(sec).padStart(2, "0");
-  return h > 0 ? `${h}:${mm}:${ss}` : `${mm}:${ss}`;
-}
-
-/** Live countdown to the code's real expiry. The server clock keeps it honest when the customer's clock is off. */
-function useCountdown(p) {
-  const active = Boolean(p) && p.kind !== "reward" && p.showTimer !== false && Boolean(p.expiresAt);
-  const target = p?.expiresAt ? Date.parse(p.expiresAt) : 0;
-  const offset = useMemo(() => (p?.serverNow ? Date.parse(p.serverNow) - Date.now() : 0), [p?.serverNow]);
-  const [now, setNow] = useState(Date.now());
-  useEffect(() => {
-    if (!active) return undefined;
-    const id = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(id);
-  }, [active]);
-  const left = Math.max(0, target - (now + offset));
-  return { active, left, text: formatCountdown(left), ended: active && left <= 0 };
-}
-
-const withTime = (str, time) => String(str || "").replace(/\{time_left\}/g, time);
+const dropTime = (str) => String(str || "").replace(/\s*\{time_left\}/g, "").trim();
 
 function offerBadge(p) {
   return p.benefit === "free_shipping" ? p.texts.freeShippingBadge : p.texts.savingsBadge;
@@ -176,8 +150,6 @@ function SampleTag({ p }) {
 function Expired({ p }) {
   return <s-banner tone="info">{p.texts.timerExpired}</s-banner>;
 }
-
-function Timer({ p, cd }) { return null; }
 
 function Thumb({ src, alt, size }) {
   if (!src) return <s-box background="subdued" borderRadius="base" minInlineSize={size} minBlockSize={size} />;
@@ -323,14 +295,14 @@ function VipLadder({ p }) {
 }
 
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// Design 3 â€” Ship-Together Timer
+// Design 3 â€” Product List
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-function ShipTimer({ p, cd }) {
+function ShipTimer({ p }) {
   const t = p.texts;
   const items = p.products || [];
   if (!items.length) return null;
-  const over = p.expired || cd.ended;
+  const over = p.expired;
   return (
     <s-box padding="large" border="base" borderRadius="large" background="base">
       <s-stack gap="base">
@@ -344,7 +316,6 @@ function ShipTimer({ p, cd }) {
           <Expired p={p} />
         ) : (
           <s-stack gap="base">
-            <Timer p={p} cd={cd} />
             <s-text type="strong">{t.benefitLine}</s-text>
             <s-divider />
             {items.map((item) => (
@@ -367,12 +338,12 @@ function ShipTimer({ p, cd }) {
 // Design 4 â€” Complete the Routine (selectable grid)
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-function Routine({ p, cd }) {
+function Routine({ p }) {
   const t = p.texts;
   const items = p.products || [];
   const [selected, setSelected] = useState(() => new Set(items.map((i) => i.vid)));
   if (!items.length) return null;
-  const over = p.expired || cd.ended;
+  const over = p.expired;
 
   const toggle = (vid) =>
     setSelected((prev) => {
@@ -399,7 +370,6 @@ function Routine({ p, cd }) {
           <Expired p={p} />
         ) : (
           <s-stack gap="base">
-            <Timer p={p} cd={cd} />
             <s-grid gridTemplateColumns={columns} gap="small">
               {items.map((item) => (
                 <s-box key={item.variantId} border="base" borderRadius="large" padding="small" background={selected.has(item.vid) ? "base" : "subdued"}>
@@ -438,11 +408,11 @@ function Routine({ p, cd }) {
 // Design 5 â€” Spotlight (one hero product)
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-function Spotlight({ p, cd }) {
+function Spotlight({ p }) {
   const t = p.texts;
   const item = p.products?.[0];
   if (!item) return null;
-  const over = p.expired || cd.ended;
+  const over = p.expired;
   return (
     <s-box padding="large" border="base" borderRadius="large" background="base">
       <s-stack gap="base">
@@ -466,8 +436,7 @@ function Spotlight({ p, cd }) {
                 <s-badge tone="success">{offerBadge(p)}</s-badge>
                 <s-text>{t.benefitLine}</s-text>
               </s-stack>
-              <Timer p={p} cd={cd} />
-              <s-button variant="primary" inlineSize="fill" href={item.link} target="_blank" onClick={() => track(p, "click", `p:${item.vid}`)}>
+                <s-button variant="primary" inlineSize="fill" href={item.link} target="_blank" onClick={() => track(p, "click", `p:${item.vid}`)}>
                 {t.productCta}
               </s-button>
             </s-stack>
@@ -483,17 +452,17 @@ function Spotlight({ p, cd }) {
 // Design 6 â€” Minimal
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-function Minimal({ p, cd }) {
+function Minimal({ p }) {
   const t = p.texts;
   const isReward = p.kind === "reward";
   const r = p.rewards?.[0];
   const href = isReward ? r?.applyLink : p.addLink || p.products?.[0]?.link;
   const label = isReward ? t.shopCta : p.products && p.products.length > 1 ? t.bundleCta : t.productCta;
   if (!href) return null;
-  if (!isReward && (p.expired || cd.ended)) {
+  if (!isReward && p.expired) {
     return <Expired p={p} />;
   }
-  const sub = isReward ? `${t.codeLabel}: ${r.code} Â· ${r.discountText}` : cd.active ? `${t.timerLabel} ${cd.text}` : t.benefitLine;
+  const sub = isReward ? `${t.codeLabel}: ${r.code} Â· ${r.discountText}` : t.benefitLine;
   return (
     <s-box border="base" borderRadius="large" padding="base" background="subdued">
       <s-stack gap="base">

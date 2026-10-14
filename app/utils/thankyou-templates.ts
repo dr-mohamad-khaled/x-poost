@@ -60,14 +60,14 @@ export const TEMPLATES: TyTemplate[] = [
   },
   {
     key: "shiptogether",
-    name: "Ship it together",
+    name: "Ship Together",
     tagline: "A 20-minute window: add items now, they ship in one box with free shipping.",
-    why: "Removes the fear of paying shipping twice. The timer is real: the code expires when it ends.",
+    why: "Removes the fear of paying shipping twice. The code is real and expires when the offer window ends.",
     kind: "shiptogether",
     design: "ship_timer",
     build: () => {
       const config = clone(DEFAULT_CONFIG);
-      config.addon = { ...config.addon, benefit: "free_shipping", windowMinutes: 20, showTimer: true };
+      config.addon = { ...config.addon, benefit: "free_shipping", windowMinutes: 20 };
       return { config, conditions: { match: "all", rules: [] } };
     },
   },
@@ -80,7 +80,7 @@ export const TEMPLATES: TyTemplate[] = [
     design: "routine",
     build: () => {
       const config = clone(DEFAULT_CONFIG);
-      config.addon = { ...config.addon, benefit: "percent", percent: 15, windowMinutes: 60, showTimer: true };
+      config.addon = { ...config.addon, benefit: "percent", percent: 15, windowMinutes: 60 };
       return { config, conditions: { match: "all", rules: [] } };
     },
   },
@@ -93,7 +93,7 @@ export const TEMPLATES: TyTemplate[] = [
     design: "spotlight",
     build: () => {
       const config = clone(DEFAULT_CONFIG);
-      config.addon = { ...config.addon, benefit: "percent", percent: 20, windowMinutes: 30, showTimer: true };
+      config.addon = { ...config.addon, benefit: "percent", percent: 20, windowMinutes: 30 };
       return { config, conditions: { match: "all", rules: [rule({ type: "customer_type", choice: "first" })] } };
     },
   },
@@ -153,7 +153,7 @@ export function coach(
     if (a.products.length === 1 && d.design === "routine") out.push({ level: "tip", text: "The Routine design is built for 2–4 products. Add more, or switch to Spotlight." });
     if (a.products.length >= 1 && a.products.length < 3 && d.design === "ship_timer") out.push({ level: "tip", text: "Offers with 3 products convert about twice as well as a single product." });
     if (a.windowMinutes > 60) out.push({ level: "tip", text: "Long windows lose urgency and keep your fulfilment team waiting. 15–30 minutes works best for ship-together." });
-    if (d.kind === "shiptogether" && a.benefit === "free_shipping") out.push({ level: "good", text: "Free shipping on the added items matches the promise “no extra shipping fee”. The code is single-use and expires with the timer." });
+    if (d.kind === "shiptogether" && a.benefit === "free_shipping") out.push({ level: "good", text: "Free shipping on the added items matches the promise “no extra shipping fee”. The code is single-use and expires when the offer window ends." });
     if (a.benefit === "percent" && a.percent > 25) out.push({ level: "warn", text: "{pct}% off add-ons can cut deeply into margin. 10–20% is usually enough right after a purchase.", params: { pct: a.percent } });
     if (aov) {
       const dear = a.products.filter((p) => Number(p.price) > aov * 0.6);

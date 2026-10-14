@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { formatCountdown, type TyRenderPayload } from "../../utils/thankyou";
+import { useEffect, useState } from "react";
+import type { TyRenderPayload } from "../../utils/thankyou";
 
 /**
  * Live preview of a thank-you offer in the admin. It mirrors the layout of the checkout extension
@@ -24,8 +24,6 @@ export const PREVIEW_CSS = `
 .typ .btn{display:block;width:100%;text-align:center;padding:11px 16px;border-radius:10px;font-weight:600;border:1px solid #232323;background:#232323;color:#fff;cursor:pointer;font-size:14px}
 .typ .btn.secondary{background:#fff;color:#232323;border-color:#cccccc}
 .typ .btn.inline{display:inline-block;width:auto}
-.typ .timer{display:flex;justify-content:space-between;align-items:center;background:#f1f2f3;border-radius:12px;padding:12px 16px}
-.typ .timer b{font-size:22px;font-variant-numeric:tabular-nums;letter-spacing:.02em}
 .typ .thumb{width:64px;height:64px;border-radius:10px;background:linear-gradient(135deg,#ececec,#DCDCDC);object-fit:cover;flex-shrink:0}
 .typ .thumb.big{width:100%;height:auto;aspect-ratio:1/1}
 .typ .prow{display:grid;grid-template-columns:64px 1fr;gap:12px;align-items:center}
@@ -44,29 +42,11 @@ export const PREVIEW_CSS = `
 
 type Props = { payload: TyRenderPayload; mobile?: boolean; live?: boolean };
 
-function useClock(payload: TyRenderPayload, live: boolean) {
-  const target = payload.expiresAt ? Date.parse(payload.expiresAt) : 0;
-  const offset = payload.serverNow ? Date.parse(payload.serverNow) - Date.now() : 0;
-  const active = payload.kind !== "reward" && payload.showTimer !== false && !!payload.expiresAt;
-  const [now, setNow] = useState(() => Date.now());
-  useEffect(() => {
-    if (!active || !live) return;
-    const id = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(id);
-  }, [active, live]);
-  const left = Math.max(0, target - (now + offset));
-  return { active, text: formatCountdown(left), ended: active && left <= 0 };
-}
-
 const Thumb = ({ src, big }: { src?: string; big?: boolean }) =>
   src ? <img className={`thumb${big ? " big" : ""}`} src={src} alt="" /> : <div className={`thumb${big ? " big" : ""}`} />;
 
 export function ThankYouPreview({ payload, mobile = false, live = true }: Props) {
-  const clock = useClock(payload, live);
-  const texts = useMemo(
-    () => Object.fromEntries(Object.entries(payload.texts || {}).map(([k, v]) => [k, String(v).replace(/\{time_left\}/g, clock.text)])),
-    [payload.texts, clock.text],
-  ) as unknown as NonNullable<TyRenderPayload["texts"]>;
+  const texts = (payload.texts || {}) as unknown as NonNullable<TyRenderPayload["texts"]>;
   const [revealed, setRevealed] = useState(false);
   const [picked, setPicked] = useState<Record<string, boolean>>({});
   useEffect(() => setRevealed(false), [payload.offerId, payload.design]);
@@ -75,18 +55,12 @@ export function ThankYouPreview({ payload, mobile = false, live = true }: Props)
   const p = payload;
   const t = texts;
   const items = p.products || [];
-  const over = (p.kind !== "reward" && p.expired) || clock.ended;
+  const over = p.kind !== "reward" && !!p.expired;
   const badge = p.benefit === "free_shipping" ? t.freeShippingBadge : t.savingsBadge;
   const dir = p.dir || "ltr";
 
   const Eyebrow = (tone = "") => (t.eyebrow ? <span className={`badge ${tone}`}>{t.eyebrow}</span> : null);
   const Foot = t.footnote ? <div className="muted small">{t.footnote}</div> : null;
-  const Timer = clock.active ? (
-    <div className="timer">
-      <span className="muted">{t.timerLabel}</span>
-      <b>{clock.text}</b>
-    </div>
-  ) : null;
 
   let body: JSX.Element | null = null;
 
@@ -154,7 +128,6 @@ export function ThankYouPreview({ payload, mobile = false, live = true }: Props)
           <div className="banner">{t.timerExpired}</div>
         ) : (
           <>
-            {Timer}
             <div className="strong">{t.benefitLine}</div>
             <hr />
             {items.map((it) => (
@@ -189,7 +162,6 @@ export function ThankYouPreview({ payload, mobile = false, live = true }: Props)
           <div className="banner">{t.timerExpired}</div>
         ) : (
           <>
-            {Timer}
             <div className="grid" style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}>
               {items.map((it) => {
                 const on = picked[it.vid] !== false;
@@ -237,8 +209,7 @@ export function ThankYouPreview({ payload, mobile = false, live = true }: Props)
                 <span className="badge">{badge}</span>
                 <span>{t.benefitLine}</span>
               </div>
-              {Timer}
-              <div className="btn">{t.productCta}</div>
+                <div className="btn">{t.productCta}</div>
             </div>
           </div>
         )}
@@ -251,7 +222,7 @@ export function ThankYouPreview({ payload, mobile = false, live = true }: Props)
     const r = p.rewards?.[0];
     if (!isReward && over) body = <div className="banner">{t.timerExpired}</div>;
     else {
-      const sub = isReward && r ? `${t.codeLabel}: ${r.code} · ${r.discountText}` : clock.active ? `${t.timerLabel} ${clock.text}` : t.benefitLine;
+      const sub = isReward && r ? `${t.codeLabel}: ${r.code} · ${r.discountText}` : t.benefitLine;
       const label = isReward ? t.shopCta : items.length > 1 ? t.bundleCta : t.productCta;
       body = (
         <div className="card soft stack" style={{ padding: 14 }}>

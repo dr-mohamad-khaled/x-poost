@@ -421,7 +421,7 @@ function ListView({ data }: { data: LoaderData }) {
             <b><Translate text='Show 3 products, not 1.' /></b>  <Translate text='The same study found offers with 3 products were taken about 2.9% of the time versus 1.5% for a single product.' />
                                 </li>
           <li>
-            <b><Translate text='Keep the timer honest and short.' /></b>  <Translate text='XPoost makes the code really expire when the timer ends. 15–30 minutes is enough to feel urgent while your team can still pack one box.' />
+            <b><Translate text='Keep the offer window short.' /></b>  <Translate text='XPoost makes the code really expire when the offer window ends. 15–30 minutes keeps the offer relevant while your team can still pack one box.' />
                                 </li>
           <li>
             <b><Translate text='Use conditions.' /></b>  <Translate text='Different offers for first-time and returning customers, and a product-specific add-on for what was just bought, are the two highest-value splits.' />
@@ -714,16 +714,7 @@ function Editor({ data, offerParam, tpl }: { data: LoaderData; offerParam: strin
                   <input className="ty-input" type="number" min={2} max={1440} value={draft.config.addon.windowMinutes} onChange={(e) => setConfig((c) => ({ ...c, addon: { ...c.addon, windowMinutes: Number(e.target.value) } }))} />
                   <small><Translate text='The code really expires after this long.' /></small>
                 </div>
-                {draft.kind === "addon" ? (
-                  <div className="ty-field">
-                    <label><Translate text='Countdown' /></label>
-                    <label className="ty-check">
-                      <input type="checkbox" checked={draft.config.addon.showTimer} onChange={(e) => setConfig((c) => ({ ...c, addon: { ...c.addon, showTimer: e.target.checked } }))} />
-                      
-                                                                    <Translate text='Show the timer to the customer' />
-                                                                  </label>
-                  </div>
-                ) : null}
+
               </div>
               {draft.kind === "shiptogether" ? (
                 <div className="ty-note">

@@ -70,7 +70,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       thankYou: {
         id: "thankYou",
         title: "Thank-You Page Offers",
-        description: "Turn the order confirmation page into extra revenue: a unique next-order code, matching products, or a ship-together countdown, with conditions and translations.",
+        description: "Turn the order confirmation page into extra revenue: a unique next-order code, matching products, or a ship-together offer, with conditions and translations.",
         route: "/app/thank-you",
         enabled: shopData?.thankYouEnabled ?? false,
         badge: tyActive > 0 ? `${tyActive} Active` : "No active offers",

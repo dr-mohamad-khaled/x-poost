@@ -66,7 +66,6 @@ export function DesignSchematic({ design }: { design: TyDesign }) {
             <rect x="10" y="6" width="100" height="66" rx="8" fill={F} stroke={L} />
             <rect x="16" y="11" width="88" height="14" rx="5" fill="#171614" />
             <rect x="21" y="16" width="30" height="4" rx="2" fill={L} />
-            <text x="98" y="22" textAnchor="end" fontSize="9" fontWeight="700" fill={G}>09:41</text>
             {[0, 1].map((i) => (
               <g key={i}>
                 <rect x="16" y={30 + i * 20} width="18" height="16" rx="4" fill={L} />
