@@ -18,10 +18,10 @@ import {
 const ICON_OPTIONS = [
   { value: "discount", label: "Discount / Promo code" },
   { value: "scarcity", label: "Low stock / Urgency" },
-  { value: "visitors", label: "Live viewers / Purchase proof" },
+  { value: "guarantee", label: "Guarantee / Trust badge" },
   { value: "fast_shipping", label: "Fast / Free shipping" },
   { value: "rare", label: "Rare / Premium" },
-  { value: "guarantee", label: "Guarantee" },
+  { value: "visitors", label: "Store highlight / Trust" },
   { value: "none", label: "No icon" },
 ] as const;
 
@@ -36,7 +36,7 @@ type Message = {
 const DEFAULT_MESSAGES: Message[] = [
   { icon: "discount", badge: "Exclusive code:", text: "Use code SAVE15 for 15% off — next 15 minutes only", pill: "SAVE15" },
   { icon: "scarcity", badge: "Almost gone:", text: "Low stock — only a few units left" },
-  { icon: "visitors", badge: "Trending now:", text: "Someone just ordered this product" },
+  { icon: "guarantee", badge: "Shop with confidence:", text: "30-day money-back guarantee on all orders" },
   { icon: "fast_shipping", badge: "Free delivery:", text: "Spend $50 more to unlock free priority shipping" },
 ];
 
@@ -183,7 +183,7 @@ export default function ScarcityToastSettings() {
       setMessages([
         { icon: "discount", badge: langToast.discountBadge, text: langToast.discountText, pill: "SAVE15" },
         { icon: "scarcity", badge: langToast.stockBadge, text: langToast.stockText },
-        { icon: "visitors", badge: langToast.trendingBadge, text: langToast.trendingText },
+        { icon: "guarantee", badge: langToast.trendingBadge, text: langToast.trendingText },
         { icon: "fast_shipping", badge: langToast.shippingBadge, text: langToast.shippingText },
       ]);
     }
@@ -227,7 +227,7 @@ export default function ScarcityToastSettings() {
     setMessages([
       { icon: "discount", badge: def.discountBadge, text: def.discountText, pill: "SAVE15" },
       { icon: "scarcity", badge: def.stockBadge, text: def.stockText },
-      { icon: "visitors", badge: def.trendingBadge, text: def.trendingText },
+      { icon: "guarantee", badge: def.trendingBadge, text: def.trendingText },
       { icon: "fast_shipping", badge: def.shippingBadge, text: def.shippingText },
     ]);
   };

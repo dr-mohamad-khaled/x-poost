@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Form, useActionData, useLoaderData, useNavigation, Link, useFetcher } from "react-router";
-import { authenticate } from "../shopify.server";
+import { authenticate, appCredentials } from "../shopify.server";
 import prisma from "../db.server";
 import { getOrCreateShop, getShopWithConfigs } from "../shop.server";
 import { ensureUpsellDiscountRegistered } from "../discount.server";
@@ -48,6 +48,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   return {
     shopDomain: session.shop,
+    apiKey: appCredentials.apiKey,
     revenue,
     features: {
       prePurchase: {
@@ -159,7 +160,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function XPoostDashboard() {
-  const { shopDomain, features, revenue } = useLoaderData<typeof loader>();
+  const { shopDomain, apiKey, features, revenue } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const toggleFetcher = useFetcher();
   const shopify = useAppBridge();
@@ -276,37 +277,90 @@ export default function XPoostDashboard() {
         </div>
       </section>
 
-      <section className="xp-panel">
-        <h2 className="xp-panel-title"><Translate text='Theme App Extension Setup' /></h2>
-        <div className="xp-setup-guide">
-          <div className="xp-step">
-            <div className="xp-step-num">1</div>
-            <div>
-              <strong><Translate text='Open Theme Editor' /></strong>
-              <p><Translate text='In your Shopify Admin, navigate to' /> <em><Translate text='Online Store &gt; Themes &gt; Customize' /></em>.</p>
-            </div>
-          </div>
-          <div className="xp-step">
-            <div className="xp-step-num">2</div>
-            <div>
-              <strong><Translate text='Turn on App Embeds' /></strong>
-              <p><Translate text='Click the' /> <strong><Translate text='App embeds' /></strong>  <Translate text='tab on the left sidebar and toggle on the XPoost blocks (Cart Engine, Social Proof Popups, Chat &amp; Social Bar).' /></p>
-            </div>
-          </div>
-          <div className="xp-step">
-            <div className="xp-step-num">3</div>
-            <div>
-              <strong><Translate text='Zero Theme Edits Required' /></strong>
-              <p><Translate text='XPoost never modifies theme liquid files directly. Everything renders cleanly inside sandboxed containers with deferred loading.' /></p>
-            </div>
-          </div>
-        </div>
-      </section>
+      <ThemeSetupGuide apiKey={apiKey} />
 
       <div className="xp-bench-wrap">
         <CaseStudyStrip />
       </div>
     </s-page>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Theme app extension onboarding: deep links into the Theme Editor
+   ───────────────────────────────────────────────────────────── */
+
+const THEME_EDITOR = "shopify:admin/themes/current/editor";
+
+function ThemeSetupGuide({ apiKey }: { apiKey: string }) {
+  const embedLink = (handle: string) => `${THEME_EDITOR}?context=apps&activateAppId=${apiKey}/${handle}`;
+  const blockLink = (handle: string, template: string, target: string) =>
+    `${THEME_EDITOR}?template=${template}&addAppBlockId=${apiKey}/${handle}&target=${target}`;
+
+  const embeds = [
+    { name: "XPoost: Cart Engine", what: "Pre-purchase popup, cart drawer upsell and free shipping bar.", href: embedLink("cart-engine") },
+    { name: "XPoost: Scarcity Toast", what: "Social proof and urgency popups in the corner of your store.", href: embedLink("scarcity-toast") },
+    { name: "XPoost: Social Bar", what: "WhatsApp, VIP group and social links with a chat button.", href: embedLink("social-bar") },
+  ];
+  const blocks = [
+    { name: "XPoost: Quantity Breaks", what: "Volume discount options on the product page.", where: "Product page", href: blockLink("quantity-breaks", "product", "mainSection") },
+    { name: "XPoost: Product Scarcity", what: "Low stock meter on the product page.", where: "Product page", href: blockLink("product-scarcity", "product", "mainSection") },
+    { name: "XPoost: Shipping Bar", what: "Free shipping and rewards bar placed inside the cart page. Optional: the Cart Engine already shows it in the cart drawer.", where: "Cart page (optional)", href: blockLink("shipping-bar", "cart", "newAppsSection") },
+    { name: "XPoost: In-Cart Upsell", what: "Add-on offers placed inside the cart page. Optional: the Cart Engine already shows them in the cart drawer.", where: "Cart page (optional)", href: blockLink("in-cart-upsell", "cart", "newAppsSection") },
+  ];
+
+  return (
+    <section className="xp-panel xp-setup" id="theme-setup">
+      <h2 className="xp-panel-title"><Translate text='Set up XPoost in your theme' /></h2>
+      <p className="xp-setup-intro">
+        <Translate text='XPoost appears on your store through a theme app extension, so you turn it on once in the Theme Editor. XPoost does not edit your theme files, and its blocks are removed when you uninstall the app.' />
+      </p>
+
+      <h3 className="xp-setup-h"><span className="xp-step-num">1</span><Translate text='Turn on the app embeds' /></h3>
+      <p className="xp-setup-note"><Translate text='App embeds work on every theme. Click a button, check that the XPoost embed is switched on in the App embeds panel, then click Save at the top right of the Theme Editor.' /></p>
+      <ul className="xp-ext-list">
+        {embeds.map((e) => (
+          <li key={e.name} className="xp-ext-row">
+            <div className="xp-ext-info">
+              <strong>{e.name}</strong>
+              <span><Translate text={e.what} /></span>
+            </div>
+            <a className="xp-ext-btn" href={e.href} target="_top"><Translate text='Open in Theme Editor' /> &rarr;</a>
+          </li>
+        ))}
+      </ul>
+
+      <h3 className="xp-setup-h"><span className="xp-step-num">2</span><Translate text='Add the app blocks to your pages' /></h3>
+      <p className="xp-setup-note"><Translate text='App blocks need a theme that supports sections on that page (any Online Store 2.0 theme, such as Dawn). Click a button, drag the block where you want it to appear, then click Save.' /></p>
+      <ul className="xp-ext-list">
+        {blocks.map((b) => (
+          <li key={b.name} className="xp-ext-row">
+            <div className="xp-ext-info">
+              <strong>{b.name} <em className="xp-ext-where"><Translate text={b.where} /></em></strong>
+              <span><Translate text={b.what} /></span>
+            </div>
+            <a className="xp-ext-btn" href={b.href} target="_top"><Translate text='Add to your theme' /> &rarr;</a>
+          </li>
+        ))}
+      </ul>
+
+      <h3 className="xp-setup-h"><span className="xp-step-num">3</span><Translate text='Check that it works' /></h3>
+      <ol className="xp-setup-checks">
+        <li><Translate text='Turn on a feature in this dashboard and create at least one offer for it.' /></li>
+        <li><Translate text='Open your store in a new tab and add a product to the cart.' /></li>
+        <li><Translate text='You should see the popup, the cart drawer offer or the shipping bar for the feature you turned on.' /></li>
+      </ol>
+
+      <h3 className="xp-setup-h"><span className="xp-step-num">?</span><Translate text='Not showing up?' /></h3>
+      <ul className="xp-setup-checks">
+        <li><Translate text='Make sure the embed or block is switched on and that you clicked Save in the Theme Editor.' /></li>
+        <li><Translate text='The buttons open your published theme. If you use a different theme, open Online Store, then Themes, then Customize on that theme and follow the same steps.' /></li>
+        <li><Translate text='Make sure the feature is turned on in this dashboard and has an active offer.' /></li>
+        <li><Translate text='If your store is password protected, enter the password before you test.' /></li>
+        <li><Translate text='Vintage themes support app embeds but not app blocks. Use the app embeds in step 1, or switch to an Online Store 2.0 theme to place blocks.' /></li>
+      </ul>
+      <p className="xp-setup-note"><Link to="/app/help" className="xp-config-link"><Translate text='Open the full help guide' /> &rarr;</Link></p>
+    </section>
   );
 }
 
@@ -1020,6 +1074,19 @@ const DASHBOARD_STYLES = `
   .xp-config-link:hover {
     text-decoration: underline;
   }
+  .xp-setup-intro { color: #FFFFFF; font-size: 14px; line-height: 1.5; margin: 10px 0 0; }
+  .xp-setup-h { display: flex; align-items: center; gap: 10px; margin: 24px 0 6px; color: #E8C872; font-size: 16px; font-weight: 700; }
+  .xp-setup-note { color: #DDD4BA; font-size: 13px; line-height: 1.5; margin: 0 0 10px; }
+  .xp-ext-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .xp-ext-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; background: #150E07; border: 1px solid #3A2B17; border-radius: 10px; padding: 14px 16px; color: #FFFFFF; }
+  .xp-ext-info { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .xp-ext-info strong { color: #FFFFFF; font-size: 14px; }
+  .xp-ext-info span { color: #DDD4BA; font-size: 13px; line-height: 1.4; }
+  .xp-ext-where { font-style: normal; font-weight: 600; font-size: 11px; color: #E8C872; border: 1px solid #6B5320; border-radius: 20px; padding: 1px 8px; margin-left: 6px; }
+  .xp-ext-btn { flex-shrink: 0; background: linear-gradient(135deg, #E8C872, #B98A22); color: #1A1206; font-weight: 700; font-size: 13px; padding: 9px 14px; border-radius: 8px; text-decoration: none; white-space: nowrap; }
+  .xp-ext-btn:hover { filter: brightness(1.08); }
+  .xp-setup-checks { margin: 6px 0 0; padding-left: 20px; color: #FFFFFF; font-size: 13px; line-height: 1.6; }
+  @media (max-width: 640px) { .xp-ext-row { flex-direction: column; align-items: flex-start; } }
   .xp-setup-guide {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));

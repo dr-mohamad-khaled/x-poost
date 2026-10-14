@@ -732,7 +732,7 @@ function Demo({ id, isAr }: { id: FeatureId; isAr: boolean }) {
       return (
         <div className="xh-demo xh-d-toast-wrap" aria-hidden="true">
           <div className="xh-d-page"><span className="xh-d-line w60" /><span className="xh-d-line w40" /></div>
-          <div className="xh-d-toast"><i /> <span>{isAr ? "شخص ما اشترى هذا للتو" : t("Someone just ordered this")}</span></div>
+          <div className="xh-d-toast"><i /> <span>{isAr ? "ضمان استرجاع الأموال 30 يوماً" : t("30-day money-back guarantee")}</span></div>
         </div>
       );
     case "productScarcity":

@@ -310,29 +310,7 @@ export default function ProductScarcityPage() {
   const [viewerPulse, setViewerPulse] = useState(false);
 
   useEffect(() => {
-    let timeoutId: any;
-    const tick = () => {
-      const delay = Math.floor(Math.random() * 2400) + 3200;
-      timeoutId = setTimeout(() => {
-        setPreviewViewers((prev) => {
-          const rand = Math.random();
-          let delta = 1;
-          if (prev <= 12) {
-            delta = Math.floor(Math.random() * 2) + 1;
-          } else if (prev >= 32) {
-            delta = -(Math.floor(Math.random() * 2) + 1);
-          } else {
-            delta = rand > 0.45 ? (rand > 0.78 ? 2 : 1) : (rand < 0.22 ? -2 : -1);
-          }
-          return Math.max(10, Math.min(36, prev + delta));
-        });
-        setViewerPulse(true);
-        setTimeout(() => setViewerPulse(false), 450);
-        tick();
-      }, delay);
-    };
-    tick();
-    return () => clearTimeout(timeoutId);
+    setPreviewViewers(16);
   }, []);
 
   const previewHeadline = (currentCopy.headlineText || "Only {stock} items left")
@@ -783,103 +761,29 @@ export default function ProductScarcityPage() {
 
           {/* 2. Stock Source & Quantity Logic */}
           <div className="xpp-card">
-            <h2 className="xpp-card-title"><Translate text='2. Stock & Quantity Logic' /></h2>
+            <h2 className="xpp-card-title"><Translate text='2. Real Inventory & Cutoff Logic' /></h2>
             <p className="xpp-card-desc">
-              
-                                        <Translate text='Choose whether to display actual Shopify inventory or a simulated low-stock range.' />
-                                      </p>
+              <Translate text='Reads actual Shopify inventory for the product or selected variant. The low stock meter appears automatically when inventory is low.' />
+            </p>
 
-            <div style={{ display: "flex", gap: 16, marginBottom: 20 }}>
-              <label
-                style={{
-                  flex: 1,
-                  background: stockSource === "shopify" ? "#1c1b18" : "#1D150C",
-                  border: `2px solid ${stockSource === "shopify" ? "#E8C872" : "#43331D"}`,
-                  borderRadius: 10,
-                  padding: 14,
-                  cursor: "pointer",
-                }}
-              >
-                <input
-                  type="radio"
-                  name="_stockSourceRadio"
-                  checked={stockSource === "shopify"}
-                  onChange={() => setStockSource("shopify")}
-                  style={{ marginRight: 8 }}
-                />
-                <span style={{ fontWeight: 800, color: "#fff" }}><Translate text='Real Shopify Inventory' /></span>
-                <p style={{ margin: "4px 0 0", fontSize: 12, color: "#D2C8AC" }}>
-                  
-                                                    <Translate text='Reads the actual inventory quantity of the product or selected variant.' />
-                                                  </p>
-              </label>
+            <input type="hidden" name="stockSource" value="shopify" />
+            <input type="hidden" name="minStock" value="1" />
+            <input type="hidden" name="maxStock" value="20" />
 
-              <label
-                style={{
-                  flex: 1,
-                  background: stockSource === "manual_range" ? "#1c1b18" : "#1D150C",
-                  border: `2px solid ${stockSource === "manual_range" ? "#E8C872" : "#43331D"}`,
-                  borderRadius: 10,
-                  padding: 14,
-                  cursor: "pointer",
-                }}
-              >
-                <input
-                  type="radio"
-                  name="_stockSourceRadio"
-                  checked={stockSource === "manual_range"}
-                  onChange={() => setStockSource("manual_range")}
-                  style={{ marginRight: 8 }}
-                />
-                <span style={{ fontWeight: 800, color: "#fff" }}><Translate text='Simulated Stock Range' /></span>
-                <p style={{ margin: "4px 0 0", fontSize: 12, color: "#D2C8AC" }}>
-                  
-                                                    <Translate text='Generates an enticing low quantity (e.g. between 3 and 12) per product.' />
-                                                  </p>
-              </label>
+            <div className="xpp-field-group">
+              <label className="xpp-label"><Translate text='Low Stock Cutoff Threshold' /></label>
+              <input
+                type="number"
+                name="lowStockThreshold"
+                className="xpp-input"
+                style={{ maxWidth: 200 }}
+                value={lowStockThreshold}
+                onChange={(e) => setLowStockThreshold(Number(e.target.value))}
+              />
+              <div className="xpp-hint">
+                <Translate text='Only show the scarcity block when Shopify inventory is at or below this number. Set to 0 to show for all inventory quantities.' />
+              </div>
             </div>
-
-            {stockSource === "shopify" ? (
-              <div className="xpp-field-group">
-                <label className="xpp-label"><Translate text='Low Stock Cutoff Threshold' /></label>
-                <input
-                  type="number"
-                  name="lowStockThreshold"
-                  className="xpp-input"
-                  style={{ maxWidth: 200 }}
-                  value={lowStockThreshold}
-                  onChange={(e) => setLowStockThreshold(Number(e.target.value))}
-                />
-                <div className="xpp-hint">
-                  
-                                                    <Translate text='Only show the scarcity block when Shopify inventory is at or below this number. Set to 0 to show for all inventory quantities.' />
-                                                  </div>
-              </div>
-            ) : (
-              <div className="xpp-row">
-                <div className="xpp-field-group" style={{ flex: 1 }}>
-                  <input type="hidden" name="lowStockThreshold" value={lowStockThreshold || 0} />
-                  <label className="xpp-label"><Translate text='Minimum Stock (Min)' /></label>
-                  <input
-                    type="number"
-                    name="minStock"
-                    className="xpp-input"
-                    value={minStock}
-                    onChange={(e) => setMinStock(Number(e.target.value))}
-                  />
-                </div>
-                <div className="xpp-field-group" style={{ flex: 1 }}>
-                  <label className="xpp-label"><Translate text='Maximum Stock (Max)' /></label>
-                  <input
-                    type="number"
-                    name="maxStock"
-                    className="xpp-input"
-                    value={maxStock}
-                    onChange={(e) => setMaxStock(Number(e.target.value))}
-                  />
-                </div>
-              </div>
-            )}
           </div>
 
           {/* 3. Text & Copy */}

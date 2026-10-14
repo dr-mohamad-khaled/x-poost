@@ -26,39 +26,20 @@
 {% endif %}
 
 {% if show_block %}
-  {% comment %} Calculate remaining stock {% endcomment %}
-  {% assign stock_qty = 5 %}
-  {% if block.settings.stock_source == 'shopify' %}
-    {% if current_variant.inventory_quantity > 0 %}
-      {% assign stock_qty = current_variant.inventory_quantity %}
-    {% else %}
-      {% assign stock_qty = block.settings.min_stock | default: 3 %}
-    {% endif %}
+  {% comment %} Real Shopify inventory quantity {% endcomment %}
+  {% assign stock_qty = current_variant.inventory_quantity | default: 0 %}
 
-    {% assign threshold = block.settings.threshold | default: 0 | plus: 0 %}
-    {% assign is_initially_hidden = false %}
-    {% if is_sold_out %}
-      {% assign is_initially_hidden = true %}
-    {% elsif block.settings.stock_source == 'shopify' and threshold > 0 and stock_qty > threshold %}
-      {% assign is_initially_hidden = true %}
-    {% endif %}
-  {% else %}
-    {% comment %} Simulated deterministic range based on product ID {% endcomment %}
-    {% assign min_s = block.settings.min_stock | default: 3 | plus: 0 %}
-    {% assign max_s = block.settings.max_stock | default: 12 | plus: 0 %}
-    {% if max_s <= min_s %}
-      {% assign max_s = min_s | plus: 5 %}
-    {% endif %}
-    {% assign range_diff = max_s | minus: min_s | plus: 1 %}
-    {% assign stock_qty = product.id | modulo: range_diff | plus: min_s %}
+  {% assign threshold = block.settings.threshold | default: 0 | plus: 0 %}
+  {% assign is_initially_hidden = false %}
+  {% if is_sold_out or stock_qty <= 0 %}
+    {% assign is_initially_hidden = true %}
+  {% elsif threshold > 0 and stock_qty > threshold %}
+    {% assign is_initially_hidden = true %}
   {% endif %}
-
-  {% comment %} Deterministic live viewers counter {% endcomment %}
-  {% assign viewers_count = product.id | modulo: 24 | plus: 9 %}
 
   {% comment %} Dynamic variable spans for live continuous updating {% endcomment %}
   {% capture stock_span %}<span class="xpp-ps-stock-num">{{ stock_qty }}</span>{% endcapture %}
-  {% capture viewers_span %}<span class="xpp-ps-viewers-num">{{ viewers_count }}</span>{% endcapture %}
+  {% capture viewers_span %}<span class="xpp-ps-viewers-num"></span>{% endcapture %}
 
   {% comment %} Replace template variables {% endcomment %}
   {% assign headline = block.settings.headline | default: 'Hurry! Only {stock} items left in stock' | replace: '{stock}', stock_span | replace: '{viewers}', viewers_span %}
@@ -204,42 +185,14 @@
       "default": "pulse_meter"
     },
     {
-      "type": "select",
-      "id": "stock_source",
-      "label": "Inventory Calculation Source",
-      "options": [
-        { "value": "shopify", "label": "Real Shopify Inventory" },
-        { "value": "manual_range", "label": "Simulated Range (Custom Min / Max)" }
-      ],
-      "default": "shopify"
-    },
-    {
-      "type": "range",
-      "id": "min_stock",
-      "label": "Minimum Stock Quantity",
-      "min": 1,
-      "max": 20,
-      "step": 1,
-      "default": 3
-    },
-    {
-      "type": "range",
-      "id": "max_stock",
-      "label": "Maximum Stock Quantity",
-      "min": 5,
-      "max": 50,
-      "step": 1,
-      "default": 12
-    },
-    {
       "type": "range",
       "id": "threshold",
       "label": "Low Stock Cutoff (0 = Always Show)",
       "min": 0,
       "max": 100,
       "step": 1,
-      "default": 0,
-      "info": "If using Shopify inventory, only show this block when stock is below this number. Set to 0 to always show."
+      "default": 20,
+      "info": "Only show this block when real Shopify inventory is at or below this number. Set to 0 to always show."
     },
     {
       "type": "text",

@@ -12,7 +12,7 @@ subpath = "xpoost"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_discounts,read_products,read_orders"
+scopes = "write_discounts,read_inventory,read_products,read_orders,write_checkout_extensions_apis"
 
 [webhooks]
 api_version = "2026-10"
@@ -53,4 +53,5 @@ redirect_urls = [
 ]
 
 [build]
+include_config_on_deploy = true
 automatically_update_urls_on_dev = true

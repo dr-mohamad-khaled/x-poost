@@ -1341,7 +1341,7 @@ export default function PrePurchaseSettings() {
     <s-page heading={t("Pre-Purchase Upsell")}>
       <style>{PRE_PURCHASE_STYLES}</style>
 
-      {actionData && "error" in actionData ? (
+      {actionData && "error" in actionData && actionData.error ? (
         <s-banner tone="critical">{t(actionData.error)}</s-banner>
       ) : null}
       {actionData && "ok" in actionData ? (

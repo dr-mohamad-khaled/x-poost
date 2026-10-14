@@ -531,9 +531,9 @@ function scarcity(): Scene {
       <PageBg />
       <Price />
       <AtcBtn />
-      {toast("★", "Someone in Cairo just ordered", "3 minutes ago", k.win(4, 10, 30, 35, "transform:translateY(1.2em)", "transform:none"))}
-      {toast("●", "14 people are viewing this", "right now", k.win(38, 44, 62, 67, "transform:translateY(1.2em)", "transform:none"))}
-      {toast("!", "Only 3 left in stock", "order soon", k.win(70, 76, 92, 97, "transform:translateY(1.2em)", "transform:none"))}
+      {toast("%", "Exclusive code: SAVE15", "15% off applied at checkout", k.win(4, 10, 30, 35, "transform:translateY(1.2em)", "transform:none"))}
+      {toast("★", "Shop with confidence", "30-day money-back guarantee", k.win(38, 44, 62, 67, "transform:translateY(1.2em)", "transform:none"))}
+      {toast("✓", "Free priority delivery", "on orders over $50", k.win(70, 76, 92, 97, "transform:translateY(1.2em)", "transform:none"))}
     </>
   );
   return { css: k.css(), node };

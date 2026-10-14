@@ -2032,7 +2032,8 @@
     "7. Promotional Discount": "7. Promotional Discount",
     "6. Offer Headline & Button Copy (": "6. Offer Headline & Button Copy (",
     "Select promoted products in step 3 to preview the modal.": "Select promoted products in step 3 to preview the modal.",
-    "Switch to Yearly": "Switch to Yearly"
+    "Switch to Yearly": "Switch to Yearly",
+    "30-day money-back guarantee": "30-day money-back guarantee"
   },
   "ar": {
     "0": "إشعارات زاوية الاستعجال",
@@ -4067,7 +4068,8 @@
     "7. Promotional Discount": "7. الخصم الترويجي",
     "6. Offer Headline & Button Copy (": "6. نصوص العرض والزر (",
     "Select promoted products in step 3 to preview the modal.": "اختر المنتجات المروجة في خطوة 3 لمعاينة النافذة.",
-    "Switch to Yearly": "التحويل إلى السنوي"
+    "Switch to Yearly": "التحويل إلى السنوي",
+    "30-day money-back guarantee": "ضمان استرجاع الأموال لمدة 30 يوماً"
   },
   "fr": {
     "0": "Toasts d'urgence en coin",
@@ -6102,7 +6104,8 @@
     "7. Promotional Discount": "7. Remise promotionnelle",
     "6. Offer Headline & Button Copy (": "6. Titre de l'offre et copie du bouton (",
     "Select promoted products in step 3 to preview the modal.": "Sélectionnez des produits à promouvoir à l'étape 3 pour prévisualiser la modale.",
-    "Switch to Yearly": "Passer à l'annuel"
+    "Switch to Yearly": "Passer à l'annuel",
+    "30-day money-back guarantee": "Garantie satisfait ou remboursé de 30 jours"
   },
   "de": {
     "0": "Dringlichkeits-Eck-Toasts",
@@ -8137,7 +8140,8 @@
     "7. Promotional Discount": "7. Aktionsrabatt",
     "6. Offer Headline & Button Copy (": "6. Angebotsüberschrift & Button-Text (",
     "Select promoted products in step 3 to preview the modal.": "Wählen Sie in Schritt 3 empfohlene Produkte aus, um das Modal in der Vorschau anzuzeigen.",
-    "Switch to Yearly": "Zu Jährlich wechseln"
+    "Switch to Yearly": "Zu Jährlich wechseln",
+    "30-day money-back guarantee": "30 Tage Geld-zurück-Garantie"
   },
   "es": {
     "0": "Notificaciones de esquina de urgencia",
@@ -10172,7 +10176,8 @@
     "7. Promotional Discount": "7. Descuento promocional",
     "6. Offer Headline & Button Copy (": "6. Título de la oferta y texto del botón (",
     "Select promoted products in step 3 to preview the modal.": "Selecciona los productos promocionados en el paso 3 para previsualizar el modal.",
-    "Switch to Yearly": "Cambiar a anual"
+    "Switch to Yearly": "Cambiar a anual",
+    "30-day money-back guarantee": "Garantía de devolución de 30 días"
   },
   "it": {
     "0": "Notifiche angolari di urgenza",
@@ -12207,7 +12212,8 @@
     "7. Promotional Discount": "7. Sconto promozionale",
     "6. Offer Headline & Button Copy (": "6. Titolo dell'offerta e copia del pulsante (",
     "Select promoted products in step 3 to preview the modal.": "Seleziona i prodotti in promozione nel passaggio 3 per vedere l'anteprima del modale.",
-    "Switch to Yearly": "Passa ad annuale"
+    "Switch to Yearly": "Passa ad annuale",
+    "30-day money-back guarantee": "Garanzia di rimborso di 30 giorni"
   },
   "pt": {
     "0": "Notificações de canto de urgência",
@@ -14242,6 +14248,7 @@
     "7. Promotional Discount": "7. Desconto promocional",
     "6. Offer Headline & Button Copy (": "6. Título da oferta e texto do botão (",
     "Select promoted products in step 3 to preview the modal.": "Selecione produtos promovidos no passo 3 para pré-visualizar o modal.",
-    "Switch to Yearly": "Mudar para anual"
+    "Switch to Yearly": "Mudar para anual",
+    "30-day money-back guarantee": "Garantia de reembolso de 30 dias"
   }
 }

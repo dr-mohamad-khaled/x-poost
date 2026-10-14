@@ -894,7 +894,7 @@ export default function InCartUpsellSettings() {
     <s-page heading={t("Cart Upsell")}>
       <style>{IN_CART_STYLES}</style>
 
-      {actionData && "error" in actionData ? (
+      {actionData && "error" in actionData && actionData.error ? (
         <s-banner tone="critical">{t(actionData.error)}</s-banner>
       ) : null}
       {actionData && "ok" in actionData ? (

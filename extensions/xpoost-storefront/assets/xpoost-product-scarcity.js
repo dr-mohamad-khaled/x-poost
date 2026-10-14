@@ -58,16 +58,6 @@
     return false;
   }
 
-  function computeSimulatedStock(productId, minStock, maxStock) {
-    var minS = parseInt(minStock || "3", 10);
-    var maxS = parseInt(maxStock || "12", 10);
-    if (isNaN(minS) || minS < 1) minS = 3;
-    if (isNaN(maxS) || maxS <= minS) maxS = minS + 5;
-    var rawDigits = String(productId || "").replace(/\\D/g, "");
-    var pidNum = parseInt(rawDigits.slice(-4) || "7", 10);
-    return (pidNum % (maxS - minS + 1)) + minS;
-  }
-
   function formatTemplate(text, stock, viewers) {
     if (!text) return "";
     var stockHtml = '<span class="xpp-ps-stock-num">' + stock + '</span>';
@@ -194,35 +184,6 @@
         });
       }
 
-      function scheduleNextViewerTick() {
-        var delay = Math.floor(Math.random() * 2600) + 3200;
-        setTimeout(function () {
-          if (!document.hidden) {
-            var rand = Math.random();
-            var delta = 0;
-            if (currentViewers <= minViewers) {
-              delta = Math.floor(Math.random() * 2) + 1;
-            } else if (currentViewers >= maxViewers) {
-              delta = -(Math.floor(Math.random() * 2) + 1);
-            } else {
-              if (rand < 0.28) delta = -1;
-              else if (rand < 0.58) delta = 1;
-              else if (rand < 0.76) delta = 2;
-              else if (rand < 0.90) delta = -2;
-              else if (rand < 0.95) delta = 3;
-              else delta = -3;
-            }
-            var nextCount = Math.max(minViewers, Math.min(maxViewers, currentViewers + delta));
-            if (nextCount !== currentViewers) {
-              currentViewers = nextCount;
-              updateViewersDisplay(currentViewers);
-            }
-          }
-          scheduleNextViewerTick();
-        }, delay);
-      }
-
-      scheduleNextViewerTick();
 
       // Sync with XPoost global App Proxy config
       var proxyPath = root.dataset.proxyPath || "/apps/xpoost/config";
@@ -296,32 +257,24 @@
 
           // 5. Stock Level & Visibility Handling
           var displayQty = 5;
-          if (stockSource === "manual_range") {
-            // SIMULATED STOCK RANGE:
-            // Calculate simulated stock (e.g. between 3 and 12).
-            // Do NOT apply inventory threshold cutoff to simulated stock!
-            displayQty = computeSimulatedStock(productId, minStock, maxStock);
-            root.classList.remove("xpp-ps-hidden");
+          // 5. Real Shopify Inventory Level & Cutoff Handling
+          var stockNum = root.querySelector(".xpp-ps-stock-num");
+          var curStock = stockNum ? stockNum.textContent.trim() : "0";
+          var curQty = parseInt(curStock, 10);
+          var displayQty = isNaN(curQty) ? 0 : curQty;
+
+          // Out of stock check
+          if (displayQty <= 0) {
+            root.classList.add("xpp-ps-hidden");
+            return;
+          }
+
+          // Threshold cutoff check (0 = Always Show)
+          if (threshold > 0 && displayQty > threshold) {
+            root.classList.add("xpp-ps-hidden");
+            return;
           } else {
-            // REAL SHOPIFY INVENTORY:
-            var stockNum = root.querySelector(".xpp-ps-stock-num");
-            var curStock = stockNum ? stockNum.textContent.trim() : "5";
-            var curQty = parseInt(curStock, 10);
-            displayQty = isNaN(curQty) ? 5 : curQty;
-
-            // Out of stock check
-            if (displayQty <= 0) {
-              root.classList.add("xpp-ps-hidden");
-              return;
-            }
-
-            // Threshold cutoff check (0 = Always Show)
-            if (threshold > 0 && displayQty > threshold) {
-              root.classList.add("xpp-ps-hidden");
-              return;
-            } else {
-              root.classList.remove("xpp-ps-hidden");
-            }
+            root.classList.remove("xpp-ps-hidden");
           }
 
           // 6. RTL Support
@@ -389,13 +342,7 @@
 
         root.dataset.available = "true";
 
-        // 2. If stock source is simulated (manual_range), stay visible with simulated stock
-        if (stockSource === "manual_range") {
-          root.classList.remove("xpp-ps-hidden");
-          return;
-        }
-
-        // 3. If stock source is Shopify inventory:
+        // 2. Read real variant inventory quantity
         var qty = typeof variant.inventory_quantity !== "undefined" ? parseInt(variant.inventory_quantity, 10) : NaN;
         if (isNaN(qty)) {
           root.classList.remove("xpp-ps-hidden");
