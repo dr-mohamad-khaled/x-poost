@@ -3,6 +3,7 @@ api_version = "2026-07"
 [[extensions]]
 name = "t:name"
 handle = "xpoost-bundles"
+uid = "910b463b-7f53-56d6-6940-0cfd3a1db3bf350c37d0"
 type = "function"
 description = "t:description"
 
