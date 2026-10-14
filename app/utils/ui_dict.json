@@ -2031,7 +2031,8 @@
     "6. Modal Selection Behavior": "6. Modal Selection Behavior",
     "7. Promotional Discount": "7. Promotional Discount",
     "6. Offer Headline & Button Copy (": "6. Offer Headline & Button Copy (",
-    "Select promoted products in step 3 to preview the modal.": "Select promoted products in step 3 to preview the modal."
+    "Select promoted products in step 3 to preview the modal.": "Select promoted products in step 3 to preview the modal.",
+    "Switch to Yearly": "Switch to Yearly"
   },
   "ar": {
     "0": "إشعارات زاوية الاستعجال",
@@ -4065,7 +4066,8 @@
     "6. Modal Selection Behavior": "6. سلوك التحديد في النافذة",
     "7. Promotional Discount": "7. الخصم الترويجي",
     "6. Offer Headline & Button Copy (": "6. نصوص العرض والزر (",
-    "Select promoted products in step 3 to preview the modal.": "اختر المنتجات المروجة في خطوة 3 لمعاينة النافذة."
+    "Select promoted products in step 3 to preview the modal.": "اختر المنتجات المروجة في خطوة 3 لمعاينة النافذة.",
+    "Switch to Yearly": "التحويل إلى السنوي"
   },
   "fr": {
     "0": "Toasts d'urgence en coin",
@@ -6099,7 +6101,8 @@
     "6. Modal Selection Behavior": "6. Comportement de sélection de la modale",
     "7. Promotional Discount": "7. Remise promotionnelle",
     "6. Offer Headline & Button Copy (": "6. Titre de l'offre et copie du bouton (",
-    "Select promoted products in step 3 to preview the modal.": "Sélectionnez des produits à promouvoir à l'étape 3 pour prévisualiser la modale."
+    "Select promoted products in step 3 to preview the modal.": "Sélectionnez des produits à promouvoir à l'étape 3 pour prévisualiser la modale.",
+    "Switch to Yearly": "Passer à l'annuel"
   },
   "de": {
     "0": "Dringlichkeits-Eck-Toasts",
@@ -8133,7 +8136,8 @@
     "6. Modal Selection Behavior": "6. Auswahlverhalten des Modals",
     "7. Promotional Discount": "7. Aktionsrabatt",
     "6. Offer Headline & Button Copy (": "6. Angebotsüberschrift & Button-Text (",
-    "Select promoted products in step 3 to preview the modal.": "Wählen Sie in Schritt 3 empfohlene Produkte aus, um das Modal in der Vorschau anzuzeigen."
+    "Select promoted products in step 3 to preview the modal.": "Wählen Sie in Schritt 3 empfohlene Produkte aus, um das Modal in der Vorschau anzuzeigen.",
+    "Switch to Yearly": "Zu Jährlich wechseln"
   },
   "es": {
     "0": "Notificaciones de esquina de urgencia",
@@ -10167,7 +10171,8 @@
     "6. Modal Selection Behavior": "6. Comportamiento de selección del modal",
     "7. Promotional Discount": "7. Descuento promocional",
     "6. Offer Headline & Button Copy (": "6. Título de la oferta y texto del botón (",
-    "Select promoted products in step 3 to preview the modal.": "Selecciona los productos promocionados en el paso 3 para previsualizar el modal."
+    "Select promoted products in step 3 to preview the modal.": "Selecciona los productos promocionados en el paso 3 para previsualizar el modal.",
+    "Switch to Yearly": "Cambiar a anual"
   },
   "it": {
     "0": "Notifiche angolari di urgenza",
@@ -12201,7 +12206,8 @@
     "6. Modal Selection Behavior": "6. Comportamento di selezione del modale",
     "7. Promotional Discount": "7. Sconto promozionale",
     "6. Offer Headline & Button Copy (": "6. Titolo dell'offerta e copia del pulsante (",
-    "Select promoted products in step 3 to preview the modal.": "Seleziona i prodotti in promozione nel passaggio 3 per vedere l'anteprima del modale."
+    "Select promoted products in step 3 to preview the modal.": "Seleziona i prodotti in promozione nel passaggio 3 per vedere l'anteprima del modale.",
+    "Switch to Yearly": "Passa ad annuale"
   },
   "pt": {
     "0": "Notificações de canto de urgência",
@@ -14235,6 +14241,7 @@
     "6. Modal Selection Behavior": "6. Comportamento de seleção do modal",
     "7. Promotional Discount": "7. Desconto promocional",
     "6. Offer Headline & Button Copy (": "6. Título da oferta e texto do botão (",
-    "Select promoted products in step 3 to preview the modal.": "Selecione produtos promovidos no passo 3 para pré-visualizar o modal."
+    "Select promoted products in step 3 to preview the modal.": "Selecione produtos promovidos no passo 3 para pré-visualizar o modal.",
+    "Switch to Yearly": "Mudar para anual"
   }
 }

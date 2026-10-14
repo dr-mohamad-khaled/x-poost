@@ -793,7 +793,7 @@ export default function Pricing() {
                 className={`xpp-btn ${isMonthlyActive ? "xpp-btn--disabled" : "xpp-btn--secondary"}`}
                 disabled={isMonthlyActive || isSubmitting}
               >
-                {isMonthlyActive ? "Current Active Plan" : isYearlyActive ? "Switch to Monthly" : "Start 7-Day Free Trial"}
+                {isMonthlyActive ? t("Current Active Plan") : isYearlyActive ? t("Switch to Monthly") : t("Start 7-Day Free Trial")}
               </button>
             </Form>
             <span className="xpp-btn-sub"><span className="xpp-hl-gold"><Translate text='Zero charge' /></span>  <Translate text='until trial ends -- 1-click cancellation' /></span>
@@ -840,7 +840,7 @@ export default function Pricing() {
                 className={`xpp-btn ${isYearlyActive ? "xpp-btn--disabled" : "xpp-btn--primary"}`}
                 disabled={isYearlyActive || isSubmitting}
               >
-                {isYearlyActive ? "Current Active Plan" : "Start 7-Day Free Trial"}
+                {isYearlyActive ? t("Current Active Plan") : isMonthlyActive ? t("Switch to Yearly") : t("Start 7-Day Free Trial")}
               </button>
             </Form>
             <span className="xpp-btn-sub"><span className="xpp-hl-gold"><Translate text='Zero charge' /></span>  <Translate text='until trial ends -- 1-click cancellation' /></span>
