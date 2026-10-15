@@ -2311,7 +2311,14 @@
     "A bundle that is viewed often but rarely added may ask for too many items. Try a smaller size or tiered savings that reward each extra item.": "A bundle that is viewed often but rarely added may ask for too many items. Try a smaller size or tiered savings that reward each extra item.",
     "Use customer rules to give returning customers or tagged VIPs their own bundle, then compare the two here.": "Use customer rules to give returning customers or tagged VIPs their own bundle, then compare the two here.",
     "Bundle not found.": "Bundle not found.",
-    "Bundle prices are live at checkout.": "Bundle prices are live at checkout."
+    "Bundle prices are live at checkout.": "Bundle prices are live at checkout.",
+    "Build your bundle": "Build your bundle",
+    "Your bundle": "Your bundle",
+    "Add bundle to cart": "Add bundle to cart",
+    "Bundle added to cart": "Bundle added to cart",
+    "The shopper picks products for their bundle": "The shopper picks products for their bundle",
+    "Slots fill up and the bundle price drops": "Slots fill up and the bundle price drops",
+    "One click adds the whole bundle at the bundle price": "One click adds the whole bundle at the bundle price"
   },
   "ar": {
     "0": "إشعارات زاوية الاستعجال",
@@ -4625,7 +4632,14 @@
     "A bundle that is viewed often but rarely added may ask for too many items. Try a smaller size or tiered savings that reward each extra item.": "الباقة التي تُشاهد كثيرًا وتُضاف قليلًا قد تطلب قطعًا كثيرة. جرّب حجمًا أصغر أو توفيرًا متدرجًا يكافئ كل قطعة إضافية.",
     "Use customer rules to give returning customers or tagged VIPs their own bundle, then compare the two here.": "استخدم شروط العملاء لمنح العملاء العائدين أو أصحاب وسم VIP باقة خاصة، ثم قارن بينهما هنا.",
     "Bundle not found.": "الباقة غير موجودة.",
-    "Bundle prices are live at checkout.": "أسعار الباقات مفعّلة عند الدفع."
+    "Bundle prices are live at checkout.": "أسعار الباقات مفعّلة عند الدفع.",
+    "Build your bundle": "ابنِ باقتك",
+    "Your bundle": "باقتك",
+    "Add bundle to cart": "أضف الباقة إلى السلة",
+    "Bundle added to cart": "أُضيفت الباقة إلى السلة",
+    "The shopper picks products for their bundle": "العميل يختار المنتجات لباقته",
+    "Slots fill up and the bundle price drops": "الخانات تمتلئ وسعر الباقة ينخفض",
+    "One click adds the whole bundle at the bundle price": "نقرة واحدة تضيف الباقة كاملة بسعر الباقة"
   },
   "fr": {
     "0": "Toasts d'urgence en coin",
@@ -6939,7 +6953,14 @@
     "A bundle that is viewed often but rarely added may ask for too many items. Try a smaller size or tiered savings that reward each extra item.": "Un lot très vu mais peu ajouté demande peut-être trop d'articles. Essayez une taille plus petite ou des économies par paliers qui récompensent chaque article en plus.",
     "Use customer rules to give returning customers or tagged VIPs their own bundle, then compare the two here.": "Utilisez les règles clients pour offrir un lot propre aux clients fidèles ou tagués VIP, puis comparez les deux ici.",
     "Bundle not found.": "Lot introuvable.",
-    "Bundle prices are live at checkout.": "Les prix des lots sont actifs au paiement."
+    "Bundle prices are live at checkout.": "Les prix des lots sont actifs au paiement.",
+    "Build your bundle": "Composez votre pack",
+    "Your bundle": "Votre pack",
+    "Add bundle to cart": "Ajouter le pack au panier",
+    "Bundle added to cart": "Pack ajouté au panier",
+    "The shopper picks products for their bundle": "Le client choisit les produits de son pack",
+    "Slots fill up and the bundle price drops": "Les emplacements se remplissent et le prix du pack baisse",
+    "One click adds the whole bundle at the bundle price": "Un clic ajoute tout le pack au prix du pack"
   },
   "de": {
     "0": "Dringlichkeits-Eck-Toasts",
@@ -9253,7 +9274,14 @@
     "A bundle that is viewed often but rarely added may ask for too many items. Try a smaller size or tiered savings that reward each extra item.": "Ein Set, das oft gesehen, aber selten hinzugefügt wird, verlangt vielleicht zu viele Artikel. Versuche eine kleinere Größe oder Staffelrabatte für jeden weiteren Artikel.",
     "Use customer rules to give returning customers or tagged VIPs their own bundle, then compare the two here.": "Nutze Kundenregeln, um Stammkunden oder VIP-Tags ein eigenes Set zu geben, und vergleiche beide hier.",
     "Bundle not found.": "Set nicht gefunden.",
-    "Bundle prices are live at checkout.": "Set-Preise sind an der Kasse aktiv."
+    "Bundle prices are live at checkout.": "Set-Preise sind an der Kasse aktiv.",
+    "Build your bundle": "Stelle dein Bundle zusammen",
+    "Your bundle": "Dein Bundle",
+    "Add bundle to cart": "Bundle in den Warenkorb",
+    "Bundle added to cart": "Bundle in den Warenkorb gelegt",
+    "The shopper picks products for their bundle": "Der Kunde wählt die Produkte für sein Bundle",
+    "Slots fill up and the bundle price drops": "Die Plätze füllen sich und der Bundle-Preis sinkt",
+    "One click adds the whole bundle at the bundle price": "Ein Klick legt das ganze Bundle zum Bundle-Preis in den Warenkorb"
   },
   "es": {
     "0": "Notificaciones de esquina de urgencia",
@@ -11567,7 +11595,14 @@
     "A bundle that is viewed often but rarely added may ask for too many items. Try a smaller size or tiered savings that reward each extra item.": "Un pack muy visto pero poco añadido quizá pide demasiados artículos. Prueba un tamaño menor o ahorros por niveles que premien cada artículo extra.",
     "Use customer rules to give returning customers or tagged VIPs their own bundle, then compare the two here.": "Usa reglas de cliente para dar a clientes recurrentes o etiquetados VIP su propio pack y compáralos aquí.",
     "Bundle not found.": "Pack no encontrado.",
-    "Bundle prices are live at checkout.": "Los precios de los packs están activos en el pago."
+    "Bundle prices are live at checkout.": "Los precios de los packs están activos en el pago.",
+    "Build your bundle": "Arma tu pack",
+    "Your bundle": "Tu pack",
+    "Add bundle to cart": "Añadir el pack al carrito",
+    "Bundle added to cart": "Pack añadido al carrito",
+    "The shopper picks products for their bundle": "El cliente elige los productos de su pack",
+    "Slots fill up and the bundle price drops": "Los huecos se llenan y el precio del pack baja",
+    "One click adds the whole bundle at the bundle price": "Un clic añade todo el pack al precio del pack"
   },
   "it": {
     "0": "Notifiche angolari di urgenza",
@@ -13881,7 +13916,14 @@
     "A bundle that is viewed often but rarely added may ask for too many items. Try a smaller size or tiered savings that reward each extra item.": "Un bundle molto visto ma poco aggiunto forse chiede troppi articoli. Prova una dimensione minore o risparmi a livelli che premiano ogni articolo in più.",
     "Use customer rules to give returning customers or tagged VIPs their own bundle, then compare the two here.": "Usa le regole cliente per dare ai clienti abituali o con tag VIP un bundle dedicato, poi confrontali qui.",
     "Bundle not found.": "Bundle non trovato.",
-    "Bundle prices are live at checkout.": "I prezzi dei bundle sono attivi al checkout."
+    "Bundle prices are live at checkout.": "I prezzi dei bundle sono attivi al checkout.",
+    "Build your bundle": "Crea il tuo bundle",
+    "Your bundle": "Il tuo bundle",
+    "Add bundle to cart": "Aggiungi il bundle al carrello",
+    "Bundle added to cart": "Bundle aggiunto al carrello",
+    "The shopper picks products for their bundle": "Il cliente sceglie i prodotti per il suo bundle",
+    "Slots fill up and the bundle price drops": "Gli slot si riempiono e il prezzo del bundle scende",
+    "One click adds the whole bundle at the bundle price": "Un clic aggiunge tutto il bundle al prezzo del bundle"
   },
   "pt": {
     "0": "Notificações de canto de urgência",
@@ -16195,6 +16237,13 @@
     "A bundle that is viewed often but rarely added may ask for too many items. Try a smaller size or tiered savings that reward each extra item.": "Um kit muito visto mas pouco adicionado talvez peça itens demais. Tente um tamanho menor ou economia por níveis que recompense cada item extra.",
     "Use customer rules to give returning customers or tagged VIPs their own bundle, then compare the two here.": "Use regras de cliente para dar a clientes recorrentes ou com tag VIP um kit próprio e compare os dois aqui.",
     "Bundle not found.": "Kit não encontrado.",
-    "Bundle prices are live at checkout.": "Os preços dos kits estão ativos no checkout."
+    "Bundle prices are live at checkout.": "Os preços dos kits estão ativos no checkout.",
+    "Build your bundle": "Monte o seu combo",
+    "Your bundle": "Seu combo",
+    "Add bundle to cart": "Adicionar o combo ao carrinho",
+    "Bundle added to cart": "Combo adicionado ao carrinho",
+    "The shopper picks products for their bundle": "O cliente escolhe os produtos do seu combo",
+    "Slots fill up and the bundle price drops": "Os espaços se preenchem e o preço do combo cai",
+    "One click adds the whole bundle at the bundle price": "Um clique adiciona o combo inteiro pelo preço do combo"
   }
 }

@@ -390,6 +390,8 @@
   // ─────────────────────────────────────────────────────────
   Builder.prototype.render = function () {
     var focusKey = document.activeElement && this.root.contains(document.activeElement) ? document.activeElement.getAttribute("data-fk") : null;
+    var oldPanel = this.overlay && this.overlay.querySelector(".xpb-panel");
+    var scrollTop = oldPanel ? oldPanel.scrollTop : 0;
     var display = this.b.display || "inline";
     if (display === "inline") {
       this.root.innerHTML = this.css() + this.builderHtml();
@@ -397,9 +399,142 @@
       this.root.innerHTML = this.css() + this.launcherHtml();
       this.renderOverlay();
     }
+    if (scrollTop) {
+      var newPanel = this.overlay && this.overlay.querySelector(".xpb-panel");
+      if (newPanel) newPanel.scrollTop = scrollTop;
+    }
     if (focusKey) {
       var target = (this.overlay || this.root).querySelector('[data-fk="' + focusKey + '"]') || this.root.querySelector('[data-fk="' + focusKey + '"]');
       if (target) target.focus();
+    }
+    this.fx();
+  };
+
+  // ─────────────────────────────────────────────────────────
+  // Motion. The DOM is rebuilt on every render, so each effect is
+  // triggered by comparing what is on screen now with the last render.
+  // Nothing runs when the shopper prefers reduced motion.
+  // ─────────────────────────────────────────────────────────
+  var RISE_SEL = ".xpb-card, .xpb-slot, .xpb-row, .xpb-tile, .xpb-fx";
+  function calm() {
+    return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }
+  function rise(list) {
+    for (var i = 0; i < list.length; i++) {
+      var el = list[i];
+      el.classList.remove("fx-rise");
+      void el.offsetWidth;
+      el.style.setProperty("--i", Math.min(i, 12));
+      el.classList.add("fx-rise");
+    }
+  }
+
+  Builder.prototype.burst = function (cta) {
+    var host = cta && cta.parentNode;
+    if (!host) return;
+    var wrap = document.createElement("span");
+    wrap.className = "xpb-burst";
+    wrap.setAttribute("aria-hidden", "true");
+    wrap.style.left = cta.offsetLeft + cta.offsetWidth / 2 + "px";
+    wrap.style.top = cta.offsetTop + cta.offsetHeight / 2 + "px";
+    var html = "";
+    for (var i = 0; i < 14; i++) {
+      var a = (i / 14) * Math.PI * 2 + Math.random() * 0.4;
+      var d = 38 + Math.random() * 40;
+      html += '<i style="--dx:' + Math.round(Math.cos(a) * d) + "px;--dy:" + Math.round(Math.sin(a) * d) + "px;--d:" + Math.round(Math.random() * 90) + "ms;--s:" + (5 + Math.round(Math.random() * 4)) + 'px"></i>';
+    }
+    wrap.innerHTML = html;
+    host.appendChild(wrap);
+    setTimeout(function () {
+      if (wrap.parentNode) wrap.parentNode.removeChild(wrap);
+    }, 1000);
+  };
+
+  Builder.prototype.fx = function () {
+    if (this.loading) return;
+    var scopes = [this.root];
+    if (this.overlay) scopes.push(this.overlay);
+    function qa(sel) {
+      var out = [];
+      scopes.forEach(function (s) {
+        var list = s.querySelectorAll(sel);
+        for (var i = 0; i < list.length; i++) out.push(list[i]);
+      });
+      return out;
+    }
+    function play(el, cls) {
+      if (el) el.classList.add(cls);
+    }
+    var sm = this.summary();
+    var bar = qa(".xpb-bar span")[0];
+    var counts = {};
+    var ids = {};
+    var picked = 0;
+    this.steps.forEach(function (s, i) {
+      s.picks.forEach(function (pk) {
+        if (!pk) return;
+        picked += 1;
+        counts[i + ":" + pk.h] = (counts[i + ":" + pk.h] || 0) + 1;
+        ids[String(pk.k)] = 1;
+      });
+    });
+    var snap = {
+      counts: counts,
+      ids: ids,
+      picked: picked,
+      total: sm.total,
+      discount: sm.discount,
+      complete: !!sm.complete,
+      gift: !!sm.gift,
+      pct: bar ? parseFloat(bar.style.width) || 0 : 0,
+      view: this.view,
+      msg: this.msg || ""
+    };
+    var prev = this._fxPrev;
+    this._fxPrev = snap;
+    if (calm()) return;
+
+    if (!prev) {
+      rise(qa(RISE_SEL));
+      return;
+    }
+    if (prev.view !== snap.view) rise(qa(".xpb-step-h, .xpb-grid > *, .xpb-tiles > *"));
+
+    qa(".xpb-card.is-picked, .xpb-row.is-picked, .xpb-tile.is-picked").forEach(function (el) {
+      var hit = el.querySelector("[data-h]");
+      if (!hit) return;
+      var key = (hit.getAttribute("data-step") || "0") + ":" + hit.getAttribute("data-h");
+      if ((counts[key] || 0) > (prev.counts[key] || 0)) {
+        play(el, "fx-picked");
+        play(el.querySelector(".xpb-check"), "fx-pop");
+        play(el.querySelector(".xpb-qn"), "fx-bump");
+      }
+    });
+    qa(".xpb-slot.is-full").forEach(function (el) {
+      var x = el.querySelector("[data-k]");
+      if (x && !prev.ids[x.getAttribute("data-k")]) play(el, "fx-pop");
+    });
+    if (snap.picked > prev.picked) {
+      qa(".xpb-thumb").forEach(function (el, i) {
+        if (i >= prev.picked) play(el, "fx-pop");
+      });
+    }
+    if (snap.total !== prev.total) qa(".xpb-tv").forEach(function (el) { play(el, "fx-bump"); });
+    if (snap.discount > 0 && !(prev.discount > 0)) qa(".xpb-save").forEach(function (el) { play(el, "fx-pop"); });
+    else if (snap.discount !== prev.discount) qa(".xpb-save").forEach(function (el) { play(el, "fx-bump"); });
+    if (bar && prev.pct !== snap.pct) {
+      bar.style.width = prev.pct + "%";
+      void bar.offsetWidth;
+      bar.style.width = snap.pct + "%";
+    }
+    if (snap.msg && snap.msg !== prev.msg) play(qa(".xpb-msg")[0], "fx-rise");
+    if (snap.gift && !prev.gift) play(qa(".xpb-gift")[0], "fx-pop");
+    if (snap.complete && !prev.complete) {
+      var cta = qa(".xpb-cta")[0];
+      play(qa(".xpb-summary")[0], "fx-complete");
+      play(cta, "fx-ready");
+      play(qa(".xpb-msg")[0], "fx-rise");
+      this.burst(cta);
     }
   };
 
@@ -941,6 +1076,12 @@
     this.lastFocus = document.activeElement;
     this.overlay.hidden = false;
     document.documentElement.classList.add("xpb-lock");
+    if (!calm()) {
+      var ov = this.overlay;
+      ov.classList.add("is-opening");
+      rise(ov.querySelectorAll(RISE_SEL));
+      setTimeout(function () { ov.classList.remove("is-opening"); }, 450);
+    }
     var c = this.overlay.querySelector(".xpb-close");
     if (c) c.focus();
     if (window.XPT && !this.ctx.preview) window.XPT.track("bb", "c", { o: this.b.id, d: "open" });

@@ -18,7 +18,8 @@ export type DemoId =
   | "shippingBar"
   | "productScarcity"
   | "thankYou"
-  | "quantityBreaks";
+  | "quantityBreaks"
+  | "bundles";
 
 export const DEMO_INFO: Record<DemoId, { title: string; steps: string[] }> = {
   prePurchase: {
@@ -85,6 +86,14 @@ export const DEMO_INFO: Record<DemoId, { title: string; steps: string[] }> = {
       "The price updates, then Add to cart",
     ],
   },
+  bundles: {
+    title: "Bundle Builder",
+    steps: [
+      "The shopper picks products for their bundle",
+      "Slots fill up and the bundle price drops",
+      "One click adds the whole bundle at the bundle price",
+    ],
+  },
 };
 
 const PATH_TO_ID: Record<string, DemoId> = {
@@ -96,6 +105,7 @@ const PATH_TO_ID: Record<string, DemoId> = {
   "/app/product-scarcity": "productScarcity",
   "/app/thank-you": "thankYou",
   "/app/quantity-breaks": "quantityBreaks",
+  "/app/bundles": "bundles",
 };
 
 export function demoIdFromPath(pathname: string): DemoId | null {
@@ -652,6 +662,113 @@ function thankYou(): Scene {
   return { css: k.css(), node };
 }
 
+function bundles(): Scene {
+  const k = new Kf("bb", 11);
+  const cur = k.cursor([
+    [0, 37, 23.5],
+    [12, 7.8, 11],
+    [19, 7.8, 11],
+    [26, 7.8, 18.2],
+    [33, 7.8, 18.2],
+    [42, 17, 11],
+    [50, 17, 11],
+    [68, 29.8, 20.2],
+    [80, 29.8, 20.2],
+    [92, 36, 23.5],
+    [100, 37, 23.5],
+  ]);
+  /** Fades in at `a`, fades out at `b` (stays hidden until the loop restarts). */
+  const between = (a: number, b: number) =>
+    k.track([[0, "opacity:0"], [a, "opacity:0"], [a + 1.5, "opacity:1"], [b, "opacity:1"], [b + 1.5, "opacity:0"], [100, "opacity:0"]]);
+  /** Pops in with a little overshoot at `at`%, leaves with the reset. */
+  const pop = (at: number) =>
+    k.track(
+      [
+        [0, "opacity:0;transform:scale(.3)"],
+        [at, "opacity:0;transform:scale(.3)"],
+        [at + 2.5, "opacity:1;transform:scale(1.2)"],
+        [at + 4.5, "opacity:1;transform:scale(1)"],
+        [94, "opacity:1;transform:scale(1)"],
+        [97, "opacity:0;transform:scale(1)"],
+        [100, "opacity:0;transform:scale(.3)"],
+      ],
+      "cubic-bezier(.34,1.56,.64,1)"
+    );
+  const tile = (l: number, t: number, name: string, price: string, tone: number, at?: number) => (
+    <B l={l} t={t} w={8.5} h={6.4} s={{ background: "#1e1e1e", border: ".1em solid #363636", borderRadius: ".8em" }}>
+      <Thumb l={2.75} t={0.5} size={3} tone={tone} />
+      <B l={0} t={3.7} w={8.5} s={{ fontSize: "1.1em", fontWeight: 700, color: "#fff", textAlign: "center" }}>{name}</B>
+      <B l={0} t={4.9} w={8.5} s={{ fontSize: "1.1em", fontWeight: 700, color: GOLD, textAlign: "center" }}>{price}</B>
+      {at === undefined ? null : (
+        <>
+          <B l={-0.1} t={-0.1} w={8.5} h={6.4} s={{ border: `.18em solid ${GOLD}`, borderRadius: ".8em", background: "rgba(232,200,114,.16)", ...k.win(at, at + 2, 93, 97) }} />
+          <B l={6.3} t={0.4} w={1.7} h={1.7} s={{ background: GOLD, color: "#111", borderRadius: "50%", fontSize: "1.1em", fontWeight: 900, ...center, ...pop(at) }}>✓</B>
+        </>
+      )}
+    </B>
+  );
+  const slot = (x: number, tone: number, at: number) => (
+    <B l={x} t={8.8} w={3.6} h={3.6} s={{ border: ".12em dashed #6a6a6a", borderRadius: ".7em" }}>
+      <B l={0} t={0.55} w={3.6} s={{ fontSize: "1.5em", color: "#b5b5b5", textAlign: "center" }}>+</B>
+      <B l={-0.12} t={-0.12} w={3.6} h={3.6} s={{ background: DARK, border: `.15em solid ${GOLD}`, borderRadius: ".7em", ...pop(at) }}>
+        <Thumb l={0.35} t={0.35} size={2.6} tone={tone} />
+      </B>
+    </B>
+  );
+  const sparks: [number, number][] = [[-5, -4], [5, -4.5], [-6.5, 0.5], [6.5, 0], [-3, 4], [3.5, 4.2]];
+  const node = (
+    <>
+      <B l={0} t={0} w={40} h={25} s={{ background: "#fff" }} />
+      <B l={0} t={0} w={40} h={2.8} s={{ background: "#fff", borderBottom: ".1em solid #e3e3e3" }} />
+      <B l={1.5} t={1} w={6} h={0.9} s={{ background: "#d4d4d4", borderRadius: ".5em" }} />
+      <B l={2} t={3.5} w={36} h={18.5} s={{ background: DARK, border: `.12em solid ${GOLD}`, borderRadius: "1em", boxShadow: "0 1em 3em rgba(0,0,0,.35)" }} />
+      <B l={3.5} t={4.1} s={{ fontSize: "1.7em", fontWeight: 800, color: GOLD }}><Translate text="Build your bundle" /></B>
+      <B l={3.5} t={6.3} s={{ fontSize: "1.2em", color: "#b5b5b5" }}><Translate text="Pick any 3" /></B>
+      {tile(3.5, 8, "Serum", "$22", 0, 14)}
+      {tile(12.7, 8, "Toner", "$22", 1, 46)}
+      {tile(3.5, 15, "Cleanser", "$22", 2, 30)}
+      {tile(12.7, 15, "Mask", "$22", 0)}
+      <B l={23} t={7.2} s={{ fontSize: "1.3em", fontWeight: 700, color: "#fff" }}><Translate text="Your bundle" /></B>
+      <B l={31} t={7.2} w={4} s={{ fontSize: "1.3em", fontWeight: 800, color: GOLD, textAlign: "right" }}>
+        <span style={{ position: "absolute", right: 0, ...k.until(14, 15.5) }}>0/3</span>
+        <span style={{ position: "absolute", right: 0, ...between(14, 30) }}>1/3</span>
+        <span style={{ position: "absolute", right: 0, ...between(30, 46) }}>2/3</span>
+        <span style={{ position: "absolute", right: 0, ...k.track([[0, "opacity:0"], [46, "opacity:0"], [47.5, "opacity:1"], [94, "opacity:1"], [97, "opacity:0"], [100, "opacity:0"]]) }}>3/3</span>
+      </B>
+      {slot(23, 0, 14)}
+      {slot(27.2, 2, 30)}
+      {slot(31.4, 1, 46)}
+      <B l={23} t={12.9} w={12} h={0.7} s={{ background: "#3a3a3a", borderRadius: ".4em", overflow: "hidden" }}>
+        <B l={0} t={0} h={0.7} s={{ background: GOLD, borderRadius: ".4em", ...k.track([[0, "width:0%"], [14, "width:0%"], [17, "width:33%"], [30, "width:33%"], [33, "width:66%"], [46, "width:66%"], [49, "width:100%"], [94, "width:100%"], [98, "width:0%"], [100, "width:0%"]]) }} />
+      </B>
+      {[
+        ["$0.00", k.until(14, 15.5)],
+        ["$22.00", between(14, 30)],
+        ["$44.00", between(30, 46)],
+      ].map(([txt, st]) => (
+        <B key={txt as string} l={23} t={14.1} s={{ fontSize: "2em", fontWeight: 800, color: "#fff", ...(st as CSSProperties) }}>{txt as string}</B>
+      ))}
+      <B l={23} t={14.8} s={{ fontSize: "1.3em", color: "#b5b5b5", textDecoration: "line-through", ...k.win(47, 50, 94, 97) }}>$66.00</B>
+      <B l={27.6} t={14.1} s={{ fontSize: "2em", fontWeight: 800, color: GOLD, ...k.win(47, 50, 94, 97, "transform:scale(.8)", "transform:none") }}>$52.80</B>
+      <B l={23} t={16.6} w={6} h={1.7} s={{ background: GOLD, color: "#111", borderRadius: ".9em", fontSize: "1.1em", fontWeight: 800, ...center, ...pop(47) }}><Translate text="Save 20%" /></B>
+      <B l={23} t={18.8} w={12} h={2.8} s={{ background: "#3a3a3a", color: "#e0e0e0", borderRadius: ".6em", fontSize: "1.3em", fontWeight: 700, ...center, ...k.until(48, 50) }}><Translate text="Add bundle to cart" /></B>
+      <B l={23} t={18.8} w={12} h={2.8} s={{ background: GOLD, color: "#111", borderRadius: ".6em", fontSize: "1.3em", fontWeight: 800, ...center, opacity: 0, ...k.track([[0, "opacity:0;transform:none;filter:none;box-shadow:0 0 0 0 rgba(232,200,114,0)"], [48, "opacity:0"], [50, "opacity:1;box-shadow:0 0 0 0 rgba(232,200,114,.7)"], [60, "opacity:1;box-shadow:0 0 0 .7em rgba(232,200,114,0)"], [72, "opacity:1;transform:none;filter:none;box-shadow:0 0 0 0 rgba(232,200,114,0)"], [74, "opacity:1;transform:scale(.94);filter:brightness(.82)"], [79, "opacity:1;transform:none;filter:none"], [94, "opacity:1"], [97, "opacity:0"], [100, "opacity:0"]]) }}><Translate text="Add bundle to cart" /></B>
+      {sparks.map(([dx, dy], i) => (
+        <B key={i} l={29} t={10.4} w={0.7} h={0.7} s={{ background: GOLD, borderRadius: "50%", ...k.track([[0, "opacity:0;transform:none"], [46.5, "opacity:0;transform:none"], [47.5, "opacity:1;transform:none"], [56, `opacity:0;transform:translate(${dx}em,${dy}em) scale(.3)`], [100, "opacity:0"]], "ease-out") }} />
+      ))}
+      <B l={11} t={22.4} w={18} h={2.3} s={{ background: DARK, color: "#fff", border: `.1em solid ${GOLD}`, borderRadius: "1.2em", fontSize: "1.3em", fontWeight: 700, ...center, ...k.win(80, 84, 92, 96, "transform:translateY(1.2em)", "transform:none") }}>
+        <span style={{ color: GOLD, marginRight: ".4em" }}>✓</span> <Translate text="Bundle added to cart" />
+      </B>
+      <Ripple x={7.8} y={11} style={k.rip(14)} />
+      <Ripple x={7.8} y={18.2} style={k.rip(30)} />
+      <Ripple x={17} y={11} style={k.rip(46)} />
+      <Ripple x={29.8} y={20.2} style={k.rip(74)} />
+      <Cursor style={cur} />
+    </>
+  );
+  return { css: k.css(), node };
+}
+
 function quantityBreaks(): Scene {
   const k = new Kf("qb", 9);
   const cur = k.cursor([
@@ -742,6 +859,7 @@ function scene(id: DemoId): Scene {
     productScarcity,
     thankYou,
     quantityBreaks,
+    bundles,
   };
   const s = builders[id]();
   cache[id] = s;
