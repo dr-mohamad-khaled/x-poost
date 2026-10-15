@@ -125,6 +125,8 @@ const ACTION_LABELS: Record<string, string> = {
   socialBar: "Contacted",
   thankYou: "Revealed reward",
   bundles: "Added bundle to cart",
+  recommendations: "Added to cart",
+  kits: "Added kit to cart",
 };
 
 export function addDays(day: string, n: number): string {
@@ -304,7 +306,7 @@ export function buildReport(input: ReportInput): Report {
       prevOrders.flatMap((o) => parseJson<Source[]>(o.sourcesJson, []).filter((s) => s.f === fk).map((s) => s.rev || 0)),
     );
     const a = agg.get(fk) || newAgg();
-    const earnsRevenue = ["prePurchase", "inCart", "quantityBreaks", "exitIntent", "thankYou", "bundles"].includes(fk);
+    const earnsRevenue = ["prePurchase", "inCart", "quantityBreaks", "exitIntent", "thankYou", "bundles", "recommendations", "kits"].includes(fk);
 
     // Daily series
     let daily: number[];

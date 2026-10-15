@@ -429,6 +429,93 @@
     }
   }
 
+  /** Where a product image is on screen right now, so it can fly to its slot. */
+  Builder.prototype.flyFrom = function (img) {
+    if (!img || calm()) return null;
+    var r = img.getBoundingClientRect();
+    if (r.width < 8 || r.height < 8) return null;
+    return { l: r.left, t: r.top, w: r.width, h: r.height, src: img.currentSrc || img.src };
+  };
+
+  /** A copy of something that is about to be removed shrinks away instead of vanishing. */
+  Builder.prototype.fxGhost = function (node) {
+    if (!node || calm() || !node.animate) return;
+    var r = node.getBoundingClientRect();
+    var wrap = document.createElement("div");
+    wrap.className = "xpb xpb-ghost";
+    wrap.setAttribute("aria-hidden", "true");
+    wrap.style.cssText = this.root.style.cssText + ";position:fixed;left:" + r.left + "px;top:" + r.top + "px;width:" + r.width + "px;height:" + r.height + "px;margin:0;pointer-events:none;z-index:2147483600;";
+    if (this.root.getAttribute("dir")) wrap.setAttribute("dir", this.root.getAttribute("dir"));
+    var copy = node.cloneNode(true);
+    var btns = copy.querySelectorAll("button");
+    for (var i = 0; i < btns.length; i++) btns[i].parentNode.removeChild(btns[i]);
+    copy.style.margin = "0";
+    copy.style.width = "100%";
+    copy.style.height = "100%";
+    wrap.appendChild(copy);
+    document.body.appendChild(wrap);
+    var anim = wrap.animate(
+      [
+        { opacity: 1, transform: "scale(1) rotate(0deg)" },
+        { opacity: 0, transform: "scale(.55) translateY(-10px) rotate(-4deg)" }
+      ],
+      { duration: 300, easing: "cubic-bezier(.5, 0, .75, 0)", fill: "forwards" }
+    );
+    anim.onfinish = function () {
+      if (wrap.parentNode) wrap.parentNode.removeChild(wrap);
+    };
+  };
+
+  /** The picked product's photo travels from its card to the slot (or thumbnail) it fills. */
+  Builder.prototype.fxFly = function (from, target) {
+    if (!from || !target || !target.animate) return;
+    var tr = target.getBoundingClientRect();
+    if (tr.width < 4 || tr.bottom < 0 || tr.top > window.innerHeight) return;
+    var size = Math.min(tr.width, tr.height, 64);
+    var tl = tr.left + (tr.width - size) / 2;
+    var tt = tr.top + (tr.height - size) / 2;
+    var fly = document.createElement("img");
+    fly.src = from.src;
+    fly.alt = "";
+    fly.setAttribute("aria-hidden", "true");
+    fly.style.cssText = "position:fixed;left:" + from.l + "px;top:" + from.t + "px;width:" + from.w + "px;height:" + from.h + "px;object-fit:cover;border-radius:12px;pointer-events:none;z-index:2147483600;transform-origin:0 0;box-shadow:0 14px 30px -10px rgba(0,0,0,.45);";
+    document.body.appendChild(fly);
+    var sx = size / from.w;
+    var sy = size / from.h;
+    var dx = tl - from.l;
+    var dy = tt - from.t;
+    var lift = Math.max(30, Math.min(90, Math.abs(dy) * 0.25));
+    var anim = fly.animate(
+      [
+        { transform: "translate(0px, 0px) scale(1, 1)", opacity: 1 },
+        { transform: "translate(" + dx * 0.55 + "px, " + (dy * 0.55 - lift) + "px) scale(" + (sx + (1 - sx) * 0.35) + ", " + (sy + (1 - sy) * 0.35) + ")", opacity: 1, offset: 0.55 },
+        { transform: "translate(" + dx + "px, " + dy + "px) scale(" + sx + ", " + sy + ")", opacity: 0.9 }
+      ],
+      { duration: 620, easing: "cubic-bezier(.22, 1, .36, 1)", fill: "forwards" }
+    );
+    anim.onfinish = function () {
+      if (fly.parentNode) fly.parentNode.removeChild(fly);
+    };
+  };
+
+  /** Counts the shown total up or down instead of jumping. */
+  Builder.prototype.fxCount = function (el, from, to) {
+    var money = this.ctx.money;
+    if (!el || !window.requestAnimationFrame || typeof from !== "number" || typeof to !== "number") return;
+    var t0 = null;
+    var dur = 520;
+    function step(ts) {
+      if (t0 === null) t0 = ts;
+      var p = Math.min(1, (ts - t0) / dur);
+      var e = 1 - Math.pow(1 - p, 4);
+      el.textContent = money(Math.round(from + (to - from) * e));
+      if (p < 1) requestAnimationFrame(step);
+      else el.textContent = money(to);
+    }
+    el.textContent = money(from);
+    requestAnimationFrame(step);
+  };
+
   Builder.prototype.burst = function (cta) {
     var host = cta && cta.parentNode;
     if (!host) return;
@@ -452,6 +539,7 @@
 
   Builder.prototype.fx = function () {
     if (this.loading) return;
+    var self = this;
     var scopes = [this.root];
     if (this.overlay) scopes.push(this.overlay);
     function qa(sel) {
@@ -519,7 +607,21 @@
         if (i >= prev.picked) play(el, "fx-pop");
       });
     }
-    if (snap.total !== prev.total) qa(".xpb-tv").forEach(function (el) { play(el, "fx-bump"); });
+    if (snap.total !== prev.total) {
+      qa(".xpb-tv").forEach(function (el) {
+        play(el, "fx-bump");
+        self.fxCount(el, prev.total, snap.total);
+      });
+    }
+    var from = this._fly;
+    this._fly = null;
+    if (from) {
+      var landed = qa(".xpb-slot.is-full.fx-pop")[0] || qa(".xpb-thumb.fx-pop").pop();
+      if (landed) {
+        landed.style.animationDelay = "420ms";
+        this.fxFly(from, landed);
+      }
+    }
     if (snap.discount > 0 && !(prev.discount > 0)) qa(".xpb-save").forEach(function (el) { play(el, "fx-pop"); });
     else if (snap.discount !== prev.discount) qa(".xpb-save").forEach(function (el) { play(el, "fx-bump"); });
     if (bar && prev.pct !== snap.pct) {
@@ -654,6 +756,9 @@
         control = '<button type="button" class="xpb-add is-picked" data-act="dec" data-step="' + stepIdx + '" data-h="' + esc(p.handle) + '" data-fk="add-' + esc(key) + '" aria-label="' + esc(fill(this.t.removeOne || "Remove one {name}", { name: p.title })) + '">' + esc(this.t.remove || "Remove") + "</button>";
       } else {
         control = '<button type="button" class="xpb-add' + (picked ? " is-picked" : "") + '" data-act="add" data-step="' + stepIdx + '" data-h="' + esc(p.handle) + '" data-fk="add-' + esc(key) + '"' + (can ? "" : " disabled") + ">" + esc(this.t.add || "Add") + (picked ? " <b>×" + picked + "</b>" : "") + "</button>";
+        if (picked) {
+          control = '<div class="xpb-pair">' + control + '<button type="button" class="xpb-qbtn" data-act="dec" data-step="' + stepIdx + '" data-h="' + esc(p.handle) + '" data-fk="dec-' + esc(key) + '" aria-label="' + esc(fill(this.t.removeOne || "Remove one {name}", { name: p.title })) + '">−</button></div>';
+        }
       }
     }
     return (
@@ -694,7 +799,7 @@
           "</div>";
       } else {
         var opt = k >= num(s.def.min);
-        html += '<div class="xpb-slot' + (opt ? " is-opt" : "") + '"><span class="xpb-slot-n">' + (k + 1) + "</span>" + (opt ? '<span class="xpb-slot-o">' + esc(this.t.optional || "Optional") + "</span>" : "") + "</div>";
+        html += '<div class="xpb-slot' + (opt ? " is-opt" : "") + (k === s.picks.length ? " is-next" : "") + '"><span class="xpb-slot-n">' + (k + 1) + "</span>" + (opt ? '<span class="xpb-slot-o">' + esc(this.t.optional || "Optional") + "</span>" : "") + "</div>";
       }
     }
     return '<div class="xpb-slots" style="--xpb-slots:' + Math.min(6, num(s.def.max)) + '">' + html + "</div>";
@@ -902,7 +1007,7 @@
       '<div class="xpb-img">' + (v && (v.image || p.image) ? '<img src="' + esc(img((v && v.image) || p.image, 400)) + '" alt="" loading="lazy">' : "") + (on ? '<span class="xpb-check" aria-hidden="true">✓</span>' : "") + "</div>" +
       '<div class="xpb-info"><div class="xpb-name">' + esc(p.title) + '</div><div class="xpb-prices">' + this.priceHtml(v) + "</div>" +
       (p.available ? this.variantSelect(p, key, v && v.id) : "") +
-      '<button type="button" class="xpb-add' + (on ? " is-picked" : "") + '" data-act="slot" data-slot="' + slot + '" data-h="' + esc(p.handle) + '" data-fk="slot-' + esc(key) + '"' + (dis ? " disabled" : "") + ">" + esc(!p.available ? this.t.soldOut || "Sold out" : usedElsewhere ? this.t.added || "Added" : on ? this.t.selected || "Selected" : this.t.choose || "Choose") + "</button>" +
+      '<button type="button" class="xpb-add' + (on ? " is-picked" : "") + '" data-act="slot" data-slot="' + slot + '" data-h="' + esc(p.handle) + '" data-fk="slot-' + esc(key) + '"' + (dis ? " disabled" : "") + ">" + esc(!p.available ? this.t.soldOut || "Sold out" : usedElsewhere ? this.t.added || "Added" : on ? this.t.remove || "Remove" : this.t.choose || "Choose") + "</button>" +
       "</div></div>"
     );
   };
@@ -1134,7 +1239,15 @@
 
   Builder.prototype.onClick = function (e) {
     var el = e.target && e.target.closest ? e.target.closest("[data-act]") : null;
+    if (!el && e.target && e.target.closest && !e.target.closest("select, a, label")) {
+      // Clicking a chosen product (or its slot) takes it out again
+      var chosen = e.target.closest(".xpb-slot.is-full, .xpb-card.is-picked");
+      if (chosen) el = chosen.querySelector('.xpb-x, .xpb-add.is-picked[data-act="dec"], .xpb-add.is-picked[data-act="slot"]');
+    }
     if (!el || el.disabled || el.tagName === "SELECT") return;
+    var fromBox = el.closest(".xpb-card, .xpb-tile, .xpb-row");
+    var fromImg = fromBox ? fromBox.querySelector("img") : null;
+    this._fly = null;
     var act = el.getAttribute("data-act");
     var step = parseInt(el.getAttribute("data-step") || "0", 10);
     var h = el.getAttribute("data-h");
@@ -1154,6 +1267,7 @@
         var v = this.cardVariant(p);
         if (!v || !v.available) return;
         this.steps[step].picks.push({ h: h, v: v.id, k: rid() });
+        this._fly = this.flyFrom(fromImg);
         this.trackPick();
         // Step-by-step: move on once a step is full
         if (this.b.design === "stepper" && this.b.type === "box" && this.steps[step].picks.length >= num(this.steps[step].def.max)) {
@@ -1166,6 +1280,7 @@
         var s = this.steps[step];
         if (!s || s.picks.length >= num(s.def.max)) return;
         this.steps[step].picks.push({ h: h, v: vid, k: rid() });
+        this._fly = this.flyFrom(fromImg);
         this.trackPick();
         break;
       }
@@ -1182,6 +1297,7 @@
         break;
       }
       case "rm": {
+        this.fxGhost(el.closest(".xpb-slot"));
         var k = el.getAttribute("data-k");
         this.steps[step].picks = this.steps[step].picks.filter(function (x) { return x.k !== k; });
         break;
@@ -1193,8 +1309,15 @@
         var vv = act === "slotv" ? el.getAttribute("data-v") : (this.cardVariant(p) || {}).id;
         if (!vv) return;
         // Slots fill in order (a skipped optional slot never leaves a gap)
+        var held = s0.picks[slot];
+        if (held && held.h === h && held.v === vv) {
+          // Choosing the same product again un-chooses it
+          s0.picks.splice(slot, 1);
+          break;
+        }
         var idx = Math.min(slot, s0.picks.length);
         s0.picks[idx] = { h: h, v: vv, k: rid() };
+        this._fly = this.flyFrom(fromImg);
         this.trackPick();
         this.view = Math.min(idx + 1, this.stepperViews().length);
         break;

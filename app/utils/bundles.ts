@@ -1066,3 +1066,6 @@ export function parseBundle(row: {
 }
 
 export const numericId = (g: string) => String(g || "").split("/").pop() || "";
+
+// Shared sanitizers (also used by Product Recommendations and Kit Builder)
+export const BB_SAN = { str, int, dec, color, gid, date, oneOf, uniqBy, product: sanitizeProduct, collection: sanitizeCollection };

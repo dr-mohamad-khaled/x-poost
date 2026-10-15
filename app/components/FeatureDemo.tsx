@@ -19,7 +19,9 @@ export type DemoId =
   | "productScarcity"
   | "thankYou"
   | "quantityBreaks"
-  | "bundles";
+  | "bundles"
+  | "recommendations"
+  | "kits";
 
 export const DEMO_INFO: Record<DemoId, { title: string; steps: string[] }> = {
   prePurchase: {
@@ -94,6 +96,22 @@ export const DEMO_INFO: Record<DemoId, { title: string; steps: string[] }> = {
       "One click adds the whole bundle at the bundle price",
     ],
   },
+  recommendations: {
+    title: "Product Recommendations",
+    steps: [
+      "Recommended products show next to the one being viewed",
+      "The shopper adds one with a single click",
+      "An optional offer price is applied at checkout",
+    ],
+  },
+  kits: {
+    title: "Kit Builder",
+    steps: [
+      "An optional quiz matches the products to the shopper",
+      "One pick per step, with sub-filters to narrow down",
+      "The kit fills up and goes to the cart at the kit price",
+    ],
+  },
 };
 
 const PATH_TO_ID: Record<string, DemoId> = {
@@ -106,6 +124,8 @@ const PATH_TO_ID: Record<string, DemoId> = {
   "/app/thank-you": "thankYou",
   "/app/quantity-breaks": "quantityBreaks",
   "/app/bundles": "bundles",
+  "/app/recommendations": "recommendations",
+  "/app/kits": "kits",
 };
 
 export function demoIdFromPath(pathname: string): DemoId | null {
@@ -769,6 +789,276 @@ function bundles(): Scene {
   return { css: k.css(), node };
 }
 
+function recommendations(): Scene {
+  const k = new Kf("rc", 10);
+  const cur = k.cursor([
+    [0, 37, 23.5],
+    [14, 29.4, 21.2],
+    [24, 29.4, 21.2],
+    [36, 35.7, 21.2],
+    [46, 35.7, 21.2],
+    [60, 36, 23.6],
+    [100, 37, 23.5],
+  ]);
+  const rise = (at: number) => k.win(at, at + 4, 94, 97, "transform:translateY(1em)", "transform:none");
+  const pop = (at: number) =>
+    k.track(
+      [
+        [0, "opacity:0;transform:scale(.3)"],
+        [at, "opacity:0;transform:scale(.3)"],
+        [at + 2.5, "opacity:1;transform:scale(1.2)"],
+        [at + 4.5, "opacity:1;transform:scale(1)"],
+        [94, "opacity:1;transform:scale(1)"],
+        [97, "opacity:0;transform:scale(1)"],
+        [100, "opacity:0;transform:scale(.3)"],
+      ],
+      "cubic-bezier(.34,1.56,.64,1)"
+    );
+  const card = (x: number, name: string, was: string, now: string, tone: number, show: number, added?: number) => (
+    <B l={x} t={12.6} w={5.9} h={10.1} s={{ background: "#fff", border: ".1em solid #e3e3e3", borderRadius: ".6em", ...rise(show) }}>
+      <Thumb l={0.45} t={0.45} size={5} tone={tone} />
+      <B l={0.45} t={5.75} s={{ fontSize: ".95em", fontWeight: 700, color: "#111" }}>{name}</B>
+      <B l={0.45} t={6.85} s={{ fontSize: ".75em", color: "#E0A200", letterSpacing: ".05em" }}>★★★★★</B>
+      <B l={0.45} t={7.8} s={{ fontSize: ".72em", color: "#8a8a8a", textDecoration: "line-through" }}>{was}</B>
+      <B l={2.55} t={7.7} s={{ fontSize: ".85em", fontWeight: 800, color: "#111" }}>{now}</B>
+      <B l={0.45} t={8.65} w={5} h={1.15} s={{ background: "#141414", color: "#fff", borderRadius: ".35em", fontSize: ".8em", fontWeight: 700, ...center }}>
+        <Translate text="Add" />
+      </B>
+      {added === undefined ? null : (
+        <B l={0.45} t={8.65} w={5} h={1.15} s={{ background: GOLD, color: "#111", borderRadius: ".35em", fontSize: ".8em", fontWeight: 800, ...center, ...k.win(added, added + 1.5, 94, 97) }}>
+          ✓ <Translate text="Added" />
+        </B>
+      )}
+    </B>
+  );
+  const flyer = (from: number, at: number) => (
+    <B
+      l={from}
+      t={13.05}
+      w={5}
+      h={5}
+      s={{
+        background: "linear-gradient(135deg,#cfe3da,#6fa48c)",
+        borderRadius: ".5em",
+        zIndex: 40,
+        ...k.track([
+          [0, "opacity:0;transform:none"],
+          [at, "opacity:0;transform:none"],
+          [at + 0.5, "opacity:1;transform:none"],
+          [at + 7, `opacity:.85;transform:translate(${36.4 - from - 2.5}em,-11.8em) scale(.22)`],
+          [at + 8, "opacity:0;transform:none"],
+          [100, "opacity:0;transform:none"],
+        ], "cubic-bezier(.55,0,.25,1)"),
+      }}
+    />
+  );
+  const node = (
+    <>
+      <PageBg />
+      <B l={20} t={10.3} s={{ fontSize: "1.25em", fontWeight: 800, color: "#111", ...k.win(3, 7, 94, 97) }}>
+        <Translate text="You may also like" />
+      </B>
+      <B l={32.6} t={10.15} w={5.4} h={1.5} s={{ background: "#E7F4EA", color: "#14532D", borderRadius: ".8em", fontSize: ".85em", fontWeight: 800, ...center, ...pop(6) }}>
+        <Translate text="Save 15%" />
+      </B>
+      {card(20, "Toner", "$22", "$18.70", 1, 6)}
+      {card(26.3, "Serum", "$32", "$27.20", 0, 9, 22)}
+      {card(32.6, "Mask", "$18", "$15.30", 2, 12, 44)}
+      {flyer(26.75, 22)}
+      {flyer(33.05, 44)}
+      <B l={36.9} t={0.25} w={1.3} h={1.3} s={{ background: GOLD, color: "#111", borderRadius: "50%", fontSize: ".8em", fontWeight: 900, ...center, ...pop(29) }}>
+        <span style={{ position: "absolute", ...k.track([[0, "opacity:1"], [51, "opacity:1"], [52, "opacity:0"], [96, "opacity:0"], [100, "opacity:1"]]) }}>1</span>
+        <span style={{ position: "absolute", ...k.track([[0, "opacity:0"], [51, "opacity:0"], [52, "opacity:1"], [94, "opacity:1"], [97, "opacity:0"], [100, "opacity:0"]]) }}>2</span>
+      </B>
+      <B l={0.8} t={21.9} w={19} h={2.1} s={{ background: DARK, color: "#fff", border: `.1em solid ${GOLD}`, borderRadius: "1.2em", fontSize: "1em", fontWeight: 700, ...center, ...k.win(56, 60, 88, 92, "transform:translateY(1.2em)", "transform:none") }}>
+        <span style={{ color: GOLD, marginRight: ".4em" }}>✓</span> <Translate text="Offer price applied at checkout" />
+      </B>
+      <Ripple x={29.4} y={21.2} style={k.rip(22)} />
+      <Ripple x={35.7} y={21.2} style={k.rip(44)} />
+      <Cursor style={cur} />
+    </>
+  );
+  return { css: k.css(), node };
+}
+
+function kits(): Scene {
+  const k = new Kf("kb", 15);
+  const cur = k.cursor([
+    [0, 37, 23.5],
+    [9, 8.2, 11.2],
+    [16, 8.2, 11.2],
+    [24, 9.6, 9.3],
+    [30, 9.6, 9.3],
+    [34, 6.8, 15],
+    [40, 6.8, 15],
+    [50, 14.8, 15],
+    [57, 14.8, 15],
+    [66, 22.8, 15],
+    [73, 22.8, 15],
+    [79, 32.3, 20.3],
+    [86, 32.3, 20.3],
+    [94, 36, 23.5],
+    [100, 37, 23.5],
+  ]);
+  const pop = (at: number) =>
+    k.track(
+      [
+        [0, "opacity:0;transform:scale(.3)"],
+        [at, "opacity:0;transform:scale(.3)"],
+        [at + 1.8, "opacity:1;transform:scale(1.2)"],
+        [at + 3.2, "opacity:1;transform:scale(1)"],
+        [94, "opacity:1;transform:scale(1)"],
+        [97, "opacity:0;transform:scale(1)"],
+        [100, "opacity:0;transform:scale(.3)"],
+      ],
+      "cubic-bezier(.34,1.56,.64,1)"
+    );
+  /** A full-stage layer visible between a and b, sliding in from the right. */
+  const layer = (a: number, b: number, children: ReactNode, end = false) => (
+    <B
+      l={0}
+      t={0}
+      w={40}
+      h={25}
+      s={{
+        ...k.track([
+          [0, "opacity:0;transform:translateX(2em)"],
+          [a, "opacity:0;transform:translateX(2em)"],
+          [a + 1.6, "opacity:1;transform:none"],
+          [b, "opacity:1;transform:none"],
+          [b + 1.2, end ? "opacity:0;transform:none" : "opacity:0;transform:translateX(-2em)"],
+          [100, "opacity:0;transform:translateX(2em)"],
+        ]),
+      }}
+    >
+      {children}
+    </B>
+  );
+  const opt = (x: number, key: string, label: ReactNode, sel?: number) => (
+    <B l={x} t={9.5} w={10.5} h={3.4} s={{ background: "#1e1e1e", border: ".12em solid #3a3a3a", borderRadius: ".7em" }}>
+      <B l={0.8} t={0.85} w={1.7} h={1.7} s={{ background: "#2c2c2c", color: "#cfcfcf", borderRadius: ".4em", fontSize: ".9em", fontWeight: 800, ...center }}>{key}</B>
+      <B l={3.2} t={0.95} s={{ fontSize: "1.2em", fontWeight: 700, color: "#fff" }}>{label}</B>
+      {sel === undefined ? null : <B l={-0.12} t={-0.12} w={10.5} h={3.4} s={{ border: `.18em solid ${GOLD}`, background: "rgba(232,200,114,.14)", borderRadius: ".7em", ...k.win(sel, sel + 1.2, 22, 23) }} />}
+    </B>
+  );
+  const pill = (x: number, n: number, label: ReactNode, on: [number, number], done: number) => (
+    <B l={x} t={5.4} w={7.8} h={2} s={{ background: "#1e1e1e", border: ".1em solid #3a3a3a", borderRadius: "1em" }}>
+      <B l={-0.1} t={-0.1} w={7.8} h={2} s={{ border: `.15em solid ${GOLD}`, borderRadius: "1em", ...k.win(on[0], on[0] + 1, on[1], on[1] + 1) }} />
+      <B l={0.3} t={0.3} w={1.4} h={1.4} s={{ background: "#333", color: "#ddd", borderRadius: "50%", fontSize: ".8em", fontWeight: 800, ...center }}>{n}</B>
+      <B l={0.3} t={0.3} w={1.4} h={1.4} s={{ background: GOLD, color: "#111", borderRadius: "50%", fontSize: ".8em", fontWeight: 900, ...center, ...pop(done) }}>✓</B>
+      <B l={2.1} t={0.45} s={{ fontSize: ".9em", fontWeight: 700, color: "#f0f0f0" }}>{label}</B>
+    </B>
+  );
+  const prod = (x: number, name: string, price: string, tone: number, pickAt?: number) => (
+    <B l={x} t={11} w={7.5} h={8} s={{ background: "#1e1e1e", border: ".1em solid #363636", borderRadius: ".7em" }}>
+      <Thumb l={1.75} t={0.5} size={4} tone={tone} />
+      <B l={0} t={4.85} w={7.5} s={{ fontSize: ".95em", fontWeight: 700, color: "#fff", textAlign: "center" }}>{name}</B>
+      <B l={0} t={5.9} w={7.5} s={{ fontSize: ".95em", fontWeight: 700, color: GOLD, textAlign: "center" }}>{price}</B>
+      <B l={0.8} t={6.95} w={5.9} h={0.85} s={{ border: ".1em solid #8a8a8a", color: "#e5e5e5", borderRadius: ".3em", fontSize: ".7em", fontWeight: 700, ...center }}><Translate text="Choose" /></B>
+      {pickAt === undefined ? null : (
+        <>
+          <B l={-0.1} t={-0.1} w={7.5} h={8} s={{ border: `.18em solid ${GOLD}`, background: "rgba(232,200,114,.12)", borderRadius: ".7em", ...k.win(pickAt, pickAt + 1, 95, 97) }} />
+          <B l={5.6} t={0.35} w={1.5} h={1.5} s={{ background: GOLD, color: "#111", borderRadius: "50%", fontSize: ".9em", fontWeight: 900, ...center, ...pop(pickAt) }}>✓</B>
+        </>
+      )}
+    </B>
+  );
+  const slot = (x: number, tone: number, at: number) => (
+    <B l={x} t={13.4} w={2.5} h={2.5} s={{ border: ".12em dashed #6a6a6a", borderRadius: ".5em" }}>
+      <B l={-0.12} t={-0.12} w={2.5} h={2.5} s={{ background: DARK, border: `.14em solid ${GOLD}`, borderRadius: ".5em", ...pop(at) }}>
+        <Thumb l={0.3} t={0.3} size={1.9} tone={tone} />
+      </B>
+    </B>
+  );
+  const total = (txt: string, a: number, b: number) => (
+    <B l={28} t={16.5} s={{ fontSize: "1.6em", fontWeight: 800, color: "#fff", ...(a === 0 ? k.until(b, b + 1) : k.track([[0, "opacity:0"], [a, "opacity:0"], [a + 1, "opacity:1"], [b, "opacity:1"], [b + 1, "opacity:0"], [100, "opacity:0"]])) }}>{txt}</B>
+  );
+  const node = (
+    <>
+      <B l={0} t={0} w={40} h={25} s={{ background: "#fff" }} />
+      <B l={1.5} t={1.4} w={37} h={22.2} s={{ background: DARK, border: `.12em solid ${GOLD}`, borderRadius: "1em", boxShadow: "0 1em 3em rgba(0,0,0,.35)" }} />
+      <B l={3} t={2.4} s={{ fontSize: "1.6em", fontWeight: 800, color: GOLD }}><Translate text="Build your kit" /></B>
+
+      {layer(2, 21, (
+        <>
+          <B l={3} t={6.2} s={{ fontSize: "1.45em", fontWeight: 700, color: "#fff" }}><Translate text="What is your skin type?" /></B>
+          {opt(3, "A", <Translate text="Oily" />, 16)}
+          {opt(14.5, "B", <Translate text="Dry" />)}
+          {opt(26, "C", <Translate text="Sensitive" />)}
+          <B l={3} t={14.8} s={{ fontSize: "1em", color: "#a8a8a8" }}><Translate text="Optional quiz: answers choose the products in each step" /></B>
+        </>
+      ))}
+
+      {layer(21, 96, (
+        <>
+          {pill(3, 1, <Translate text="Cleanser" />, [21, 43], 41)}
+          {pill(11.4, 2, <Translate text="Serum" />, [43, 61], 59)}
+          {pill(19.8, 3, <Translate text="Cream" />, [61, 95], 76)}
+          <B l={28} t={11} s={{ fontSize: "1.15em", fontWeight: 700, color: "#fff" }}><Translate text="Your kit" /></B>
+          {slot(28, 2, 41)}
+          {slot(31, 0, 59)}
+          {slot(34, 1, 76)}
+          {total("$0.00", 0, 41)}
+          {total("$18.00", 41, 59)}
+          {total("$50.00", 59, 76)}
+          <B l={28} t={16.75} s={{ fontSize: "1em", color: "#9a9a9a", textDecoration: "line-through", ...k.win(77, 78.5, 94, 96) }}>$76.00</B>
+          <B l={31.3} t={16.5} s={{ fontSize: "1.6em", fontWeight: 800, color: GOLD, ...k.win(77, 78.5, 94, 96, "transform:scale(.8)", "transform:none") }}>$64.60</B>
+          <B l={33.5} t={10.9} w={4} h={1.4} s={{ background: GOLD, color: "#111", borderRadius: ".8em", fontSize: ".8em", fontWeight: 800, ...center, ...pop(77) }}>−15%</B>
+          <B l={28} t={19} w={8.5} h={2.6} s={{ background: "#3a3a3a", color: "#cfcfcf", borderRadius: ".5em", fontSize: ".95em", fontWeight: 700, ...center }}><Translate text="Add kit to cart" /></B>
+          <B l={28} t={19} w={8.5} h={2.6} s={{ background: GOLD, color: "#111", borderRadius: ".5em", fontSize: ".95em", fontWeight: 800, ...center, ...k.track([[0, "opacity:0;transform:none;filter:none"], [77, "opacity:0"], [78.5, "opacity:1;box-shadow:0 0 0 0 rgba(232,200,114,.7)"], [84, "opacity:1;transform:none;filter:none;box-shadow:0 0 0 .6em rgba(232,200,114,0)"], [86, "opacity:1;transform:scale(.94);filter:brightness(.82)"], [89, "opacity:1;transform:none;filter:none"], [95, "opacity:1"], [96.5, "opacity:0"], [100, "opacity:0"]]) }}><Translate text="Add kit to cart" /></B>
+        </>
+      ), true)}
+
+      {layer(21, 43, (
+        <>
+          <B l={3} t={8.4} w={3} h={1.8} s={{ border: ".1em solid #555", color: "#ddd", borderRadius: ".9em", fontSize: ".8em", fontWeight: 700, ...center }}><Translate text="All" /></B>
+          <B l={6.6} t={8.4} w={6} h={1.8} s={{ border: ".1em solid #555", color: "#ddd", borderRadius: ".9em", fontSize: ".8em", fontWeight: 700, ...center }}><Translate text="Oily skin" /></B>
+          <B l={6.6} t={8.4} w={6} h={1.8} s={{ background: GOLD, color: "#111", borderRadius: ".9em", fontSize: ".8em", fontWeight: 800, ...center, ...k.win(30, 31, 42, 43) }}><Translate text="Oily skin" /></B>
+          <B l={13.2} t={8.4} w={6.6} h={1.8} s={{ border: ".1em solid #555", color: "#ddd", borderRadius: ".9em", fontSize: ".8em", fontWeight: 700, ...center }}><Translate text="Sensitive skin" /></B>
+          <B l={0} t={0} w={40} h={25} s={{ ...k.until(30, 31.5) }}>
+            {prod(3, "Milk", "$20", 2)}
+            {prod(11, "Balm", "$24", 0)}
+            {prod(19, "Gel", "$18", 1)}
+          </B>
+          <B l={0} t={0} w={40} h={25} s={{ ...k.win(30, 32, 95, 97, "transform:translateY(.8em)", "transform:none") }}>
+            {prod(3, "Gel", "$18", 1, 40)}
+            {prod(11, "Foam", "$16", 2)}
+            {prod(19, "Clay", "$22", 0)}
+          </B>
+        </>
+      ))}
+      {layer(43, 61, (
+        <>
+          <B l={3} t={8.6} s={{ fontSize: ".95em", color: "#a8a8a8" }}><Translate text="Pick 1" /></B>
+          {prod(3, "Vit C", "$34", 0)}
+          {prod(11, "Niacin", "$32", 1, 57)}
+          {prod(19, "Retinol", "$38", 2)}
+        </>
+      ))}
+      {layer(61, 96, (
+        <>
+          <B l={3} t={8.6} s={{ fontSize: ".95em", color: "#a8a8a8" }}><Translate text="Pick 1" /></B>
+          {prod(3, "Light", "$24", 1)}
+          {prod(11, "Rich", "$30", 2)}
+          {prod(19, "Barrier", "$26", 0, 73)}
+        </>
+      ), true)}
+
+      <B l={11} t={22.4} w={18} h={2.3} s={{ background: DARK, color: "#fff", border: `.1em solid ${GOLD}`, borderRadius: "1.2em", fontSize: "1.2em", fontWeight: 700, ...center, ...k.win(88, 90, 95, 97, "transform:translateY(1.2em)", "transform:none") }}>
+        <span style={{ color: GOLD, marginRight: ".4em" }}>✓</span> <Translate text="Kit added to cart" />
+      </B>
+      <Ripple x={8.2} y={11.2} style={k.rip(16)} />
+      <Ripple x={9.6} y={9.3} style={k.rip(30)} />
+      <Ripple x={6.8} y={15} style={k.rip(40)} />
+      <Ripple x={14.8} y={15} style={k.rip(57)} />
+      <Ripple x={22.8} y={15} style={k.rip(73)} />
+      <Ripple x={32.3} y={20.3} style={k.rip(86)} />
+      <Cursor style={cur} />
+    </>
+  );
+  return { css: k.css(), node };
+}
+
 function quantityBreaks(): Scene {
   const k = new Kf("qb", 9);
   const cur = k.cursor([
@@ -860,6 +1150,8 @@ function scene(id: DemoId): Scene {
     thankYou,
     quantityBreaks,
     bundles,
+    recommendations,
+    kits,
   };
   const s = builders[id]();
   cache[id] = s;

@@ -7,6 +7,7 @@ import { authenticate, appCredentials } from "../shopify.server";
 import prisma from "../db.server";
 import { getOrCreateShop, getShopWithConfigs } from "../shop.server";
 import { ensureUpsellDiscountRegistered } from "../discount.server";
+import { syncAllDiscounts } from "../bundles.server";
 import { EXIT_INTENT_AVAILABLE } from "../utils/features";
 import { FeatureDemo, type DemoId } from "../components/FeatureDemo";
 import { HeroBanner } from "../components/HeroBanner";
@@ -26,6 +27,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   const tyActive = await prisma.tyOffer.count({ where: { shopId: shopData?.id ?? "", enabled: true } });
   const bbActive = await prisma.bundle.count({ where: { shopId: shopData?.id ?? "", enabled: true } });
+  const kbActive = await prisma.kit.count({ where: { shopId: shopData?.id ?? "", enabled: true } });
 
   // Revenue box: what XPoost added in the last 30 days (same source as the Analytics page)
   const revSince = new Date(Date.now() - 30 * 86_400_000);
@@ -84,6 +86,22 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         enabled: (shopData as any)?.bundlesEnabled ?? false,
         badge: bbActive > 0 ? `${bbActive} Active` : "No active bundles",
       },
+      recommendations: {
+        id: "recommendations",
+        title: "Product Recommendations",
+        description: "Show recommended products next to the one shoppers are viewing: Shopify's own picks, yours or a collection, with one-click Add and an optional offer price.",
+        route: "/app/recommendations",
+        enabled: (shopData as any)?.recsEnabled ?? false,
+        badge: (shopData as any)?.recsEnabled ? "Active" : "Disabled",
+      },
+      kits: {
+        id: "kits",
+        title: "Kit Builder",
+        description: "Shoppers build a kit step by step, one product per step or several, with an optional quiz, sub-filters and a landing page of its own.",
+        route: "/app/kits",
+        enabled: (shopData as any)?.kitsEnabled ?? false,
+        badge: kbActive > 0 ? `${kbActive} Active` : "No active kits",
+      },
       shippingBar: {
         id: "shippingBar",
         title: "Free Shipping & Rewards Bar",
@@ -132,7 +150,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   try {
-    const { session } = await authenticate.admin(request);
+    const { session, admin } = await authenticate.admin(request);
     const shop = await getOrCreateShop(session.shop);
     const formData = await request.formData();
     const featureKey = String(formData.get("featureKey") || "");
@@ -149,6 +167,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       quantityBreaks: "quantityBreaksEnabled",
       thankYou: "thankYouEnabled",
       bundles: "bundlesEnabled",
+      recommendations: "recsEnabled",
+      kits: "kitsEnabled",
     };
 
     const field = featureFieldMap[featureKey];
@@ -160,6 +180,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       where: { id: shop.id },
       data: { [field]: enable },
     });
+    // These three share the "XPoost Bundles" checkout discount: keep it in step
+    if (["bundles", "kits", "recommendations"].includes(featureKey)) await syncAllDiscounts(admin, shop.id);
 
     return { ok: true, featureKey, enable };
   } catch (err: any) {
@@ -316,6 +338,8 @@ function ThemeSetupGuide({ apiKey }: { apiKey: string }) {
     { name: "XPoost: Quantity Breaks", what: "Volume discount options on the product page.", where: "Product page", href: blockLink("quantity-breaks", "product", "mainSection") },
     { name: "XPoost: Product Scarcity", what: "Low stock meter on the product page.", where: "Product page", href: blockLink("product-scarcity", "product", "mainSection") },
     { name: "XPoost: Bundle Builder", what: "Mix & match, build-a-box, fixed bundles and multipacks. Also works on any page with a bundle ID.", where: "Product page", href: blockLink("bundle-builder", "product", "mainSection") },
+    { name: "XPoost: Recommendations", what: "Recommended products with an Add button. Place it above the product description.", where: "Product page", href: blockLink("product-recommendations", "product", "mainSection") },
+    { name: "XPoost: Kit Builder", what: "Step-by-step kits on product pages. Every kit also has its own landing page link.", where: "Product page (optional)", href: blockLink("kit-builder", "product", "mainSection") },
     { name: "XPoost: Shipping Bar", what: "Free shipping and rewards bar placed inside the cart page. Optional: the Cart Engine already shows it in the cart drawer.", where: "Cart page (optional)", href: blockLink("shipping-bar", "cart", "newAppsSection") },
     { name: "XPoost: In-Cart Upsell", what: "Add-on offers placed inside the cart page. Optional: the Cart Engine already shows them in the cart drawer.", where: "Cart page (optional)", href: blockLink("in-cart-upsell", "cart", "newAppsSection") },
   ];
@@ -436,6 +460,8 @@ const FEATURE_PITCH: Record<string, { name: string; pitch: string }> = {
   exitIntent: { name: "Exit-Intent Saver", pitch: "A last-chance offer that catches shoppers before they leave." },
   thankYou: { name: "Thank-You Page Offers", pitch: "A reward for the next order or a ship-together offer, right after checkout." },
   bundles: { name: "Bundle Builder", pitch: "Shoppers build their own bundle and get the bundle price at checkout." },
+  recommendations: { name: "Product Recommendations", pitch: "The right products next to the one they're viewing, added in one click." },
+  kits: { name: "Kit Builder", pitch: "Shoppers build a kit step by step, with an optional quiz." },
   socialBar: { name: "Chat & Social Bar", pitch: "WhatsApp support and your social channels, one tap away." },
 };
 
@@ -671,6 +697,26 @@ function FeatureIcon({ id }: { id: string }) {
           <path d="M3 8v8l9 5 9-5V8" />
           <path d="M12 13v8" />
           <path d="m7.5 5.5 9 5" />
+        </svg>
+      );
+    case "recommendations":
+      return (
+        <svg {...common}>
+          <rect x="3" y="3" width="7" height="7" rx="1.5" />
+          <rect x="14" y="3" width="7" height="7" rx="1.5" />
+          <rect x="3" y="14" width="7" height="7" rx="1.5" />
+          <path d="M17.5 14v7M14 17.5h7" />
+        </svg>
+      );
+    case "kits":
+      return (
+        <svg {...common}>
+          <circle cx="5" cy="6" r="2" />
+          <circle cx="5" cy="18" r="2" />
+          <path d="M5 8v8" />
+          <path d="M10 6h11" />
+          <path d="M10 12h8" />
+          <path d="M10 18h11" />
         </svg>
       );
     case "thankYou":

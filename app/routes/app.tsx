@@ -8,6 +8,7 @@ import { NavMenu } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 import prisma from "../db.server";
 import { getOrCreateShop } from "../shop.server";
+import { syncAllDiscounts } from "../bundles.server";
 import { FeatureDemoBanner, demoIdFromPath } from "../components/FeatureDemo";
 import { EXIT_INTENT_AVAILABLE } from "../utils/features";
 import {
@@ -105,7 +106,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   try {
-    const { session } = await authenticate.admin(request);
+    const { session, admin } = await authenticate.admin(request);
     const shop = await getOrCreateShop(session.shop);
     const formData = await request.formData();
     const actionType = String(formData.get("actionType") || "");
@@ -143,6 +144,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       quantityBreaks: "quantityBreaksEnabled",
       thankYou: "thankYouEnabled",
       bundles: "bundlesEnabled",
+      recommendations: "recsEnabled",
+      kits: "kitsEnabled",
     };
 
     const field = featureFieldMap[featureKey];
@@ -154,6 +157,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       where: { id: shop.id },
       data: { [field]: enable },
     });
+    if (["bundles", "kits", "recommendations"].includes(featureKey)) await syncAllDiscounts(admin, shop.id);
 
     return { ok: true, featureKey, enable };
   } catch (err: any) {
@@ -199,6 +203,8 @@ export default function App() {
         <a href="/app/pre-purchase">{t("Pre-Purchase Upsell")}</a>
         <a href="/app/in-cart">{t("Cart Upsell")}</a>
         <a href="/app/bundles">{t("Bundle Builder")}</a>
+        <a href="/app/kits">{t("Kit Builder")}</a>
+        <a href="/app/recommendations">{t("Product Recommendations")}</a>
         <a href="/app/thank-you">{t("Thank-You Page Offers")}</a>
         <a href="/app/shipping-bar">{t("Free Shipping & Rewards Bar")}</a>
         <a href="/app/quantity-breaks">{t("Volume Discounts")}</a>

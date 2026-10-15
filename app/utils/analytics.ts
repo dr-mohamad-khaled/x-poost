@@ -17,6 +17,8 @@ export const FEATURE_CODES = {
   so: "socialBar",
   ty: "thankYou",
   bb: "bundles",
+  rc: "recommendations",
+  kb: "kits",
 } as const;
 
 export type FeatureCode = keyof typeof FEATURE_CODES;
@@ -33,6 +35,8 @@ const ALL_FEATURE_KEYS: Exclude<FeatureKey, "_store">[] = [
   "socialBar",
   "thankYou",
   "bundles",
+  "recommendations",
+  "kits",
 ];
 
 /** Features shown in analytics (retired features are hidden; their stored data is kept). */
@@ -49,6 +53,8 @@ export const FEATURE_LABELS: Record<string, string> = {
   socialBar: "Chat & Social Bar",
   thankYou: "Thank-You Page Offers",
   bundles: "Bundle Builder",
+  recommendations: "Product Recommendations",
+  kits: "Kit Builder",
   upsellLegacy: "Upsells (untagged)",
 };
 
@@ -259,7 +265,7 @@ export function normalizeGraphqlOrder(n: any): NormalizedOrder {
   };
 }
 
-const SRC_FEATURES: Record<string, string> = { pp: "prePurchase", ic: "inCart", qb: "quantityBreaks", bb: "bundles" };
+const SRC_FEATURES: Record<string, string> = { pp: "prePurchase", ic: "inCart", qb: "quantityBreaks", bb: "bundles", rc: "recommendations", kb: "kits" };
 
 /**
  * Work out which order revenue XPoost produced.

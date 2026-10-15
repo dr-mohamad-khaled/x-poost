@@ -19,6 +19,9 @@ query CartLinesDiscountsInput($collectionIds: [ID!], $customerTags: [String!]) {
       bundle: attribute(key: "_xpb") {
         value
       }
+      rec: attribute(key: "_xpr") {
+        value
+      }
       cost {
         amountPerQuantity {
           amount

@@ -1,0 +1,53 @@
+{% comment %}
+  XPoost - Kit Builder
+  Shoppers build a kit step by step. On product pages the first matching kit shows automatically;
+  on any other page enter a Kit ID. Kits, steps, quiz, designs and texts are set in the XPoost app.
+{% endcomment %}
+
+{%- liquid
+  assign xpk_collections = ''
+  if product
+    for c in product.collections limit: 30
+      assign xpk_collections = xpk_collections | append: c.id | append: ','
+    endfor
+  endif
+-%}
+
+<div
+  class="xpk-mount"
+  data-xpk-root
+  data-proxy="/apps/xpoost/kits"
+  data-product-id="{% if product %}{{ product.id }}{% endif %}"
+  data-collections="{{ xpk_collections }}"
+  data-kit-id="{{ block.settings.kit_id | strip | escape }}"
+  data-locale="{{ request.locale.iso_code }}"
+  data-country="{{ localization.country.iso_code }}"
+  data-market="{{ localization.market.handle }}"
+  data-currency="{{ cart.currency.iso_code }}"
+  data-money-format="{{ shop.money_format | escape }}"
+  hidden
+  {{ block.shopify_attributes }}
+></div>
+
+{{ 'xpoost-kit.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'xpoost-track.js' | asset_url }}" defer></script>
+<script src="{{ 'xpoost-kit.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "XPoost: Kit Builder",
+  "target": "section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Create kits in the XPoost app. On product pages the first matching kit shows automatically. Each kit also has its own landing page link in the app."
+    },
+    {
+      "type": "text",
+      "id": "kit_id",
+      "label": "Kit ID (optional)",
+      "info": "Show one specific kit here, for example on the home page. Copy the ID from the kit in XPoost."
+    }
+  ]
+}
+{% endschema %}

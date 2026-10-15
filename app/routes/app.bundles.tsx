@@ -6,7 +6,7 @@ import { appCredentials, authenticate } from "../shopify.server";
 import prisma from "../db.server";
 import { getOrCreateShop } from "../shop.server";
 import { dayToDate, localDay } from "../utils/analytics";
-import { BUNDLES_DISCOUNT_TITLE, loadBundles, readSettings, syncBundlesDiscount, type BundlesSyncResult } from "../bundles.server";
+import { BUNDLES_DISCOUNT_TITLE, loadBundles, readSettings, syncAllDiscounts, type BundlesSyncResult } from "../bundles.server";
 import {
   BB_DEFAULT_STYLE,
   BB_DESIGN_META,
@@ -152,10 +152,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const form = await request.formData();
   const intent = String(form.get("intent") || "");
 
-  const sync = async (featureOn = shop.bundlesEnabled): Promise<BundlesSyncResult> => {
-    const fresh = await prisma.shop.findUnique({ where: { id: shop.id }, select: { bundlesEnabled: true, bundlesSettingsJson: true } });
-    return syncBundlesDiscount(admin, { bundles: await loadBundles(shop.id), featureOn: fresh ? fresh.bundlesEnabled : featureOn, settings: readSettings(fresh?.bundlesSettingsJson) });
-  };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const sync = async (_featureOn?: boolean): Promise<BundlesSyncResult> => syncAllDiscounts(admin, shop.id);
 
   if (intent === "toggleFeature") {
     const enable = form.get("enable") === "true";

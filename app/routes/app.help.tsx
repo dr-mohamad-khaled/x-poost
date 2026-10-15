@@ -14,7 +14,10 @@ type FeatureId =
   | "inCart"
   | "shippingBar"
   | "socialBar"
-  | "thankYou";
+  | "thankYou"
+  | "bundles"
+  | "recommendations"
+  | "kits";
 
 type Category = "trust" | "aov" | "support" | "retention";
 
@@ -43,6 +46,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       shippingBar: !!shop.shippingBarEnabled,
       socialBar: !!shop.socialBarEnabled,
       thankYou: !!shop.thankYouEnabled,
+      bundles: !!shop.bundlesEnabled,
+      recommendations: !!shop.recsEnabled,
+      kits: !!shop.kitsEnabled,
     } as Record<FeatureId, boolean>,
   };
 };
@@ -263,6 +269,132 @@ const FEATURES: Feature[] = [
         "ميّز المستوى الأوسط، فهو الأكثر اختيارًا.",
         "الأنسب للمنتجات الاستهلاكية مثل العناية بالبشرة، حيث يكون شراء اثنين أو ثلاثة منطقيًا.",
         "تأكد أن الخصم في كل مستوى ما زال يترك هامش ربح جيدًا.",
+      ],
+    },
+  },
+  {
+    id: "kits",
+    route: "/app/kits",
+    category: "aov",
+    name: { en: "Kit Builder", ar: "منشئ الأطقم" },
+    goal: {
+      en: "Let shoppers build a kit step by step, such as a routine, an outfit or a gift box, and get the kit price at checkout.",
+      ar: "اسمح للعميل بتكوين طقم خطوة بخطوة، مثل روتين عناية أو إطلالة كاملة أو صندوق هدايا، ويحصل على سعر الطقم عند الدفع.",
+    },
+    how: {
+      en: [
+        "Create a kit from a template or from scratch, and add the products or a collection for each step.",
+        "For each step, choose one pick that moves on by itself, or several picks with a Next button. Sub-filters and a short quiz are optional.",
+        "Set the kit price, switch the kit on, and share its landing page link or add the XPoost: Kit Builder block to a page.",
+      ],
+      ar: [
+        "أنشئ طقمًا من قالب جاهز أو من الصفر، وأضف المنتجات أو كولكشن لكل خطوة.",
+        "لكل خطوة اختر: اختيار واحد ينتقل بعده للخطوة التالية تلقائيًا، أو عدة اختيارات مع زر التالي. الفلاتر الفرعية والاستبيان القصير اختياريان.",
+        "حدّد سعر الطقم وفعّله، ثم شارك رابط صفحة الهبوط الخاصة به أو أضف بلوك XPoost: Kit Builder إلى أي صفحة.",
+      ],
+    },
+    result: {
+      en: "Shoppers get guided to a complete set and add it to the cart in one step.",
+      ar: "يُوجَّه العميل إلى طقم كامل ويضيفه إلى السلة في خطوة واحدة.",
+    },
+    watch: {
+      en: "Kit views, kits added to cart and the revenue they bring, in Analytics.",
+      ar: "مشاهدات الأطقم وعدد الأطقم المضافة إلى السلة والإيراد الناتج عنها، في صفحة التحليلات.",
+    },
+    tips: {
+      en: [
+        "Three or four steps work best. Make extra steps optional so shoppers can skip them.",
+        "If you add a quiz, keep it to one or two questions and give every answer its own products.",
+        "Use the landing page link in your menu, emails and ads. It opens inside your theme.",
+      ],
+      ar: [
+        "ثلاث أو أربع خطوات هي الأفضل. اجعل الخطوات الإضافية اختيارية ليتخطاها العميل.",
+        "إذا أضفت استبيانًا فاجعله سؤالًا أو سؤالين، وأعطِ كل إجابة منتجاتها الخاصة.",
+        "استخدم رابط صفحة الهبوط في القائمة والإيميلات والإعلانات. يفتح داخل قالب متجرك.",
+      ],
+    },
+  },
+  {
+    id: "recommendations",
+    route: "/app/recommendations",
+    category: "aov",
+    name: { en: "Product Recommendations", ar: "منتجات مقترحة" },
+    goal: {
+      en: "Show the right products next to the one the shopper is viewing, with a one-click Add button.",
+      ar: "اعرض المنتجات المناسبة بجانب المنتج الذي يشاهده العميل، مع زر إضافة بضغطة واحدة.",
+    },
+    how: {
+      en: [
+        "Add the XPoost: Recommendations block to your product page, above the description.",
+        "Choose where the products come from: Shopify's own recommendations, products you pick, or a collection. Shopify's picks can show in a random order on every visit.",
+        "Pick one of six compact designs, choose how many products to show (3 is a good start), and add an optional offer per product.",
+      ],
+      ar: [
+        "أضف بلوك XPoost: Recommendations إلى صفحة المنتج، فوق الوصف.",
+        "اختر مصدر المنتجات: ترشيحات Shopify نفسها، أو منتجات تختارها، أو كولكشن. ترشيحات Shopify يمكن أن تظهر بترتيب عشوائي في كل زيارة.",
+        "اختر تصميمًا من ستة تصميمات مدمجة، وحدّد عدد المنتجات (3 بداية جيدة)، وأضف عرضًا اختياريًا لكل منتج.",
+      ],
+    },
+    result: {
+      en: "Shoppers find more products they want and add them without leaving the page.",
+      ar: "يجد العميل منتجات أخرى يريدها ويضيفها دون مغادرة الصفحة.",
+    },
+    watch: {
+      en: "Views, add-to-cart rate and revenue from recommended products, in Analytics.",
+      ar: "المشاهدات ونسبة الإضافة إلى السلة والإيراد من المنتجات المقترحة، في صفحة التحليلات.",
+    },
+    tips: {
+      en: [
+        "Start with Shopify's recommendations. They update by themselves as your store gets orders.",
+        "An offer price applies at checkout only when the product on the page is in the cart too.",
+        "Star ratings come from your reviews app. Products without reviews show no stars.",
+      ],
+      ar: [
+        "ابدأ بترشيحات Shopify. تتحدث تلقائيًا مع زيادة طلبات متجرك.",
+        "سعر العرض يُطبَّق عند الدفع فقط إذا كان المنتج المعروض في الصفحة موجودًا في السلة أيضًا.",
+        "تقييمات النجوم تأتي من تطبيق المراجعات لديك. المنتجات بدون مراجعات لا تظهر لها نجوم.",
+      ],
+    },
+  },
+  {
+    id: "bundles",
+    route: "/app/bundles",
+    category: "aov",
+    name: { en: "Bundle Builder", ar: "منشئ الباقات التوفيرية" },
+    goal: {
+      en: "Let shoppers build their own bundle, or buy a fixed one, and get the bundle price at checkout.",
+      ar: "اسمح للعميل ببناء باقته بنفسه أو شراء باقة جاهزة، ويحصل على سعر الباقة عند الدفع.",
+    },
+    how: {
+      en: [
+        "Start from a template or from scratch, choose the bundle type, and add the products shoppers can pick from.",
+        "Set the bundle price: percent off, amount off, a fixed price, tiers by item count, or the cheapest item free. A free gift is optional.",
+        "Choose where it shows and who sees it, add the XPoost: Bundle Builder block in your theme editor, switch the bundle on, and place a test order.",
+      ],
+      ar: [
+        "ابدأ من قالب جاهز أو من الصفر، واختر نوع الباقة، وأضف المنتجات التي يختار منها العميل.",
+        "حدّد سعر الباقة: نسبة خصم أو مبلغ خصم أو سعر ثابت أو مستويات حسب عدد القطع أو أرخص قطعة مجانًا. الهدية المجانية اختيارية.",
+        "اختر أين تظهر ولمن، وأضف بلوك XPoost: Bundle Builder في محرر القالب، ثم فعّل الباقة وجرّب طلبًا تجريبيًا.",
+      ],
+    },
+    result: {
+      en: "Shoppers add several items in one step and see their saving before they add to cart.",
+      ar: "يضيف العميل عدة منتجات في خطوة واحدة ويرى توفيره قبل الإضافة إلى السلة.",
+    },
+    watch: {
+      en: "Bundle views, bundles added to cart and the revenue they bring, in Analytics.",
+      ar: "مشاهدات الباقات وعدد الباقات المضافة إلى السلة والإيراد الناتج عنها، في صفحة التحليلات.",
+    },
+    tips: {
+      en: [
+        "Start with one simple bundle, such as Pick any 3, before adding tiers or gifts.",
+        "Check your margin first. The bundle price applies once the bundle is complete, and it is checked again at checkout.",
+        "Use customer rules (tags, order history, country or market) for VIP or local offers. Customer tag and order rules need the customer data permission, which you approve once.",
+      ],
+      ar: [
+        "ابدأ بباقة بسيطة واحدة، مثل اختر أي 3، قبل إضافة المستويات أو الهدايا.",
+        "احسب هامش ربحك أولًا. يُطبَّق سعر الباقة عند اكتمالها، ويُتحقَّق منه مرة أخرى عند الدفع.",
+        "استخدم قواعد العملاء (الوسوم أو سجل الطلبات أو الدولة أو السوق) لعروض كبار العملاء أو العروض المحلية. قواعد الوسوم وسجل الطلبات تحتاج صلاحية بيانات العملاء التي توافق عليها مرة واحدة.",
       ],
     },
   },
@@ -572,6 +704,27 @@ const FAQ: { q: Bi; a: Bi }[] = [
     },
   },
   {
+    q: { en: "The bundle does not show on my product page, or the bundle price is missing at checkout.", ar: "الباقة لا تظهر في صفحة المنتج، أو سعر الباقة لا يظهر عند الدفع." },
+    a: {
+      en: "Add the XPoost: Bundle Builder block to your product page in the theme editor, switch the bundle on, and check its placement and customer rules. A bundle with customer rules only shows to matching shoppers. For the price at checkout, open Bundle Builder and check that the XPoost Bundles discount is active. Saving any bundle creates it. Then reload your store in a private window.",
+      ar: "أضف بلوك XPoost: Bundle Builder إلى صفحة المنتج من محرر القالب، وفعّل الباقة، وراجع مكان ظهورها وقواعد العملاء. الباقة ذات قواعد العملاء تظهر للعملاء المطابقين فقط. لسعر الباقة عند الدفع افتح منشئ الباقات وتأكد أن خصم XPoost Bundles مفعّل. حفظ أي باقة ينشئه. ثم أعد تحميل متجرك في نافذة خاصة.",
+    },
+  },
+  {
+    q: { en: "How do I share a kit's landing page?", ar: "كيف أشارك صفحة الهبوط الخاصة بالطقم؟" },
+    a: {
+      en: "Open Kit Builder, save the kit and switch it on. Its landing page link appears under Design, and in the kit list. Add it to your menu in Online Store, Navigation, or use it in emails and ads. The page opens inside your theme.",
+      ar: "افتح منشئ الأطقم واحفظ الطقم وفعّله. يظهر رابط صفحة الهبوط تحت قسم التصميم وفي قائمة الأطقم. أضفه إلى قائمة متجرك من Online Store ثم Navigation، أو استخدمه في الإيميلات والإعلانات. تفتح الصفحة داخل قالب متجرك.",
+    },
+  },
+  {
+    q: { en: "Recommendations don't show on a product page.", ar: "المنتجات المقترحة لا تظهر في صفحة المنتج." },
+    a: {
+      en: "Check that the XPoost: Recommendations block is on your product template and that the feature is on. Shopify needs some order history before it can recommend products for a new store or product; add backup products in the app so the block always has something to show.",
+      ar: "تأكد أن بلوك XPoost: Recommendations موجود في قالب صفحة المنتج وأن الميزة مفعّلة. يحتاج Shopify بعض سجل الطلبات قبل أن يرشّح منتجات لمتجر أو منتج جديد؛ أضف منتجات احتياطية من التطبيق ليظهر البلوك دائمًا.",
+    },
+  },
+  {
     q: { en: "Does XPoost slow my store down?", ar: "هل يبطّئ XPoost متجري؟" },
     a: {
       en: "No. The storefront scripts are small and load after your page, as theme app extensions, so they do not block what your visitors see first.",
@@ -616,6 +769,9 @@ const ICON_PATHS: Record<string, string> = {
   bulb: "M9 18h6M10 21h4M12 3a6 6 0 00-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0012 3z",
   spark: "M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z",
   book: "M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2V5zM4 19a2 2 0 002 2h13",
+  gift: "M20 12v9H4v-9M2 7h20v5H2zM12 21V7M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z",
+  grid: "M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM17.5 14v7M14 17.5h7",
+  steps: "M5 4a2 2 0 100 4 2 2 0 000-4zM5 16a2 2 0 100 4 2 2 0 000-4zM5 8v8M10 6h11M10 12h8M10 18h11",
 };
 
 function Icon({ name, size = 18 }: { name: string; size?: number }) {
@@ -635,6 +791,9 @@ const FEATURE_ICON: Record<FeatureId, string> = {
   productScarcity: "flask",
   socialBar: "phone",
   thankYou: "book",
+  bundles: "gift",
+  recommendations: "grid",
+  kits: "steps",
 };
 
 /** Marks .xh-reveal elements with data-in as they scroll into view (an attribute, so React className re-renders never strip it). */
@@ -751,6 +910,36 @@ function Demo({ id, isAr }: { id: FeatureId; isAr: boolean }) {
             <span>{isAr ? "طلب إرجاع" : t("Return request")}</span>
           </div>
           <div className="xh-d-social-btn"><i /></div>
+        </div>
+      );
+    case "bundles":
+      return (
+        <div className="xh-demo xh-d-bun" aria-hidden="true">
+          <div className="xh-d-bun-slots"><i /><i /><i /></div>
+          <div className="xh-d-bun-price"><s>$66.00</s><b>$52.80</b></div>
+          <div className="xh-d-pre-btn">{isAr ? "أضف الباقة إلى السلة" : t("Add bundle to cart")}</div>
+        </div>
+      );
+    case "recommendations":
+      return (
+        <div className="xh-demo xh-d-rec" aria-hidden="true">
+          <div className="xh-d-rec-title">{isAr ? "قد يعجبك أيضًا" : t("You may also like")}</div>
+          <div className="xh-d-rec-row">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="xh-d-rec-card">
+                <i />
+                <b>{isAr ? "أضف" : t("Add")}</b>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    case "kits":
+      return (
+        <div className="xh-demo xh-d-kit" aria-hidden="true">
+          <div className="xh-d-kit-steps"><span>1</span><span>2</span><span>3</span></div>
+          <div className="xh-d-kit-tray"><i /><i /><i /></div>
+          <div className="xh-d-pre-btn">{isAr ? "أضف الطقم إلى السلة" : t("Add kit to cart")}</div>
         </div>
       );
     case "thankYou":
@@ -1220,6 +1409,39 @@ const HELP_STYLES = `
   .xh-d-q u { text-decoration:none; position:absolute; top:-7px; font-size:8.5px; font-weight:800; background: linear-gradient(135deg, #FFEB97 0%, #E8C872 48%, #B8863B 100%); color:#0C0803; padding:1px 6px; border-radius:4px; }
   .q1 { animation-delay: 0s; } .q2 { animation-delay: 2s; } .q3 { animation-delay: 4s; }
   @keyframes xh-qsel { 0%,28% { border-color:#E8C872; background: rgba(232,200,114,.12); transform: translateY(-4px);} 34%,100% { border-color:#3A2B17; background:#20160D; transform:none; } }
+  /* bundle builder */
+  .xh-demo.xh-d-bun { justify-content:center; gap:10px; }
+  .xh-d-bun-slots { display:flex; gap:8px; justify-content:center; }
+  .xh-d-bun-slots i { width:44px; height:44px; border-radius:10px; border:1.5px dashed #5A4A2C; animation: xh-bunfill 7s infinite; }
+  .xh-d-bun-slots i:nth-child(2) { animation-delay: .9s; }
+  .xh-d-bun-slots i:nth-child(3) { animation-delay: 1.8s; }
+  @keyframes xh-bunfill { 0%,8% { background:transparent; border-style:dashed; border-color:#5A4A2C; transform:none; } 14% { transform: scale(1.15); } 20%,88% { background: linear-gradient(135deg, #FFEB97 0%, #E8C872 48%, #B8863B 100%); border-style:solid; border-color:#E8C872; transform:none; } 96%,100% { background:transparent; border-style:dashed; border-color:#5A4A2C; transform:none; } }
+  .xh-d-bun-price { text-align:center; font-size:13px; font-weight:800; color:#eee; }
+  .xh-d-bun-price s { color:#9E957B; font-weight:600; margin-inline-end:8px; }
+  .xh-d-bun-price b { color:#E8C872; }
+  /* recommendations */
+  .xh-demo.xh-d-rec { justify-content:center; gap:8px; }
+  .xh-d-rec-title { font-size:12px; font-weight:800; color:#eee; }
+  .xh-d-rec-row { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+  .xh-d-rec-card { display:grid; gap:5px; padding:5px; border-radius:8px; background:#20160D; border:1px solid #43331D; animation: xh-recin 6s ease-in-out infinite; }
+  .xh-d-rec-card:nth-child(2) { animation-delay:.25s; }
+  .xh-d-rec-card:nth-child(3) { animation-delay:.5s; }
+  .xh-d-rec-card i { display:block; height:34px; border-radius:6px; background: linear-gradient(135deg, #3A2B17, #6B5020); }
+  .xh-d-rec-card b { font-size:10px; text-align:center; padding:3px 0; border-radius:5px; background:#0C0803; color:#eee; }
+  .xh-d-rec-card:nth-child(2) b { animation: xh-recadd 6s ease-in-out infinite; }
+  @keyframes xh-recin { 0%,6% { opacity:0; transform: translateY(8px);} 16%,90% { opacity:1; transform:none;} 100% { opacity:0; transform: translateY(8px);} }
+  @keyframes xh-recadd { 0%,40% { background:#0C0803; color:#eee; } 46%,90% { background:#E8C872; color:#111; } 100% { background:#0C0803; color:#eee; } }
+  /* kit builder */
+  .xh-demo.xh-d-kit { justify-content:center; gap:9px; }
+  .xh-d-kit-steps { display:flex; gap:6px; justify-content:center; }
+  .xh-d-kit-steps span { width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-size:11px; font-weight:800; border:1.5px solid #5A4A2C; color:#D2C8AC; animation: xh-kitstep 7s infinite; }
+  .xh-d-kit-steps span:nth-child(2) { animation-delay: 1.1s; }
+  .xh-d-kit-steps span:nth-child(3) { animation-delay: 2.2s; }
+  @keyframes xh-kitstep { 0%,10% { background:transparent; color:#D2C8AC; border-color:#5A4A2C; } 16%,88% { background:#E8C872; color:#111; border-color:#E8C872; } 96%,100% { background:transparent; color:#D2C8AC; border-color:#5A4A2C; } }
+  .xh-d-kit-tray { display:flex; gap:6px; justify-content:center; }
+  .xh-d-kit-tray i { width:34px; height:34px; border-radius:8px; border:1.5px dashed #5A4A2C; animation: xh-bunfill 7s infinite; animation-delay:.4s; }
+  .xh-d-kit-tray i:nth-child(2) { animation-delay: 1.5s; }
+  .xh-d-kit-tray i:nth-child(3) { animation-delay: 2.6s; }
   /* toast */
   .xh-d-page { display:grid; gap:8px; }
   .xh-d-toast { position:absolute; inset-block-end:12px; inset-inline-start:12px; display:flex; align-items:center; gap:8px; background:#0C0803; border:1px solid rgba(232,200,114,.5); border-radius:9px; padding:8px 10px; font-size:10.5px; font-weight:700; animation: xh-toast 5s ease-in-out infinite; }

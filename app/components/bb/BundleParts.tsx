@@ -421,7 +421,7 @@ export type PreviewProduct = {
 
 const tailId = (g: string) => String(g || "").split("/").pop() || "";
 
-function placeholderProducts(seed: string, n: number, base = 1900): PreviewProduct[] {
+export function placeholderProducts(seed: string, n: number, base = 1900): PreviewProduct[] {
   const tones = ["#d9c7b0", "#b7c9d6", "#c9d6b7", "#e2c2c8", "#cfc4e3", "#e6dcb8"];
   return Array.from({ length: n }, (_, i) => {
     const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><rect width='300' height='300' fill='${tones[(i + seed.length) % tones.length]}'/><circle cx='150' cy='130' r='52' fill='rgba(255,255,255,.55)'/></svg>`;

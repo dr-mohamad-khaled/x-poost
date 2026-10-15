@@ -53,6 +53,9 @@ model Shop {
   checkoutUpsellEnabled  Boolean @default(false)
   bundlesEnabled         Boolean @default(false)
   bundlesSettingsJson    String  @default("{}") // BbSettings (discount combinations)
+  recsEnabled            Boolean @default(false)
+  recsJson               String  @default("{}") // Product Recommendations: { config, style, texts }
+  kitsEnabled            Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -84,6 +87,9 @@ model Shop {
 
   // Bundle Builder
   bundles Bundle[]
+
+  // Kit Builder
+  kits Kit[]
 
   @@index([shopDomain])
 }
@@ -531,6 +537,26 @@ model Bundle {
   textsJson     String   @default("{}") // BbTextsByLang
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
+  @@index([shopId, enabled, priority])
+}
+
+///// Kit Builder: step-by-step kits (optional quiz and sub-filters)
+model Kit {
+  id             String   @id @default(cuid())
+  shopId         String
+  shop           Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  name           String
+  design         String // journey | split | focus
+  enabled        Boolean  @default(true)
+  priority       Int      @default(100)
+  configJson     String   @default("{}") // KbConfig
+  placementJson  String   @default("{}") // BbPlacement
+  conditionsJson String   @default("{}") // BbConditions
+  styleJson      String   @default("{}") // BbStyle
+  textsJson      String   @default("{}") // KbTextsByLang
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   @@index([shopId, enabled, priority])
 }

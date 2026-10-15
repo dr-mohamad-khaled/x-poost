@@ -692,7 +692,7 @@ export default function Pricing() {
             <div className="xpp-proof-label"><Translate text='Impressions, Orders &' /><br /><span className="xpp-badge-green"><Translate text='Zero Quotas' /></span>  <Translate text='Guaranteed' /></div>
           </div>
           <div className="xpp-proof-stat">
-            <div className="xpp-proof-num"><Translate text='8-in-1' /></div>
+            <div className="xpp-proof-num"><Translate text='11-in-1' /></div>
             <div className="xpp-proof-label"><Translate text='Conversion Tools' /><br /><span className="xpp-hl-gold"><Translate text='Replaces 5+ Separate Apps' /></span></div>
           </div>
         </div>
@@ -732,7 +732,7 @@ export default function Pricing() {
             <h2 className="xpp-plan-name"><Translate text='Monthly' /></h2>
             <p className="xpp-plan-desc">
               
-                                        <Translate text='The full 8-in-1 engine.' /> <span className="xpp-hl-gold"><Translate text='No feature locks' /></span>. <span className="xpp-hl-gold"><Translate text='No usage caps' /></span><Translate text='. Start free for 7 days.' />
+                                        <Translate text='The full 11-in-1 engine.' /> <span className="xpp-hl-gold"><Translate text='No feature locks' /></span>. <span className="xpp-hl-gold"><Translate text='No usage caps' /></span><Translate text='. Start free for 7 days.' />
                                       </p>
             <div className="xpp-plan-price-box">
               <span className="xpp-plan-price">$20</span>
@@ -771,6 +771,18 @@ export default function Pricing() {
               <li className="xpp-feature-item">
                 <span className="xpp-check-icon">&#10003;</span>
                 <span><strong><Translate text='Volume Discounts' /></strong>  <Translate text='& Thank-You Page Offers' /></span>
+              </li>
+              <li className="xpp-feature-item">
+                <span className="xpp-check-icon">&#10003;</span>
+                <span><strong><Translate text='Bundle Builder' /></strong>  <Translate text='Mix & match, build-a-box and fixed bundles' /></span>
+              </li>
+              <li className="xpp-feature-item">
+                <span className="xpp-check-icon">&#10003;</span>
+                <span><strong><Translate text='Kit Builder' /></strong>  <Translate text='Step-by-step kits with an optional quiz and landing page' /></span>
+              </li>
+              <li className="xpp-feature-item">
+                <span className="xpp-check-icon">&#10003;</span>
+                <span><strong><Translate text='Product Recommendations' /></strong>  <Translate text='Shopify recommendations or your picks, with an optional offer' /></span>
               </li>
               <li className="xpp-feature-item">
                 <span className="xpp-check-icon">&#10003;</span>
@@ -825,7 +837,7 @@ export default function Pricing() {
               </li>
               <li className="xpp-feature-item">
                 <span className="xpp-check-icon">&#10003;</span>
-                <span><strong><Translate text='All 8 tools' /></strong>  <Translate text='and every future update included' /></span>
+                <span><strong><Translate text='All 11 tools' /></strong>  <Translate text='and every future update included' /></span>
               </li>
               <li className="xpp-feature-item">
                 <span className="xpp-check-icon">&#10003;</span>
@@ -975,7 +987,7 @@ export default function Pricing() {
               </div>
               <div className="xpp-vs-row">
                 <span className="xpp-vs-row-label"><Translate text='Features Included' /></span>
-                <span className="xpp-badge-green"><Translate text='All 8 tools' /></span>
+                <span className="xpp-badge-green"><Translate text='All 11 tools' /></span>
               </div>
               <div className="xpp-vs-row">
                 <span className="xpp-vs-row-label"><Translate text='Apps Needed' /></span>

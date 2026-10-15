@@ -29,6 +29,8 @@ const FEATURE_ROUTES: Record<string, string> = {
   socialBar: "/app/social-bar",
   thankYou: "/app/thank-you",
   bundles: "/app/bundles",
+  recommendations: "/app/recommendations",
+  kits: "/app/kits",
 };
 
 const dayStr = (d: Date) => d.toISOString().slice(0, 10);
@@ -52,7 +54,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const today = localDay(Date.now(), shop.analyticsTimezone);
   const from = new Date(`${addDays(today, -(2 * rangeDays - 1))}T00:00:00.000Z`);
 
-  const [stats, orders, rules, qbOffers, scarcityCfg, shippingCfg, tyOffers, bundleRows] = await Promise.all([
+  const [stats, orders, rules, qbOffers, scarcityCfg, shippingCfg, tyOffers, bundleRows, kitRows] = await Promise.all([
     prisma.xpDailyStat.findMany({ where: { shopId: shop.id, day: { gte: from } } }),
     prisma.xpOrder.findMany({
       where: { shopId: shop.id, day: { gte: from }, cancelled: false },
@@ -64,6 +66,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     prisma.shippingBarConfig.findUnique({ where: { shopId: shop.id }, select: { tiersJson: true } }),
     prisma.tyOffer.findMany({ where: { shopId: shop.id }, select: { id: true, name: true } }),
     prisma.bundle.findMany({ where: { shopId: shop.id }, select: { id: true, name: true } }),
+    prisma.kit.findMany({ where: { shopId: shop.id }, select: { id: true, name: true } }),
   ]);
 
   const offerNames: Record<string, string> = {};
@@ -71,6 +74,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   for (const o of qbOffers) offerNames[o.id] = o.title;
   for (const o of tyOffers) offerNames[o.id] = o.name;
   for (const b of bundleRows) offerNames[b.id] = b.name;
+  for (const k of kitRows) offerNames[k.id] = k.name;
+  offerNames.recs = "Product Recommendations";
 
   const messageNames: Record<string, string> = {};
   try {
@@ -101,6 +106,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       socialBar: shop.socialBarEnabled,
       thankYou: shop.thankYouEnabled,
       bundles: shop.bundlesEnabled,
+      recommendations: shop.recsEnabled,
+      kits: shop.kitsEnabled,
     },
     offerNames,
     messageNames,
@@ -220,6 +227,16 @@ const TIPS: Record<string, Tip[]> = {
     { text: "Compare bundles by add-to-cart rate in the table. Keep the strongest design and pause the rest." },
     { text: "A bundle that is viewed often but rarely added may ask for too many items. Try a smaller size or tiered savings that reward each extra item." },
     { text: "Use customer rules to give returning customers or tagged VIPs their own bundle, then compare the two here." },
+  ],
+  recommendations: [
+    { text: "Compare the add-to-cart rate before and after you change the design or the source. Change one thing at a time." },
+    { text: "If few shoppers add a product, try Shopify's “goes well with” recommendations or pick complementary products yourself." },
+    { text: "An offer price only applies when the product on the page is bought too, so judge it by orders and revenue, not only by adds." },
+  ],
+  kits: [
+    { text: "Compare kits by add-to-cart rate in the table. A kit with many views and few adds may have too many steps; try fewer." },
+    { text: "If you use a quiz, keep it to one or two questions and check that every answer leads to products." },
+    { text: "Share each kit's landing page in ads and emails, then compare its numbers with the same kit on product pages." },
   ],
   socialBar: [
     { text: "WhatsApp questions usually point to missing information. Put answers to the most common questions on your product pages." },

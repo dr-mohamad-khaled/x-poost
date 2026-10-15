@@ -271,6 +271,53 @@ export function groupLines(input) {
   return groups;
 }
 
+/**
+ * Product Recommendations offer. A line added from the recommendations block carries
+ * `_xpr = "<id of the product the shopper was viewing>"`. Nothing in it is trusted: the
+ * offer applies only when that product is in the cart on its own line, the recommended
+ * product is a different product, and (for picked products or a collection) it belongs
+ * to the list the merchant chose.
+ */
+export function recCandidates(input, cfg, rate) {
+  const r = cfg && cfg.r;
+  if (!r || (r.m !== "percent" && r.m !== "amount")) return [];
+  const value = num(r.v);
+  if (!(value > 0)) return [];
+  const lines = (input.cart && input.cart.lines) || [];
+  const plain = new Set();
+  const recs = [];
+  for (const line of lines) {
+    if (!line || !line.merchandise || line.merchandise.__typename !== "ProductVariant") continue;
+    const product = line.merchandise.product || {};
+    const pid = tail(product.id);
+    const anchor = line.rec && line.rec.value ? String(line.rec.value) : "";
+    if (line.bundle && line.bundle.value) continue;
+    if (anchor) {
+      if (!/^\d{1,20}$/.test(anchor)) continue;
+      recs.push({
+        id: line.id,
+        pid,
+        anchor,
+        qty: Math.max(0, Math.floor(num(line.quantity))),
+        colls: (product.inCollections || []).filter((c) => c && c.isMember).map((c) => c.collectionId),
+      });
+    } else plain.add(pid);
+  }
+  const message = String(r.t || "Special offer").slice(0, 80);
+  const out = [];
+  for (const l of recs) {
+    if (!l.qty || l.pid === l.anchor || !plain.has(l.anchor)) continue;
+    if (Array.isArray(r.p) && r.p.indexOf(l.pid) === -1) continue;
+    if (Array.isArray(r.c) && r.c.length && !l.colls.some((c) => r.c.indexOf(c) !== -1)) continue;
+    if (r.m === "percent") {
+      out.push({ message, targets: [{ cartLine: { id: l.id } }], value: { percentage: { value: round2(Math.min(100, value)) } } });
+    } else {
+      out.push({ message, targets: [{ cartLine: { id: l.id } }], value: { fixedAmount: { amount: money(value * rate), appliesToEachItem: true } } });
+    }
+  }
+  return out;
+}
+
 export function resolveCandidates(input) {
   const cfg = readConfig(input);
   if (!cfg) return [];
@@ -290,5 +337,6 @@ export function resolveCandidates(input) {
     if (!k) continue;
     for (const c of bundleCandidates(b, g.items, g.gifts, k, rate)) out.push(c);
   }
+  for (const c of recCandidates(input, cfg, rate)) out.push(c);
   return out;
 }
