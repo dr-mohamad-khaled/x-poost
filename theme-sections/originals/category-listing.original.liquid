@@ -1,0 +1,613 @@
+{% comment %}
+  Category Listing Section with Icons
+  Grid layout with customizable styling
+{% endcomment %}
+
+{% assign section_id = section.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .category-listing-{{ section_id }} {
+    position: relative;
+    width: 100%;
+    {% if section.settings.background_type == 'gradient' %}
+      background: linear-gradient({{ section.settings.gradient_angle }}deg, {{ section.settings.gradient_start }} 0%, {{ section.settings.gradient_end }} 100%);
+    {% else %}
+      background-color: {{ section.settings.background_color }};
+    {% endif %}
+    padding: {{ section.settings.section_padding_top }}px 20px {{ section.settings.section_padding_bottom }}px;
+    overflow: hidden;
+  }
+
+  .category-listing__container-{{ section_id }} {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+  }
+
+  .category-listing__title-{{ section_id }} {
+    text-align: {{ section.settings.title_alignment }};
+    color: {{ section.settings.title_color }};
+    font-size: {{ section.settings.title_size }}px;
+    font-weight: 700;
+    margin: 0 0 {{ section.settings.title_spacing }}px;
+  }
+
+  .category-listing__grid-{{ section_id }} {
+    display: flex;
+    flex-wrap: wrap;
+    gap: {{ section.settings.item_spacing }}px;
+    justify-content: {{ section.settings.alignment }};
+  }
+
+  .category-listing__item-{{ section_id }} {
+    flex: 0 0 calc((100% - ({{ section.settings.items_per_row | minus: 1 }} * {{ section.settings.item_spacing }}px)) / {{ section.settings.items_per_row }});
+    min-width: {{ section.settings.item_min_width }}px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+  }
+
+  .category-listing__item-{{ section_id }}:hover {
+    transform: translateY(-5px);
+  }
+
+  .category-listing__icon-wrapper-{{ section_id }} {
+    width: {{ section.settings.icon_size }}px;
+    height: {{ section.settings.icon_size }}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    background-color: {{ section.settings.icon_background }};
+    border-radius: {{ section.settings.icon_border_radius }}px;
+    padding: {{ section.settings.icon_padding }}px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .category-listing__item-{{ section_id }}:hover .category-listing__icon-wrapper-{{ section_id }} {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    transform: scale(1.05);
+  }
+
+  .category-listing__icon-{{ section_id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .category-listing__icon-{{ section_id }} svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .category-listing__text-{{ section_id }} {
+    color: {{ section.settings.text_color }};
+    font-size: {{ section.settings.text_size }}px;
+    font-weight: {{ section.settings.text_weight }};
+    line-height: 1.4;
+    word-break: break-word;
+  }
+
+  @media screen and (max-width: 768px) {
+    .category-listing-{{ section_id }} {
+      padding: {{ section.settings.section_padding_top | times: 0.7 }}px 15px {{ section.settings.section_padding_bottom | times: 0.7 }}px;
+    }
+
+    .category-listing__title-{{ section_id }} {
+      font-size: {{ section.settings.title_size | times: 0.8 }}px;
+      margin-bottom: {{ section.settings.title_spacing | times: 0.8 }}px;
+    }
+
+    .category-listing__grid-{{ section_id }} {
+      gap: {{ section.settings.mobile_spacing }}px;
+      justify-content: {{ section.settings.mobile_alignment }};
+    }
+
+    .category-listing__item-{{ section_id }} {
+      flex: 0 0 calc((100% - ({{ section.settings.mobile_columns | minus: 1 }} * {{ section.settings.mobile_spacing }}px)) / {{ section.settings.mobile_columns }});
+      min-width: 70px;
+    }
+
+    .category-listing__icon-wrapper-{{ section_id }} {
+      width: {{ section.settings.icon_size | times: 0.85 }}px;
+      height: {{ section.settings.icon_size | times: 0.85 }}px;
+      margin-bottom: 8px;
+    }
+
+    .category-listing__text-{{ section_id }} {
+      font-size: {{ section.settings.text_size | times: 0.9 }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="category-listing-{{ section_id }}" {{ section.shopify_attributes }}>
+  <div class="category-listing__container-{{ section_id }}">
+    {% if section.settings.title != blank %}
+      <h2 class="category-listing__title-{{ section_id }}">{{ section.settings.title }}</h2>
+    {% endif %}
+
+    <div class="category-listing__grid-{{ section_id }}">
+      {% for block in section.blocks %}
+        {% if block.settings.link != blank %}
+          <a href="{{ block.settings.link }}" class="category-listing__item-{{ section_id }}" {{ block.shopify_attributes }}>
+        {% else %}
+          <div class="category-listing__item-{{ section_id }}" {{ block.shopify_attributes }}>
+        {% endif %}
+          
+          <div class="category-listing__icon-wrapper-{{ section_id }}">
+            {% if block.settings.icon_type == 'svg' and block.settings.svg_code != blank %}
+              <div class="category-listing__icon-{{ section_id }}" style="color: {{ block.settings.svg_color }}; fill: {{ block.settings.svg_color }};">
+                {{ block.settings.svg_code }}
+              </div>
+            {% elsif block.settings.icon_image != blank %}
+              <img 
+                src="{{ block.settings.icon_image | image_url: width: 200 }}" 
+                alt="{{ block.settings.category_name | escape }}"
+                class="category-listing__icon-{{ section_id }}"
+                loading="lazy"
+                width="{{ section.settings.icon_size }}"
+                height="{{ section.settings.icon_size }}"
+              >
+            {% else %}
+              <div class="category-listing__icon-{{ section_id }}" style="color: {{ block.settings.svg_color }}; fill: {{ block.settings.svg_color }};">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z"/>
+                </svg>
+              </div>
+            {% endif %}
+          </div>
+
+          {% if block.settings.category_name != blank %}
+            <span class="category-listing__text-{{ section_id }}">{{ block.settings.category_name }}</span>
+          {% endif %}
+
+        {% if block.settings.link != blank %}
+          </a>
+        {% else %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Category Listing",
+  "tag": "section",
+  "class": "section-category-listing",
+  "max_blocks": 20,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Title"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section title",
+      "default": "Shop by Category"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#222222"
+    },
+    {
+      "type": "select",
+      "id": "title_alignment",
+      "label": "Title alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "title_spacing",
+      "label": "Title bottom spacing",
+      "min": 10,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Layout - Desktop"
+    },
+    {
+      "type": "range",
+      "id": "items_per_row",
+      "label": "Items per row",
+      "min": 3,
+      "max": 8,
+      "step": 1,
+      "default": 6
+    },
+    {
+      "type": "range",
+      "id": "item_min_width",
+      "label": "Minimum item width",
+      "min": 60,
+      "max": 150,
+      "step": 10,
+      "unit": "px",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "item_spacing",
+      "label": "Item spacing",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Alignment",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "flex-end",
+          "label": "Right"
+        },
+        {
+          "value": "space-between",
+          "label": "Space between"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Layout - Mobile"
+    },
+    {
+      "type": "range",
+      "id": "mobile_columns",
+      "label": "Mobile columns",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "mobile_spacing",
+      "label": "Mobile item spacing",
+      "min": 8,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "select",
+      "id": "mobile_alignment",
+      "label": "Mobile alignment",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Icon Styling"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon size",
+      "min": 40,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "icon_padding",
+      "label": "Icon padding",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "color",
+      "id": "icon_background",
+      "label": "Icon background",
+      "default": "#f5f5f5"
+    },
+    {
+      "type": "range",
+      "id": "icon_border_radius",
+      "label": "Icon border radius",
+      "min": 0,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 50,
+      "info": "0 = square, 50+ = circle"
+    },
+    {
+      "type": "header",
+      "content": "Text Styling"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Text size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#333333"
+    },
+    {
+      "type": "select",
+      "id": "text_weight",
+      "label": "Text weight",
+      "options": [
+        {
+          "value": "400",
+          "label": "Normal"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semi-bold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "select",
+      "id": "background_type",
+      "label": "Background type",
+      "options": [
+        {
+          "value": "solid",
+          "label": "Solid color"
+        },
+        {
+          "value": "gradient",
+          "label": "Gradient"
+        }
+      ],
+      "default": "solid"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "gradient_start",
+      "label": "Gradient start color",
+      "default": "#f8f9fa"
+    },
+    {
+      "type": "color",
+      "id": "gradient_end",
+      "label": "Gradient end color",
+      "default": "#e9ecef"
+    },
+    {
+      "type": "range",
+      "id": "gradient_angle",
+      "label": "Gradient angle",
+      "min": 0,
+      "max": 360,
+      "step": 15,
+      "unit": "deg",
+      "default": 135
+    },
+    {
+      "type": "header",
+      "content": "Section Spacing"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Maximum content width",
+      "min": 1000,
+      "max": 1600,
+      "step": 100,
+      "unit": "px",
+      "default": 1400
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category",
+      "settings": [
+        {
+          "type": "text",
+          "id": "category_name",
+          "label": "Category name",
+          "default": "Category"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "header",
+          "content": "Icon Settings"
+        },
+        {
+          "type": "select",
+          "id": "icon_type",
+          "label": "Icon type",
+          "options": [
+            {
+              "value": "svg",
+              "label": "SVG Code"
+            },
+            {
+              "value": "image",
+              "label": "Image"
+            }
+          ],
+          "default": "svg"
+        },
+        {
+          "type": "html",
+          "id": "svg_code",
+          "label": "SVG code",
+          "info": "Paste your SVG code here (including <svg> tags)"
+        },
+        {
+          "type": "color",
+          "id": "svg_color",
+          "label": "SVG color",
+          "default": "#333333",
+          "info": "Color for SVG icons"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon_image",
+          "label": "Icon image",
+          "info": "Used when icon type is set to 'Image'"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Category Listing",
+      "blocks": [
+        {
+          "type": "category",
+          "settings": {
+            "category_name": "Electronics",
+            "svg_code": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'><path d='M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z'/></svg>"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "category_name": "Fashion",
+            "svg_code": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z'/></svg>"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "category_name": "Home",
+            "svg_code": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'><path d='M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z'/></svg>"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "category_name": "Sports",
+            "svg_code": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.94-.49-7-3.85-7-7.93s3.05-7.44 7-7.93v15.86zm2-15.86c1.03.13 2 .45 2.87.93H13v-.93zM13 7h5.24c.25.31.48.65.68 1H13V7zm0 3h6.74c.08.33.15.66.19 1H13v-1zm0 9.93V19h2.87c-.87.48-1.84.8-2.87.93zM18.24 17H13v-1h5.92c-.2.35-.43.69-.68 1zm1.5-3H13v-1h6.93c-.04.34-.11.67-.19 1z'/></svg>"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "category_name": "Books",
+            "svg_code": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'><path d='M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z'/></svg>"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "category_name": "Beauty",
+            "svg_code": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/></svg>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

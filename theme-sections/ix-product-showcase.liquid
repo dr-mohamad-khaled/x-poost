@@ -1,0 +1,1330 @@
+{%- comment -%}
+  IX Product Showcase
+  A product slider where the transparent PNG pops out of a glass card.
+
+  Performance notes
+  - Native scroll-snap slider, no slider library. One small custom element (<ix-showcase>).
+  - Looping product animation uses transform / opacity only (compositor), and is paused
+    for every slide that is scrolled out of view. Disabled for prefers-reduced-motion.
+  - No backdrop-filter, no animated shadows, no animated filters.
+  - content-visibility:auto, so the section costs nothing until it nears the viewport.
+  - Images: responsive srcset, lazy by default, fixed aspect-ratio box (no layout shift).
+  - No fonts are set here: everything follows the theme fonts.
+
+  Theme hooks (Minimog)
+  - Add to cart: <product-form> + .m-add-to-cart  -> AJAX add + cart drawer
+  - Quick view:  .m-product-quickview-button + data-product-handle -> theme quick view modal
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+  assign sid = section.id
+
+  assign source = s.collection
+  if source == blank
+    assign source = collections.all
+  endif
+  assign products_list = source.products
+
+  comment
+    Two modes:
+    1) Product blocks (hand-picked products, each with an optional image override)
+    2) No blocks: fall back to a collection
+  endcomment
+  assign filled = 0
+  for b in section.blocks
+    if b.settings.product != blank
+      assign filled = filled | plus: 1
+    endif
+  endfor
+  if section.blocks.size > 0
+    assign use_blocks = true
+    assign total = section.blocks.size
+    assign shown = filled
+  elsif s.product_list.size > 0
+    assign use_blocks = false
+    assign products_list = s.product_list
+    assign total = products_list.size
+    assign shown = total
+  else
+    assign use_blocks = false
+    assign total = products_list.size | at_most: s.products_to_show
+    assign shown = total
+  endif
+
+  assign card_op = s.card_opacity | divided_by: 100.0
+  assign border_op = s.border_opacity | divided_by: 100.0
+  assign glow_op = s.glow_opacity | divided_by: 100.0
+
+  assign c_bg = s.bg_color | default: '#191818'
+  assign c_bg2 = s.bg_color_2 | default: c_bg
+  assign c_accent = s.accent_color | default: '#d4af37'
+  assign c_accent_dim = c_accent | color_modify: 'alpha', 0.2
+  assign c_heading = s.heading_color | default: '#ffffff'
+  assign c_sub = s.subheading_color | default: '#b8b8b8'
+  assign c_card_a = s.card_bg | default: '#ffffff' | color_modify: 'alpha', card_op
+  if s.card_bg_2 != blank
+    assign c_card_b = s.card_bg_2 | color_modify: 'alpha', card_op
+  else
+    assign c_card_b = c_card_a
+  endif
+  assign c_border = s.card_border | default: '#d4af37' | color_modify: 'alpha', border_op
+  assign c_glow = s.glow_color | default: '#d4af37' | color_modify: 'alpha', glow_op
+  assign c_title = s.title_color | default: '#ffffff'
+  assign c_desc = s.desc_color | default: '#bdbdbd'
+  assign c_price = s.price_color | default: '#d4af37'
+  assign c_was = s.compare_color | default: '#8c8c8c'
+  assign c_atc_bg = s.atc_bg | default: '#9c8102'
+  assign c_atc_ic = s.atc_icon | default: '#ffffff'
+  assign c_qv_bg = s.qv_bg | default: 'transparent'
+  assign c_qv_ic = s.qv_icon | default: '#d4af37'
+  assign c_qv_bd = s.qv_border | default: '#d4af37'
+  assign c_hv_bg = s.btn_hover_bg | default: '#d4af37'
+  assign c_hv_ic = s.btn_hover_icon | default: '#161616'
+
+  case s.anim_intensity
+    when 'medium'
+      assign amp = 1.6
+    when 'bold'
+      assign amp = 2.3
+    else
+      assign amp = 1
+  endcase
+
+  if s.button_shape == 'square'
+    assign btn_radius = '12px'
+  else
+    assign btn_radius = '999px'
+  endif
+
+  assign ixq_on = false
+  if s.qv_mode != 'theme'
+    assign ixq_on = true
+  endif
+  assign ixq_items = ''
+
+  assign sizes = '(min-width: 1100px) calc(min(100vw, ' | append: s.container_width | append: 'px) / ' | append: s.columns_desktop | append: '), (min-width: 750px) calc(100vw / ' | append: s.columns_tablet | append: '), calc(100vw / ' | append: s.columns_mobile | append: ')'
+-%}
+
+{%- if shown > 0 or request.design_mode -%}
+<section
+  id="ixps-{{ sid }}"
+  class="ixps{% if s.enable_particles %} ixps--fx{% endif %}"
+  data-anim="{{ s.anim_style }}"
+  data-glow="{% if s.glow_pulse %}on{% else %}off{% endif %}"
+  {% if ixq_on %}data-ixq-section{% endif %}
+  aria-label="{{ s.heading | default: 'Products' | escape }}"
+>
+  {%- style -%}
+    #ixps-{{ sid }} {
+      --ixps-bg: {{ c_bg }};
+      --ixps-bg2: {{ c_bg2 }};
+      --ixps-accent: {{ c_accent }};
+      --ixps-accent-dim: {{ c_accent_dim }};
+      --ixps-heading: {{ c_heading }};
+      --ixps-sub: {{ c_sub }};
+      --ixps-card-a: {{ c_card_a }};
+      --ixps-card-b: {{ c_card_b }};
+      --ixps-border: {{ c_border }};
+      --ixps-glow: {{ c_glow }};
+      --ixps-title: {{ c_title }};
+      --ixps-desc: {{ c_desc }};
+      --ixps-price: {{ c_price }};
+      --ixps-was: {{ c_was }};
+      --ixps-atc-bg: {{ c_atc_bg }};
+      --ixps-atc-ic: {{ c_atc_ic }};
+      --ixps-qv-bg: {{ c_qv_bg }};
+      --ixps-qv-ic: {{ c_qv_ic }};
+      --ixps-qv-bd: {{ c_qv_bd }};
+      --ixps-hv-bg: {{ c_hv_bg }};
+      --ixps-hv-ic: {{ c_hv_ic }};
+      --ixps-btn-r: {{ btn_radius }};
+      --ixps-hweight: {{ s.heading_weight }};
+      --ixps-radius: {{ s.card_radius }}px;
+      --ixps-overflow: {{ s.overflow }};
+      --ixps-ratio: {{ s.image_ratio }};
+      --ixps-fit: {{ s.image_fit }};
+      --ixps-zoom: {{ s.image_zoom | divided_by: 100.0 }};
+      --ixps-dur: {{ s.anim_speed }}s;
+      --ixps-amp: {{ amp }};
+      --ixps-maxw: {{ s.container_width }}px;
+      --ixps-hsize: {{ s.heading_size }}px;
+      --ixps-gap: {{ s.gap }}px;
+      --ixps-pt: {{ s.padding_top }}px;
+      --ixps-pb: {{ s.padding_bottom }}px;
+      --ixps-cols: {{ s.columns_mobile }};
+    }
+    @media (min-width: 750px) {
+      #ixps-{{ sid }} { --ixps-cols: {{ s.columns_tablet }}; }
+    }
+    @media (min-width: 1100px) {
+      #ixps-{{ sid }} { --ixps-cols: {{ s.columns_desktop }}; }
+    }
+
+    .ixps {
+      --ixps-g: 20px;
+      position: relative;
+      background: linear-gradient(180deg, var(--ixps-bg), var(--ixps-bg2));
+      color: var(--ixps-title);
+      padding-block: calc(var(--ixps-pt) * 0.65) calc(var(--ixps-pb) * 0.65);
+    }
+    .ixps:not(.ixps--fx) { content-visibility: auto; contain-intrinsic-size: auto 620px; }
+    @media (min-width: 750px) {
+      .ixps { padding-block: var(--ixps-pt) var(--ixps-pb); }
+    }
+    .ixps *, .ixps *::before, .ixps *::after { box-sizing: border-box; }
+    .ixps__inner { position: relative; z-index: 1; max-width: var(--ixps-maxw); margin-inline: auto; padding-inline: var(--ixps-g); }
+    .ixps .ixps__fx { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+    .ixps__sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+    /* Heading */
+    .ixps .ixps__head { text-align: center; margin-bottom: clamp(26px, 4vw, 46px); }
+    .ixps .ixps__head--start { text-align: start; }
+    .ixps .ixps__hwrap { position: relative; display: inline-block; padding: 0.2em 0.4em; }
+    .ixps .ixps__hwrap--line { padding-inline: 0.4em; padding-block-end: 0.5em; }
+    .ixps .ixps__hwrap--line::after {
+      content: ""; position: absolute; inset-inline: 18%; inset-block-end: 0; height: 2px; border-radius: 2px;
+      background: linear-gradient(90deg, rgba(0, 0, 0, 0), var(--ixps-accent), rgba(0, 0, 0, 0));
+    }
+    .ixps .ixps__head--start .ixps__hwrap--line::after { inset-inline: 0 35%; }
+    .ixps .ixps__heading {
+      margin: 0; font-size: clamp(1.6rem, 1.1rem + 2.6vw, var(--ixps-hsize)); line-height: 1.5;
+      font-weight: var(--ixps-hweight); color: var(--ixps-heading); text-transform: none; letter-spacing: 0; word-spacing: 0;
+    }
+    .ixps .ixps__sub { margin: 0.8rem 0 0; color: var(--ixps-sub); font-size: 0.98rem; line-height: 1.7; }
+
+    /* Slider */
+    .ixps .ixps__viewport { display: block; position: relative; }
+    .ixps .ixps__track {
+      display: flex; gap: var(--ixps-gap); list-style: none;
+      margin: -24px calc(var(--ixps-g) * -1) -40px; padding: 24px var(--ixps-g) 40px;
+      overflow-x: auto; overscroll-behavior-x: contain;
+      scroll-snap-type: x mandatory; scroll-padding-inline: var(--ixps-g);
+      scrollbar-width: none; -webkit-overflow-scrolling: touch;
+    }
+    .ixps .ixps__track::-webkit-scrollbar { display: none; }
+    .ixps .ixps__slide {
+      flex: 0 0 calc((100% - var(--ixps-gap) * (var(--ixps-cols) - 1)) / var(--ixps-cols));
+      min-width: 0; margin: 0; padding: 0; list-style: none;
+      scroll-snap-align: start; container-type: inline-size;
+      --d: calc(var(--ixps-dur) + var(--v, 0) * 0.8s);
+      --dl: calc(var(--i, 0) * -1.7s);
+    }
+
+    /* Card */
+    .ixps .ixps__card {
+      --pop: calc(var(--ixps-overflow) * 3px);
+      position: relative; display: flex; flex-direction: column; height: 100%; isolation: isolate;
+      transition: translate 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    @supports (width: 1cqi) {
+      .ixps .ixps__card { --pop: calc(var(--ixps-overflow) * 1cqi); }
+    }
+    .ixps .ixps__card::before {
+      content: ""; position: absolute; inset: var(--pop) 0 0 0; z-index: -1;
+      border-radius: var(--ixps-radius);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0) 42%),
+        linear-gradient(180deg, var(--ixps-card-a), var(--ixps-card-b));
+      border: 1px solid var(--ixps-border);
+      box-shadow: 0 22px 36px -26px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      transition: border-color 0.35s ease;
+    }
+
+    /* Badge */
+    .ixps .ixps__badge {
+      position: absolute; z-index: 4; inset-block-start: calc(var(--pop) + 14px); inset-inline-start: 14px;
+      padding: 0.28em 0.75em; border-radius: 999px; font-size: 0.72rem; line-height: 1.3; font-weight: 600;
+      background: var(--ixps-accent); color: var(--ixps-hv-ic);
+    }
+    .ixps .ixps__badge--sold { background: rgba(255, 255, 255, 0.14); color: var(--ixps-title); }
+
+    /* Product image (pops out of the card) */
+    .ixps .ixps__top { position: relative; z-index: 1; margin-bottom: -4px; }
+    .ixps .ixps__media { position: relative; z-index: 1; display: block; aspect-ratio: var(--ixps-ratio); }
+    .ixps .ixps__media::before {
+      content: ""; position: absolute; z-index: 1; inset: 14% 6% 2%; border-radius: 50%; pointer-events: none;
+      background: radial-gradient(closest-side, var(--ixps-glow), rgba(0, 0, 0, 0) 72%); opacity: 0.85;
+    }
+    .ixps .ixps__media::after {
+      content: ""; position: absolute; z-index: 1; left: 20%; right: 20%; bottom: 0; height: 6%; pointer-events: none;
+      background: radial-gradient(closest-side, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0));
+    }
+    .ixps .ixps__img {
+      position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%;
+      object-fit: var(--ixps-fit); object-position: 50% 100%; transform-origin: 50% 100%; scale: var(--ixps-zoom);
+      user-select: none; -webkit-user-drag: none;
+      transition: scale 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    .ixps .ixps__img--ph { background: rgba(255, 255, 255, 0.04); border-radius: var(--ixps-radius); opacity: 0.5; }
+
+    /* Looping animation */
+    .ixps[data-anim="float"] .ixps__img { animation-name: ixps-float; }
+    .ixps[data-anim="sway"] .ixps__img { animation-name: ixps-sway; }
+    .ixps[data-anim="drift"] .ixps__img { animation-name: ixps-drift; }
+    .ixps[data-anim="breathe"] .ixps__img { animation-name: ixps-breathe; }
+    .ixps[data-anim="float"] .ixps__media::after,
+    .ixps[data-anim="drift"] .ixps__media::after { animation: ixps-shadow var(--d) var(--dl) ease-in-out infinite; }
+    .ixps[data-anim]:not([data-anim="none"]) .ixps__img {
+      animation-duration: var(--d); animation-delay: var(--dl);
+      animation-timing-function: ease-in-out; animation-iteration-count: infinite;
+      will-change: transform;
+    }
+    .ixps[data-glow="on"] .ixps__media::before { animation: ixps-aura calc(var(--d) * 1.15) var(--dl) ease-in-out infinite; }
+    .ixps .ixps__slide[data-off] .ixps__img,
+    .ixps .ixps__slide[data-off] .ixps__media::before,
+    .ixps .ixps__slide[data-off] .ixps__media::after { animation-play-state: paused; will-change: auto; }
+
+    @keyframes ixps-float {
+      0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+      50% { transform: translate3d(0, calc(var(--ixps-amp) * -7px), 0) rotate(calc(var(--s, 1) * var(--ixps-amp) * -1.1deg)); }
+    }
+    @keyframes ixps-sway {
+      0%, 100% { transform: rotate(calc(var(--s, 1) * var(--ixps-amp) * -1.5deg)); }
+      50% { transform: rotate(calc(var(--s, 1) * var(--ixps-amp) * 1.5deg)); }
+    }
+    @keyframes ixps-drift {
+      0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+      25% { transform: translate3d(calc(var(--s, 1) * var(--ixps-amp) * 3px), calc(var(--ixps-amp) * -5px), 0) rotate(calc(var(--ixps-amp) * 0.8deg)); }
+      50% { transform: translate3d(0, calc(var(--ixps-amp) * -9px), 0) rotate(0deg); }
+      75% { transform: translate3d(calc(var(--s, 1) * var(--ixps-amp) * -3px), calc(var(--ixps-amp) * -5px), 0) rotate(calc(var(--ixps-amp) * -0.8deg)); }
+    }
+    @keyframes ixps-breathe {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(calc(1 + var(--ixps-amp) * 0.03)); }
+    }
+    @keyframes ixps-shadow {
+      0%, 100% { transform: scaleX(1); opacity: 0.95; }
+      50% { transform: scaleX(0.8); opacity: 0.55; }
+    }
+    @keyframes ixps-aura {
+      0%, 100% { transform: scale(0.94); opacity: 0.6; }
+      50% { transform: scale(1.06); opacity: 1; }
+    }
+    @keyframes ixps-spin { to { transform: rotate(360deg); } }
+
+    /* Body */
+    .ixps .ixps__body {
+      position: relative; z-index: 2; flex: 1; display: flex; flex-direction: column; align-items: center;
+      gap: 0.5rem; padding: 0 clamp(0.8rem, 6cqi, 1.3rem) clamp(0.9rem, 6cqi, 1.3rem); text-align: center;
+    }
+    .ixps .ixps__name { margin: 0; width: 100%; font-size: clamp(0.95rem, 7.4cqi, 1.22rem); line-height: 1.4; font-weight: 500; text-transform: none; letter-spacing: 0; }
+    .ixps .ixps__name a {
+      color: var(--ixps-title); text-decoration: none;
+      display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+    }
+    .ixps .ixps__desc {
+      margin: 0; color: var(--ixps-desc); font-size: clamp(0.76rem, 5.2cqi, 0.86rem); line-height: 1.55;
+      display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+    }
+    .ixps .ixps__foot { margin-top: auto; padding-top: 0.6rem; width: 100%; display: flex; flex-direction: column; align-items: stretch; gap: 0.8rem; }
+    .ixps .ixps__price { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: 0.15rem 0.6rem; min-width: 0; text-align: center; }
+    .ixps .ixps__now { color: var(--ixps-price); font-size: clamp(1.05rem, 7cqi, 1.3rem); font-weight: 700; line-height: 1.4; }
+    .ixps .ixps__from { font-size: 0.72em; font-weight: 400; opacity: 0.8; }
+    .ixps .ixps__was { color: var(--ixps-was); font-size: 0.82rem; line-height: 1.3; text-decoration: line-through; }
+    .ixps .ixps__actions { display: flex; flex-direction: column; align-items: stretch; gap: 0.55rem; width: 100%; }
+    .ixps .ixps__pf { min-width: 0; }
+    .ixps .ixps__pf, .ixps .ixps__pf form { display: block; margin: 0; padding: 0; }
+    .ixps .ixps__actions > .ixps__btn--atc { min-width: 0; }
+
+    /* Buttons */
+    .ixps .ixps__btn {
+      appearance: none; -webkit-appearance: none; position: relative; display: inline-grid; place-items: center;
+      width: 46px; height: 46px; margin: 0; padding: 0; border: 1px solid transparent; border-radius: var(--ixps-btn-r);
+      cursor: pointer; line-height: 1; min-height: 0; overflow: hidden; -webkit-tap-highlight-color: transparent;
+      transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, transform 0.2s ease, opacity 0.2s ease;
+    }
+    .ixps .ixps__btn--atc {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.55rem; width: 100%; padding-inline: 14px;
+      background: var(--ixps-atc-bg); color: var(--ixps-atc-ic); border-color: var(--ixps-atc-bg);
+      font-size: 0.95rem; font-weight: 700; white-space: nowrap; text-transform: none; letter-spacing: 0;
+    }
+    .ixps .ixps__atc-label { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; line-height: 1.3; }
+    .ixps .ixps__btn--qv {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.55rem; width: 100%; height: 42px; padding-inline: 14px;
+      background: var(--ixps-qv-bg); color: var(--ixps-qv-ic); border-color: var(--ixps-qv-bd);
+      font-size: 0.9rem; font-weight: 600; white-space: nowrap; text-transform: none; letter-spacing: 0;
+    }
+    .ixps .ixps__btn:active { transform: scale(0.92); }
+    .ixps .ixps__btn[disabled] { opacity: 0.4; cursor: not-allowed; }
+    .ixps .ixps__ico { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+    .ixps .ixps__spin { display: none; position: absolute; inset: 0; margin: auto; width: 22px; height: 22px; animation: ixps-spin 0.75s linear infinite; pointer-events: none; }
+    /* The theme puts m-spinner-loading on the button (quick view) or on <product-form> (add to cart): support both */
+    .ixps .ixps__btn.m-spinner-loading .ixps__spin,
+    .ixps .m-spinner-loading .ixps__btn .ixps__spin { display: block; visibility: visible; }
+    .ixps .ixps__btn.m-spinner-loading .ixps__ico,
+    .ixps .ixps__btn.m-spinner-loading .ixps__atc-label,
+    .ixps .m-spinner-loading .ixps__btn .ixps__ico,
+    .ixps .m-spinner-loading .ixps__btn .ixps__atc-label { opacity: 0; transform: scale(0.85); visibility: visible; }
+    .ixps .ixps__ico, .ixps .ixps__atc-label { transition: opacity 0.2s ease, transform 0.2s ease; }
+    .ixps .ixps__btn.m-spinner-loading,
+    .ixps .m-spinner-loading .ixps__btn { pointer-events: none; cursor: progress; }
+    .ixps .ixps__btn.m-spinner-loading::after,
+    .ixps .m-spinner-loading .ixps__btn::after {
+      content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+      background: linear-gradient(100deg, rgba(255, 255, 255, 0) 25%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0) 75%);
+      transform: translateX(-100%); animation: ixps-shine 1.1s ease-in-out infinite;
+    }
+    @keyframes ixps-shine { to { transform: translateX(100%); } }
+    .ixps a:focus-visible, .ixps button:focus-visible { outline: 2px solid var(--ixps-accent); outline-offset: 3px; }
+
+    /* Arrows + progress + link */
+    .ixps .ixps__nav {
+      position: absolute; z-index: 6; inset-block-start: 38%; translate: 0 -50%; width: 46px; height: 46px; padding: 0; margin: 0;
+      display: none; place-items: center; border-radius: 50%; cursor: pointer;
+      background: var(--ixps-bg); color: var(--ixps-qv-ic); border: 1px solid var(--ixps-qv-bd);
+      transition: background-color 0.25s ease, color 0.25s ease, opacity 0.25s ease;
+    }
+    .ixps .ixps__nav--prev { inset-inline-start: -16px; }
+    .ixps .ixps__nav--next { inset-inline-end: -16px; }
+    .ixps .ixps__nav--prev .ixps__ico { transform: scaleX(-1); }
+    [dir="rtl"] .ixps .ixps__nav--prev .ixps__ico { transform: none; }
+    [dir="rtl"] .ixps .ixps__nav--next .ixps__ico { transform: scaleX(-1); }
+    .ixps .ixps__nav[disabled] { opacity: 0; pointer-events: none; }
+    @media (hover: hover) and (min-width: 750px) {
+      .ixps .ixps__nav { display: inline-grid; }
+    }
+    .ixps .ixps__viewport[data-static] .ixps__nav,
+    .ixps .ixps__viewport[data-static] .ixps__progress { display: none; }
+    .ixps .ixps__progress { position: relative; height: 2px; width: min(220px, 56%); margin: 26px auto 0; border-radius: 2px; overflow: hidden; background: var(--ixps-accent-dim); }
+    .ixps .ixps__progress i { display: block; width: 100%; height: 100%; background: var(--ixps-accent); transform-origin: 0 50%; transform: scaleX(0.3); }
+    [dir="rtl"] .ixps .ixps__progress i { transform-origin: 100% 50%; }
+    .ixps .ixps__more { margin-top: 22px; text-align: center; }
+    .ixps .ixps__link {
+      display: inline-block; padding: 0.7em 1.8em; border-radius: 999px; text-decoration: none; font-size: 0.95rem; font-weight: 500;
+      color: var(--ixps-qv-ic); border: 1px solid var(--ixps-qv-bd); transition: background-color 0.25s ease, color 0.25s ease;
+    }
+    .ixps .ixps__empty { padding: 3rem 1rem; text-align: center; color: var(--ixps-desc); border: 1px dashed var(--ixps-border); border-radius: var(--ixps-radius); }
+
+    @media (hover: hover) and (pointer: fine) {
+      .ixps .ixps__card:hover { translate: 0 -5px; }
+      .ixps .ixps__card:hover::before { border-color: var(--ixps-accent); }
+      .ixps .ixps__card:hover .ixps__img { scale: calc(var(--ixps-zoom) * 1.045); }
+      .ixps .ixps__btn:hover, .ixps .ixps__nav:hover, .ixps .ixps__link:hover {
+        background: var(--ixps-hv-bg); color: var(--ixps-hv-ic); border-color: var(--ixps-hv-bg);
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .ixps *, .ixps *::before, .ixps *::after { animation: none !important; transition-duration: 0.01ms !important; }
+      .ixps .ixps__track { scroll-behavior: auto; }
+      .ixps .ixps__spin { animation: ixps-spin 1.6s linear infinite !important; }
+    }
+  {%- endstyle -%}
+
+  <svg class="ixps__sr" width="0" height="0" aria-hidden="true" focusable="false">
+    <symbol id="ixps-bag-{{ sid }}" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></symbol>
+    <symbol id="ixps-eye-{{ sid }}" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="ixps-chev-{{ sid }}" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+    <symbol id="ixps-spin-{{ sid }}" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" opacity=".25"/><path d="M21 12a9 9 0 0 0-9-9"/></symbol>
+  </svg>
+
+  {%- if s.enable_particles -%}
+    <canvas class="firefly-canvas ixps__fx" aria-hidden="true" data-particle-color="{{ s.particle_color }}" data-particle-count="{{ s.particle_count }}" data-particle-speed="{{ s.particle_speed }}" data-particle-size="{{ s.particle_size }}"></canvas>
+  {%- endif -%}
+
+  <div class="ixps__inner">
+    {%- if s.heading != blank or s.subheading != blank -%}
+      <header class="ixps__head{% if s.heading_align == 'start' %} ixps__head--start{% endif %}">
+        {%- if s.heading != blank -%}
+          <div class="ixps__hwrap ixps__hwrap--{{ s.heading_style }}">
+            <h2 class="ixps__heading">{{ s.heading | escape }}</h2>
+          </div>
+        {%- endif -%}
+        {%- if s.subheading != blank -%}
+          <p class="ixps__sub">{{ s.subheading | escape }}</p>
+        {%- endif -%}
+      </header>
+    {%- endif -%}
+
+    {%- if shown == 0 -%}
+      <div class="ixps__empty">Add "Product" blocks to this section and pick a product in each one, or choose a collection in the section settings.</div>
+    {%- else -%}
+      <ix-showcase class="ixps__viewport">
+        <ul class="ixps__track" role="list" data-ix-track{% if s.enable_shuffle %} data-shuffle="{{ s.shuffle_frequency }}" data-key="{{ sid }}"{% endif %}>
+          {%- for i in (1..total) -%}
+            {%- liquid
+              assign idx = forloop.index0
+              assign custom_img = nil
+              if use_blocks
+                assign block = section.blocks[idx]
+                assign product = block.settings.product
+                assign custom_img = block.settings.image
+              else
+                assign block = nil
+                assign product = nil
+                for p in products_list limit: 1 offset: idx
+                  assign product = p
+                endfor
+              endif
+            -%}
+            {%- if product != blank -%}
+            {%- liquid
+              if custom_img != blank
+                assign img = custom_img
+              else
+                assign img = product.featured_image
+              endif
+              assign on_sale = false
+              if product.compare_at_price > product.price
+                assign on_sale = true
+                assign pct = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price
+              endif
+
+              assign odd = forloop.index0 | modulo: 2
+              assign v = forloop.index0 | modulo: 3
+
+              assign short = ''
+              if s.show_description
+                assign mf = product.metafields.custom.short_description | metafield_text
+                if mf != blank
+                  assign short = mf | strip_html | strip_newlines | truncatewords: s.description_words
+                else
+                  assign short = product.description | strip_html | strip_newlines | truncatewords: s.description_words
+                endif
+              endif
+
+              assign pform_id = 'ixps-form-' | append: sid | append: '-' | append: product.id
+              assign variant_id = product.selected_or_first_available_variant.id
+              assign ixq_v = product.selected_or_first_available_variant
+            -%}
+            {%- if ixq_on -%}
+              {%- capture ixq_item -%}{"k":{{ forloop.index0 }},"h":{{ product.handle | json }},"t":{{ product.title | json }},"b":{{ product.vendor | json }},"u":{{ product.url | json }},"d":{{ short | json }},"a":{{ product.available | json }},"vid":{{ ixq_v.id | json }},"vc":{{ product.variants.size }},"varies":{{ product.price_varies | json }},"p":{{ ixq_v.price | json }},"cp":{{ ixq_v.compare_at_price | default: 0 | json }},"i":{% if img %}{{ img | image_url: width: 900 | json }}{% else %}null{% endif %}},{%- endcapture -%}
+              {%- assign ixq_items = ixq_items | append: ixq_item -%}
+            {%- endif -%}
+            <li class="ixps__slide" data-ix="{{ forloop.index0 }}" {% if use_blocks %}{{ block.shopify_attributes }}{% endif %} style="--i:{{ forloop.index0 }};--v:{{ v }};--s:{% if odd == 1 %}-1{% else %}1{% endif %}">
+              <article class="ixps__card">
+                {%- if s.show_badges -%}
+                  {%- if product.available == false -%}
+                    <span class="ixps__badge ixps__badge--sold">{{ s.sold_label | escape }}</span>
+                  {%- elsif on_sale -%}
+                    <span class="ixps__badge">-{{ pct }}%</span>
+                  {%- endif -%}
+                {%- endif -%}
+
+                <div class="ixps__top">
+                  <a class="ixps__media" href="{{ product.url }}" tabindex="-1" aria-hidden="true"{% if ixq_on and s.image_click != 'page' %} data-ixq-open{% endif %}>
+                  {%- if img -%}
+                    <img
+                      class="ixps__img"
+                      src="{{ img | image_url: width: 480 }}"
+                      srcset="{{ img | image_url: width: 240 }} 240w, {{ img | image_url: width: 360 }} 360w, {{ img | image_url: width: 480 }} 480w, {{ img | image_url: width: 640 }} 640w, {{ img | image_url: width: 800 }} 800w"
+                      sizes="{{ sizes }}"
+                      width="{{ img.width }}"
+                      height="{{ img.height }}"
+                      alt="{{ img.alt | default: product.title | escape }}"
+                      decoding="async"
+                      {% if s.eager_load and forloop.index0 < 3 %}loading="eager" fetchpriority="high"{% else %}loading="lazy"{% endif %}
+                    >
+                  {%- else -%}
+                    {{ 'product-1' | placeholder_svg_tag: 'ixps__img ixps__img--ph' }}
+                  {%- endif -%}
+                </a>
+                </div>
+
+                <div class="ixps__body">
+                  <h3 class="ixps__name"><a href="{{ product.url }}">{{ product.title | escape }}</a></h3>
+                  {%- if short != blank -%}
+                    <p class="ixps__desc">{{ short | escape }}</p>
+                  {%- endif -%}
+
+                  <div class="ixps__foot">
+                    <div class="ixps__price">
+                      {%- if on_sale -%}
+                        <s class="ixps__was">{{ product.compare_at_price | money_without_trailing_zeros }}</s>
+                      {%- endif -%}
+                      <span class="ixps__now">
+                        {%- if product.price_varies -%}<span class="ixps__from">{{ s.from_label | escape }}</span> {% endif -%}
+                        {{ product.price | money_without_trailing_zeros }}
+                      </span>
+                    </div>
+
+                    <div class="ixps__actions">
+                      <button
+                        type="button"
+                        class="ixps__btn ixps__btn--qv{% if ixq_on %}" data-ixq-open aria-haspopup="dialog{% else %} m-product-quickview-button m-spinner-button{% endif %}"
+                        data-product-url="{{ product.url }}"
+                        data-product-id="{{ product.id }}"
+                        data-product-handle="{{ product.handle }}"
+                        aria-label="{{ s.qv_label | escape }}: {{ product.title | escape }}"
+                      >
+                        <svg class="ixps__ico" aria-hidden="true" focusable="false"><use href="#ixps-eye-{{ sid }}"/></svg>
+                        <span class="ixps__atc-label">{{ s.qv_label | escape }}</span>
+                        <svg class="ixps__spin" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><use href="#ixps-spin-{{ sid }}"/></svg>
+                      </button>
+
+                      {%- if product.has_only_default_variant -%}
+                        <product-form class="m-product-form ixps__pf" data-product-id="{{ product.id }}">
+                          {%- form 'product', product, id: pform_id, class: 'product-card-form', data-product-id: product.id, novalidate: 'novalidate' -%}
+                            <input hidden name="id" required value="{{ variant_id }}">
+                            <button
+                              type="submit"
+                              name="add"
+                              class="ixps__btn ixps__btn--atc m-add-to-cart m-spinner-button"
+                              aria-label="{{ s.atc_label | escape }}: {{ product.title | escape }}"
+                              {% unless product.available %}disabled{% endunless %}
+                            >
+                              <svg class="ixps__ico" aria-hidden="true" focusable="false"><use href="#ixps-bag-{{ sid }}"/></svg>
+                              <span class="ixps__atc-label m-add-to-cart--text" data-atc-text>{% if product.available %}{{ s.atc_label | escape }}{% else %}{{ s.sold_label | escape }}{% endif %}</span>
+                              <svg class="ixps__spin" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><use href="#ixps-spin-{{ sid }}"/></svg>
+                            </button>
+                          {%- endform -%}
+                        </product-form>
+                      {%- else -%}
+                        <button
+                          type="button"
+                          class="ixps__btn ixps__btn--atc{% if ixq_on %}" data-ixq-open aria-haspopup="dialog{% else %} m-product-quickview-button m-spinner-button{% endif %}"
+                          data-product-url="{{ product.url }}"
+                          data-product-id="{{ product.id }}"
+                          data-product-handle="{{ product.handle }}"
+                          aria-label="{{ s.atc_label | escape }}: {{ product.title | escape }}"
+                        >
+                          <svg class="ixps__ico" aria-hidden="true" focusable="false"><use href="#ixps-bag-{{ sid }}"/></svg>
+                          <span class="ixps__atc-label">{{ s.atc_label | escape }}</span>
+                          <svg class="ixps__spin" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><use href="#ixps-spin-{{ sid }}"/></svg>
+                        </button>
+                      {%- endif -%}
+
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+        {%- if s.enable_shuffle -%}
+          <script>
+            (function () {
+              var ul = document.currentScript && document.currentScript.previousElementSibling;
+              if (!ul || !ul.hasAttribute('data-shuffle')) return;
+              if (window.Shopify && Shopify.designMode) return;
+              var items = [].slice.call(ul.children);
+              if (items.length < 2) return;
+              var mode = ul.getAttribute('data-shuffle');
+              var key = 'ixps:' + ul.getAttribute('data-key');
+              var cur = items.map(function (li) { return li.getAttribute('data-ix'); });
+              var store = null, order = null;
+              try { store = mode === 'session' ? sessionStorage : (mode === 'daily' ? localStorage : null); } catch (e) {}
+              try {
+                var saved = store && JSON.parse(store.getItem(key) || 'null');
+                if (saved && saved.o && (mode === 'session' || Date.now() - saved.t < 864e5)) order = saved.o;
+              } catch (e) {}
+              if (order && (order.length !== cur.length || order.some(function (x) { return cur.indexOf(x) < 0; }))) order = null;
+              if (!order) {
+                order = cur.slice();
+                for (var i = order.length - 1; i > 0; i--) {
+                  var j = Math.floor(Math.random() * (i + 1));
+                  var t = order[i]; order[i] = order[j]; order[j] = t;
+                }
+                try { if (store) store.setItem(key, JSON.stringify({ t: Date.now(), o: order })); } catch (e) {}
+              }
+              order.forEach(function (id) { ul.appendChild(items[cur.indexOf(id)]); });
+            })();
+          </script>
+        {%- endif -%}
+
+        {%- if s.show_arrows -%}
+          <button type="button" class="ixps__nav ixps__nav--prev" data-ix-prev aria-label="{{ s.prev_label | escape }}">
+            <svg class="ixps__ico" aria-hidden="true" focusable="false"><use href="#ixps-chev-{{ sid }}"/></svg>
+          </button>
+          <button type="button" class="ixps__nav ixps__nav--next" data-ix-next aria-label="{{ s.next_label | escape }}">
+            <svg class="ixps__ico" aria-hidden="true" focusable="false"><use href="#ixps-chev-{{ sid }}"/></svg>
+          </button>
+        {%- endif -%}
+
+        {%- if s.show_progress -%}
+          <div class="ixps__progress" aria-hidden="true"><i data-ix-bar></i></div>
+        {%- endif -%}
+      </ix-showcase>
+
+      {%- if s.view_all_label != blank -%}
+        <div class="ixps__more">
+          <a class="ixps__link" href="{{ source.url | default: routes.all_products_collection_url }}">{{ s.view_all_label | escape }}</a>
+        </div>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+
+  <script>
+    (function () {
+      if (customElements.get('ix-showcase')) return;
+      class IxShowcase extends HTMLElement {
+        connectedCallback() {
+          this.track = this.querySelector('[data-ix-track]');
+          if (!this.track) return;
+          this.prev = this.querySelector('[data-ix-prev]');
+          this.next = this.querySelector('[data-ix-next]');
+          this.bar = this.querySelector('[data-ix-bar]');
+          this.rtl = getComputedStyle(this.track).direction === 'rtl';
+          this.raf = 0;
+          this.tick = () => {
+            if (this.raf) return;
+            this.raf = requestAnimationFrame(() => { this.raf = 0; this.update(); });
+          };
+          this.track.addEventListener('scroll', this.tick, { passive: true });
+          if ('ResizeObserver' in window) {
+            this.ro = new ResizeObserver(this.tick);
+            this.ro.observe(this.track);
+          }
+          if (this.prev) this.prev.addEventListener('click', () => this.go(-1));
+          if (this.next) this.next.addEventListener('click', () => this.go(1));
+          if ('IntersectionObserver' in window) {
+            this.io = new IntersectionObserver((entries) => {
+              for (const e of entries) e.target.toggleAttribute('data-off', !e.isIntersecting);
+            }, { rootMargin: '60px' });
+            for (const slide of this.track.children) this.io.observe(slide);
+          }
+          this.update();
+        }
+        disconnectedCallback() {
+          if (this.io) this.io.disconnect();
+          if (this.ro) this.ro.disconnect();
+          if (this.raf) cancelAnimationFrame(this.raf);
+        }
+        go(dir) {
+          const t = this.track;
+          const first = t.firstElementChild;
+          if (!first) return;
+          const gap = parseFloat(getComputedStyle(t).columnGap) || 0;
+          const w = first.getBoundingClientRect().width + gap;
+          const per = Math.max(1, Math.floor(t.clientWidth / w));
+          const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          t.scrollBy({ left: (this.rtl ? -1 : 1) * dir * w * per, behavior: calm ? 'auto' : 'smooth' });
+        }
+        update() {
+          const t = this.track;
+          const max = t.scrollWidth - t.clientWidth;
+          const pos = Math.abs(t.scrollLeft);
+          const none = max <= 2;
+          this.toggleAttribute('data-static', none);
+          if (this.prev) this.prev.disabled = pos <= 2;
+          if (this.next) this.next.disabled = pos >= max - 2;
+          if (this.bar && !none) {
+            const vis = Math.min(1, t.clientWidth / t.scrollWidth);
+            const x = (pos / max) * (1 - vis) * 100;
+            this.bar.style.transform = 'translate3d(' + (this.rtl ? -x : x) + '%,0,0) scaleX(' + vis + ')';
+          }
+        }
+      }
+      customElements.define('ix-showcase', IxShowcase);
+    })();
+  </script>
+
+  {%- if ixq_on -%}
+    <script type="application/json" data-ixq-items>[{{ ixq_items }}null]</script>
+    <script type="application/json" data-ixq-config>
+      {
+        "root": {{ routes.root_url | json }},
+        "addUrl": {{ routes.cart_add_url | append: '.js' | json }},
+        "money": {{ shop.money_format | strip_html | json }},
+        "after": {{ s.qv_after_add | json }},
+        "t": {
+          "add": {{ s.atc_label | json }},
+          "added": {{ s.added_label | json }},
+          "sold_out": {{ s.sold_label | json }},
+          "from": {{ s.from_label | json }},
+          "close": {{ s.close_label | json }},
+          "view_page": {{ s.view_page_label | json }},
+          "variant": {{ s.variant_label | json }}
+        }
+      }
+    </script>
+  {%- comment -%} ---------- Built-in quick view with the flying product image ---------- {%- endcomment -%}
+  <style>
+    html.xpc-lock { overflow: hidden; }
+    html.xpc-lock .firefly-canvas { display: none !important; }
+    html.xpc-lock #MainContent *, html.xpc-lock #MainContent *::before, html.xpc-lock #MainContent *::after { animation-play-state: paused !important; }
+    .ixq { position: fixed; inset: 0; z-index: 2147483000; display: flex; align-items: flex-end; justify-content: center; color: var(--ixps-title); line-height: 1.5; font-family: inherit; }
+    .ixq[hidden] { display: none; }
+    .ixq *, .ixq *::before, .ixq *::after { box-sizing: border-box; }
+    .ixq button, .ixq select { font-family: inherit; }
+    .ixq :focus-visible { outline: 2px solid var(--ixps-accent); outline-offset: 2px; }
+    .ixq__bg { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.74); opacity: 0; transition: opacity 0.3s ease; }
+    .ixq.is-open .ixq__bg { opacity: 1; }
+    .ixq__panel {
+      position: relative; width: 100%; height: 90vh; height: 90dvh; display: flex; flex-direction: column; overflow: hidden;
+      background: linear-gradient(180deg, var(--ixps-bg), var(--ixps-bg2)); border: 1px solid var(--ixps-border); border-bottom: 0;
+      border-radius: 26px 26px 0 0; opacity: 0; transform: translateY(24px); transition: opacity 0.28s ease, transform 0.36s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .ixq.is-open .ixq__panel { opacity: 1; transform: none; }
+    .ixq.is-fly .ixq__panel { transform: none; }
+    .ixq__x {
+      position: absolute; z-index: 6; top: 12px; inset-inline-end: 12px; display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px;
+      border: 0; border-radius: 99px; background: var(--ixps-accent); color: var(--ixps-hv-ic); font-size: 14px; font-weight: 700; cursor: pointer;
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--ixps-accent) 28%, transparent), 0 0 18px color-mix(in srgb, var(--ixps-accent) 60%, transparent);
+    }
+    .ixq__x::after { content: ""; position: absolute; inset: 0; border-radius: inherit; border: 2px solid var(--ixps-accent); opacity: 0; pointer-events: none; animation: ixq-ring 2s ease-out infinite; }
+    .ixq__x svg { width: 15px; height: 15px; }
+    .ixq__body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+
+    /* Stage: the product lands here */
+    .ixq__stage { position: relative; height: 44vh; height: 44dvh; min-height: 260px; }
+    .ixq__stage::before { content: ""; position: absolute; inset: 8% 10% 6%; border-radius: 50%; background: radial-gradient(closest-side, var(--ixps-glow), rgba(0, 0, 0, 0) 72%); opacity: 0.9; pointer-events: none; }
+    .ixq__track { position: relative; height: 100%; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
+    .ixq__track::-webkit-scrollbar { display: none; }
+    .ixq__slide { position: relative; flex: 0 0 100%; height: 100%; scroll-snap-align: center; display: flex; align-items: flex-end; justify-content: center; padding: 56px 0 26px; }
+    .ixq__box { position: relative; height: 100%; aspect-ratio: var(--ixps-ratio); max-width: 86%; }
+    .ixq__box::after { content: ""; position: absolute; left: 20%; right: 20%; bottom: -2%; height: 6%; background: radial-gradient(closest-side, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0)); }
+    .ixq__hero { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: var(--ixps-fit); object-position: 50% 100%; transform-origin: 50% 100%; scale: var(--ixps-zoom); }
+    .ixq__more { display: block; max-width: 86%; max-height: 100%; width: auto; height: auto; object-fit: contain; border-radius: 16px; align-self: center; }
+    .ixq__burst { position: absolute; left: 50%; top: 52%; width: 70%; aspect-ratio: 1; margin-left: -35%; border-radius: 50%; border: 2px solid var(--ixps-accent); opacity: 0; pointer-events: none; transform: translateY(-50%) scale(0.4); }
+    .ixq__dots { position: absolute; z-index: 3; bottom: 8px; left: 0; right: 0; display: flex; justify-content: center; gap: 6px; }
+    .ixq__dots button { width: 7px; height: 7px; padding: 0; border: 0; border-radius: 99px; background: var(--ixps-title); opacity: 0.35; cursor: pointer; transition: width 0.3s ease, opacity 0.3s ease; }
+    .ixq__dots button.is-on { width: 20px; opacity: 1; background: var(--ixps-accent); }
+
+    /* Info */
+    .ixq__info { padding: 6px 18px calc(22px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 12px; }
+    .ixq__brand { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ixps-accent); margin-bottom: -6px; }
+    .ixq__title { margin: 0; font-size: 21px; line-height: 1.4; font-weight: 700; color: var(--ixps-title); }
+    .ixq__price { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; margin: 0; }
+    .ixq__now { color: var(--ixps-price); font-size: 22px; font-weight: 800; unicode-bidi: plaintext; }
+    .ixq__was { color: var(--ixps-was); font-size: 14px; text-decoration: line-through; unicode-bidi: plaintext; }
+    .ixq__off { padding: 2px 9px; border-radius: 99px; background: var(--ixps-accent); color: var(--ixps-hv-ic); font-size: 12px; font-weight: 800; }
+    .ixq__short { margin: 0; color: var(--ixps-desc); font-size: 14.5px; line-height: 1.75; }
+    .ixq__var { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--ixps-desc); }
+    .ixq__var select { width: 100%; min-height: 46px; padding: 0 12px; border-radius: 12px; border: 1px solid var(--ixps-border); background: rgba(255, 255, 255, 0.04); color: var(--ixps-title); font-size: 15px; }
+    .ixq__var option { color: #111; }
+    .ixq__add {
+      position: relative; display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; padding: 0 18px; border: 0;
+      border-radius: var(--ixps-btn-r); background: var(--ixps-atc-bg); color: var(--ixps-atc-ic); font-size: 16px; font-weight: 800; cursor: pointer; overflow: hidden;
+      transition: background-color 0.2s ease, transform 0.15s ease;
+    }
+    .ixq__add:not([disabled]):active { transform: scale(0.97); }
+    .ixq__add[disabled] { opacity: 0.45; cursor: not-allowed; }
+    .ixq__add svg { width: 18px; height: 18px; flex: none; }
+    .ixq__add.is-busy svg { animation: ixps-spin 0.8s linear infinite; }
+    .ixq__add.is-done { background: #2f7d4f; color: #fff; }
+    .ixq__add.is-done svg { animation: ixq-pop 0.45s cubic-bezier(0.3, 1.5, 0.5, 1) both; }
+    .ixq__add::after { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 40%; background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.35), transparent); transform: translateX(-130%) skewX(-18deg); animation: ixq-shine 4s ease-in-out 1.2s infinite; pointer-events: none; }
+    .ixq__page { display: flex; align-items: center; justify-content: center; min-height: 46px; border-radius: var(--ixps-btn-r); border: 1px solid var(--ixps-qv-bd); color: var(--ixps-qv-ic); font-weight: 700; font-size: 14.5px; text-decoration: none; }
+    .ixq__desc { border-top: 1px solid var(--ixps-border); padding-top: 14px; color: var(--ixps-desc); font-size: 14px; line-height: 1.75; overflow-wrap: anywhere; }
+    .ixq__desc img { max-width: 100%; height: auto; }
+    .ixq__desc a { color: var(--ixps-accent); }
+    .ixq__desc h1, .ixq__desc h2, .ixq__desc h3, .ixq__desc strong { color: var(--ixps-title); }
+    .ixq__skel { display: block; height: 11px; border-radius: 6px; background: rgba(255, 255, 255, 0.07); margin: 9px 0; animation: ixq-blink 0.9s ease-in-out infinite alternate; }
+    .ixq__skel:last-child { width: 60%; }
+    .ixq__fly { position: fixed; z-index: 2147483001; margin: 0; pointer-events: none; transform-origin: 0 0; will-change: transform; object-position: 50% 100%; }
+
+    /* Choreography: info rises in after the product lands */
+    .ixq__info > * { opacity: 0; transform: translateY(14px); }
+    .ixq.is-in .ixq__info > * { opacity: 1; transform: none; transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); transition-delay: calc(var(--k, 0) * 55ms); }
+    .ixq.is-landed .ixq__hero { animation: ixq-float 6s ease-in-out 0.2s infinite; }
+    .ixq.is-landed .ixq__burst { animation: ixq-burst 0.75s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+    .ixq.is-landed .ixq__stage::before { animation: ixps-aura 7s ease-in-out infinite; }
+
+    @keyframes ixq-ring { 0% { opacity: 0.8; transform: scale(1); } 100% { opacity: 0; transform: scale(1.35, 1.7); } }
+    @keyframes ixq-float { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(0, -8px, 0) rotate(-1deg); } }
+    @keyframes ixq-burst { 0% { opacity: 0.9; transform: translateY(-50%) scale(0.45); } 100% { opacity: 0; transform: translateY(-50%) scale(1.15); } }
+    @keyframes ixq-pop { 0% { transform: scale(0.3); } 60% { transform: scale(1.2); } 100% { transform: scale(1); } }
+    @keyframes ixq-shine { 0%, 55% { transform: translateX(-130%) skewX(-18deg); } 100% { transform: translateX(330%) skewX(-18deg); } }
+    @keyframes ixq-blink { from { opacity: 0.4; } to { opacity: 1; } }
+    @keyframes ixps-spin { to { transform: rotate(360deg); } }
+    @keyframes ixps-aura { 0%, 100% { transform: scale(0.94); opacity: 0.6; } 50% { transform: scale(1.06); opacity: 1; } }
+
+    @media (min-width: 750px) {
+      .ixq { align-items: center; padding: 24px; }
+      .ixq__panel { width: min(980px, 100%); height: min(88vh, 640px); border-radius: 28px; border-bottom: 1px solid var(--ixps-border); transform: translateY(18px) scale(0.985); }
+      .ixq__body { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); align-items: start; }
+      .ixq__stage { position: sticky; top: 0; height: min(88vh, 640px); min-height: 0; }
+      .ixq__slide { padding: 40px 0 34px; }
+      .ixq__info { padding: 70px 30px 30px; }
+      .ixq__title { font-size: 26px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .ixq *, .ixq *::before, .ixq *::after { animation: none !important; transition: none !important; }
+      .ixq__info > * { opacity: 1; transform: none; }
+    }
+  </style>
+  <script>
+  {% raw %}
+  (function () {
+    'use strict';
+    if (window.IXQuickView) { window.IXQuickView.scan(); return; }
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var VARS = ['--ixps-bg', '--ixps-bg2', '--ixps-accent', '--ixps-glow', '--ixps-title', '--ixps-desc', '--ixps-price', '--ixps-was', '--ixps-atc-bg', '--ixps-atc-ic', '--ixps-qv-ic', '--ixps-qv-bd', '--ixps-border', '--ixps-ratio', '--ixps-fit', '--ixps-zoom', '--ixps-hv-ic', '--ixps-btn-r'];
+    var ICON = {
+      bag: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>',
+      check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>',
+      spin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>',
+      x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>'
+    };
+    function esc(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+    function money(cents, fmt) {
+      cents = Math.round(Number(cents) || 0);
+      function f(dec, th, dp) { var n = (cents / 100).toFixed(dec).split('.'); return n[0].replace(/\B(?=(\d{3})+(?!\d))/g, th) + (n[1] ? dp + n[1] : ''); }
+      var out = String(fmt || '{{amount}}').replace(/\{\{\s*(\w+)\s*\}\}/, function (m, k) {
+        switch (k) {
+          case 'amount_no_decimals': return f(0, ',', '.');
+          case 'amount_with_comma_separator': return f(2, '.', ',');
+          case 'amount_no_decimals_with_comma_separator': return f(0, '.', ',');
+          case 'amount_with_apostrophe_separator': return f(2, "'", '.');
+          case 'amount_with_space_separator': return f(2, ' ', ',');
+          default: return f(2, ',', '.');
+        }
+      });
+      return cents % 100 === 0 ? out.replace(/[.,]00(?!\d)/, '') : out; // same look as money_without_trailing_zeros
+    }
+    function sized(u, w) {
+      if (!u || u.indexOf('data:') === 0) return u;
+      return u.replace(/([?&])width=\d+&?/, '$1').replace(/[?&]$/, '') + (u.indexOf('?') > -1 ? '&' : '?') + 'width=' + w;
+    }
+    var CACHE = {};
+    function loadProduct(root, h) {
+      if (CACHE[h]) return CACHE[h];
+      CACHE[h] = fetch(String(root || '/').replace(/\/?$/, '/') + 'products/' + encodeURIComponent(h) + '.js', { headers: { Accept: 'application/json' } })
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .catch(function (e) { delete CACHE[h]; throw e; });
+      return CACHE[h];
+    }
+    function themeDrawer() {
+      var d = document.querySelector('m-cart-drawer') || document.querySelector('cart-drawer');
+      return d && typeof d.getSectionsToRender === 'function' ? d : null;
+    }
+    function fillDrawer(d, j) {
+      var cache = {};
+      d.getSectionsToRender().forEach(function (x) {
+        var id = x.section || x.id, html = j.sections && j.sections[id];
+        if (!html) return;
+        var el = x.selector ? document.querySelector(x.selector) : document.getElementById(x.id);
+        if (!el) return;
+        var doc = cache[id] || (cache[id] = new DOMParser().parseFromString(html, 'text/html'));
+        var src = x.selector ? doc.querySelector(x.selector) : doc.querySelector('.shopify-section');
+        if (src) el.innerHTML = src.innerHTML;
+      });
+      d.classList.remove('m-cart--empty', 'is-empty');
+      var items = d.querySelector('m-cart-drawer-items, cart-drawer-items');
+      if (items) items.classList.remove('m-cart--empty', 'is-empty');
+    }
+    function visible(r) { return r.width > 0 && r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth; }
+
+    /* ---------- One popup for the whole page ---------- */
+    var Q = {
+      build: function () {
+        if (this.el) return;
+        var self = this, el = document.createElement('div');
+        el.className = 'ixq';
+        el.hidden = true;
+        el.innerHTML = '<div class="ixq__bg" data-q="close"></div><div class="ixq__panel" role="dialog" aria-modal="true" aria-labelledby="ixq-title">' +
+          '<button type="button" class="ixq__x" data-q="close"></button><div class="ixq__body"></div></div>';
+        document.body.appendChild(el);
+        this.el = el;
+        this.panel = el.querySelector('.ixq__panel');
+        this.body = el.querySelector('.ixq__body');
+        el.addEventListener('click', function (e) {
+          var b = e.target.closest('[data-q]');
+          if (!b) return;
+          var a = b.getAttribute('data-q');
+          if (a === 'close') self.close();
+          else if (a === 'add') self.add(b);
+          else if (a === 'dot') self.goSlide(Number(b.getAttribute('data-i')));
+        });
+        el.addEventListener('change', function (e) { if (e.target.getAttribute('data-q') === 'var') self.variant(Number(e.target.value)); });
+        el.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') { e.preventDefault(); self.close(); return; }
+          if (e.key !== 'Tab') return;
+          var f = Array.prototype.filter.call(el.querySelectorAll('button,select,a[href]'), function (x) { return !x.disabled && x.offsetParent !== null; });
+          if (!f.length) return;
+          if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+          else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+        });
+        window.addEventListener('popstate', function () { if (self.isOpen && !(history.state && history.state.ixq)) self.close(true); });
+        var sy = null;
+        this.panel.addEventListener('touchstart', function (e) { sy = self.body.scrollTop <= 0 && !e.target.closest('.ixq__track') ? e.touches[0].clientY : null; }, { passive: true });
+        this.panel.addEventListener('touchend', function (e) { if (sy != null && e.changedTouches[0].clientY - sy > 110) self.close(); sy = null; }, { passive: true });
+      },
+
+      open: function (sec, item, srcImg) {
+        this.build();
+        var self = this, el = this.el, cs = getComputedStyle(sec.root);
+        if (this.isOpen) this.close(true, true);
+        this.sec = sec; this.cfg = sec.cfg; this.t = sec.cfg.t; this.p = item; this.full = null; this.v = null;
+        this.src = srcImg && srcImg.tagName === 'IMG' ? srcImg : null;
+        this.last = document.activeElement;
+        el.removeAttribute('style');
+        VARS.forEach(function (k) { el.style.setProperty(k, cs.getPropertyValue(k)); });
+        el.setAttribute('dir', getComputedStyle(sec.root).direction);
+        el.querySelector('.ixq__x').innerHTML = ICON.x + '<span>' + esc(this.t.close) + '</span>';
+        this.render();
+        el.classList.remove('is-in', 'is-landed', 'is-open');
+        el.hidden = false;
+        document.documentElement.classList.add('xpc-lock');
+        try { history.pushState({ ixq: 1 }, ''); this.pushed = true; } catch (e) { this.pushed = false; }
+        this.isOpen = true;
+
+        var fly = !reduce && this.src && this.src.complete && this.src.naturalWidth && visible(this.src.getBoundingClientRect());
+        var box = this.body.querySelector('.ixq__box'), hero = this.body.querySelector('.ixq__hero');
+        if (fly) {
+          el.classList.add('is-fly');
+          var sr = this.src.getBoundingClientRect();
+          void el.offsetWidth;
+          el.classList.add('is-open');
+          var tr = box.getBoundingClientRect();
+          hero.style.opacity = '0';
+          var f = this.flyer(this.src, sr);
+          this.src.style.visibility = 'hidden';
+          var dx = tr.left - sr.left, dy = tr.top - sr.top, sx = tr.width / sr.width, sy = tr.height / sr.height;
+          var lift = Math.min(90, Math.abs(dy) * 0.25 + 30);
+          var anim = f.animate([
+            { transform: 'translate3d(0,0,0) scale(1,1) rotate(0deg)' },
+            { transform: 'translate3d(' + dx * 0.55 + 'px,' + (dy * 0.55 - lift) + 'px,0) scale(' + (1 + (sx - 1) * 0.6) * 1.04 + ',' + (1 + (sy - 1) * 0.6) * 1.04 + ') rotate(-5deg)', offset: 0.6 },
+            { transform: 'translate3d(' + dx + 'px,' + dy + 'px,0) scale(' + sx + ',' + sy + ') rotate(0deg)' }
+          ], { duration: 640, easing: 'cubic-bezier(.3,.7,.2,1)', fill: 'forwards' });
+          setTimeout(function () { if (self.p === item) el.classList.add('is-in'); }, 330);
+          anim.onfinish = function () {
+            hero.style.opacity = '';
+            f.remove();
+            if (self.p === item) { el.classList.add('is-landed'); el.classList.remove('is-fly'); }
+          };
+          this.flyAnim = anim;
+        } else {
+          void el.offsetWidth;
+          el.classList.add('is-open', 'is-in', 'is-landed');
+        }
+        sec.root.dispatchEvent(new CustomEvent('ixq:open', { bubbles: true }));
+        el.querySelector('.ixq__x').focus({ preventScroll: true });
+
+        // Sharper image once it has loaded, without a flash.
+        var big = sized(item.i, 900);
+        if (big && hero) { var im = new Image(); im.src = big; (im.decode ? im.decode() : Promise.resolve()).then(function () { if (self.p === item) hero.src = big; }).catch(function () {}); }
+        loadProduct(this.cfg.root, item.h).then(function (j) {
+          if (self.p !== item) return;
+          self.full = j;
+          var vs = j.variants || [];
+          for (var i = 0; i < vs.length; i++) if (vs[i].id === item.vid) self.v = vs[i];
+          if (!self.v || !self.v.available) for (var k = 0; k < vs.length; k++) if (vs[k].available) { self.v = vs[k]; break; }
+          if (!self.v) self.v = vs[0] || null;
+          self.fill();
+        }).catch(function () {
+          var d = self.body.querySelector('.ixq__desc');
+          if (d && self.p === item) d.innerHTML = '';
+        });
+      },
+
+      flyer: function (img, r) {
+        var f = document.createElement('img'), cs = getComputedStyle(img);
+        f.className = 'ixq__fly';
+        f.src = img.currentSrc || img.src;
+        f.alt = '';
+        f.style.cssText = 'left:' + r.left + 'px;top:' + r.top + 'px;width:' + r.width + 'px;height:' + r.height + 'px;object-fit:' + cs.objectFit + ';object-position:' + cs.objectPosition + ';';
+        document.body.appendChild(f);
+        return f;
+      },
+
+      priceHtml: function (price, comp, from) {
+        var c = this.cfg, t = this.t, sale = comp > price;
+        var off = sale ? Math.round((1 - price / comp) * 100) : 0;
+        return '<span class="ixq__now">' + (from ? esc(t.from) + ' ' : '') + esc(money(price, c.money)) + '</span>' +
+          (sale ? '<s class="ixq__was">' + esc(money(comp, c.money)) + '</s>' + (off > 0 ? '<span class="ixq__off">-' + off + '%</span>' : '') : '');
+      },
+
+      render: function () {
+        var p = this.p, t = this.t, c = this.cfg;
+        var heroSrc = this.src ? (this.src.currentSrc || this.src.src) : sized(p.i, 900);
+        this.body.innerHTML =
+          '<div class="ixq__stage"><div class="ixq__track"><div class="ixq__slide"><div class="ixq__box">' +
+            (heroSrc ? '<img class="ixq__hero" src="' + esc(heroSrc) + '" alt="' + esc(p.t) + '" decoding="async">' : '') +
+          '</div><span class="ixq__burst" aria-hidden="true"></span></div></div><div class="ixq__dots"></div></div>' +
+          '<div class="ixq__info">' +
+            (p.b ? '<span class="ixq__brand" style="--k:0">' + esc(p.b) + '</span>' : '') +
+            '<h2 class="ixq__title" id="ixq-title" style="--k:1">' + esc(p.t) + '</h2>' +
+            '<p class="ixq__price" style="--k:2">' + this.priceHtml(p.p, p.cp, p.varies) + '</p>' +
+            (p.d ? '<p class="ixq__short" style="--k:3">' + esc(p.d) + '</p>' : '') +
+            '<div class="ixq__varwrap" style="--k:4"></div>' +
+            '<button type="button" class="ixq__add" data-q="add" data-id="' + p.vid + '" style="--k:5"' + (p.a && p.vc <= 1 ? '' : ' disabled') + '>' +
+              (p.a ? ICON.bag + '<span>' + esc(t.add) + '</span>' : esc(t.sold_out)) + '</button>' +
+            '<a class="ixq__page" href="' + esc(p.u) + '" style="--k:6">' + esc(t.view_page) + '</a>' +
+            '<div class="ixq__desc" style="--k:7"><span class="ixq__skel"></span><span class="ixq__skel"></span><span class="ixq__skel"></span></div>' +
+          '</div>';
+        this.body.scrollTop = 0;
+      },
+
+      /* Full product arrived: extra photos, options, description. Patches only what changed. */
+      fill: function () {
+        var self = this, p = this.p, full = this.full, t = this.t, v = this.v;
+        var track = this.body.querySelector('.ixq__track'), dots = this.body.querySelector('.ixq__dots');
+        var imgs = (full.images || []).map(function (u) { return String(u).replace(/^https?:/, ''); });
+        var heroBase = String(p.i || '').split('?')[0].replace(/^https?:/, '');
+        var extra = imgs.filter(function (u) { return u.split('?')[0] !== heroBase; }).slice(0, 8);
+        if (extra.length) {
+          track.insertAdjacentHTML('beforeend', extra.map(function (u) {
+            return '<div class="ixq__slide"><img class="ixq__more" src="' + esc(sized(u, 900)) + '" alt="' + esc(p.t) + '" loading="lazy" decoding="async" width="900" height="900"></div>';
+          }).join(''));
+          var n = extra.length + 1, html = '';
+          for (var i = 0; i < n; i++) html += '<button type="button" data-q="dot" data-i="' + i + '" class="' + (i ? '' : 'is-on') + '" aria-label="' + (i + 1) + '/' + n + '"></button>';
+          dots.innerHTML = html;
+          track.addEventListener('scroll', function () {
+            var k = Math.round(Math.abs(track.scrollLeft) / track.clientWidth);
+            Array.prototype.forEach.call(dots.children, function (b, j) { b.classList.toggle('is-on', j === k); });
+          }, { passive: true });
+        }
+        var vs = full.variants || [];
+        if (vs.length > 1) {
+          this.body.querySelector('.ixq__varwrap').innerHTML = '<label class="ixq__var"><span>' + esc(t.variant) + '</span><select data-q="var">' + vs.map(function (x) {
+            return '<option value="' + x.id + '"' + (v && x.id === v.id ? ' selected' : '') + (x.available ? '' : ' disabled') + '>' + esc(x.title + (x.available ? '' : ' (' + t.sold_out + ')')) + '</option>';
+          }).join('') + '</select></label>';
+        }
+        if (v) this.variant(v.id, true);
+        this.body.querySelector('.ixq__desc').innerHTML = full.description || '';
+      },
+
+      variant: function (id, quiet) {
+        var vs = (this.full && this.full.variants) || [], v = null, t = this.t;
+        for (var i = 0; i < vs.length; i++) if (vs[i].id === id) v = vs[i];
+        if (!v) return;
+        this.v = v;
+        this.body.querySelector('.ixq__price').innerHTML = this.priceHtml(v.price, v.compare_at_price || 0, false);
+        var b = this.body.querySelector('.ixq__add');
+        b.setAttribute('data-id', v.id);
+        b.disabled = !v.available;
+        b.classList.remove('is-busy', 'is-done');
+        b.innerHTML = v.available ? ICON.bag + '<span>' + esc(t.add) + '</span>' : esc(t.sold_out);
+        if (quiet) return;
+        var fi = v.featured_image && v.featured_image.src;
+        if (fi) {
+          var base = String(fi).split('?')[0].replace(/^https?:/, ''), slides = this.body.querySelectorAll('.ixq__slide img');
+          for (var k = 0; k < slides.length; k++) if (slides[k].src.split('?')[0].replace(/^https?:/, '') === base) { this.goSlide(k); break; }
+        }
+      },
+
+      goSlide: function (i) {
+        var s = this.body.querySelectorAll('.ixq__slide')[i];
+        if (s) s.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'nearest', inline: 'center' });
+      },
+
+      add: function (b) {
+        var self = this, c = this.cfg, t = this.t;
+        if (b.disabled || b.classList.contains('is-busy') || b.classList.contains('is-done')) return;
+        b.classList.add('is-busy');
+        b.innerHTML = ICON.spin + '<span>' + esc(t.add) + '</span>';
+        var body = { items: [{ id: Number(b.getAttribute('data-id')), quantity: 1 }] };
+        var d = themeDrawer();
+        if (d) {
+          var ids = [];
+          try { d.getSectionsToRender().forEach(function (x) { var id = x.section || x.id; if (ids.indexOf(id) < 0) ids.push(id); }); } catch (e) {}
+          if (ids.length) { body.sections = ids; body.sections_url = window.location.pathname; }
+        }
+        fetch(c.addUrl, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' }, body: JSON.stringify(body) })
+          .then(function (r) { return r.json().then(function (j) { if (!r.ok || j.status) throw new Error(j.description || j.message || 'error'); return j; }); })
+          .then(function (j) {
+            b.classList.remove('is-busy');
+            b.classList.add('is-done');
+            b.innerHTML = ICON.check + '<span>' + esc(t.added) + '</span>';
+            var sync = function () {
+              try {
+                if (d && j.sections) fillDrawer(d, j);
+                else if (d && typeof d.onCartDrawerUpdate === 'function') d.onCartDrawerUpdate();
+                if (window.FoxKitV2 && window.FoxKitV2.Modules && window.FoxKitV2.Modules.InCart) window.FoxKitV2.Modules.InCart.getCart();
+                if (window.MinimogEvents && window.MinimogTheme && window.MinimogTheme.pubSubEvents) window.MinimogEvents.emit(window.MinimogTheme.pubSubEvents.cartUpdate, j);
+              } catch (e) {}
+              document.dispatchEvent(new CustomEvent('cart:refresh', { bubbles: true }));
+            };
+            if (c.after === 'drawer' && d && typeof d.open === 'function') {
+              sync();
+              setTimeout(function () { self.close(); setTimeout(function () { d.open(); }, 80); }, 450);
+            } else {
+              requestAnimationFrame(function () { setTimeout(sync, 120); });
+              setTimeout(function () { if (b.isConnected && b.classList.contains('is-done')) { b.classList.remove('is-done'); b.innerHTML = ICON.bag + '<span>' + esc(t.add) + '</span>'; } }, 2200);
+            }
+          })
+          .catch(function (e) {
+            b.classList.remove('is-busy');
+            b.innerHTML = '<span>' + esc(e.message) + '</span>';
+            setTimeout(function () { if (b.isConnected) b.innerHTML = ICON.bag + '<span>' + esc(t.add) + '</span>'; }, 2600);
+          });
+      },
+
+      /* Close: the product flies back into its card when both are on screen. */
+      close: function (fromPop, instant) {
+        var self = this, el = this.el, src = this.src;
+        if (!this.isOpen) return;
+        this.isOpen = false;
+        if (this.flyAnim) { try { this.flyAnim.finish(); } catch (e) {} this.flyAnim = null; }
+        var hero = this.body.querySelector('.ixq__hero'), track = this.body.querySelector('.ixq__track');
+        var back = !instant && !reduce && src && hero && track && Math.abs(track.scrollLeft) < 4;
+        var tr = back ? src.getBoundingClientRect() : null, hr = back ? hero.getBoundingClientRect() : null;
+        if (back && !(visible(tr) && visible(hr))) back = false;
+        el.classList.remove('is-open', 'is-in');
+        document.documentElement.classList.remove('xpc-lock');
+        var done = function () {
+          if (src) src.style.visibility = '';
+          if (!self.isOpen) { el.hidden = true; el.classList.remove('is-landed', 'is-fly'); self.body.innerHTML = ''; }
+        };
+        if (back) {
+          var f = this.flyer(hero, hr);
+          f.style.objectFit = getComputedStyle(src).objectFit;
+          hero.style.opacity = '0';
+          var anim = f.animate([
+            { transform: 'translate3d(0,0,0) scale(1,1)' },
+            { transform: 'translate3d(' + (tr.left - hr.left) + 'px,' + (tr.top - hr.top) + 'px,0) scale(' + tr.width / hr.width + ',' + tr.height / hr.height + ')' }
+          ], { duration: 460, easing: 'cubic-bezier(.4,0,.2,1)', fill: 'forwards' });
+          anim.onfinish = function () { f.remove(); done(); };
+        } else if (instant || reduce) {
+          done();
+        } else {
+          setTimeout(done, 300);
+        }
+        if (this.pushed && !fromPop) { this.pushed = false; try { history.back(); } catch (e) {} }
+        this.pushed = false;
+        if (!instant && this.last && this.last.focus && document.contains(this.last)) this.last.focus({ preventScroll: true });
+      }
+    };
+
+    /* ---------- Wire up each showcase ---------- */
+    function Sec(root) {
+      var self = this;
+      this.root = root;
+      try {
+        this.cfg = JSON.parse(root.querySelector('[data-ixq-config]').textContent);
+        this.items = JSON.parse(root.querySelector('[data-ixq-items]').textContent).filter(Boolean);
+      } catch (e) { return; }
+      var byK = {};
+      this.items.forEach(function (it) { byK[it.k] = it; });
+      function itemOf(el) { var li = el.closest('[data-ix]'); return li ? byK[li.getAttribute('data-ix')] : null; }
+      root.addEventListener('click', function (e) {
+        var trig = e.target.closest('[data-ixq-open]');
+        if (!trig || e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+        var it = itemOf(trig);
+        if (!it) return;
+        e.preventDefault();
+        var li = trig.closest('[data-ix]');
+        Q.open(self, it, li.querySelector('.ixps__img'));
+      });
+      var warm = function (e) {
+        var li = e.target.closest && e.target.closest('[data-ix]');
+        var it = li && byK[li.getAttribute('data-ix')];
+        if (it) loadProduct(self.cfg.root, it.h).catch(function () {});
+      };
+      root.addEventListener('pointerover', warm, { passive: true });
+      root.addEventListener('touchstart', warm, { passive: true });
+      root.addEventListener('focusin', warm);
+    }
+    function scan() { Array.prototype.forEach.call(document.querySelectorAll('[data-ixq-section]'), function (r) { if (!r.__ixq) r.__ixq = new Sec(r); }); }
+    window.IXQuickView = { scan: scan };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', scan); else scan();
+    document.addEventListener('shopify:section:load', scan);
+  })();
+  {% endraw %}
+  </script>
+  {%- endif -%}
+</section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "IX Product Showcase",
+  "tag": "section",
+  "class": "ixps-section",
+  "settings": [
+    { "type": "header", "content": "Products" },
+    { "type": "paragraph", "content": "Three ways to choose products, in this order of priority: (1) Product blocks: in the left sidebar, under this section, click \"Add Product\" to pick a product and optionally give it its own transparent PNG. (2) The product picker below. (3) A collection." },
+    { "type": "product_list", "id": "product_list", "label": "Pick products", "info": "Used only when there are no Product blocks. Uses each product's own image.", "limit": 16 },
+    { "type": "collection", "id": "collection", "label": "Collection", "info": "Used only when no products are picked above and there are no Product blocks. Leave empty to show all products." },
+    { "type": "range", "id": "products_to_show", "label": "Max products (collection mode)", "min": 3, "max": 16, "step": 1, "default": 8 },
+    { "type": "checkbox", "id": "enable_shuffle", "label": "Shuffle the product order", "info": "Changes the order of the cards for each visitor. Not applied inside the theme editor.", "default": true },
+    { "type": "select", "id": "shuffle_frequency", "label": "Shuffle frequency", "options": [ { "value": "always", "label": "Every page load" }, { "value": "session", "label": "Once per session" }, { "value": "daily", "label": "Once per day" } ], "default": "always" },
+    { "type": "checkbox", "id": "show_description", "label": "Show short description", "info": "Uses the custom.short_description metafield if it exists, otherwise the product description.", "default": true },
+    { "type": "range", "id": "description_words", "label": "Description length (words)", "min": 4, "max": 20, "step": 1, "default": 9 },
+    { "type": "checkbox", "id": "show_badges", "label": "Show Sale / Sold out badges", "default": true },
+
+    { "type": "header", "content": "Heading" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Our Top Selling" },
+    { "type": "text", "id": "subheading", "label": "Subheading" },
+    { "type": "select", "id": "heading_align", "label": "Alignment", "options": [ { "value": "center", "label": "Center" }, { "value": "start", "label": "Start (left / right in RTL)" } ], "default": "center" },
+    { "type": "range", "id": "heading_size", "label": "Heading size", "min": 24, "max": 64, "step": 2, "default": 40, "unit": "px" },
+    { "type": "select", "id": "heading_weight", "label": "Heading weight", "options": [ { "value": "500", "label": "Medium" }, { "value": "600", "label": "Semi-bold" }, { "value": "700", "label": "Bold" }, { "value": "800", "label": "Extra bold" } ], "default": "700" },
+    { "type": "select", "id": "heading_style", "label": "Heading decoration", "options": [ { "value": "plain", "label": "None" }, { "value": "line", "label": "Gold line underneath" } ], "default": "plain" },
+    { "type": "text", "id": "view_all_label", "label": "View all button label", "info": "Leave empty to hide.", "default": "View all" },
+
+    { "type": "header", "content": "Layout" },
+    { "type": "select", "id": "columns_desktop", "label": "Cards per row (desktop)", "options": [ { "value": "3", "label": "3" }, { "value": "3.5", "label": "3.5 (peek)" }, { "value": "4", "label": "4" }, { "value": "4.5", "label": "4.5 (peek)" }, { "value": "5", "label": "5" } ], "default": "4" },
+    { "type": "select", "id": "columns_tablet", "label": "Cards per row (tablet)", "options": [ { "value": "2", "label": "2" }, { "value": "2.5", "label": "2.5 (peek)" }, { "value": "3", "label": "3" } ], "default": "2.5" },
+    { "type": "select", "id": "columns_mobile", "label": "Cards per row (mobile)", "options": [ { "value": "1.2", "label": "1.2 (peek)" }, { "value": "1.5", "label": "1.5 (peek)" }, { "value": "2", "label": "2" }, { "value": "2.3", "label": "2.3 (peek)" } ], "default": "1.5" },
+    { "type": "range", "id": "gap", "label": "Gap between cards", "min": 8, "max": 40, "step": 2, "default": 22, "unit": "px" },
+    { "type": "select", "id": "image_ratio", "label": "Product image box", "options": [ { "value": "1 / 1", "label": "Square" }, { "value": "4 / 5", "label": "Portrait 4:5" }, { "value": "3 / 4", "label": "Portrait 3:4" }, { "value": "2 / 3", "label": "Tall 2:3" } ], "default": "4 / 5" },
+    { "type": "select", "id": "image_fit", "label": "Image fit", "info": "Fill: the image is enlarged and cropped to fill the whole box, so even a square picture rises above the card. Fit: the whole image is shown without cropping (best for tall transparent PNGs).", "options": [ { "value": "cover", "label": "Fill (enlarge and crop)" }, { "value": "contain", "label": "Fit (no crop)" } ], "default": "cover" },
+    { "type": "range", "id": "image_zoom", "label": "Image zoom", "info": "Enlarges the product further, from its bottom center.", "min": 100, "max": 160, "step": 5, "default": 100, "unit": "%" },
+    { "type": "range", "id": "overflow", "label": "Pop-out height", "info": "How far the product rises above the glass card (% of card width).", "min": 8, "max": 60, "step": 2, "default": 28, "unit": "%" },
+    { "type": "range", "id": "card_radius", "label": "Card corner radius", "min": 8, "max": 60, "step": 2, "default": 32, "unit": "px" },
+    { "type": "select", "id": "button_shape", "label": "Button shape", "options": [ { "value": "circle", "label": "Circle" }, { "value": "square", "label": "Rounded square" } ], "default": "circle" },
+    { "type": "range", "id": "container_width", "label": "Max width", "min": 960, "max": 1600, "step": 20, "default": 1280, "unit": "px" },
+    { "type": "range", "id": "padding_top", "label": "Top spacing", "min": 0, "max": 120, "step": 4, "default": 56, "unit": "px" },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom spacing", "min": 0, "max": 120, "step": 4, "default": 56, "unit": "px" },
+    { "type": "checkbox", "id": "show_arrows", "label": "Show arrows (desktop)", "default": true },
+    { "type": "checkbox", "id": "show_progress", "label": "Show progress line", "default": true },
+    { "type": "checkbox", "id": "eager_load", "label": "Load first 3 images immediately", "info": "Turn on only if this section sits at the very top of the page.", "default": false },
+
+    { "type": "header", "content": "Product animation" },
+    { "type": "select", "id": "anim_style", "label": "Style", "options": [ { "value": "float", "label": "Float" }, { "value": "sway", "label": "Sway" }, { "value": "drift", "label": "Drift" }, { "value": "breathe", "label": "Breathe" }, { "value": "none", "label": "None" } ], "default": "float" },
+    { "type": "range", "id": "anim_speed", "label": "Cycle length", "min": 3, "max": 14, "step": 1, "default": 7, "unit": "s" },
+    { "type": "select", "id": "anim_intensity", "label": "Intensity", "options": [ { "value": "subtle", "label": "Subtle" }, { "value": "medium", "label": "Medium" }, { "value": "bold", "label": "Bold" } ], "default": "subtle" },
+    { "type": "checkbox", "id": "glow_pulse", "label": "Pulse the glow behind the product", "default": true },
+
+    { "type": "header", "content": "Quick view" },
+    { "type": "select", "id": "qv_mode", "label": "Quick view style", "options": [ { "value": "builtin", "label": "Built-in: the product flies into a popup" }, { "value": "theme", "label": "Theme quick view" } ], "default": "builtin" },
+    { "type": "select", "id": "image_click", "label": "Tapping the product image", "options": [ { "value": "quickview", "label": "Opens quick view" }, { "value": "page", "label": "Opens the product page" } ], "default": "quickview" },
+    { "type": "select", "id": "qv_after_add", "label": "After adding to cart from quick view", "options": [ { "value": "drawer", "label": "Open the cart drawer" }, { "value": "stay", "label": "Stay in quick view" } ], "default": "drawer" },
+    { "type": "text", "id": "close_label", "label": "Close", "default": "اقفل" },
+    { "type": "text", "id": "added_label", "label": "Added to cart", "default": "اتضاف" },
+    { "type": "text", "id": "view_page_label", "label": "Product page link", "default": "شوف صفحة المنتج كاملة" },
+    { "type": "text", "id": "variant_label", "label": "Options label", "default": "اختار النوع / الحجم" },
+
+    { "type": "header", "content": "Firefly particles" },
+    { "type": "checkbox", "id": "enable_particles", "label": "Enable firefly particles", "info": "Same glowing particles as the Top Selling Promo section, drawn behind the cards.", "default": true },
+    { "type": "color", "id": "particle_color", "label": "Particle color", "default": "#ffd700" },
+    { "type": "range", "id": "particle_count", "label": "Number of particles", "info": "More particles = heavier on performance. Phones get fewer automatically.", "min": 10, "max": 150, "step": 10, "default": 50 },
+    { "type": "range", "id": "particle_speed", "label": "Particle speed", "min": 0.3, "max": 3, "step": 0.1, "default": 1 },
+    { "type": "range", "id": "particle_size", "label": "Particle size", "min": 0.5, "max": 2.5, "step": 0.1, "default": 1 },
+
+    { "type": "header", "content": "Colors: section" },
+    { "type": "color", "id": "bg_color", "label": "Background", "default": "#191818" },
+    { "type": "color", "id": "bg_color_2", "label": "Background (gradient end)", "info": "Leave empty for a solid background." },
+    { "type": "color", "id": "accent_color", "label": "Accent (heading line, progress, borders on hover)", "default": "#d4af37" },
+    { "type": "color", "id": "heading_color", "label": "Heading", "default": "#ffffff" },
+    { "type": "color", "id": "subheading_color", "label": "Subheading", "default": "#b8b8b8" },
+
+    { "type": "header", "content": "Colors: card" },
+    { "type": "color", "id": "card_bg", "label": "Card background", "default": "#ffffff" },
+    { "type": "color", "id": "card_bg_2", "label": "Card background (gradient end)", "info": "Leave empty for a solid card." },
+    { "type": "range", "id": "card_opacity", "label": "Card background opacity", "min": 0, "max": 100, "step": 1, "default": 6, "unit": "%" },
+    { "type": "color", "id": "card_border", "label": "Card border", "default": "#d4af37" },
+    { "type": "range", "id": "border_opacity", "label": "Card border opacity", "min": 0, "max": 100, "step": 1, "default": 30, "unit": "%" },
+    { "type": "color", "id": "glow_color", "label": "Glow behind product", "default": "#d4af37" },
+    { "type": "range", "id": "glow_opacity", "label": "Glow strength", "min": 0, "max": 100, "step": 1, "default": 32, "unit": "%" },
+    { "type": "color", "id": "title_color", "label": "Product title", "default": "#ffffff" },
+    { "type": "color", "id": "desc_color", "label": "Description", "default": "#bdbdbd" },
+    { "type": "color", "id": "price_color", "label": "Price", "default": "#d4af37" },
+    { "type": "color", "id": "compare_color", "label": "Old price (crossed out)", "default": "#8c8c8c" },
+
+    { "type": "header", "content": "Colors: buttons" },
+    { "type": "color", "id": "atc_bg", "label": "Add to cart: background", "default": "#9c8102" },
+    { "type": "color", "id": "atc_icon", "label": "Add to cart: icon", "default": "#ffffff" },
+    { "type": "color", "id": "qv_bg", "label": "Quick view: background", "info": "The quick view button sits above Add to cart. Leave empty for an outlined (transparent) button." },
+    { "type": "color", "id": "qv_icon", "label": "Quick view: text and icon (also arrows and View all)", "default": "#d4af37" },
+    { "type": "color", "id": "qv_border", "label": "Quick view: border (also arrows and View all)", "default": "#d4af37" },
+    { "type": "color", "id": "btn_hover_bg", "label": "Hover: background", "default": "#d4af37" },
+    { "type": "color", "id": "btn_hover_icon", "label": "Hover: icon (also Sale badge text)", "default": "#161616" },
+
+    { "type": "header", "content": "Labels" },
+    { "type": "text", "id": "atc_label", "label": "Add to cart", "default": "Add to cart" },
+    { "type": "text", "id": "qv_label", "label": "Quick view", "default": "Quick view" },
+    { "type": "text", "id": "sold_label", "label": "Sold out", "default": "Sold out" },
+    { "type": "text", "id": "from_label", "label": "Price prefix when variants differ", "default": "From" },
+    { "type": "text", "id": "prev_label", "label": "Previous arrow (accessibility)", "default": "Previous" },
+    { "type": "text", "id": "next_label", "label": "Next arrow (accessibility)", "default": "Next" }
+  ],
+  "max_blocks": 16,
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Product" },
+        { "type": "image_picker", "id": "image", "label": "Custom image (transparent PNG)", "info": "Optional. Replaces the product's own image in this slider only. Use a transparent PNG for the pop-out effect. Recommended: 800 x 1000 px, project touching the bottom edge." }
+      ]
+    }
+  ],
+  "presets": [
+    { "name": "IX Product Showcase" }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,727 @@
+{%- comment -%}
+  Instachiq Ultimate Hero
+  7 templates: spotlight, fullbleed, concern, editorial, slideshow, compare, video
+  Zero external dependencies. CSS is scoped and only the chosen template's CSS is printed.
+  JavaScript (under 1.5 KB) is printed only for the slideshow, compare and video templates.
+{%- endcomment -%}
+{%- liquid
+  assign s = section.settings
+  assign tpl = s.template
+  assign sid = 'ich-' | append: section.id
+  assign dir = 'ltr'
+  if request.locale.iso_code == 'ar'
+    assign dir = 'rtl'
+  endif
+  assign eager = s.is_first
+  if section.index and section.index > 2
+    assign eager = false
+  endif
+  assign trust_blocks = section.blocks | where: 'type', 'trust'
+  assign tile_blocks = section.blocks | where: 'type', 'tile'
+  assign brand_blocks = section.blocks | where: 'type', 'brand'
+  assign slide_blocks = section.blocks | where: 'type', 'slide'
+  assign p = s.product
+  assign htag = s.heading_tag | default: 'h2'
+-%}
+
+{%- capture ich_badge -%}
+  {%- if s.badge != blank -%}<span class="ich-badge ich-a" style="--i:0"><span class="ich-dot-live"></span>{{ s.badge }}</span>{%- endif -%}
+{%- endcapture -%}
+
+{%- capture ich_heading -%}
+  {%- if s.heading != blank -%}<{{ htag }} class="ich-h ich-a" style="--i:1">{{ s.heading }}</{{ htag }}>{%- endif -%}
+{%- endcapture -%}
+
+{%- capture ich_sub -%}
+  {%- if s.subheading != blank -%}<p class="ich-sub ich-a" style="--i:2">{{ s.subheading }}</p>{%- endif -%}
+{%- endcapture -%}
+
+{%- capture ich_buttons -%}
+  {%- if s.btn1_label != blank or s.btn2_label != blank -%}
+    <div class="ich-btns ich-a" style="--i:3">
+      {%- if s.btn1_label != blank -%}<a class="ich-btn ich-btn--1" href="{{ s.btn1_link | default: routes.all_products_collection_url }}">{{ s.btn1_label }}</a>{%- endif -%}
+      {%- if s.btn2_label != blank -%}<a class="ich-btn ich-btn--2" href="{{ s.btn2_link | default: routes.all_products_collection_url }}">{{ s.btn2_label }}</a>{%- endif -%}
+    </div>
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- capture ich_trust -%}
+  {%- if trust_blocks.size > 0 -%}
+    <ul class="ich-trust ich-a" style="--i:4">
+      {%- for b in trust_blocks -%}
+        <li {{ b.shopify_attributes }}>{% render 'ich-hero-icon', icon: b.settings.icon %}<span>{{ b.settings.text }}</span></li>
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- capture ich_card -%}
+  {%- if s.show_card and p != blank -%}
+    {%- assign v = p.selected_or_first_available_variant -%}
+    <div class="ich-card ich-a{% if s.anim_float %} ich-float{% endif %}" style="--i:5">
+      <a class="ich-card__img" href="{{ p.url }}" tabindex="-1" aria-hidden="true">
+        {%- if p.featured_image -%}{{ p.featured_image | image_url: width: 240 | image_tag: loading: 'lazy', width: 120, height: 120, alt: p.featured_image.alt }}{%- endif -%}
+      </a>
+      <div class="ich-card__body">
+        {%- if s.card_label != blank -%}<span class="ich-card__tag">{{ s.card_label }}</span>{%- endif -%}
+        <a class="ich-card__title" href="{{ p.url }}"><bdi>{{ p.title }}</bdi></a>
+        <span class="ich-card__price">
+          {{ v.price | money }}
+          {%- if v.compare_at_price > v.price -%}<s>{{ v.compare_at_price | money }}</s>{%- endif -%}
+        </span>
+        {%- if s.card_atc and v.available -%}
+          {%- form 'product', p, class: 'ich-card__form' -%}
+            <input type="hidden" name="id" value="{{ v.id }}">
+            <button type="submit" class="ich-card__atc">{{ s.card_atc_label | default: 'Add to cart' }}</button>
+          {%- endform -%}
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- capture ich_offer -%}
+  {%- if s.offer_text != blank -%}
+    <div class="ich-offer">{% if s.offer_link != blank %}<a href="{{ s.offer_link }}">{{ s.offer_text }}</a>{% else %}<span>{{ s.offer_text }}</span>{% endif %}</div>
+  {%- endif -%}
+{%- endcapture -%}
+
+<style>
+#{{ sid }}{
+  --bg:{{ s.c_bg }};--bg2:{{ s.c_bg2 }};--tx:{{ s.c_text }};--mu:{{ s.c_muted }};--ac:{{ s.c_accent }};--on:{{ s.c_on_accent }};
+  --cd:{{ s.c_card }};--bd:{{ s.c_border }};--ov:{{ s.c_overlay }};--ovo:{{ s.overlay | divided_by: 100.0 }};
+  --r:{{ s.radius }}px;--br:{{ s.btn_radius }}px;--hd:{{ s.h_size }}px;--hm:{{ s.h_size_m }}px;--sd:{{ s.sub_size }}px;
+  --cw:{{ s.content_w }}px;--spd:{{ s.anim_speed }}ms;--stg:{{ s.anim_stagger }}ms;
+  --pt:{{ s.pad_t }}px;--pb:{{ s.pad_b }}px;--ptm:{{ s.pad_t_m }}px;--pbm:{{ s.pad_b_m }}px;
+  position:relative;isolation:isolate;overflow:hidden;color:var(--tx);
+  background:{% if s.bg_style == 'radial' %}radial-gradient(ellipse 70% 90% at {% if dir == 'rtl' %}25%{% else %}75%{% endif %} 55%,var(--bg2) 0%,var(--bg) 70%){% elsif s.bg_style == 'linear' %}linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%){% else %}var(--bg){% endif %};
+  padding-block:var(--pt) var(--pb);
+  min-height:{{ s.height | replace: 'svh', 'vh' }};min-height:{{ s.height }};
+  display:flex;flex-direction:column;justify-content:center;
+}
+#{{ sid }} *,#{{ sid }} *::before,#{{ sid }} *::after{box-sizing:border-box}
+#{{ sid }} .ich-wrap{position:relative;z-index:2;width:100%;max-width:{{ s.max_w }}px;margin-inline:auto;padding-inline:clamp(16px,4vw,64px)}
+#{{ sid }} .ich-content{max-width:var(--cw);display:flex;flex-direction:column;gap:20px;align-items:flex-start;text-align:start}
+#{{ sid }}.ich-center .ich-content{align-items:center;text-align:center;margin-inline:auto}
+#{{ sid }} .ich-badge{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--ac);border-radius:999px;padding:6px 16px;font-size:14px;font-weight:700;color:var(--ac);letter-spacing:.2px}
+#{{ sid }} .ich-dot-live{width:8px;height:8px;border-radius:50%;background:var(--ac);box-shadow:0 0 0 0 var(--ac)}
+#{{ sid }} .ich-h{margin:0;font-size:var(--hd);line-height:1.2;font-weight:{{ s.h_weight }};color:var(--tx);letter-spacing:{% if dir == 'rtl' %}0{% else %}-.02em{% endif %};text-wrap:balance}
+#{{ sid }} .ich-h em,#{{ sid }} .ich-h strong{font-style:normal;color:var(--ac)}
+#{{ sid }} .ich-sub{margin:0;font-size:var(--sd);line-height:1.8;color:var(--mu);max-width:56ch;text-wrap:pretty}
+#{{ sid }} .ich-sub em,#{{ sid }} .ich-sub strong{font-style:normal;color:var(--tx)}
+#{{ sid }} .ich-btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:4px}
+#{{ sid }} .ich-btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 30px;border-radius:var(--br);font-weight:800;font-size:17px;text-decoration:none;transition:transform .2s ease,box-shadow .2s ease,background-color .2s ease}
+#{{ sid }} .ich-btn--1{background:var(--ac);color:var(--on);box-shadow:0 8px 24px -10px var(--ac)}
+#{{ sid }} .ich-btn--2{border:1.5px solid var(--ac);color:var(--tx)}
+#{{ sid }} .ich-btn:hover{transform:translateY(-2px)}
+#{{ sid }} .ich-btn--1:hover{box-shadow:0 14px 30px -10px var(--ac)}
+#{{ sid }} .ich-btn--2:hover{background:color-mix(in srgb,var(--ac) 14%,transparent)}
+#{{ sid }} .ich-btn:focus-visible,#{{ sid }} a:focus-visible,#{{ sid }} button:focus-visible{outline:2px solid var(--ac);outline-offset:3px}
+#{{ sid }} .ich-trust{list-style:none;margin:10px 0 0;padding:18px 0 0;border-top:1px solid var(--bd);display:flex;flex-wrap:wrap;gap:14px 28px}
+#{{ sid }}.ich-center .ich-trust{justify-content:center}
+#{{ sid }} .ich-trust li{display:flex;align-items:center;gap:9px;font-size:14px;font-weight:500;color:var(--mu)}
+#{{ sid }} .ich-trust .ich-ico{color:var(--ac);width:22px;height:22px;flex-shrink:0}
+#{{ sid }} .ich-offer{position:absolute;top:0;left:0;right:0;z-index:3;text-align:center;background:var(--ac);color:var(--on);font-weight:800;font-size:14px;padding:9px 16px}
+#{{ sid }} .ich-offer a{color:inherit;text-decoration:none}
+#{{ sid }} .ich-card{display:flex;align-items:center;gap:14px;background:color-mix(in srgb,var(--cd) 90%,transparent);border:1px solid var(--bd);border-radius:calc(var(--r) * .8);padding:12px;max-width:340px;box-shadow:0 18px 40px -18px rgba(0,0,0,.7)}
+#{{ sid }} .ich-card__img{flex-shrink:0;width:84px;height:84px;border-radius:calc(var(--r) * .6);overflow:hidden;background:#fff;display:block}
+#{{ sid }} .ich-card__img img{width:100%;height:100%;object-fit:contain;display:block}
+#{{ sid }} .ich-card__body{display:flex;flex-direction:column;gap:3px;min-width:0}
+#{{ sid }} .ich-card__tag{font-size:12px;font-weight:700;color:var(--ac)}
+#{{ sid }} .ich-card__title{font-weight:800;font-size:15px;line-height:1.4;color:var(--tx);text-decoration:none;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#{{ sid }} .ich-card__price{font-size:14px;color:var(--mu)}
+#{{ sid }} .ich-card__price s{opacity:.6;margin-inline-start:8px;font-size:12px}
+#{{ sid }} .ich-card__form{margin:4px 0 0}
+#{{ sid }} .ich-card__atc{cursor:pointer;border:0;background:var(--ac);color:var(--on);font-weight:800;font-size:13px;padding:8px 16px;border-radius:var(--br);font-family:inherit}
+#{{ sid }} .ich-ph{background:color-mix(in srgb,var(--tx) 6%,transparent);display:flex;align-items:center;justify-content:center}
+#{{ sid }} .ich-ph-svg{width:60%;height:60%;fill:var(--mu);opacity:.35}
+#{{ sid }} picture{display:block}
+#{{ sid }} picture img{display:block;width:100%;height:100%;object-fit:cover}
+#{{ sid }} .ich-glow{position:absolute;z-index:-1;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--ac) 45%,transparent) 0%,transparent 68%);pointer-events:none}
+#{{ sid }} .ich-bgmedia,#{{ sid }} .ich-overlay{position:absolute;inset:0;z-index:0}
+#{{ sid }} .ich-bgmedia picture,#{{ sid }} .ich-bgmedia video{width:100%;height:100%;object-fit:cover;display:block}
+#{{ sid }} .ich-bgmedia video{position:absolute;inset:0}
+#{{ sid }} .ich-overlay{z-index:1;background:linear-gradient({% if dir == 'rtl' %}270deg{% else %}90deg{% endif %},var(--ov) 0%,color-mix(in srgb,var(--ov) 40%,transparent) 60%,transparent 100%);opacity:var(--ovo)}
+#{{ sid }}.ich-center .ich-overlay{background:var(--ov)}
+
+{%- case tpl -%}
+{%- when 'spotlight' or 'compare' -%}
+#{{ sid }} .ich-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(24px,5vw,72px);align-items:center}
+#{{ sid }} .ich-grid--swap .ich-content{order:2}
+#{{ sid }} .ich-media{position:relative}
+#{{ sid }} .ich-media .ich-frame{position:relative;border-radius:var(--r);overflow:hidden;aspect-ratio:{{ s.media_ratio }};box-shadow:0 30px 60px -30px rgba(0,0,0,.8)}
+#{{ sid }} .ich-media .ich-frame picture,#{{ sid }} .ich-media .ich-frame .ich-ph{width:100%;height:100%}
+#{{ sid }} .ich-media .ich-glow{inset:-15%}
+#{{ sid }} .ich-media .ich-card{position:absolute;z-index:3;inset-inline-end:-24px;bottom:28px}
+{%- if tpl == 'compare' -%}
+#{{ sid }} .ich-cmp{--pos:50%;position:relative;border-radius:var(--r);overflow:hidden;aspect-ratio:{{ s.media_ratio }};user-select:none;touch-action:pan-y}
+#{{ sid }} .ich-cmp picture,#{{ sid }} .ich-cmp .ich-ph{position:absolute;inset:0;width:100%;height:100%}
+#{{ sid }} .ich-cmp .ich-cmp__after{clip-path:inset(0 0 0 var(--pos))}
+#{{ sid }} .ich-cmp__line{position:absolute;top:0;bottom:0;left:var(--pos);width:2px;margin-left:-1px;background:var(--ac);z-index:2;pointer-events:none}
+#{{ sid }} .ich-cmp__knob{position:absolute;top:50%;left:var(--pos);width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:var(--ac);color:var(--on);display:flex;align-items:center;justify-content:center;z-index:3;pointer-events:none;box-shadow:0 6px 20px rgba(0,0,0,.5)}
+#{{ sid }} .ich-cmp__knob .ich-ico{width:18px;height:18px}
+#{{ sid }} .ich-cmp input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize;z-index:4}
+#{{ sid }} .ich-cmp__lbl{position:absolute;top:14px;z-index:2;font-size:13px;font-weight:800;padding:5px 12px;border-radius:999px;background:color-mix(in srgb,var(--bg) 75%,transparent);color:var(--tx);pointer-events:none}
+#{{ sid }} .ich-cmp__lbl--b{left:14px}
+#{{ sid }} .ich-cmp__lbl--a{right:14px}
+#{{ sid }} .ich-cmp__note{margin:10px 0 0;font-size:12px;color:var(--mu);opacity:.8}
+{%- endif -%}
+@media (max-width:749px){
+  #{{ sid }} .ich-grid{grid-template-columns:1fr}
+  #{{ sid }} .ich-grid .ich-content{order:{% if s.mobile_media_first %}2{% else %}1{% endif %}}
+  #{{ sid }} .ich-grid .ich-media{order:{% if s.mobile_media_first %}1{% else %}2{% endif %}}
+  #{{ sid }} .ich-media .ich-card{position:relative;inset:auto;margin:-22px auto 0;bottom:auto}
+  #{{ sid }} .ich-media .ich-frame{aspect-ratio:16/9}
+  #{{ sid }} .ich-cmp{aspect-ratio:4/3}
+}
+{%- when 'fullbleed' or 'video' -%}
+#{{ sid }} .ich-fb{display:flex;align-items:center}
+#{{ sid }}.ich-center .ich-fb{justify-content:center}
+#{{ sid }} .ich-fb .ich-card{margin-top:8px}
+{%- when 'concern' -%}
+#{{ sid }} .ich-bgmedia{opacity:.18}
+#{{ sid }} .ich-head{display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;max-width:760px;margin:0 auto 34px}
+#{{ sid }} .ich-tiles{list-style:none;margin:0 auto;padding:0;display:grid;grid-template-columns:repeat({{ s.tile_cols }},minmax(0,1fr));gap:16px;max-width:1080px}
+#{{ sid }} .ich-tile{height:100%;display:flex;align-items:center;gap:16px;padding:20px 22px;border-radius:var(--r);border:1px solid var(--bd);background:var(--cd);color:var(--tx);text-decoration:none;transition:border-color .2s ease,transform .2s ease,background-color .2s ease}
+#{{ sid }} .ich-tile:hover{border-color:var(--ac);transform:translateY(-3px);background:color-mix(in srgb,var(--ac) 8%,var(--cd))}
+#{{ sid }} .ich-tile__ico{width:58px;height:58px;flex-shrink:0;border-radius:calc(var(--r) * .8);background:color-mix(in srgb,var(--ac) 14%,transparent);color:var(--ac);display:flex;align-items:center;justify-content:center;overflow:hidden}
+#{{ sid }} .ich-tile__ico .ich-ico{width:30px;height:30px}
+#{{ sid }} .ich-tile__ico img{width:100%;height:100%;object-fit:cover}
+#{{ sid }} .ich-tile__t{display:block;font-weight:800;font-size:19px;line-height:1.35}
+#{{ sid }} .ich-tile__s{display:block;font-size:13px;color:var(--mu);margin-top:2px}
+#{{ sid }} .ich-foot{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:30px}
+#{{ sid }} .ich-foot .ich-trust{justify-content:center;border:0;padding-top:6px}
+@media (max-width:749px){
+  #{{ sid }} .ich-head{gap:8px;margin-bottom:14px}
+  #{{ sid }} .ich-tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  #{{ sid }} .ich-tile{padding:9px 10px;gap:9px}
+  #{{ sid }} .ich-tile__ico{width:34px;height:34px}
+  #{{ sid }} .ich-tile__ico .ich-ico{width:20px;height:20px}
+  #{{ sid }} .ich-tile__t{font-size:14px;line-height:1.3}
+  #{{ sid }} .ich-tile__s{display:none}
+  #{{ sid }} .ich-foot{margin-top:14px}
+}
+{%- when 'editorial' -%}
+#{{ sid }} .ich-ed{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.9fr);gap:clamp(24px,5vw,72px);align-items:center}
+#{{ sid }} .ich-ed .ich-h{font-size:calc(var(--hd) * 1.35);line-height:1.08}
+#{{ sid }} .ich-kicker{font-size:13px;font-weight:700;letter-spacing:5px;color:var(--ac);text-transform:uppercase}
+#{{ sid }} .ich-aside{display:flex;flex-direction:column;gap:20px}
+#{{ sid }} .ich-aside .ich-frame{border-radius:var(--r);overflow:hidden;aspect-ratio:{{ s.media_ratio }}}
+#{{ sid }} .ich-aside .ich-frame picture,#{{ sid }} .ich-aside .ich-frame .ich-ph{width:100%;height:100%}
+#{{ sid }} .ich-aside .ich-card{max-width:none}
+#{{ sid }} .ich-brands{border-top:1px solid var(--bd);padding-top:16px}
+#{{ sid }} .ich-brands__l{display:block;font-size:13px;color:var(--mu);margin-bottom:10px}
+#{{ sid }} .ich-brands ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:10px 22px}
+#{{ sid }} .ich-brands a,#{{ sid }} .ich-brands li span{font-weight:800;font-size:18px;letter-spacing:.5px;color:var(--tx);opacity:.85;text-decoration:none;transition:color .2s,opacity .2s}
+#{{ sid }} .ich-brands a:hover{color:var(--ac);opacity:1}
+@media (max-width:749px){
+  #{{ sid }} .ich-ed{grid-template-columns:1fr;gap:14px}
+  #{{ sid }} .ich-ed .ich-h{font-size:calc(var(--hm) * 1.1);line-height:1.12}
+  #{{ sid }} .ich-kicker{font-size:11px;letter-spacing:3px}
+  #{{ sid }} .ich-aside{gap:10px}
+  #{{ sid }} .ich-aside .ich-frame{aspect-ratio:16/7}
+  #{{ sid }} .ich-brands{padding-top:10px}
+  #{{ sid }} .ich-brands__l{display:none}
+  #{{ sid }} .ich-brands ul{gap:6px 14px}
+  #{{ sid }} .ich-brands a,#{{ sid }} .ich-brands li span{font-size:14px}
+}
+{%- when 'slideshow' -%}
+#{{ sid }}{padding:0}
+#{{ sid }} .ich-stage{position:relative}
+#{{ sid }} .ich-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain}
+#{{ sid }} .ich-track::-webkit-scrollbar{display:none}
+#{{ sid }} .ich-slide{position:relative;flex:0 0 100%;scroll-snap-align:start;display:flex;align-items:center;min-height:{{ s.height | replace: 'svh', 'vh' }};min-height:{{ s.height }};padding-block:var(--pt) calc(var(--pb) + 48px);isolation:isolate}
+#{{ sid }} .ich-slide .ich-wrap{display:flex}
+#{{ sid }}.ich-center .ich-slide .ich-wrap{justify-content:center}
+#{{ sid }} .ich-nav{position:absolute;z-index:4;bottom:max(18px,calc(var(--pb) * .4));left:0;right:0;display:flex;justify-content:center;align-items:center;gap:14px}
+#{{ sid }} .ich-dots{display:flex;gap:8px}
+#{{ sid }} .ich-dotb{width:9px;height:9px;padding:0;border:0;border-radius:99px;background:color-mix(in srgb,var(--tx) 40%,transparent);cursor:pointer;transition:width .3s ease,background-color .3s ease}
+#{{ sid }} .ich-dotb[aria-current="true"]{width:28px;background:var(--ac)}
+#{{ sid }} .ich-arr{width:42px;height:42px;border-radius:50%;border:1px solid var(--bd);background:color-mix(in srgb,var(--bg) 60%,transparent);color:var(--tx);display:flex;align-items:center;justify-content:center;cursor:pointer}
+#{{ sid }} .ich-arr .ich-ico{width:18px;height:18px}
+#{{ sid }} .ich-strip{position:relative;z-index:3;background:var(--bg);border-top:1px solid var(--bd)}
+#{{ sid }} .ich-strip .ich-trust{border:0;margin:0;padding:14px 0;justify-content:center}
+{%- endcase -%}
+
+@media (max-width:749px){
+  #{{ sid }}{padding-block:var(--ptm) var(--pbm);min-height:{{ s.height_m | replace: 'svh', 'vh' }};min-height:{{ s.height_m }}}
+  #{{ sid }} .ich-content{gap:10px}
+  #{{ sid }} .ich-badge{font-size:12px;padding:3px 12px;gap:7px}
+  #{{ sid }} .ich-h{font-size:var(--hm);line-height:1.18}
+  #{{ sid }} .ich-sub{font-size:14px;line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  #{{ sid }} .ich-btns{width:100%;flex-wrap:nowrap;gap:8px;margin-top:2px}
+  #{{ sid }} .ich-btn{flex:1 1 0;min-height:44px;padding:0 10px;font-size:15px;text-align:center}
+  #{{ sid }} .ich-trust{gap:4px 10px;margin-top:2px;padding-top:8px}
+  #{{ sid }} .ich-trust li{font-size:11px;gap:4px}
+  #{{ sid }} .ich-trust .ich-ico{width:14px;height:14px}
+  #{{ sid }} .ich-offer{font-size:12px;padding:6px 12px}
+  #{{ sid }} .ich-card{padding:8px;gap:10px;max-width:none}
+  #{{ sid }} .ich-card__img{width:54px;height:54px}
+  #{{ sid }} .ich-card__tag{display:none}
+  #{{ sid }} .ich-card__body{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:8px;align-items:center;flex:1}
+  #{{ sid }} .ich-card__title{font-size:14px;-webkit-line-clamp:1;grid-column:1}
+  #{{ sid }} .ich-card__price{grid-column:1}
+  #{{ sid }} .ich-card__form{grid-column:2;grid-row:1 / span 2;margin:0}
+  #{{ sid }} .ich-card__atc{padding:7px 12px;font-size:12px}
+  #{{ sid }} .ich-fb .ich-card,#{{ sid }} .ich-cmp__note{display:none}
+  #{{ sid }} .ich-overlay{background:linear-gradient(180deg,color-mix(in srgb,var(--ov) 65%,transparent) 0%,var(--ov) 100%);opacity:max(var(--ovo),.8)}
+  {%- if tpl == 'slideshow' -%}#{{ sid }}{padding:0}#{{ sid }} .ich-slide{min-height:{{ s.height_m | replace: 'svh', 'vh' }};min-height:{{ s.height_m }};padding-block:var(--ptm) calc(var(--pbm) + 36px)}{%- endif -%}
+}
+
+{%- unless s.anim == 'none' -%}
+@media (prefers-reduced-motion:no-preference){
+  #{{ sid }} .ich-a{animation:ich-in-{{ section.id }} var(--spd) cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0) * var(--stg))}
+  @keyframes ich-in-{{ section.id }}{from{opacity:.01;
+    {%- case s.anim -%}
+    {%- when 'fade-up' -%}transform:translateY(26px)
+    {%- when 'blur' -%}filter:blur(12px);transform:scale(.98)
+    {%- when 'slide' -%}transform:translateX({% if dir == 'rtl' %}40px{% else %}-40px{% endif %})
+    {%- when 'zoom' -%}transform:scale(.92)
+    {%- else -%}transform:none
+    {%- endcase -%}
+  }to{opacity:1;transform:none;filter:none}}
+}
+{%- endunless -%}
+@media (prefers-reduced-motion:no-preference){
+  {%- if s.anim_kenburns -%}
+  #{{ sid }} .ich-kb img{animation:ich-kb-{{ section.id }} 22s ease-in-out infinite alternate;will-change:transform}
+  @keyframes ich-kb-{{ section.id }}{from{transform:scale(1)}to{transform:scale(1.08)}}
+  {%- endif -%}
+  {%- if s.anim_float -%}
+  #{{ sid }} .ich-float{animation:ich-in-{{ section.id }} var(--spd) cubic-bezier(.2,.7,.2,1) both,ich-fl-{{ section.id }} 6s ease-in-out calc(var(--spd) + 400ms) infinite}
+  @keyframes ich-fl-{{ section.id }}{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  {%- endif -%}
+  {%- if s.anim_glow -%}
+  #{{ sid }} .ich-glow{animation:ich-gl-{{ section.id }} 7s ease-in-out infinite}
+  #{{ sid }} .ich-dot-live{animation:ich-pu-{{ section.id }} 2s ease-out infinite}
+  @keyframes ich-gl-{{ section.id }}{0%,100%{opacity:.75;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
+  @keyframes ich-pu-{{ section.id }}{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--ac) 70%,transparent)}100%{box-shadow:0 0 0 10px transparent}}
+  {%- endif -%}
+}
+</style>
+
+<section id="{{ sid }}" class="ich-hero ich-t-{{ tpl }}{% if s.align == 'center' %} ich-center{% endif %}" dir="{{ dir }}" aria-label="{{ s.heading | strip_html | escape | default: shop.name }}">
+  {%- unless tpl == 'editorial' -%}{%- if tpl != 'slideshow' -%}{{ ich_offer }}{%- endif -%}{%- endunless -%}
+
+  {%- case tpl -%}
+
+  {%- when 'spotlight' -%}
+    <div class="ich-wrap ich-grid{% if s.media_side == 'start' %} ich-grid--swap{% endif %}">
+      <div class="ich-content">{{ ich_badge }}{{ ich_heading }}{{ ich_sub }}{{ ich_buttons }}{{ ich_trust }}</div>
+      <div class="ich-media">
+        {%- if s.anim_glow -%}<div class="ich-glow"></div>{%- endif -%}
+        <div class="ich-frame{% if s.anim_kenburns %} ich-kb{% endif %}">
+          {%- render 'ich-hero-picture', image: s.image, mobile: s.image_m, eager: eager, sizes: '(min-width: 750px) 50vw, 100vw' -%}
+        </div>
+        {{ ich_card }}
+      </div>
+    </div>
+
+  {%- when 'fullbleed' -%}
+    <div class="ich-bgmedia{% if s.anim_kenburns %} ich-kb{% endif %}">
+      {%- render 'ich-hero-picture', image: s.image, mobile: s.image_m, eager: eager -%}
+    </div>
+    <div class="ich-overlay"></div>
+    <div class="ich-wrap ich-fb">
+      <div class="ich-content">{{ ich_badge }}{{ ich_heading }}{{ ich_sub }}{{ ich_buttons }}{{ ich_card }}{{ ich_trust }}</div>
+    </div>
+
+  {%- when 'video' -%}
+    <div class="ich-bgmedia">
+      {%- if s.image != blank -%}
+        {%- render 'ich-hero-picture', image: s.image, mobile: s.image_m, eager: eager -%}
+      {%- endif -%}
+      {%- if s.video != blank -%}
+        {{ s.video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, preload: 'metadata', image_size: '1200x', class: 'ich-video' }}
+        {%- unless s.video_mobile -%}
+          <script>(function(){if(matchMedia('(max-width:749px)').matches){var v=document.querySelector('#{{ sid }} .ich-video');if(v)v.remove();}})();</script>
+        {%- endunless -%}
+      {%- elsif s.image == blank -%}
+        <div class="ich-ph" style="width:100%;height:100%">{{ 'lifestyle-1' | placeholder_svg_tag: 'ich-ph-svg' }}</div>
+      {%- endif -%}
+    </div>
+    <div class="ich-overlay"></div>
+    <div class="ich-wrap ich-fb">
+      <div class="ich-content">{{ ich_badge }}{{ ich_heading }}{{ ich_sub }}{{ ich_buttons }}{{ ich_card }}{{ ich_trust }}</div>
+    </div>
+
+  {%- when 'concern' -%}
+    {%- if s.image != blank -%}
+      <div class="ich-bgmedia">{%- render 'ich-hero-picture', image: s.image, mobile: s.image_m, eager: false -%}</div>
+    {%- endif -%}
+    <div class="ich-wrap">
+      <div class="ich-head">{{ ich_badge }}{{ ich_heading }}{{ ich_sub }}</div>
+      {%- if tile_blocks.size > 0 -%}
+        <ul class="ich-tiles ich-a" style="--i:3">
+          {%- for b in tile_blocks -%}
+            <li {{ b.shopify_attributes }}>
+              <a class="ich-tile" href="{{ b.settings.link | default: routes.all_products_collection_url }}">
+                <span class="ich-tile__ico">
+                  {%- if b.settings.image != blank -%}
+                    {{ b.settings.image | image_url: width: 120 | image_tag: loading: 'lazy', width: 58, height: 58, alt: '' }}
+                  {%- else -%}
+                    {% render 'ich-hero-icon', icon: b.settings.icon %}
+                  {%- endif -%}
+                </span>
+                <span><span class="ich-tile__t">{{ b.settings.title }}</span>{%- if b.settings.subtitle != blank -%}<span class="ich-tile__s">{{ b.settings.subtitle }}</span>{%- endif -%}</span>
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+      <div class="ich-foot">{{ ich_buttons }}{{ ich_trust }}</div>
+    </div>
+
+  {%- when 'editorial' -%}
+    {{ ich_offer }}
+    <div class="ich-wrap ich-ed">
+      <div class="ich-content">
+        {%- if s.kicker != blank -%}<span class="ich-kicker ich-a" style="--i:0">{{ s.kicker }}</span>{%- endif -%}
+        {{ ich_heading }}{{ ich_sub }}{{ ich_buttons }}{{ ich_trust }}
+      </div>
+      <div class="ich-aside">
+        {%- if s.image != blank -%}
+          <div class="ich-frame ich-a{% if s.anim_kenburns %} ich-kb{% endif %}" style="--i:2">
+            {%- render 'ich-hero-picture', image: s.image, mobile: s.image_m, eager: eager, sizes: '(min-width: 750px) 40vw, 100vw' -%}
+          </div>
+        {%- endif -%}
+        {{ ich_card }}
+        {%- if brand_blocks.size > 0 -%}
+          <div class="ich-brands ich-a" style="--i:6">
+            {%- if s.brands_label != blank -%}<span class="ich-brands__l">{{ s.brands_label }}</span>{%- endif -%}
+            <ul dir="ltr">
+              {%- for b in brand_blocks -%}
+                <li {{ b.shopify_attributes }}>{%- if b.settings.link != blank -%}<a href="{{ b.settings.link }}">{{ b.settings.name }}</a>{%- else -%}<span>{{ b.settings.name }}</span>{%- endif -%}</li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+
+  {%- when 'compare' -%}
+    <div class="ich-wrap ich-grid{% if s.media_side == 'start' %} ich-grid--swap{% endif %}">
+      <div class="ich-content">{{ ich_badge }}{{ ich_heading }}{{ ich_sub }}{{ ich_buttons }}{{ ich_card }}{{ ich_trust }}</div>
+      <div class="ich-media">
+        {%- if s.anim_glow -%}<div class="ich-glow"></div>{%- endif -%}
+        <div class="ich-cmp" dir="ltr">
+          {%- render 'ich-hero-picture', image: s.image, eager: eager, sizes: '(min-width: 750px) 50vw, 100vw', class: 'ich-cmp__before' -%}
+          {%- render 'ich-hero-picture', image: s.image_2, eager: false, sizes: '(min-width: 750px) 50vw, 100vw', class: 'ich-cmp__after' -%}
+          {%- if s.before_label != blank -%}<span class="ich-cmp__lbl ich-cmp__lbl--b">{{ s.before_label }}</span>{%- endif -%}
+          {%- if s.after_label != blank -%}<span class="ich-cmp__lbl ich-cmp__lbl--a">{{ s.after_label }}</span>{%- endif -%}
+          <span class="ich-cmp__line"></span>
+          <span class="ich-cmp__knob">{% render 'ich-hero-icon', icon: 'arrow' %}{% render 'ich-hero-icon', icon: 'arrow-r' %}</span>
+          <input type="range" min="0" max="100" value="50" aria-label="{{ s.before_label | default: 'Before' }} / {{ s.after_label | default: 'After' }}">
+        </div>
+        {%- if s.compare_note != blank -%}<p class="ich-cmp__note">{{ s.compare_note }}</p>{%- endif -%}
+      </div>
+    </div>
+
+  {%- when 'slideshow' -%}
+    <div class="ich-stage">
+    <div class="ich-track" dir="ltr" tabindex="0" aria-roledescription="carousel">
+      {%- for b in slide_blocks -%}
+        {%- liquid
+          assign bs = b.settings
+          assign slide_eager = false
+          if forloop.first and eager
+            assign slide_eager = true
+          endif
+        -%}
+        <div class="ich-slide" {{ b.shopify_attributes }} aria-roledescription="slide" aria-label="{{ forloop.index }} / {{ forloop.length }}">
+          <div class="ich-bgmedia{% if s.anim_kenburns %} ich-kb{% endif %}">{%- render 'ich-hero-picture', image: bs.image, mobile: bs.image_m, eager: slide_eager -%}</div>
+          <div class="ich-overlay"></div>
+          <div class="ich-wrap" dir="{{ dir }}">
+            <div class="ich-content">
+              {%- if bs.badge != blank -%}<span class="ich-badge{% if forloop.first %} ich-a{% endif %}" style="--i:0"><span class="ich-dot-live"></span>{{ bs.badge }}</span>{%- endif -%}
+              {%- if bs.heading != blank -%}
+                {%- if forloop.first -%}<{{ htag }} class="ich-h ich-a" style="--i:1">{{ bs.heading }}</{{ htag }}>{%- else -%}<p class="ich-h" role="heading" aria-level="2">{{ bs.heading }}</p>{%- endif -%}
+              {%- endif -%}
+              {%- if bs.text != blank -%}<p class="ich-sub{% if forloop.first %} ich-a{% endif %}" style="--i:2">{{ bs.text }}</p>{%- endif -%}
+              {%- if bs.btn_label != blank -%}<div class="ich-btns{% if forloop.first %} ich-a{% endif %}" style="--i:3"><a class="ich-btn ich-btn--1" href="{{ bs.btn_link | default: routes.all_products_collection_url }}">{{ bs.btn_label }}</a>{%- if bs.btn2_label != blank -%}<a class="ich-btn ich-btn--2" href="{{ bs.btn2_link | default: routes.all_products_collection_url }}">{{ bs.btn2_label }}</a>{%- endif -%}</div>{%- endif -%}
+            </div>
+          </div>
+        </div>
+      {%- else -%}
+        <div class="ich-slide"><div class="ich-wrap" dir="{{ dir }}"><div class="ich-content">{{ ich_heading }}{{ ich_sub }}{{ ich_buttons }}</div></div></div>
+      {%- endfor -%}
+    </div>
+    {%- if slide_blocks.size > 1 -%}
+      <div class="ich-nav" dir="ltr">
+        <button type="button" class="ich-arr ich-prev" aria-label="Previous">{% render 'ich-hero-icon', icon: 'arrow' %}</button>
+        <div class="ich-dots">{%- for b in slide_blocks -%}<button type="button" class="ich-dotb" aria-label="{{ forloop.index }}" aria-current="{% if forloop.first %}true{% else %}false{% endif %}"></button>{%- endfor -%}</div>
+        <button type="button" class="ich-arr ich-next" aria-label="Next">{% render 'ich-hero-icon', icon: 'arrow-r' %}</button>
+      </div>
+    {%- endif -%}
+    </div>
+    {%- if trust_blocks.size > 0 -%}<div class="ich-strip"><div class="ich-wrap">{{ ich_trust }}</div></div>{%- endif -%}
+
+  {%- endcase -%}
+</section>
+
+{%- if tpl == 'slideshow' and slide_blocks.size > 1 -%}
+<script>
+(function(){var r=document.getElementById('{{ sid }}');if(!r)return;var t=r.querySelector('.ich-track'),sl=t.children,d=r.querySelectorAll('.ich-dotb'),n=sl.length,i=0,tm=null,vis=false,hov=false,ms={{ s.interval | times: 1000 }},auto={% if s.autoplay %}true{% else %}false{% endif %}&&!matchMedia('(prefers-reduced-motion:reduce)').matches;
+function go(k){i=(k+n)%n;var x=sl[i].offsetLeft;t.scrollTo({left:x,behavior:'smooth'});setTimeout(function(){if(Math.abs(t.scrollLeft-x)>4){t.scrollLeft=x;mark();}},700);}
+function mark(){var k=Math.round(t.scrollLeft/t.clientWidth);if(k<0)k=0;if(k>n-1)k=n-1;i=k;for(var j=0;j<d.length;j++)d[j].setAttribute('aria-current',j===k?'true':'false');}
+function stop(){clearInterval(tm);tm=null;}function play(){stop();if(auto&&vis&&!hov)tm=setInterval(function(){go(i+1)},ms);}
+var st;t.addEventListener('scroll',function(){clearTimeout(st);st=setTimeout(mark,90)},{passive:true});
+for(var j=0;j<d.length;j++)(function(j){d[j].addEventListener('click',function(){go(j);play();})})(j);
+var pv=r.querySelector('.ich-prev'),nx=r.querySelector('.ich-next');if(pv)pv.addEventListener('click',function(){go(i-1);play();});if(nx)nx.addEventListener('click',function(){go(i+1);play();});
+r.addEventListener('mouseenter',function(){hov=true;stop()});r.addEventListener('mouseleave',function(){hov=false;play()});
+r.addEventListener('focusin',function(){hov=true;stop()});r.addEventListener('focusout',function(){hov=false;play()});
+if('IntersectionObserver'in window){new IntersectionObserver(function(e){vis=e[0].isIntersecting;vis?play():stop()},{threshold:.3}).observe(r);}else{vis=true;play();}
+document.addEventListener('shopify:block:select',function(e){if(!r.contains(e.target))return;for(var k=0;k<n;k++)if(sl[k]===e.target){auto=false;stop();go(k);}});
+})();
+</script>
+{%- elsif tpl == 'compare' -%}
+<script>
+(function(){var c=document.querySelector('#{{ sid }} .ich-cmp');if(!c)return;var x=c.querySelector('input');x.addEventListener('input',function(){c.style.setProperty('--pos',x.value+'%')});})();
+</script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Instachiq Ultimate Hero",
+  "tag": "div",
+  "class": "ich-hero-shell",
+  "settings": [
+    { "type": "select", "id": "template", "label": "Template", "default": "spotlight", "options": [
+      { "value": "spotlight", "label": "1. Spotlight: text + image + product card" },
+      { "value": "fullbleed", "label": "2. Full-bleed image" },
+      { "value": "concern", "label": "3. Concern picker (tiles)" },
+      { "value": "editorial", "label": "4. Korean editorial + brands" },
+      { "value": "slideshow", "label": "5. Slideshow (uses Slide blocks)" },
+      { "value": "compare", "label": "6. Before / after slider" },
+      { "value": "video", "label": "7. Video background" }
+    ]},
+    { "type": "checkbox", "id": "is_first", "label": "This is the first section on the page", "default": true, "info": "Loads the main image immediately with high priority for the best speed score. Turn off if the hero is lower on the page." },
+
+    { "type": "header", "content": "Text" },
+    { "type": "text", "id": "badge", "label": "Badge", "default": "وصل حديثاً في المتجر" },
+    { "type": "text", "id": "kicker", "label": "Kicker (editorial template)", "default": "K-BEAUTY / SKINCARE / HAIR" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "info": "Make words italic or bold to color them with the accent color.", "default": "اللي مش مضمون بره، <em>مضمون هنا</em>" },
+    { "type": "select", "id": "heading_tag", "label": "Heading tag (SEO)", "default": "h2", "options": [ { "value": "h1", "label": "H1" }, { "value": "h2", "label": "H2" } ] },
+    { "type": "inline_richtext", "id": "subheading", "label": "Subheading", "default": "سيرومات وكريمات وعناية شعر كورية وعالمية، أصلية فقط، بتوصلك في مصر وفي أي مكان في العالم." },
+    { "type": "text", "id": "btn1_label", "label": "Primary button label", "default": "تسوق الأحدث" },
+    { "type": "url", "id": "btn1_link", "label": "Primary button link" },
+    { "type": "text", "id": "btn2_label", "label": "Secondary button label", "default": "ابني روتين بشرتك" },
+    { "type": "url", "id": "btn2_link", "label": "Secondary button link" },
+    { "type": "text", "id": "offer_text", "label": "Offer bar text", "info": "Thin bar on top of the hero. Leave empty to hide." },
+    { "type": "url", "id": "offer_link", "label": "Offer bar link" },
+
+    { "type": "header", "content": "Images and video" },
+    { "type": "image_picker", "id": "image", "label": "Main image", "info": "Spotlight and editorial: product shot. Full-bleed and concern: background. Compare: BEFORE image. Video: poster shown while the video loads." },
+    { "type": "image_picker", "id": "image_m", "label": "Mobile image (optional)", "info": "Portrait image for phones. Not used by the compare template." },
+    { "type": "image_picker", "id": "image_2", "label": "AFTER image (compare template)" },
+    { "type": "select", "id": "media_ratio", "label": "Image shape", "default": "1/1", "options": [ { "value": "1/1", "label": "Square" }, { "value": "4/5", "label": "Portrait 4:5" }, { "value": "3/4", "label": "Portrait 3:4" }, { "value": "4/3", "label": "Landscape 4:3" }, { "value": "16/9", "label": "Wide 16:9" } ] },
+    { "type": "select", "id": "media_side", "label": "Image side (desktop)", "default": "end", "options": [ { "value": "end", "label": "After text" }, { "value": "start", "label": "Before text" } ] },
+    { "type": "checkbox", "id": "mobile_media_first", "label": "Show image above text on mobile", "default": false },
+    { "type": "video", "id": "video", "label": "Background video (video template)", "info": "Upload a short, muted MP4 under 8 MB for best speed." },
+    { "type": "checkbox", "id": "video_mobile", "label": "Play video on mobile", "default": false, "info": "Off = phones show the poster image only, which saves data and speeds up the page." },
+    { "type": "text", "id": "before_label", "label": "Before label", "default": "قبل" },
+    { "type": "text", "id": "after_label", "label": "After label", "default": "بعد" },
+    { "type": "text", "id": "compare_note", "label": "Note under compare image", "default": "صور توضيحية، والنتائج بتختلف من شخص للتاني." },
+
+    { "type": "header", "content": "Featured product card" },
+    { "type": "checkbox", "id": "show_card", "label": "Show product card", "default": true },
+    { "type": "product", "id": "product", "label": "Product" },
+    { "type": "text", "id": "card_label", "label": "Card tag", "default": "جديد" },
+    { "type": "checkbox", "id": "card_atc", "label": "Show add to cart button", "default": true },
+    { "type": "text", "id": "card_atc_label", "label": "Add to cart label", "default": "أضف للعربة" },
+
+    { "type": "header", "content": "Concern and brand templates" },
+    { "type": "select", "id": "tile_cols", "label": "Tiles per row (desktop)", "default": "3", "options": [ { "value": "2", "label": "2" }, { "value": "3", "label": "3" }, { "value": "4", "label": "4" } ] },
+    { "type": "text", "id": "brands_label", "label": "Brands title", "default": "براندات بنوفرها" },
+
+    { "type": "header", "content": "Colors" },
+    { "type": "select", "id": "bg_style", "label": "Background style", "default": "radial", "options": [ { "value": "solid", "label": "Solid" }, { "value": "radial", "label": "Soft glow" }, { "value": "linear", "label": "Vertical gradient" } ] },
+    { "type": "color", "id": "c_bg", "label": "Background", "default": "#0a0a0a" },
+    { "type": "color", "id": "c_bg2", "label": "Background glow / gradient", "default": "#3a2c0a" },
+    { "type": "color", "id": "c_text", "label": "Heading text", "default": "#fff8e6" },
+    { "type": "color", "id": "c_muted", "label": "Body text", "default": "#e4dcc6" },
+    { "type": "color", "id": "c_accent", "label": "Accent (buttons, highlights)", "default": "#e6c36a" },
+    { "type": "color", "id": "c_on_accent", "label": "Text on accent", "default": "#1a1405" },
+    { "type": "color", "id": "c_card", "label": "Cards and tiles", "default": "#15110a" },
+    { "type": "color", "id": "c_border", "label": "Borders", "default": "#4a3c1c" },
+    { "type": "color", "id": "c_overlay", "label": "Image overlay", "default": "#000000" },
+    { "type": "range", "id": "overlay", "label": "Overlay opacity", "min": 0, "max": 100, "step": 5, "unit": "%", "default": 60 },
+
+    { "type": "header", "content": "Typography" },
+    { "type": "range", "id": "h_size", "label": "Heading size (desktop)", "min": 28, "max": 96, "step": 2, "unit": "px", "default": 60 },
+    { "type": "range", "id": "h_size_m", "label": "Heading size (mobile)", "min": 20, "max": 60, "step": 1, "unit": "px", "default": 28 },
+    { "type": "select", "id": "h_weight", "label": "Heading weight", "default": "900", "options": [ { "value": "600", "label": "Semibold" }, { "value": "700", "label": "Bold" }, { "value": "800", "label": "Extra bold" }, { "value": "900", "label": "Black" } ] },
+    { "type": "range", "id": "sub_size", "label": "Subheading size", "min": 14, "max": 26, "step": 1, "unit": "px", "default": 20 },
+
+    { "type": "header", "content": "Layout" },
+    { "type": "select", "id": "align", "label": "Text alignment", "default": "start", "options": [ { "value": "start", "label": "Start" }, { "value": "center", "label": "Center" } ] },
+    { "type": "select", "id": "height", "label": "Height (desktop)", "default": "auto", "options": [ { "value": "auto", "label": "Fit content" }, { "value": "60svh", "label": "60% of screen" }, { "value": "75svh", "label": "75% of screen" }, { "value": "90svh", "label": "90% of screen" }, { "value": "100svh", "label": "Full screen" } ] },
+    { "type": "select", "id": "height_m", "label": "Height (mobile)", "default": "auto", "options": [ { "value": "auto", "label": "Fit content" }, { "value": "50svh", "label": "50% of screen" }, { "value": "60svh", "label": "60% of screen" }, { "value": "75svh", "label": "75% of screen" }, { "value": "90svh", "label": "90% of screen" }, { "value": "100svh", "label": "Full screen" } ] },
+    { "type": "range", "id": "max_w", "label": "Max content width", "min": 960, "max": 1920, "step": 40, "unit": "px", "default": 1320 },
+    { "type": "range", "id": "content_w", "label": "Text column width", "min": 400, "max": 900, "step": 20, "unit": "px", "default": 600 },
+    { "type": "range", "id": "radius", "label": "Corner radius (images, cards)", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 22 },
+    { "type": "range", "id": "btn_radius", "label": "Button radius", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 12 },
+    { "type": "range", "id": "pad_t", "label": "Top padding (desktop)", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 64 },
+    { "type": "range", "id": "pad_b", "label": "Bottom padding (desktop)", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 64 },
+    { "type": "range", "id": "pad_t_m", "label": "Top padding (mobile)", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 16 },
+    { "type": "range", "id": "pad_b_m", "label": "Bottom padding (mobile)", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 20 },
+
+    { "type": "header", "content": "Animations", "info": "All animations are pure CSS, turn off automatically for visitors who prefer reduced motion, and never delay the main image." },
+    { "type": "select", "id": "anim", "label": "Text entrance", "default": "fade-up", "options": [ { "value": "none", "label": "None" }, { "value": "fade-up", "label": "Fade up" }, { "value": "blur", "label": "Blur in" }, { "value": "slide", "label": "Slide in" }, { "value": "zoom", "label": "Zoom in" } ] },
+    { "type": "range", "id": "anim_speed", "label": "Entrance speed", "min": 300, "max": 1500, "step": 100, "unit": "ms", "default": 800 },
+    { "type": "range", "id": "anim_stagger", "label": "Delay between elements", "min": 0, "max": 300, "step": 20, "unit": "ms", "default": 120 },
+    { "type": "checkbox", "id": "anim_kenburns", "label": "Slow zoom on image", "default": true },
+    { "type": "checkbox", "id": "anim_float", "label": "Floating product card", "default": true },
+    { "type": "checkbox", "id": "anim_glow", "label": "Breathing glow", "default": true },
+
+    { "type": "header", "content": "Slideshow" },
+    { "type": "checkbox", "id": "autoplay", "label": "Autoplay", "default": true },
+    { "type": "range", "id": "interval", "label": "Seconds per slide", "min": 3, "max": 12, "step": 1, "unit": "s", "default": 6 }
+  ],
+  "blocks": [
+    {
+      "type": "trust",
+      "name": "Trust badge",
+      "limit": 6,
+      "settings": [
+        { "type": "select", "id": "icon", "label": "Icon", "default": "shield", "options": [
+          { "value": "shield", "label": "Shield (genuine)" }, { "value": "plane", "label": "Plane (shipping)" }, { "value": "truck", "label": "Truck" },
+          { "value": "return", "label": "Return" }, { "value": "cash", "label": "Cash" }, { "value": "star", "label": "Star" },
+          { "value": "leaf", "label": "Leaf" }, { "value": "chat", "label": "Chat" }, { "value": "heart", "label": "Heart" }, { "value": "check", "label": "Check" }
+        ]},
+        { "type": "text", "id": "text", "label": "Text", "default": "منتجات أصلية فقط" }
+      ]
+    },
+    {
+      "type": "tile",
+      "name": "Concern tile",
+      "limit": 12,
+      "settings": [
+        { "type": "select", "id": "icon", "label": "Icon", "default": "drop", "options": [
+          { "value": "hair", "label": "Hair" }, { "value": "sun", "label": "Brightening" }, { "value": "waves", "label": "Wrinkles" },
+          { "value": "dots", "label": "Acne" }, { "value": "drop", "label": "Hydration" }, { "value": "eye", "label": "Lashes and brows" },
+          { "value": "sparkle", "label": "Glow" }, { "value": "leaf", "label": "Calming" }, { "value": "shield", "label": "Barrier" }, { "value": "heart", "label": "Body" }
+        ]},
+        { "type": "image_picker", "id": "image", "label": "Image instead of icon (optional)" },
+        { "type": "text", "id": "title", "label": "Title", "default": "الجفاف" },
+        { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "مرطبات وسيرومات" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    },
+    {
+      "type": "brand",
+      "name": "Brand name",
+      "limit": 16,
+      "settings": [
+        { "type": "text", "id": "name", "label": "Brand", "default": "COSRX" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    },
+    {
+      "type": "slide",
+      "name": "Slide",
+      "limit": 6,
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "image_picker", "id": "image_m", "label": "Mobile image (optional)" },
+        { "type": "text", "id": "badge", "label": "Badge" },
+        { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "عنوان <em>الشريحة</em>" },
+        { "type": "inline_richtext", "id": "text", "label": "Text", "default": "سطر قصير بيشرح العرض أو المنتج." },
+        { "type": "text", "id": "btn_label", "label": "Button label", "default": "تسوق الآن" },
+        { "type": "url", "id": "btn_link", "label": "Button link" },
+        { "type": "text", "id": "btn2_label", "label": "Second button label" },
+        { "type": "url", "id": "btn2_link", "label": "Second button link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Ultimate Hero 1: Spotlight",
+      "category": "Instachiq",
+      "settings": { "template": "spotlight" },
+      "blocks": [
+        { "type": "trust", "settings": { "icon": "shield", "text": "منتجات أصلية فقط" } },
+        { "type": "trust", "settings": { "icon": "plane", "text": "شحن دولي في 5 - 9 أيام" } },
+        { "type": "trust", "settings": { "icon": "return", "text": "استرجاع خلال 14 يوم" } }
+      ]
+    },
+    {
+      "name": "Ultimate Hero 2: Full-bleed",
+      "category": "Instachiq",
+      "settings": { "template": "fullbleed", "height": "90svh", "height_m": "auto" },
+      "blocks": [
+        { "type": "trust", "settings": { "icon": "shield", "text": "منتجات أصلية فقط" } },
+        { "type": "trust", "settings": { "icon": "plane", "text": "شحن دولي في 5 - 9 أيام" } },
+        { "type": "trust", "settings": { "icon": "return", "text": "استرجاع خلال 14 يوم" } }
+      ]
+    },
+    {
+      "name": "Ultimate Hero 3: Concern picker",
+      "category": "Instachiq",
+      "settings": { "template": "concern", "align": "center", "bg_style": "linear", "c_bg2": "#241b08", "h_size": 54, "heading": "بشرتك أو شعرك محتاج إيه <em>النهارده؟</em>", "subheading": "اختار مشكلتك، وهنوريك المنتجات الأصلية اللي بتتعامل معاها مباشرة.", "btn1_label": "ابني روتين كامل خطوة بخطوة", "btn2_label": "" },
+      "blocks": [
+        { "type": "tile", "settings": { "icon": "hair", "title": "تساقط الشعر", "subtitle": "أمبولات وسبراي وتونيك" } },
+        { "type": "tile", "settings": { "icon": "sun", "title": "التفتيح والتصبغات", "subtitle": "فيتامين سي ونياسيناميد" } },
+        { "type": "tile", "settings": { "icon": "waves", "title": "التجاعيد", "subtitle": "ريتينول وببتيدات وكريمات عين" } },
+        { "type": "tile", "settings": { "icon": "dots", "title": "الحبوب", "subtitle": "تونر وأزيلايك وسالسيليك" } },
+        { "type": "tile", "settings": { "icon": "drop", "title": "الجفاف والحساسية", "subtitle": "مرطبات وسيرومات تهدئة" } },
+        { "type": "tile", "settings": { "icon": "eye", "title": "الرموش والحواجب", "subtitle": "سيرومات تكثيف" } },
+        { "type": "trust", "settings": { "icon": "shield", "text": "منتجات أصلية فقط" } },
+        { "type": "trust", "settings": { "icon": "plane", "text": "شحن دولي في 5 - 9 أيام" } },
+        { "type": "trust", "settings": { "icon": "return", "text": "استرجاع خلال 14 يوم" } }
+      ]
+    },
+    {
+      "name": "Ultimate Hero 4: Korean editorial",
+      "category": "Instachiq",
+      "settings": { "template": "editorial", "media_ratio": "16/9", "bg_style": "solid", "c_bg": "#0c0b09", "radius": 4, "btn_radius": 4, "heading": "عناية <em>أصلية</em> مفيش فيها لف", "subheading": "أحسن براندات العناية الكورية والعالمية في مكان واحد، وكل منتج بنتأكد من أصله قبل ما يتشحن.", "btn1_label": "تسوق المجموعة", "btn2_label": "الأكثر طلباً", "card_label": "وصل حديثاً" },
+      "blocks": [
+        { "type": "brand", "settings": { "name": "COSRX" } },
+        { "type": "brand", "settings": { "name": "Anua" } },
+        { "type": "brand", "settings": { "name": "Medicube" } },
+        { "type": "brand", "settings": { "name": "Some By Mi" } },
+        { "type": "brand", "settings": { "name": "Beauty of Joseon" } },
+        { "type": "brand", "settings": { "name": "SKIN1004" } },
+        { "type": "brand", "settings": { "name": "The Ordinary" } },
+        { "type": "brand", "settings": { "name": "Eqqual Berry" } },
+        { "type": "trust", "settings": { "icon": "shield", "text": "منتجات أصلية فقط" } },
+        { "type": "trust", "settings": { "icon": "plane", "text": "شحن دولي في 5 - 9 أيام" } },
+        { "type": "trust", "settings": { "icon": "return", "text": "استرجاع خلال 14 يوم" } }
+      ]
+    },
+    {
+      "name": "Ultimate Hero 5: Slideshow",
+      "category": "Instachiq",
+      "settings": { "template": "slideshow", "height": "75svh", "height_m": "auto" },
+      "blocks": [
+        { "type": "slide", "settings": { "badge": "وصل حديثاً", "heading": "اللي مش مضمون بره، <em>مضمون هنا</em>", "text": "منتجات كورية وعالمية أصلية فقط.", "btn_label": "تسوق الأحدث" } },
+        { "type": "slide", "settings": { "badge": "العناية بالشعر", "heading": "شعرك بيقع؟ <em>ابدأ من هنا</em>", "text": "أمبولات وتونيك وشامبوهات مختارة بعناية.", "btn_label": "تسوق عناية الشعر" } },
+        { "type": "slide", "settings": { "badge": "روتين كامل", "heading": "روتينك في <em>3 خطوات</em>", "text": "غسول، سيروم، ومرطب يناسبوا نوع بشرتك.", "btn_label": "ابني روتينك" } },
+        { "type": "trust", "settings": { "icon": "shield", "text": "منتجات أصلية فقط" } },
+        { "type": "trust", "settings": { "icon": "plane", "text": "شحن دولي في 5 - 9 أيام" } },
+        { "type": "trust", "settings": { "icon": "return", "text": "استرجاع خلال 14 يوم" } }
+      ]
+    },
+    {
+      "name": "Ultimate Hero 6: Before / after",
+      "category": "Instachiq",
+      "settings": { "template": "compare", "media_ratio": "4/5", "badge": "شوف الفرق بنفسك", "heading": "روتين صح، <em>فرق باين</em>", "subheading": "اسحب الخط عشان تشوف الفرق، واختار الروتين اللي يناسب بشرتك." },
+      "blocks": [
+        { "type": "trust", "settings": { "icon": "shield", "text": "منتجات أصلية فقط" } },
+        { "type": "trust", "settings": { "icon": "plane", "text": "شحن دولي في 5 - 9 أيام" } },
+        { "type": "trust", "settings": { "icon": "return", "text": "استرجاع خلال 14 يوم" } }
+      ]
+    },
+    {
+      "name": "Ultimate Hero 7: Video",
+      "category": "Instachiq",
+      "settings": { "template": "video", "height": "90svh", "height_m": "auto", "overlay": 55 },
+      "blocks": [
+        { "type": "trust", "settings": { "icon": "shield", "text": "منتجات أصلية فقط" } },
+        { "type": "trust", "settings": { "icon": "plane", "text": "شحن دولي في 5 - 9 أيام" } },
+        { "type": "trust", "settings": { "icon": "return", "text": "استرجاع خلال 14 يوم" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

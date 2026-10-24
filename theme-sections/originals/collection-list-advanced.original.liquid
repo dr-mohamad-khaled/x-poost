@@ -1,0 +1,746 @@
+{% comment %}
+  Collection List - Horizontal Scroll Section
+  Displays collections in a horizontally scrollable layout with firefly particles
+{% endcomment %}
+
+{%- style -%}
+  .collection-list-section-{{ section.id }} {
+    background-color: {{ section.settings.section_bg_color }};
+    padding: {{ section.settings.section_padding_top }}px 0 {{ section.settings.section_padding_bottom }}px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Firefly Canvas - Managed by firefly-particles.js */
+  .collection-list-section-{{ section.id }} .firefly-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  {% if section.settings.section_bg_image != blank %}
+  .collection-list-section-{{ section.id }}::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('{{ section.settings.section_bg_image | img_url: '1920x1080' }}');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur({{ section.settings.bg_blur_amount }}px);
+    transform: scale(1.1);
+    z-index: 0;
+  }
+  
+  .collection-list-section-{{ section.id }}::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: {{ section.settings.section_bg_color }};
+    opacity: {{ section.settings.bg_overlay_opacity | divided_by: 100.0 }};
+    z-index: 1;
+  }
+  {% endif %}
+
+  .collection-list-container-{{ section.id }} {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0 20px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .collection-list-title-{{ section.id }} {
+    text-align: center;
+    margin-bottom: 40px;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s ease-out 0.2s forwards;
+  }
+
+  .collection-scroll-container-{{ section.id }} {
+    display: flex;
+    gap: 30px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    padding: 20px 0;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0,0,0,0.2) transparent;
+  }
+
+  .collection-scroll-container-{{ section.id }}::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .collection-scroll-container-{{ section.id }}::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.1);
+    border-radius: 3px;
+  }
+
+  .collection-scroll-container-{{ section.id }}::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.3);
+    border-radius: 3px;
+  }
+
+  .collection-scroll-container-{{ section.id }}::-webkit-scrollbar-thumb:hover {
+    background: rgba(0,0,0,0.5);
+  }
+
+  .collection-item-{{ section.id }} {
+    flex: 0 0 300px;
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    background: {{ section.settings.card_bg_color }};
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(40px);
+    animation: fadeInUp 0.6s ease-out forwards;
+  }
+
+  .collection-item-{{ section.id }}:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+  }
+
+  .collection-item-{{ section.id }}:nth-child(1) { animation-delay: 0.1s; }
+  .collection-item-{{ section.id }}:nth-child(2) { animation-delay: 0.2s; }
+  .collection-item-{{ section.id }}:nth-child(3) { animation-delay: 0.3s; }
+  .collection-item-{{ section.id }}:nth-child(4) { animation-delay: 0.4s; }
+  .collection-item-{{ section.id }}:nth-child(5) { animation-delay: 0.5s; }
+  .collection-item-{{ section.id }}:nth-child(n+6) { animation-delay: 0.6s; }
+
+  .collection-image-container-{{ section.id }} {
+    position: relative;
+    height: 250px;
+    overflow: hidden;
+  }
+
+  .collection-image-container-{{ section.id }}::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: {{ section.settings.image_fade_height }}px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, {{ section.settings.card_bg_color }} 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .collection-image-{{ section.id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+
+  .collection-item-{{ section.id }}:hover .collection-image-{{ section.id }} {
+    transform: scale(1.05);
+  }
+
+  /* Brand Text Container - Replaces Logo */
+  .collection-brand-text-container-{{ section.id }} {
+    min-height: 80px;
+    background: {{ section.settings.card_bg_color }};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    overflow: hidden;
+    opacity: {{ section.settings.card_opacity | divided_by: 100.0 }};
+  }
+
+  .collection-brand-text-{{ section.id }} {
+    text-align: center;
+    font-weight: 700;
+    line-height: 1.2;
+    animation: floatingText 4s ease-in-out infinite;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .collection-item-{{ section.id }}.text-animate .collection-brand-text-{{ section.id }} {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .collection-item-{{ section.id }}:hover .collection-brand-text-{{ section.id }} {
+    animation-play-state: paused;
+    transform: scale(1.05);
+  }
+
+  .collection-content-{{ section.id }} {
+    padding: 20px 20px 25px 20px;
+    background-color: {{ section.settings.card_bg_color }};
+    text-align: center;
+    min-height: auto;
+    opacity: {{ section.settings.card_opacity | divided_by: 100.0 }};
+  }
+
+  .collection-description-{{ section.id }} {
+    color: {{ section.settings.text_color }};
+    font-size: {{ section.settings.text_size }}px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    overflow: hidden;
+    min-height: auto;
+  }
+
+  .collection-button-{{ section.id }} {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: {{ section.settings.button_bg_color }};
+    color: {{ section.settings.button_text_color }};
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 2px solid {{ section.settings.button_bg_color }};
+    min-width: 120px;
+  }
+
+  .collection-button-{{ section.id }}:hover {
+    background-color: {{ section.settings.button_hover_bg_color }};
+    color: {{ section.settings.button_hover_text_color }};
+    border-color: {{ section.settings.button_hover_bg_color }};
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes floatingText {
+    0%, 100% {
+      transform: translateY(-8px);
+    }
+    50% {
+      transform: translateY(8px);
+    }
+  }
+
+  /* Mobile Responsiveness */
+  @media (max-width: 768px) {
+    .collection-list-container-{{ section.id }} {
+      padding: 0 15px;
+    }
+
+    .collection-item-{{ section.id }} {
+      flex: 0 0 280px;
+    }
+
+    .collection-image-container-{{ section.id }} {
+      height: 200px;
+    }
+
+    .collection-brand-text-container-{{ section.id }} {
+      min-height: 70px;
+      padding: 15px;
+    }
+
+    .collection-content-{{ section.id }} {
+      padding: 15px;
+    }
+
+    .collection-description-{{ section.id }} {
+      font-size: {{ section.settings.text_size | minus: 2 }}px;
+    }
+
+    .collection-button-{{ section.id }} {
+      padding: 10px 20px;
+      font-size: 14px;
+    }
+
+    .collection-scroll-container-{{ section.id }} {
+      gap: 20px;
+      padding: 15px 0;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .collection-item-{{ section.id }} {
+      flex: 0 0 250px;
+    }
+
+    .collection-image-container-{{ section.id }} {
+      height: 180px;
+    }
+
+    .collection-brand-text-container-{{ section.id }} {
+      min-height: 60px;
+      padding: 15px 10px;
+    }
+  }
+{%- endstyle -%}
+
+<section class="collection-list-section-{{ section.id }}" id="collection-list-{{ section.id }}">
+  
+  {% if section.settings.enable_particles %}
+  <canvas class="firefly-canvas"
+          data-particle-color="{{ section.settings.particle_color }}"
+          data-particle-count="{{ section.settings.particle_count }}"
+          data-particle-speed="{{ section.settings.particle_speed }}"
+          data-particle-size="{{ section.settings.particle_size }}">
+  </canvas>
+  {% endif %}
+
+  <div class="collection-list-container-{{ section.id }}">
+    
+    {% if section.settings.section_title != blank %}
+      <h2 class="collection-list-title-{{ section.id }}">{{ section.settings.section_title }}</h2>
+    {% endif %}
+
+    <div class="collection-scroll-container-{{ section.id }}">
+      {% for block in section.blocks %}
+        {% assign collection = collections[block.settings.collection] %}
+        
+        <div class="collection-item-{{ section.id }}" {{ block.shopify_attributes }}>
+          <div class="collection-image-container-{{ section.id }}">
+            {% if block.settings.custom_image != blank %}
+              <img 
+                src="{{ block.settings.custom_image | img_url: '400x400' }}" 
+                alt="{{ block.settings.custom_image.alt | default: collection.title }}"
+                class="collection-image-{{ section.id }}"
+                loading="lazy"
+              >
+            {% elsif collection.featured_image %}
+              <img 
+                src="{{ collection.featured_image | img_url: '400x400' }}" 
+                alt="{{ collection.featured_image.alt | default: collection.title }}"
+                class="collection-image-{{ section.id }}"
+                loading="lazy"
+              >
+            {% else %}
+              <div class="collection-image-{{ section.id }}" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+            {% endif %}
+          </div>
+
+          {% if block.settings.brand_text != blank %}
+            <div class="collection-brand-text-container-{{ section.id }}">
+              <div class="collection-brand-text-{{ section.id }}"
+                   style="color: {{ block.settings.brand_text_color }}; font-size: {{ block.settings.brand_text_size }}px; font-family: {{ block.settings.brand_text_font }};">
+                {{ block.settings.brand_text }}
+              </div>
+            </div>
+          {% endif %}
+
+          <div class="collection-content-{{ section.id }}">
+            {% if block.settings.description != blank %}
+              <p class="collection-description-{{ section.id }}">
+                {{ block.settings.description }}
+              </p>
+            {% endif %}
+
+            {% assign button_text = block.settings.button_text | default: 'Shop Collection' %}
+            {% assign button_link = block.settings.button_link | default: collection.url %}
+            
+            <a href="{{ button_link }}" class="collection-button-{{ section.id }}">
+              {{ button_text }}
+            </a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<script>
+// Text animation trigger
+document.addEventListener('DOMContentLoaded', function() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.animationPlayState = 'running';
+        setTimeout(() => {
+          entry.target.classList.add('text-animate');
+        }, 300);
+      }
+    });
+  }, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  });
+
+  const collectionItems = document.querySelectorAll('.collection-item-{{ section.id }}');
+  collectionItems.forEach(item => {
+    observer.observe(item);
+  });
+});
+</script>
+
+{% schema %}
+{
+  "name": "collection-brands",
+  "tag": "section",
+  "class": "collection-list-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section Title",
+      "default": "Shop Our Collections"
+    },
+    {
+      "type": "header",
+      "content": "Background Settings"
+    },
+    {
+      "type": "color",
+      "id": "section_bg_color",
+      "label": "Section Background Color",
+      "default": "#f8f9fa"
+    },
+    {
+      "type": "image_picker",
+      "id": "section_bg_image",
+      "label": "Section Background Image",
+      "info": "Optional background image with blur effect"
+    },
+    {
+      "type": "range",
+      "id": "bg_blur_amount",
+      "label": "Background Blur Amount",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "default": 8,
+      "unit": "px",
+      "info": "Only applies when background image is set"
+    },
+    {
+      "type": "range",
+      "id": "bg_overlay_opacity",
+      "label": "Background Overlay Opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "default": 40,
+      "unit": "%",
+      "info": "Color overlay on top of background image"
+    },
+    {
+      "type": "header",
+      "content": "✨ Firefly Particle Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_particles",
+      "label": "Enable Firefly Particles",
+      "default": true,
+      "info": "Toggle animated particle background effect"
+    },
+    {
+      "type": "color",
+      "id": "particle_color",
+      "label": "Particle Color",
+      "default": "#ffd700",
+      "info": "Color of the firefly particles"
+    },
+    {
+      "type": "range",
+      "id": "particle_count",
+      "min": 10,
+      "max": 150,
+      "step": 10,
+      "label": "Number of Particles",
+      "default": 50,
+      "info": "More particles = heavier on performance"
+    },
+    {
+      "type": "range",
+      "id": "particle_speed",
+      "min": 0.3,
+      "max": 3,
+      "step": 0.1,
+      "label": "Animation Speed",
+      "default": 1,
+      "info": "Speed multiplier for particle movement"
+    },
+    {
+      "type": "range",
+      "id": "particle_size",
+      "min": 0.5,
+      "max": 2.5,
+      "step": 0.1,
+      "label": "Particle Size",
+      "default": 1,
+      "info": "Size multiplier for particles"
+    },
+    {
+      "type": "header",
+      "content": "Section Spacing"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "label": "Top Padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 60,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "label": "Bottom Padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 60,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "card_bg_color",
+      "label": "Card Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "card_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "label": "Card Transparency",
+      "default": 100,
+      "unit": "%",
+      "info": "Adjust card background opacity (image stays at 100%)"
+    },
+    {
+      "type": "range",
+      "id": "image_fade_height",
+      "min": 0,
+      "max": 120,
+      "step": 10,
+      "label": "Image Fade Height",
+      "default": 60,
+      "unit": "px",
+      "info": "Height of the fade effect at bottom of images"
+    },
+    {
+      "type": "header",
+      "content": "Text Styling"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#333333"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Text Size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Button Styling"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button Background Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_bg_color",
+      "label": "Button Hover Background Color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_text_color",
+      "label": "Button Hover Text Color",
+      "default": "#ffffff"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection_item",
+      "name": "Collection Item",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_image",
+          "label": "Custom Collection Image",
+          "info": "Overrides the collection's featured image"
+        },
+        {
+          "type": "header",
+          "content": "Brand Text Settings"
+        },
+        {
+          "type": "text",
+          "id": "brand_text",
+          "label": "Brand Text",
+          "default": "BRAND NAME",
+          "info": "Large floating text displayed below the image"
+        },
+        {
+          "type": "color",
+          "id": "brand_text_color",
+          "label": "Brand Text Color",
+          "default": "#000000"
+        },
+        {
+          "type": "range",
+          "id": "brand_text_size",
+          "min": 16,
+          "max": 48,
+          "step": 2,
+          "label": "Brand Text Size",
+          "default": 24,
+          "unit": "px",
+          "info": "Size of the floating brand text"
+        },
+        {
+          "type": "select",
+          "id": "brand_text_font",
+          "label": "Brand Text Font",
+          "default": "Arial, sans-serif",
+          "options": [
+            {
+              "value": "Arial, sans-serif",
+              "label": "Arial"
+            },
+            {
+              "value": "Helvetica, sans-serif",
+              "label": "Helvetica"
+            },
+            {
+              "value": "'Times New Roman', serif",
+              "label": "Times New Roman"
+            },
+            {
+              "value": "Georgia, serif",
+              "label": "Georgia"
+            },
+            {
+              "value": "'Courier New', monospace",
+              "label": "Courier New"
+            },
+            {
+              "value": "Verdana, sans-serif",
+              "label": "Verdana"
+            },
+            {
+              "value": "Tahoma, sans-serif",
+              "label": "Tahoma"
+            },
+            {
+              "value": "'Trebuchet MS', sans-serif",
+              "label": "Trebuchet MS"
+            },
+            {
+              "value": "'Comic Sans MS', cursive",
+              "label": "Comic Sans MS"
+            },
+            {
+              "value": "Impact, fantasy",
+              "label": "Impact"
+            },
+            {
+              "value": "'Lucida Sans', sans-serif",
+              "label": "Lucida Sans"
+            },
+            {
+              "value": "'Palatino Linotype', serif",
+              "label": "Palatino"
+            },
+            {
+              "value": "'Garamond', serif",
+              "label": "Garamond"
+            },
+            {
+              "value": "'Brush Script MT', cursive",
+              "label": "Brush Script"
+            },
+            {
+              "value": "'Copperplate', fantasy",
+              "label": "Copperplate"
+            }
+          ],
+          "info": "Choose the font style for the brand text"
+        },
+        {
+          "type": "header",
+          "content": "Content Settings"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Collection Description",
+          "default": "Discover our amazing collection featuring the latest trends and timeless classics."
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button Text",
+          "default": "Shop Collection"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button Link",
+          "info": "Leave empty to use collection URL"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "collection-brands",
+      "blocks": [
+        {
+          "type": "collection_item"
+        },
+        {
+          "type": "collection_item"
+        },
+        {
+          "type": "collection_item"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

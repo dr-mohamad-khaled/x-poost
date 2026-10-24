@@ -1,0 +1,2033 @@
+{%- comment -%}
+  XPoost Builder: Bundle Builder + Kit Builder in one theme section.
+  No app needed. Products, images, texts and colors are all set in the theme editor.
+  Mode "Bundle": shoppers pick products from a list and add them to cart together.
+  Mode "Kit": shoppers build a routine step by step (one block per step).
+  Every line added to cart carries a hidden "_bundle" property so orders show which items came together.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+  assign mode = s.mode
+  if mode == 'bundle'
+    assign layout = s.bundle_layout
+  else
+    assign layout = s.kit_layout
+  endif
+  assign has_hero = false
+  if layout == 'hero_grid' or layout == 'slots_chips' or layout == 'accordion'
+    assign has_hero = true
+  endif
+  assign split = false
+  if layout == 'hero_grid' or layout == 'accordion'
+    assign split = true
+  endif
+  assign overlay = s.hero_overlay | divided_by: 100.0
+-%}
+
+{%- capture xpb_vars -%}--xpb-accent:{{ s.accent }};--xpb-on-accent:{{ s.on_accent }};--xpb-bg:{{ s.bg }};--xpb-card:{{ s.card }};--xpb-tile:{{ s.tile }};--xpb-text:{{ s.text }};--xpb-muted:{{ s.muted }};--xpb-border:{{ s.border }};--xpb-bar:{{ s.bar }};--xpb-box:{{ s.box_bg }};--xpb-radius:{{ s.radius }}px;--xpb-btn-radius:{{ s.btn_radius }}px;--xpb-cols-m:{{ s.cols_mobile }};--xpb-cols-d:{{ s.cols_desktop }};--xpb-ratio:{{ s.image_ratio }};--xpb-fit:{{ s.image_fit }};--xpb-pt:{{ s.padding_top }}px;--xpb-pb:{{ s.padding_bottom }}px;--xpb-hsize:{{ s.heading_size }}px;--xpb-hero-h:{{ s.hero_height }}px;--xpb-overlay:{{ overlay }};--xpb-dw:{{ s.drawer_width }}px;{%- endcapture -%}
+
+{%- capture xpb_content -%}
+    {%- unless has_hero -%}
+      <div class="xpb-intro">
+        {%- if s.eyebrow != blank -%}<span class="xpb-pill">{{ s.eyebrow | escape }}</span>{%- endif -%}
+        {%- if s.heading != blank -%}<h2 class="xpb-intro__title">{{ s.heading | escape }}</h2>{%- endif -%}
+        {%- if s.show_bar -%}<span class="xpb-intro__bar" aria-hidden="true"></span>{%- endif -%}
+        {%- if s.subheading != blank -%}<p class="xpb-intro__sub">{{ s.subheading | escape }}</p>{%- endif -%}
+      </div>
+    {%- endunless -%}
+
+    <div class="xpb__cols{% if split %} xpb__cols--split{% endif %}">
+      {%- if has_hero -%}
+        <div class="xpb-hero xpb-hero--{{ s.hero_align }}">
+          {%- liquid
+            assign dclass = 'xpb-hero__img'
+            if s.hero_image_mobile != blank
+              assign dclass = 'xpb-hero__img xpb-hero__img--d'
+            endif
+          -%}
+          {%- if s.hero_image != blank -%}
+            {{ s.hero_image | image_url: width: 1600 | image_tag: widths: '450, 750, 1100, 1600', sizes: '(min-width: 990px) 50vw, 100vw', class: dclass, loading: 'lazy', alt: s.heading }}
+          {%- endif -%}
+          {%- if s.hero_image_mobile != blank -%}
+            {{ s.hero_image_mobile | image_url: width: 900 | image_tag: widths: '375, 600, 900', sizes: '100vw', class: 'xpb-hero__img xpb-hero__img--m', loading: 'lazy', alt: s.heading }}
+          {%- endif -%}
+          {%- if s.sparkles -%}
+            <div class="xpb-spark" aria-hidden="true">
+              {%- assign sp = '6,6,3;22,30,2;40,12,4;62,40,2;80,8,3;92,26,2;14,60,2;34,72,3;70,64,2;88,80,3;50,88,2;8,90,3;28,46,2;76,50,2' | split: ';' -%}
+              {%- for d in sp -%}
+                {%- assign a = d | split: ',' -%}
+                <span style="left:{{ a[0] }}%;top:{{ a[1] }}%;width:{{ a[2] }}px;height:{{ a[2] }}px;animation-delay:{{ forloop.index | times: 0.37 | modulo: 3 }}s"></span>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+          <div class="xpb-hero__content">
+            {%- if s.eyebrow != blank -%}<span class="xpb-pill">{{ s.eyebrow | escape }}</span>{%- endif -%}
+            {%- if s.heading != blank -%}<h2 class="xpb-hero__title">{{ s.heading | escape }}</h2>{%- endif -%}
+            {%- if s.subheading != blank -%}<p class="xpb-hero__sub">{{ s.subheading | escape }}</p>{%- endif -%}
+          </div>
+        </div>
+      {%- endif -%}
+
+      <div class="xpb__main" data-xpb-mount>
+        {%- if request.design_mode -%}<p class="xpb-empty">XPoost Builder…</p>{%- endif -%}
+      </div>
+    </div>
+{%- endcapture -%}
+
+<section
+  id="xpb-{{ section.id }}"
+  class="xpb xpb--{{ mode }} xpb--{{ layout }} xpb--show-{{ s.display }}"
+  style="{{ xpb_vars }}"
+>
+  {%- if s.display == 'inline' -%}
+    <div class="xpb__wrap">{{ xpb_content }}</div>
+  {%- else -%}
+    {%- if s.show_trigger -%}
+      <div class="xpb__wrap xpb-trig">
+        <button
+          type="button"
+          class="xpb-tbtn xpb-tbtn--{{ s.trigger_style }}{% if s.trigger_full %} xpb-tbtn--block{% endif %}"
+          style="--xpb-ts:{{ s.trigger_speed }}"
+          data-xpb-open
+          aria-haspopup="dialog"
+          aria-controls="xpb-ov-{{ section.id }}"
+        >
+          <span class="xpb-tbtn__in">
+            {%- case s.trigger_icon -%}
+              {%- when 'sparkles' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7 4.7 1.8-4.7 1.8L12 16l-1.8-4.7-4.7-1.8 4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/><path d="M5 2.5l.6 1.4L7 4.5l-1.4.6L5 6.5l-.6-1.4L3 4.5l1.4-.6z"/></svg>
+              {%- when 'gift' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M5 12v9h14v-9M12 8v13M12 8S10.5 3 8 4s0 4 4 4zM12 8s1.5-5 4-4 0 4-4 4z"/></svg>
+              {%- when 'serum' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 2h2v5h-2z"/><path d="M9.5 7h5v2h-5z"/><rect x="8.5" y="9" width="7" height="12" rx="2"/><path d="M12 13v3"/></svg>
+              {%- when 'box' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>
+              {%- when 'heart' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>
+              {%- when 'wand' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20L15 9"/><path d="M14 4v2M19 9h2M17.5 5.5L19 4"/><path d="M8 3l.5 1.5L10 5l-1.5.5L8 7l-.5-1.5L6 5l1.5-.5z"/></svg>
+            {%- endcase -%}
+            <span class="xpb-tbtn__txt">{{ s.trigger_label | escape }}</span>
+          </span>
+          {%- if s.trigger_style == 'sparkle' -%}
+            <i class="xpb-star" aria-hidden="true"></i><i class="xpb-star" aria-hidden="true"></i><i class="xpb-star" aria-hidden="true"></i><i class="xpb-star" aria-hidden="true"></i><i class="xpb-star" aria-hidden="true"></i>
+          {%- endif -%}
+        </button>
+        {%- if s.trigger_note != blank -%}<p class="xpb-tnote">{{ s.trigger_note | escape }}</p>{%- endif -%}
+      </div>
+    {%- endif -%}
+    <div
+      id="xpb-ov-{{ section.id }}"
+      class="xpb xpb-ov xpb-ov--{{ s.display }} xpb-ov--{{ s.drawer_side }} xpb--{{ mode }} xpb--{{ layout }}"
+      style="{{ xpb_vars }}"
+      data-xpb-ov
+      hidden
+    >
+      <div class="xpb-ov__bg" data-xpb-close></div>
+      <div class="xpb-panel" role="dialog" aria-modal="true" aria-labelledby="xpb-ov-t-{{ section.id }}">
+        <div class="xpb-panel__head">
+          <h2 class="xpb-panel__title" id="xpb-ov-t-{{ section.id }}">{{ s.panel_title | default: s.heading | default: s.trigger_label | escape }}</h2>
+          <button type="button" class="xpb-x xpb-panel__x" data-xpb-close>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+            <span>{{ s.t_close | escape }}</span>
+          </button>
+        </div>
+        <div class="xpb-panel__body">
+          <div class="xpb__wrap">{{ xpb_content }}</div>
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+
+  <script type="application/json" data-xpb-config>
+    {
+      "mode": {{ mode | json }},
+      "sid": {{ section.id | json }},
+      "display": {{ s.display | json }},
+      "anim": {{ s.animations | json }},
+      "hash": {{ s.open_hash | strip | remove: '#' | json }},
+      "layout": {{ layout | json }},
+      "size": {{ s.bundle_size | json }},
+      "min": {{ s.bundle_min | json }},
+      "kitRule": {{ s.kit_rule | json }},
+      "qv": {{ s.quick_view | json }},
+      "imgClick": {{ s.image_click | json }},
+      "money": {% if s.price_format == 'with_currency' %}{{ shop.money_with_currency_format | strip_html | json }}{% else %}{{ shop.money_format | strip_html | json }}{% endif %},
+      "after": {{ s.after_add | json }},
+      "cartUrl": {{ routes.cart_url | json }},
+      "addUrl": {{ routes.cart_add_url | append: '.js' | json }},
+      "rootUrl": {{ routes.root_url | json }},
+      "name": {{ s.heading | default: 'Bundle' | json }},
+      "current": {% if product %}{{ product.id }}{% else %}null{% endif %},
+      "design": {{ request.design_mode | json }},
+      "split": {{ s.split_title | json }},
+      "subSource": {{ s.subtitle_source | json }},
+      "boxImg": {% if s.box_image != blank %}{{ s.box_image | image_url: width: 1000 | json }}{% else %}null{% endif %},
+      "ribbon": {{ s.box_ribbon | json }},
+      "t": {
+        "pick": {{ s.t_pick | json }},
+        "progress": {{ s.t_progress | json }},
+        "add": {{ s.t_add | json }},
+        "remove": {{ s.t_remove | json }},
+        "full": {{ s.t_full | json }},
+        "more": {{ s.t_more | json }},
+        "cta": {{ s.t_cta | json }},
+        "cta_count": {{ s.t_cta_count | json }},
+        "total": {{ s.t_total | json }},
+        "all": {{ s.t_all | json }},
+        "concerns": {{ s.t_concerns | json }},
+        "slot": {{ s.t_slot | json }},
+        "sold_out": {{ s.t_sold_out | json }},
+        "this_item": {{ s.t_this_item | json }},
+        "variant": {{ s.t_variant | json }},
+        "step": {{ s.t_step | json }},
+        "rule_exact": {{ s.t_rule_exact | json }},
+        "rule_range": {{ s.t_rule_range | json }},
+        "rule_up": {{ s.t_rule_up | json }},
+        "optional": {{ s.t_optional | json }},
+        "choose": {{ s.t_choose | json }},
+        "chosen": {{ s.t_chosen | json }},
+        "next": {{ s.t_next | json }},
+        "skip": {{ s.t_skip | json }},
+        "your_kit": {{ s.t_your_kit | json }},
+        "not_yet": {{ s.t_not_yet | json }},
+        "steps_done": {{ s.t_steps_done | json }},
+        "steps_left": {{ s.t_steps_left | json }},
+        "step_full": {{ s.t_step_full | json }},
+        "in_box": {{ s.t_in_box | json }},
+        "put": {{ s.t_put | json }},
+        "in": {{ s.t_in | json }},
+        "done": {{ s.t_done | json }},
+        "adding": {{ s.t_adding | json }},
+        "added": {{ s.t_added | json }},
+        "error": {{ s.t_error | json }},
+        "close": {{ s.t_close | json }},
+        "quick_view": {{ s.t_quick_view | json }},
+        "view_page": {{ s.t_view_page | json }},
+        "pick_one": {{ s.t_pick_one | json }},
+        "next_short": {{ s.t_next_short | json }}
+      },
+      "items": [
+        {%- assign sep = '' -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'item' and block.settings.product != blank -%}
+            {%- assign p = block.settings.product -%}
+            {%- unless s.hide_sold_out and p.available == false -%}
+              {{ sep }}{"key":{{ block.id | json }},"label":{{ block.settings.label | json }},"concern":{{ block.settings.concern | strip | json }},"p":{"id":{{ p.id }},"h":{{ p.handle | json }},"title":{{ p.title | json }},"url":{{ p.url | json }},"v":{{ p.vendor | json }},"ty":{{ p.type | json }},"available":{{ p.available | json }},"img":{% if p.featured_image %}{{ p.featured_image | image_url: width: 400 | json }},"img2":{{ p.featured_image | image_url: width: 800 | json }}{% else %}null{% endif %},"variants":[{%- for v in p.variants limit: 50 -%}{"id":{{ v.id }},"title":{{ v.title | json }},"price":{{ v.price | json }},"available":{{ v.available | json }},"img":{% if v.featured_image %}{{ v.featured_image | image_url: width: 400 | json }},"img2":{{ v.featured_image | image_url: width: 800 | json }}{% else %}null{% endif %}}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]}}
+              {%- assign sep = ',' -%}
+            {%- endunless -%}
+          {%- endif -%}
+        {%- endfor -%}
+      ],
+      "steps": [
+        {%- assign ssep = '' -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'step' -%}
+            {{ ssep }}{"key":{{ block.id | json }},"label":{{ block.settings.label | json }},"title":{{ block.settings.title | json }},"desc":{{ block.settings.description | json }},"img":{% if block.settings.image != blank %}{{ block.settings.image | image_url: width: 1000 | json }}{% else %}null{% endif %},"icon":{{ block.settings.icon | json }},"min":{{ block.settings.min_picks | json }},"max":{{ block.settings.max_picks | json }},"products":[
+              {%- assign psep = '' -%}
+              {%- for p in block.settings.products -%}
+                {%- unless s.hide_sold_out and p.available == false -%}
+                  {{ psep }}{"id":{{ p.id }},"h":{{ p.handle | json }},"title":{{ p.title | json }},"url":{{ p.url | json }},"v":{{ p.vendor | json }},"ty":{{ p.type | json }},"available":{{ p.available | json }},"img":{% if p.featured_image %}{{ p.featured_image | image_url: width: 400 | json }},"img2":{{ p.featured_image | image_url: width: 800 | json }}{% else %}null{% endif %},"variants":[{%- for v in p.variants limit: 50 -%}{"id":{{ v.id }},"title":{{ v.title | json }},"price":{{ v.price | json }},"available":{{ v.available | json }},"img":{% if v.featured_image %}{{ v.featured_image | image_url: width: 400 | json }},"img2":{{ v.featured_image | image_url: width: 800 | json }}{% else %}null{% endif %}}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]}
+                  {%- assign psep = ',' -%}
+                {%- endunless -%}
+              {%- endfor -%}
+            ]}
+            {%- assign ssep = ',' -%}
+          {%- endif -%}
+        {%- endfor -%}
+      ]
+    }
+  </script>
+
+  <style>
+    .xpb{position:relative;background:var(--xpb-bg);color:var(--xpb-text);padding:var(--xpb-pt) 0 var(--xpb-pb);font-family:inherit;line-height:1.5}
+    .xpb *,.xpb *::before,.xpb *::after{box-sizing:border-box}
+    .xpb__wrap{max-width:1200px;margin:0 auto;padding:0 14px}
+    .xpb img{display:block;max-width:100%}
+    .xpb button,.xpb select,.xpb input{font-family:inherit}
+    .xpb button:focus-visible,.xpb select:focus-visible,.xpb input:focus-visible{outline:2px solid var(--xpb-accent);outline-offset:2px}
+    .xpb-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+    .xpb-empty{text-align:center;color:var(--xpb-muted);padding:24px;border:1px dashed var(--xpb-border);border-radius:var(--xpb-radius)}
+
+    .xpb-pill{display:inline-block;background:var(--xpb-accent);color:var(--xpb-on-accent);font-size:12px;font-weight:700;padding:5px 12px;border-radius:99px}
+    .xpb-intro{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;margin-bottom:22px}
+    .xpb-intro__title{margin:0;color:var(--xpb-accent);font-size:var(--xpb-hsize);line-height:1.3;font-weight:600}
+    .xpb-intro__bar{width:140px;height:2px;background:var(--xpb-text)}
+    .xpb-intro__sub{margin:4px 0 0;color:var(--xpb-muted);font-size:15px;line-height:1.6;max-width:560px}
+
+    .xpb-hero{position:relative;min-height:var(--xpb-hero-h);border-radius:var(--xpb-radius);overflow:hidden;display:flex;align-items:flex-end;background:radial-gradient(circle at 50% 40%,color-mix(in srgb,var(--xpb-accent) 28%,var(--xpb-bg)) 0%,var(--xpb-bg) 75%);margin-bottom:18px}
+    .xpb-hero__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+    .xpb-hero__img--d{display:none}
+    .xpb-hero__content{position:relative;width:100%;padding:64px 18px 22px;background:linear-gradient(to top,rgba(0,0,0,var(--xpb-overlay)),rgba(0,0,0,0));display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center}
+    .xpb-hero--start .xpb-hero__content{align-items:flex-start;text-align:start}
+    .xpb-hero__title{margin:0;color:#fff;font-size:var(--xpb-hsize);line-height:1.3;font-weight:700}
+    .xpb-hero__sub{margin:0;color:#e6e6e6;font-size:15px;line-height:1.6;max-width:520px}
+    .xpb-spark span{position:absolute;border-radius:99px;background:var(--xpb-accent);box-shadow:0 0 8px var(--xpb-accent);opacity:.8;animation:xpb-tw 3s ease-in-out infinite;pointer-events:none}
+    @keyframes xpb-tw{0%,100%{opacity:.25}50%{opacity:.95}}
+
+    .xpb-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:8px}
+    .xpb-head__title{font-size:17px;font-weight:700}
+    .xpb-head__count{font-size:14px;font-weight:700;color:var(--xpb-accent)}
+    .xpb-progress{height:6px;background:var(--xpb-card);border-radius:99px;overflow:hidden;margin-bottom:16px}
+    .xpb-progress span{display:block;height:100%;background:var(--xpb-accent);border-radius:99px;transition:width .25s}
+
+    .xpb-grid{display:grid;grid-template-columns:repeat(var(--xpb-cols-m),minmax(0,1fr));gap:10px}
+    .xpb-card{background:var(--xpb-card);border-radius:var(--xpb-radius);padding:8px;display:flex;flex-direction:column;gap:10px;border:2px solid var(--xpb-card)}
+    .xpb-card.is-on{border-color:var(--xpb-accent)}
+    .xpb-media{position:relative;aspect-ratio:var(--xpb-ratio);background:var(--xpb-tile);border-radius:max(0px,calc(var(--xpb-radius) - 4px));overflow:hidden;display:flex;align-items:center;justify-content:center}
+    .xpb-media img{width:100%;height:100%;object-fit:var(--xpb-fit)}
+    .xpb-media--wide{aspect-ratio:16/10}
+    .xpb-media--wide img{object-fit:contain}
+    .xpb-ph{width:34%;height:34%;color:var(--xpb-muted)}
+    .xpb-tick{position:absolute;top:8px;inset-inline-end:8px;width:28px;height:28px;border-radius:99px;background:var(--xpb-accent);color:var(--xpb-on-accent);display:flex;align-items:center;justify-content:center}
+    .xpb-soldout{position:absolute;bottom:8px;inset-inline-start:8px;background:#121111;color:#fff;font-size:12px;font-weight:700;padding:4px 10px;border-radius:99px}
+    .xpb-tag{position:absolute;top:10px;inset-inline-start:10px;background:#121111;color:#fff;font-size:12px;font-weight:700;padding:5px 10px;border-radius:99px}
+    .xpb-tag--accent{inset-inline-start:auto;inset-inline-end:10px;background:var(--xpb-accent);color:var(--xpb-on-accent)}
+    .xpb-info{padding:0 4px;display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+    .xpb-name{font-size:14px;font-weight:700;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .xpb-sub{font-size:12.5px;line-height:1.5;color:var(--xpb-muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .xpb-price{font-size:15px;font-weight:700;unicode-bidi:plaintext}
+    .xpb-select{width:100%;min-height:42px;background:var(--xpb-bg);color:var(--xpb-text);border:1px solid var(--xpb-border);border-radius:var(--xpb-btn-radius);padding:0 10px;font-size:14px}
+
+    .xpb-btn{min-height:44px;padding:0 16px;border-radius:var(--xpb-btn-radius);border:1px solid transparent;font-size:15px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-align:center;line-height:1.2}
+    .xpb-btn--block{width:100%}
+    .xpb-btn--primary{background:var(--xpb-accent);color:var(--xpb-on-accent)}
+    .xpb-btn--ghost{background:transparent;color:var(--xpb-text);border-color:var(--xpb-border)}
+    .xpb-btn--outline{background:transparent;color:var(--xpb-accent);border-color:var(--xpb-accent)}
+    .xpb-btn--dashed{background:transparent;color:var(--xpb-text);border:1px dashed var(--xpb-border);font-weight:600}
+    .xpb-btn[disabled]{background:var(--xpb-border);color:var(--xpb-text);border-color:transparent;cursor:not-allowed}
+    .xpb-btn--lg{min-height:52px;font-size:16px}
+    .xpb-round{width:44px;height:44px;flex:none;border-radius:99px;border:0;background:var(--xpb-accent);color:var(--xpb-on-accent);display:flex;align-items:center;justify-content:center;cursor:pointer}
+    .xpb-round.is-on{background:transparent;color:var(--xpb-accent);border:2px solid var(--xpb-accent)}
+    .xpb-round[disabled]{background:var(--xpb-border);color:var(--xpb-text);cursor:not-allowed}
+
+    .xpb-bar{position:sticky;bottom:0;z-index:5;margin:18px -14px 0;background:var(--xpb-bar);border-top:1px solid var(--xpb-accent);padding:12px 14px calc(14px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .xpb-bar--col{flex-direction:column;align-items:stretch}
+    .xpb-bar__label{font-size:14px;font-weight:700;flex:1}
+    .xpb-tray{display:flex;gap:6px;flex-wrap:nowrap}
+    .xpb-thumb{width:40px;height:40px;border-radius:10px;overflow:hidden;background:var(--xpb-tile);border:1px solid var(--xpb-accent);flex:none;display:flex;align-items:center;justify-content:center}
+    .xpb-thumb img{width:100%;height:100%;object-fit:cover}
+    .xpb-thumb--empty{background:transparent;border:1.5px dashed var(--xpb-border);color:var(--xpb-muted);font-size:14px}
+    .xpb-total{flex:1;display:flex;flex-direction:column;gap:1px;min-width:90px}
+    .xpb-total__label{font-size:12px;color:var(--xpb-muted)}
+    .xpb-total__value{font-size:18px;font-weight:700;unicode-bidi:plaintext;white-space:nowrap}
+    .xpb-row-between{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+    .xpb-msg{width:100%;margin:0;font-size:14px;font-weight:700;color:var(--xpb-accent)}
+    .xpb-msg--err{color:#ff8a80}
+
+    .xpb-slots{display:flex;gap:8px;overflow-x:auto;padding:8px 8px 4px;margin:0 -8px 4px;scrollbar-width:none}
+    .xpb-slots::-webkit-scrollbar,.xpb-chips::-webkit-scrollbar,.xpb-tabs::-webkit-scrollbar,.xpb-scroller::-webkit-scrollbar{display:none}
+    .xpb-slot{position:relative;flex:0 0 calc((100% - 16px)/3);background:var(--xpb-card);border:2px solid var(--xpb-accent);border-radius:var(--xpb-radius);padding:6px;display:flex;flex-direction:column;gap:6px}
+    .xpb-slot .xpb-media{aspect-ratio:1/1}
+    .xpb-slot .xpb-name{font-size:11.5px}
+    .xpb-slot__x{position:absolute;top:-8px;inset-inline-start:-8px;width:28px;height:28px;border-radius:99px;border:0;background:#fff;color:#121111;display:flex;align-items:center;justify-content:center;cursor:pointer}
+    .xpb-slot--empty{border:1.5px dashed var(--xpb-border);background:transparent;align-items:center;justify-content:center;min-height:120px;color:var(--xpb-muted);font-size:13px}
+    .xpb-slot--empty b{width:40px;height:40px;border-radius:99px;background:var(--xpb-card);color:var(--xpb-accent);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:400}
+    .xpb-subhead{display:flex;flex-direction:column;align-items:center;gap:8px;margin:20px 0 12px}
+    .xpb-subhead h3{margin:0;color:var(--xpb-accent);font-size:22px;font-weight:600}
+    .xpb-subhead span{width:120px;height:2px;background:var(--xpb-text)}
+    .xpb-chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;scrollbar-width:none}
+    .xpb-chip{flex:none;min-height:40px;padding:0 16px;border-radius:99px;background:var(--xpb-card);border:1px solid var(--xpb-border);color:var(--xpb-text);font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap}
+    .xpb-chip.is-on{background:var(--xpb-accent);border-color:var(--xpb-accent);color:var(--xpb-on-accent)}
+    .xpb-list{display:flex;flex-direction:column;gap:10px}
+    .xpb-row{background:var(--xpb-card);border-radius:var(--xpb-radius);padding:8px;display:flex;align-items:center;gap:12px;border:2px solid var(--xpb-card)}
+    .xpb-row.is-on{border-color:var(--xpb-accent)}
+    .xpb-row .xpb-media{width:96px;flex:none;aspect-ratio:1/1}
+    .xpb-row .xpb-select{margin-top:4px;min-height:38px}
+
+    .xpb-stack{display:flex;flex-direction:column;max-width:560px;margin:0 auto}
+    .xpb-rcard{background:var(--xpb-card);border:1px solid var(--xpb-border);border-radius:var(--xpb-radius);padding:8px 8px 12px;display:flex;flex-direction:column;gap:10px}
+    .xpb-rcard.is-main{border-color:var(--xpb-accent)}
+    .xpb-rcard.is-off{opacity:.92}
+    .xpb-rrow{display:flex;align-items:flex-start;gap:10px;padding:4px 4px 0}
+    .xpb-checkrow{display:flex;align-items:flex-start;gap:10px;flex:1;min-width:0;cursor:pointer}
+    .xpb-checkrow input{width:22px;height:22px;margin:2px 0 0;accent-color:var(--xpb-accent);flex:none}
+    .xpb-checkrow > span{display:flex;flex-direction:column;gap:3px;min-width:0}
+    .xpb-vrow{display:flex;align-items:center;gap:10px;padding:0 4px;font-size:13px;color:var(--xpb-muted)}
+    .xpb-plus{display:flex;justify-content:center;margin:-10px 0;position:relative;z-index:1}
+    .xpb-plus span{width:36px;height:36px;border-radius:99px;background:var(--xpb-accent);color:var(--xpb-on-accent);border:4px solid var(--xpb-bg);display:flex;align-items:center;justify-content:center}
+    .xpb-summary{max-width:560px;margin:16px auto 0;background:var(--xpb-bar);border:1px solid var(--xpb-border);border-radius:var(--xpb-radius);padding:16px;display:flex;flex-direction:column;gap:12px}
+
+    .xpb-steps{list-style:none;margin:0 0 18px;padding:0;display:grid;grid-template-columns:repeat(var(--xpb-n),minmax(0,1fr))}
+    .xpb-steps li{position:relative;display:flex;justify-content:center}
+    .xpb-steps li + li::before{content:"";position:absolute;top:17px;inset-inline-end:50%;width:100%;height:2px;background:var(--xpb-border)}
+    .xpb-steps li.is-reached::before{background:var(--xpb-accent)}
+    .xpb-steps button{position:relative;background:none;border:0;padding:0;color:var(--xpb-text);display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;font-size:13px;min-width:44px}
+    .xpb-dot{width:36px;height:36px;border-radius:99px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;background:var(--xpb-card);color:var(--xpb-muted);border:1px solid var(--xpb-border)}
+    .is-done .xpb-dot{background:var(--xpb-accent);color:var(--xpb-on-accent);border-color:var(--xpb-accent)}
+    .is-active .xpb-dot{background:var(--xpb-bg);color:var(--xpb-accent);border:2px solid var(--xpb-accent)}
+    .is-active .xpb-steps__label,.is-done .xpb-steps__label{font-weight:700}
+    .xpb-steps__label{color:var(--xpb-text)}
+    .xpb-banner{position:relative;min-height:170px;border-radius:var(--xpb-radius);overflow:hidden;display:flex;align-items:flex-end;background:linear-gradient(160deg,color-mix(in srgb,var(--xpb-accent) 18%,var(--xpb-card)) 0%,var(--xpb-card) 60%,var(--xpb-bg) 100%);margin-bottom:14px}
+    .xpb-banner img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+    .xpb-banner__c{position:relative;width:100%;padding:50px 16px 16px;background:linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,0));display:flex;flex-direction:column;gap:4px}
+    .xpb-banner__k{font-size:13px;font-weight:700;color:var(--xpb-accent)}
+    .xpb-banner__t{margin:0;font-size:22px;font-weight:700;color:#fff}
+    .xpb-banner__d{margin:0;font-size:14px;line-height:1.55;color:#e6e6e6}
+    .xpb-skip{margin-top:12px}
+
+    .xpb-acc{display:flex;flex-direction:column;gap:10px}
+    .xpb-acc__item{background:var(--xpb-card);border-radius:var(--xpb-radius);border:1px solid var(--xpb-border);overflow:hidden}
+    .xpb-acc__item.is-open{border:2px solid var(--xpb-accent)}
+    .xpb-acc__head{width:100%;display:flex;align-items:center;gap:12px;padding:10px;border:0;background:transparent;color:var(--xpb-text);text-align:start;cursor:pointer}
+    .xpb-acc__img{width:72px;height:72px;flex:none;border-radius:max(0px,calc(var(--xpb-radius) - 4px));background:var(--xpb-tile);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#121111}
+    .xpb-acc__img img{width:100%;height:100%;object-fit:cover}
+    .xpb-acc__txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+    .xpb-acc__k{font-size:13px;color:var(--xpb-muted)}
+    .xpb-acc__t{font-size:18px;font-weight:700}
+    .xpb-acc__s{font-size:13.5px;color:var(--xpb-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;unicode-bidi:plaintext}
+    .xpb-acc__s.is-done{color:var(--xpb-accent);font-weight:700}
+    .xpb-acc__ok{width:26px;height:26px;flex:none;border-radius:99px;background:var(--xpb-accent);color:var(--xpb-on-accent);display:flex;align-items:center;justify-content:center}
+    .xpb-chev{flex:none;transition:transform .2s}
+    .is-open .xpb-chev{transform:rotate(180deg)}
+    .xpb-acc__body{padding:2px 10px 14px}
+    .xpb-scroller{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding-bottom:2px}
+    .xpb-scroller .xpb-card{flex:0 0 150px;scroll-snap-align:start;background:var(--xpb-bg);border-color:var(--xpb-border);border-width:1px}
+    .xpb-scroller .xpb-card.is-on{border-color:var(--xpb-accent);border-width:2px}
+
+    .xpb-box{position:relative;border-radius:var(--xpb-radius);background-color:var(--xpb-box);background-size:cover;background-position:center;padding:16px;overflow:hidden;margin-bottom:16px}
+    .xpb-box__rib{position:absolute;background:var(--xpb-accent);opacity:.85;pointer-events:none}
+    .xpb-box__rib--v{top:0;bottom:0;left:50%;width:14px;margin-left:-7px}
+    .xpb-box__rib--h{left:0;right:0;top:50%;height:14px;margin-top:-7px}
+    .xpb-box__top{position:relative;display:flex;justify-content:flex-start;margin-bottom:12px}
+    .xpb-box__count{font-size:14px;font-weight:700;color:#121111;background:rgba(255,255,255,.9);padding:4px 12px;border-radius:99px}
+    .xpb-box__grid{position:relative;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .xpb-bslot{aspect-ratio:1/1;border-radius:max(0px,calc(var(--xpb-radius) - 4px));overflow:hidden;display:flex;flex-direction:column;border:0;padding:0;cursor:pointer;background:var(--xpb-tile);box-shadow:0 8px 20px rgba(0,0,0,.35);color:var(--xpb-text);text-align:start}
+    .xpb-bslot__img{flex:1;min-height:0;width:100%;display:flex;align-items:center;justify-content:center}
+    .xpb-bslot__img img{width:100%;height:100%;object-fit:cover}
+    .xpb-bslot__cap{background:var(--xpb-bg);padding:6px 8px;display:flex;flex-direction:column;gap:1px;width:100%}
+    .xpb-bslot__cap b{font-size:11.5px;color:var(--xpb-accent)}
+    .xpb-bslot__cap span{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;unicode-bidi:plaintext}
+    .xpb-bslot--empty{background:rgba(18,17,17,.72);border:2px dashed rgba(255,255,255,.7);box-shadow:none;align-items:center;justify-content:center;gap:6px;color:#fff;font-weight:700;font-size:14px}
+    .xpb-bslot--empty i{font-style:normal;font-size:28px;line-height:1;color:var(--xpb-accent);font-weight:400}
+    .xpb-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px;scrollbar-width:none}
+    .xpb-tab{flex:none;display:flex;align-items:center;gap:8px;padding:6px 14px 6px 6px;padding-inline:6px 14px;border-radius:99px;background:var(--xpb-card);border:1px solid var(--xpb-border);color:var(--xpb-text);cursor:pointer;text-align:start}
+    .xpb-tab.is-on{border:2px solid var(--xpb-accent)}
+    .xpb-tab__dot{width:36px;height:36px;border-radius:99px;flex:none;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;background:var(--xpb-border);color:var(--xpb-text);overflow:hidden}
+    .xpb-tab__dot img{width:100%;height:100%;object-fit:cover}
+    .xpb-tab.is-done .xpb-tab__dot{background:var(--xpb-accent);color:var(--xpb-on-accent)}
+    .xpb-tab__txt{display:flex;flex-direction:column;line-height:1.3}
+    .xpb-tab__txt b{font-size:14px}
+    .xpb-tab__txt span{font-size:11.5px;color:var(--xpb-muted)}
+
+    @media (min-width:750px){
+      .xpb__wrap{padding:0 24px}
+      .xpb-grid{grid-template-columns:repeat(var(--xpb-cols-d),minmax(0,1fr));gap:16px}
+      .xpb-bar{margin:22px 0 0;border:1px solid var(--xpb-accent);border-radius:var(--xpb-radius)}
+      .xpb-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+      .xpb-slot{flex-basis:160px}
+      .xpb-hero__img--d{display:block}
+      .xpb-hero__img--m{display:none}
+      .xpb-scroller{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));overflow:visible}
+      .xpb-box__grid{grid-template-columns:repeat(min(var(--xpb-n),4),minmax(0,1fr))}
+    }
+    @media (min-width:990px){
+      .xpb__cols--split{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:32px;align-items:start}
+      .xpb__cols--split .xpb-hero{position:sticky;top:24px;margin-bottom:0;min-height:max(var(--xpb-hero-h),560px)}
+      .xpb--box .xpb-split{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:28px;align-items:start}
+      .xpb--box .xpb-split .xpb-box{position:sticky;top:24px}
+      .xpb--box .xpb-box__grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+
+    .xpb-trig{display:flex;justify-content:center}
+    html.xpb-lock{overflow:hidden}
+    .xpb.xpb-ov{position:fixed;inset:0;z-index:2147483000;display:flex;padding:0;background:transparent}
+    .xpb.xpb-ov[hidden]{display:none}
+    .xpb-ov__bg{position:absolute;inset:0;background:rgba(0,0,0,.65);opacity:0;transition:opacity .25s ease}
+    .xpb-ov.is-open .xpb-ov__bg{opacity:1}
+    .xpb-panel{position:relative;display:flex;flex-direction:column;background:var(--xpb-bg);color:var(--xpb-text);box-shadow:0 10px 40px rgba(0,0,0,.5);transition:transform .3s ease,opacity .3s ease}
+    .xpb-panel__head{flex:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid var(--xpb-border)}
+    .xpb-panel__title{margin:0;font-size:18px;font-weight:700;color:var(--xpb-accent);line-height:1.3}
+    .xpb-panel__body{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding-top:16px;-webkit-overflow-scrolling:touch}
+    .xpb-ov--drawer.xpb-ov--end{justify-content:flex-end}
+    .xpb-ov--drawer.xpb-ov--start{justify-content:flex-start}
+    .xpb-ov--end{--xpb-from:100%}
+    .xpb-ov--start{--xpb-from:-100%}
+    [dir=rtl] .xpb-ov--end,.xpb-ov--end[dir=rtl]{--xpb-from:-100%}
+    [dir=rtl] .xpb-ov--start,.xpb-ov--start[dir=rtl]{--xpb-from:100%}
+    .xpb-ov--drawer .xpb-panel{width:min(var(--xpb-dw),100%);height:100%;transform:translateX(var(--xpb-from))}
+    .xpb-ov--popup{align-items:flex-end;justify-content:center}
+    .xpb-ov--popup .xpb-panel{width:100%;max-height:92vh;max-height:92dvh;border-radius:var(--xpb-radius) var(--xpb-radius) 0 0;transform:translateY(100%)}
+    .xpb-ov.is-open .xpb-panel{transform:none;opacity:1}
+
+    @media (min-width:750px){
+      .xpb.xpb-ov.xpb-ov--popup{align-items:center;padding:24px}
+      .xpb-ov--popup .xpb-panel{width:min(1040px,100%);max-height:90vh;border-radius:var(--xpb-radius);transform:translateY(24px);opacity:0}
+    }
+    /* Inside a drawer the panel is narrow, so keep the phone layout at any screen size. */
+    .xpb-ov--drawer .xpb__wrap{padding:0 14px}
+    .xpb-ov--drawer .xpb-grid{grid-template-columns:repeat(var(--xpb-cols-m),minmax(0,1fr));gap:10px}
+    .xpb-ov--drawer .xpb-list{display:flex}
+    .xpb-ov--drawer .xpb-scroller{display:flex;overflow-x:auto}
+    .xpb-ov--drawer .xpb-slot{flex-basis:calc((100% - 16px)/3)}
+    .xpb-ov--drawer .xpb-bar{margin:18px -14px 0;border:0;border-top:1px solid var(--xpb-accent);border-radius:0}
+    .xpb-ov--drawer .xpb__cols--split{display:block}
+    .xpb-ov--drawer .xpb__cols--split .xpb-hero{position:relative;top:auto;min-height:var(--xpb-hero-h);margin-bottom:18px}
+    .xpb-ov--drawer .xpb-hero__img--d{display:none}
+    .xpb-ov--drawer .xpb-hero__img--m{display:block}
+    .xpb-ov--drawer .xpb-split{display:block}
+    .xpb-ov--drawer .xpb-split .xpb-box{position:relative;top:auto}
+    .xpb-ov--drawer .xpb-box__grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .xpb-ov .xpb-bar{bottom:0}
+
+
+    /* ---------- v3: links, icons, quick view, glowing close, trigger ---------- */
+    .xpb__main:empty{min-height:420px}
+    .xpb-media__link{display:block;width:100%;height:100%}
+    a.xpb-name{color:inherit;text-decoration:none}
+    a.xpb-name:hover{text-decoration:underline;text-underline-offset:3px}
+    html:not([dir=rtl]) .xpb-dir{transform:scaleX(-1)}
+    .xpb-ico{display:block;flex:none}
+    .xpb-dot .xpb-ico{width:22px;height:22px}
+    .xpb-thumb--empty .xpb-ico{width:24px;height:24px;color:var(--xpb-accent)}
+    .xpb-banner__ico{position:absolute;top:10px;inset-inline-end:12px;color:var(--xpb-accent);opacity:.55;pointer-events:none}
+    .xpb-banner__ico svg{width:104px;height:104px}
+    .xpb-acc__img.is-ico{background:var(--xpb-bg);color:var(--xpb-accent);border:1px solid var(--xpb-border)}
+    .xpb-acc__img .xpb-ico{width:40px;height:40px}
+    .xpb-bslot__art{display:flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:99px;background:rgba(255,255,255,.1);color:var(--xpb-accent);overflow:hidden}
+    .xpb-bslot__art img{width:100%;height:100%;object-fit:cover}
+    .xpb-bslot__art i{font-style:normal;font-size:28px;line-height:1;font-weight:400}
+    .xpb-bslot--empty.is-on{border-color:var(--xpb-accent);border-style:solid}
+    .xpb-tab__dot .xpb-ico{width:24px;height:24px}
+    .xpb-desc{margin:0 0 12px;-webkit-line-clamp:4}
+    .xpb-summary--wide{max-width:none}
+    .xpb-bar__top,.xpb-bar__row{display:flex;align-items:center;gap:8px}
+    .xpb-bar__row .xpb-btn{padding:0 14px;flex:none}
+    .xpb-next{gap:6px}
+
+    .xpb-qvbtn{position:absolute;bottom:8px;inset-inline-end:8px;z-index:2;width:38px;height:38px;padding:0;border-radius:99px;border:1px solid color-mix(in srgb,#fff 35%,var(--xpb-accent));background:linear-gradient(135deg,var(--xpb-accent),color-mix(in srgb,var(--xpb-accent) 65%,#000));color:var(--xpb-on-accent);display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;font-size:13px;font-weight:700;box-shadow:0 4px 12px rgba(0,0,0,.45),0 0 10px color-mix(in srgb,var(--xpb-accent) 45%,transparent)}
+    .xpb-qvbtn span{display:none}
+    .xpb-row .xpb-qvbtn,.xpb-slot .xpb-qvbtn{width:30px;height:30px;bottom:4px;inset-inline-end:4px}
+    .xpb-qvbtn.m-spinner-loading{opacity:.75}
+    @media (min-width:750px) and (hover:hover){
+      .xpb-card .xpb-qvbtn{inset-inline:0;bottom:0;width:auto;height:40px;border-radius:0;border:0;transform:translateY(100%);opacity:0;transition:transform .3s cubic-bezier(.2,.7,.2,1),opacity .3s ease}
+      .xpb-card:hover .xpb-qvbtn,.xpb-card .xpb-qvbtn:focus-visible{transform:none;opacity:1}
+      .xpb-card .xpb-qvbtn span{display:inline}
+    }
+
+    .xpb-x{position:relative;flex:none;display:inline-flex;align-items:center;gap:6px;min-height:42px;padding:0 14px;border:0;border-radius:99px;background:var(--xpb-accent);color:var(--xpb-on-accent);font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 0 0 3px color-mix(in srgb,var(--xpb-accent) 28%,transparent),0 0 18px color-mix(in srgb,var(--xpb-accent) 65%,transparent)}
+    .xpb-x::after{content:"";position:absolute;inset:0;border-radius:inherit;border:2px solid var(--xpb-accent);opacity:0;pointer-events:none}
+    .xpb-fx .xpb-x::after{animation:xpb-ring 2s ease-out infinite}
+    @keyframes xpb-ring{0%{opacity:.8;transform:scale(1)}100%{opacity:0;transform:scale(1.35,1.7)}}
+
+    .xpb.xpb-qv{position:fixed;inset:0;z-index:2147483100;display:flex;align-items:flex-end;justify-content:center;padding:0;background:transparent}
+    .xpb.xpb-qv[hidden]{display:none}
+    .xpb-qv__bg{position:absolute;inset:0;background:rgba(0,0,0,.7);opacity:0;transition:opacity .25s ease}
+    .xpb-qv.is-open .xpb-qv__bg{opacity:1}
+    .xpb-qv__panel{position:relative;width:100%;max-height:92vh;max-height:92dvh;background:var(--xpb-bg);color:var(--xpb-text);border-radius:var(--xpb-radius) var(--xpb-radius) 0 0;overflow:hidden;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .3s cubic-bezier(.2,.7,.2,1),opacity .3s ease}
+    .xpb-qv.is-open .xpb-qv__panel{transform:none}
+    .xpb-qv__x{position:absolute;top:12px;inset-inline-end:12px;z-index:3}
+    .xpb-qv__body{overflow-y:auto;overscroll-behavior:contain}
+    .xpb-qv__gallery{background:var(--xpb-tile)}
+    .xpb-qv__track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+    .xpb-qv__track::-webkit-scrollbar,.xpb-qv__thumbs::-webkit-scrollbar{display:none}
+    .xpb-qv__track img{flex:0 0 100%;width:100%;height:auto;aspect-ratio:1/1;object-fit:contain;scroll-snap-align:start;background:var(--xpb-tile)}
+    .xpb-qv__thumbs{display:flex;gap:6px;padding:8px;overflow-x:auto;background:var(--xpb-bg);scrollbar-width:none}
+    .xpb-qv__thumbs button{flex:none;width:52px;height:52px;padding:0;border:1px solid var(--xpb-border);border-radius:8px;overflow:hidden;background:var(--xpb-tile);cursor:pointer}
+    .xpb-qv__thumbs img{width:100%;height:100%;object-fit:cover}
+    .xpb-qv__info{padding:16px 16px calc(20px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px}
+    .xpb-qv__title{margin:0;font-size:20px;font-weight:700;line-height:1.35}
+    .xpb-qv__info .xpb-sub{margin:-6px 0 0;-webkit-line-clamp:3}
+    .xpb-qv__price{margin:0;font-size:19px;font-weight:700;color:var(--xpb-accent);unicode-bidi:plaintext}
+    .xpb-qv__var{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--xpb-muted)}
+    .xpb-qv__info a.xpb-btn{text-decoration:none}
+    .xpb-qv__desc{font-size:14px;line-height:1.7;color:var(--xpb-text);border-top:1px solid var(--xpb-border);padding-top:12px;overflow-wrap:anywhere}
+    .xpb-qv__desc img{max-width:100%;height:auto}
+    .xpb-qv__desc a{color:var(--xpb-accent)}
+    .xpb-skel{display:block;height:12px;border-radius:6px;background:var(--xpb-card);margin:8px 0}
+    .xpb-skel--s{width:60%}
+    .xpb-fx .xpb-skel{animation:xpb-fade .9s ease-in-out infinite alternate}
+    @media (min-width:750px){
+      .xpb.xpb-qv{align-items:center;padding:24px}
+      .xpb-qv__panel{width:min(920px,100%);max-height:88vh;border-radius:var(--xpb-radius);opacity:0;transform:translateY(20px) scale(.98)}
+      .xpb-qv.is-open .xpb-qv__panel{opacity:1;transform:none}
+      .xpb-qv__body{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);align-items:start}
+      .xpb-qv__gallery{position:sticky;top:0}
+      .xpb-qv__info{padding-top:72px}
+    }
+
+    .xpb-trig{display:flex;flex-direction:column;align-items:center;gap:8px}
+    .xpb-tnote{margin:0;font-size:13px;color:var(--xpb-muted);text-align:center}
+    .xpb-tbtn{position:relative;isolation:isolate;display:inline-flex;align-items:center;justify-content:center;min-height:56px;padding:0 30px;border:0;border-radius:var(--xpb-btn-radius);background:linear-gradient(135deg,color-mix(in srgb,var(--xpb-accent) 70%,#fff) 0%,var(--xpb-accent) 42%,color-mix(in srgb,var(--xpb-accent) 72%,#000) 100%);color:var(--xpb-on-accent);font-size:17px;font-weight:700;cursor:pointer;overflow:hidden;box-shadow:0 8px 24px color-mix(in srgb,var(--xpb-accent) 35%,transparent),inset 0 1px 0 rgba(255,255,255,.35)}
+    .xpb-tbtn--block{width:100%}
+    .xpb-tbtn__in{position:relative;z-index:3;display:inline-flex;align-items:center;gap:10px}
+    .xpb-tbtn__in svg{width:22px;height:22px;flex:none}
+    .xpb-tbtn:active{transform:scale(.97)}
+    .xpb-tbtn--sparkle::after,.xpb-tbtn--shimmer::after,.xpb-tbtn--float::after{content:"";position:absolute;top:0;bottom:0;left:0;width:40%;z-index:2;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.6),rgba(255,255,255,0));transform:translateX(-160%) skewX(-20deg);pointer-events:none}
+    .xpb-fx :is(.xpb-tbtn--sparkle,.xpb-tbtn--shimmer,.xpb-tbtn--float)::after{animation:xpb-sweep calc(3.2s * var(--xpb-ts,1)) ease-in-out infinite}
+    @keyframes xpb-sweep{0%{transform:translateX(-160%) skewX(-20deg)}60%,100%{transform:translateX(360%) skewX(-20deg)}}
+    .xpb-star{position:absolute;z-index:2;width:10px;height:10px;background:#fff;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);opacity:.85;pointer-events:none}
+    .xpb-star:nth-of-type(1){top:16%;left:9%}
+    .xpb-star:nth-of-type(2){top:62%;left:24%;width:7px;height:7px}
+    .xpb-star:nth-of-type(3){top:18%;left:72%;width:12px;height:12px}
+    .xpb-star:nth-of-type(4){top:60%;left:88%;width:8px;height:8px}
+    .xpb-star:nth-of-type(5){top:10%;left:46%;width:6px;height:6px}
+    .xpb-fx .xpb-star{opacity:0;animation:xpb-twinkle calc(2.4s * var(--xpb-ts,1)) ease-in-out infinite}
+    .xpb-fx .xpb-star:nth-of-type(2){animation-delay:calc(.5s * var(--xpb-ts,1))}
+    .xpb-fx .xpb-star:nth-of-type(3){animation-delay:calc(1s * var(--xpb-ts,1))}
+    .xpb-fx .xpb-star:nth-of-type(4){animation-delay:calc(1.5s * var(--xpb-ts,1))}
+    .xpb-fx .xpb-star:nth-of-type(5){animation-delay:calc(1.9s * var(--xpb-ts,1))}
+    @keyframes xpb-twinkle{0%,100%{opacity:0;transform:scale(.2) rotate(0)}45%{opacity:1;transform:scale(1) rotate(90deg)}70%{opacity:0;transform:scale(.3) rotate(140deg)}}
+    .xpb-tbtn--glow{overflow:visible}
+    .xpb-tbtn--glow::before,.xpb-tbtn--glow::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;background:var(--xpb-accent);opacity:0;pointer-events:none}
+    .xpb-fx .xpb-tbtn--glow::before{animation:xpb-halo calc(2.2s * var(--xpb-ts,1)) ease-out infinite}
+    .xpb-fx .xpb-tbtn--glow::after{animation:xpb-halo calc(2.2s * var(--xpb-ts,1)) ease-out calc(1.1s * var(--xpb-ts,1)) infinite}
+    @keyframes xpb-halo{0%{opacity:.55;transform:scale(1)}100%{opacity:0;transform:scale(1.08,1.5)}}
+    .xpb-tbtn--border{background:var(--xpb-bg);color:var(--xpb-accent);box-shadow:0 0 22px color-mix(in srgb,var(--xpb-accent) 30%,transparent)}
+    .xpb-tbtn--border::before{content:"";position:absolute;left:50%;top:50%;z-index:0;width:max(300%,420px);aspect-ratio:1/1;background:conic-gradient(from 0deg,transparent 0 58%,var(--xpb-accent) 76%,#fff 84%,var(--xpb-accent) 92%,transparent 100%);transform:translate(-50%,-50%);pointer-events:none}
+    .xpb-fx .xpb-tbtn--border::before{animation:xpb-spin calc(3s * var(--xpb-ts,1)) linear infinite}
+    .xpb-tbtn--border::after{content:"";position:absolute;inset:2px;z-index:1;border-radius:max(0px,calc(var(--xpb-btn-radius) - 2px));background:var(--xpb-bg);pointer-events:none}
+    @keyframes xpb-spin{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+    .xpb-fx .xpb-tbtn--float{animation:xpb-bob calc(2.6s * var(--xpb-ts,1)) ease-in-out infinite}
+    .xpb-fx .xpb-tbtn--float .xpb-tbtn__in svg{animation:xpb-wiggle calc(2.6s * var(--xpb-ts,1)) ease-in-out infinite}
+    @keyframes xpb-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+    @keyframes xpb-wiggle{0%,60%,100%{transform:rotate(0)}70%{transform:rotate(-14deg)}80%{transform:rotate(12deg)}90%{transform:rotate(-6deg)}}
+    .xpb-fx .xpb-tbtn--pulse{animation:xpb-beat calc(1.8s * var(--xpb-ts,1)) ease-in-out infinite}
+    @keyframes xpb-beat{0%,100%{transform:scale(1)}15%{transform:scale(1.045)}30%{transform:scale(1)}45%{transform:scale(1.03)}}
+    .xpb-tbtn.is-paused,.xpb-tbtn.is-paused *,.xpb-tbtn.is-paused::before,.xpb-tbtn.is-paused::after{animation-play-state:paused !important}
+    @media (hover:hover){.xpb-tbtn:hover{filter:brightness(1.07)}}
+    /* ---------- Motion: transform + opacity only, gated by .xpb-fx ---------- */
+    @keyframes xpb-rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+    @keyframes xpb-fade{from{opacity:0}to{opacity:1}}
+    @keyframes xpb-up{from{opacity:0;transform:translateY(100%)}to{opacity:1;transform:none}}
+    @keyframes xpb-pop{0%{opacity:0;transform:scale(.4)}60%{opacity:1;transform:scale(1.14)}100%{transform:scale(1)}}
+    @keyframes xpb-press{0%{transform:scale(1)}35%{transform:scale(.96)}100%{transform:scale(1)}}
+    @keyframes xpb-drop{0%{opacity:0;transform:translateY(-26px) scale(.85)}60%{opacity:1;transform:translateY(4px) scale(1.03)}100%{transform:none}}
+    @keyframes xpb-bump{0%{transform:scale(1)}40%{transform:scale(1.12)}100%{transform:scale(1)}}
+    @keyframes xpb-shine{from{transform:translateX(-130%) skewX(-18deg)}to{transform:translateX(330%) skewX(-18deg)}}
+    @keyframes xpb-shake{0%,100%{transform:none}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+    @keyframes xpb-zoom{from{transform:scale(1.07)}to{transform:none}}
+    .xpb-fx.xpb-wait .xpb__main,.xpb-fx.xpb-wait .xpb-hero__content > *,.xpb-fx.xpb-wait .xpb-intro > *{opacity:0}
+    .xpb-fx.xpb-on .xpb-intro > *,.xpb-fx.xpb-on .xpb-hero__content > *{animation:xpb-rise .55s cubic-bezier(.2,.7,.2,1) both}
+    .xpb-fx.xpb-on .xpb-intro > :nth-child(2),.xpb-fx.xpb-on .xpb-hero__content > :nth-child(2){animation-delay:.08s}
+    .xpb-fx.xpb-on .xpb-intro > :nth-child(3),.xpb-fx.xpb-on .xpb-hero__content > :nth-child(3){animation-delay:.16s}
+    .xpb-fx.xpb-on .xpb-intro > :nth-child(4){animation-delay:.22s}
+    .xpb-fx.xpb-on .xpb-hero__img{animation:xpb-zoom 1.4s cubic-bezier(.2,.7,.2,1) both}
+    .xpb-fx .xpb-enter > *{animation:xpb-fade .4s ease both}
+    .xpb-fx :is(.xpb-enter,.xpb-swap) :is(.xpb-grid,.xpb-list,.xpb-scroller,.xpb-stack,.xpb-acc,.xpb-slots,.xpb-box__grid) > *{animation:xpb-rise .45s cubic-bezier(.2,.7,.2,1) both}
+    .xpb-fx .xpb-enter .xpb-bar{animation:xpb-up .5s cubic-bezier(.2,.7,.2,1) .2s both}
+    .xpb-fx .xpb-enter :is(.xpb-steps,.xpb-tabs,.xpb-chips,.xpb-head,.xpb-banner){animation:xpb-rise .45s cubic-bezier(.2,.7,.2,1) both}
+    .xpb-fx .xpb-swap .xpb-banner{animation:xpb-fade .35s ease both}
+    .xpb-fx .xpb-swap .xpb-banner__c > *{animation:xpb-rise .4s cubic-bezier(.2,.7,.2,1) both}
+    .xpb-fx .xpb-swap .xpb-banner__c > :nth-child(2){animation-delay:.06s}
+    .xpb-fx .xpb-swap .xpb-banner__c > :nth-child(3){animation-delay:.12s}
+    .xpb-fx .xpb-swap .xpb-acc__body{animation:xpb-fade .3s ease both}
+    .xpb-fx :is(.xpb-enter,.xpb-swap) :is(.xpb-grid,.xpb-list,.xpb-scroller,.xpb-stack,.xpb-acc,.xpb-slots,.xpb-box__grid) > :nth-child(2){animation-delay:45ms}
+    .xpb-fx :is(.xpb-enter,.xpb-swap) :is(.xpb-grid,.xpb-list,.xpb-scroller,.xpb-stack,.xpb-acc,.xpb-slots,.xpb-box__grid) > :nth-child(3){animation-delay:90ms}
+    .xpb-fx :is(.xpb-enter,.xpb-swap) :is(.xpb-grid,.xpb-list,.xpb-scroller,.xpb-stack,.xpb-acc,.xpb-slots,.xpb-box__grid) > :nth-child(4){animation-delay:135ms}
+    .xpb-fx :is(.xpb-enter,.xpb-swap) :is(.xpb-grid,.xpb-list,.xpb-scroller,.xpb-stack,.xpb-acc,.xpb-slots,.xpb-box__grid) > :nth-child(5){animation-delay:180ms}
+    .xpb-fx :is(.xpb-enter,.xpb-swap) :is(.xpb-grid,.xpb-list,.xpb-scroller,.xpb-stack,.xpb-acc,.xpb-slots,.xpb-box__grid) > :nth-child(6){animation-delay:225ms}
+    .xpb-fx :is(.xpb-enter,.xpb-swap) :is(.xpb-grid,.xpb-list,.xpb-scroller,.xpb-stack,.xpb-acc,.xpb-slots,.xpb-box__grid) > :nth-child(7){animation-delay:270ms}
+    .xpb-fx :is(.xpb-enter,.xpb-swap) :is(.xpb-grid,.xpb-list,.xpb-scroller,.xpb-stack,.xpb-acc,.xpb-slots,.xpb-box__grid) > :nth-child(8){animation-delay:315ms}
+    .xpb-fx :is(.xpb-enter,.xpb-swap) :is(.xpb-grid,.xpb-list,.xpb-scroller,.xpb-stack,.xpb-acc,.xpb-slots,.xpb-box__grid) > :nth-child(9){animation-delay:360ms}
+    .xpb-fx :is(.xpb-enter,.xpb-swap) :is(.xpb-grid,.xpb-list,.xpb-scroller,.xpb-stack,.xpb-acc,.xpb-slots,.xpb-box__grid) > :nth-child(10){animation-delay:405ms}
+    .xpb-fx :is(.xpb-enter,.xpb-swap) :is(.xpb-grid,.xpb-list,.xpb-scroller,.xpb-stack,.xpb-acc,.xpb-slots,.xpb-box__grid) > :nth-child(11){animation-delay:450ms}
+    .xpb-fx :is(.xpb-enter,.xpb-swap) :is(.xpb-grid,.xpb-list,.xpb-scroller,.xpb-stack,.xpb-acc,.xpb-slots,.xpb-box__grid) > :nth-child(12){animation-delay:450ms}
+    .xpb-fx :is(.xpb-card,.xpb-row,.xpb-acc__item).xpb-pop{animation:xpb-press .35s ease}
+    .xpb-fx .xpb-pop :is(.xpb-tick,.xpb-acc__ok),.xpb-fx .xpb-row.xpb-pop .xpb-round{animation:xpb-pop .42s cubic-bezier(.3,1.5,.5,1) both}
+    .xpb-fx :is(.xpb-thumb,.xpb-slot).xpb-pop{animation:xpb-pop .45s cubic-bezier(.3,1.5,.5,1) both}
+    .xpb-fx .xpb-bslot.xpb-pop,.xpb-fx .xpb-acc__item.xpb-pop .xpb-acc__img{animation:xpb-drop .5s cubic-bezier(.3,1.4,.5,1) both}
+    .xpb-fx .xpb-bump{display:inline-block;transform-origin:center;animation:xpb-bump .4s ease}
+    .xpb-fx .xpb-shake{animation:xpb-shake .4s ease}
+    .xpb-fx .xpb-shine{position:relative;overflow:hidden;animation:xpb-press .45s ease}
+    .xpb-fx .xpb-shine::after{content:"";position:absolute;top:0;bottom:0;left:0;width:35%;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.55),rgba(255,255,255,0));animation:xpb-shine .9s ease .15s both;pointer-events:none}
+    .xpb-fx .xpb-progress span{transition:width .45s cubic-bezier(.2,.7,.2,1)}
+    .xpb-fx :is(.xpb-btn,.xpb-round,.xpb-chip,.xpb-tab,.xpb-bslot,.xpb-panel__x,.xpb-slot__x){transition:transform .15s ease,background-color .2s ease,color .2s ease,border-color .2s ease}
+    .xpb-fx :is(.xpb-btn,.xpb-round,.xpb-chip,.xpb-tab,.xpb-bslot,.xpb-panel__x):not([disabled]):active{transform:scale(.96)}
+    @media (hover:hover){
+      .xpb-fx .xpb-media img{transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+      .xpb-fx :is(.xpb-card,.xpb-row,.xpb-rcard):hover .xpb-media img{transform:scale(1.045)}
+      .xpb-fx .xpb-btn--primary:not([disabled]):hover{filter:brightness(1.06)}
+    }
+    @media (prefers-reduced-motion:reduce){
+      .xpb-spark span{animation:none}
+      .xpb *,.xpb *::before,.xpb *::after{animation:none !important;transition:none !important}
+      .xpb-progress span,.xpb-chev,.xpb-panel,.xpb-ov__bg{transition:none}
+    }
+  </style>
+
+  <script>
+    {% raw %}
+    (function () {
+      if (window.XPBuilder) return;
+
+      /* ---------- Icons ---------- */
+      function svg(d, size, sw, cls) {
+        return '<svg' + (cls ? ' class="' + cls + '"' : '') + ' width="' + (size || 16) + '" height="' + (size || 16) + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + (sw || 2) + '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + '</svg>';
+      }
+      var TICK = svg('<path d="M5 12l5 5 9-10"/>', 16, 3);
+      var PLUS = svg('<path d="M12 5v14M5 12h14"/>', 18, 2.6);
+      var X = svg('<path d="M6 6l12 12M18 6L6 18"/>', 12, 3);
+      var XL = svg('<path d="M6 6l12 12M18 6L6 18"/>', 16, 2.8);
+      var CHEV = svg('<path d="M6 9l6 6 6-6"/>', 22, 2, 'xpb-chev');
+      var EYE = svg('<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>', 16, 2);
+      var NEXT = svg('<path d="M15 6l-6 6 6 6"/>', 16, 2.6, 'xpb-dir');
+      var PH = svg('<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 17l-5-5-9 8"/>', 24, 1.5, 'xpb-ph');
+      var ICONS = {
+        cleanser: '<path d="M12 4h8"/><path d="M14.5 4v5h3V4"/><rect x="12" y="9" width="8" height="3.5" rx="1"/><rect x="9" y="12.5" width="14" height="16.5" rx="4" fill="currentColor" fill-opacity=".18"/><path d="M13 19.5h6M13 23h4"/><circle cx="25.5" cy="6.5" r="1.8"/><circle cx="28" cy="10.5" r="1.1"/><circle cx="24.5" cy="10.8" r=".8"/>',
+        toner: '<rect x="12.5" y="3" width="7" height="4.5" rx="1.2"/><path d="M12 7.5h8l2.5 4V27a2 2 0 0 1-2 2h-9a2 2 0 0 1-2-2V11.5z"/><path d="M9.5 18c2.2-1.3 4.4-1.3 6.5 0s4.3 1.3 6.5 0V27a2 2 0 0 1-2 2h-9a2 2 0 0 1-2-2z" fill="currentColor" fill-opacity=".18"/>',
+        serum: '<rect x="14" y="2.5" width="4" height="5.5" rx="2"/><rect x="12" y="8" width="8" height="3" rx=".8"/><rect x="10.5" y="11" width="11" height="18" rx="3" fill="currentColor" fill-opacity=".18"/><path d="M16 13.5v7"/><path d="M26.5 9s2.5 3 2.5 4.6a2.5 2.5 0 0 1-5 0c0-1.6 2.5-4.6 2.5-4.6z" fill="currentColor" fill-opacity=".18"/>',
+        moisturizer: '<path d="M11 9.5c0-2.6 2.3-4.5 5-4.5 2.4 0 4.2 1.4 4.2 3 0 1.3-1.4 1.7-2.4 1.1"/><rect x="5.5" y="9.5" width="21" height="5" rx="2"/><path d="M7 14.5h18v9.5a4.5 4.5 0 0 1-4.5 4.5h-9A4.5 4.5 0 0 1 7 24z" fill="currentColor" fill-opacity=".18"/><path d="M12 20.5h8"/>',
+        sunscreen: '<path d="M4.5 4h11l-2 16.5h-7z" fill="currentColor" fill-opacity=".18"/><rect x="6.5" y="20.5" width="7" height="7.5" rx="1.6"/><path d="M7.5 10h5"/><circle cx="24" cy="10" r="3.2"/><path d="M24 3.5v1.6M24 14.9v1.6M17.5 10h1.6M28.9 10h1.6M19.4 5.4l1.1 1.1M27.5 13.5l1.1 1.1M19.4 14.6l1.1-1.1M27.5 6.5l1.1-1.1"/>',
+        mask: '<path d="M16 4c5.6 0 9 4.2 9 10 0 7.2-4.4 14-9 14s-9-6.8-9-14c0-5.8 3.4-10 9-10z" fill="currentColor" fill-opacity=".18"/><path d="M11 13.5c1-1 2.6-1 3.6 0M17.4 13.5c1-1 2.6-1 3.6 0M16 16.5v2.5M13.5 22.5c1.6 1 3.4 1 5 0M7 14H3.5M25 14h3.5"/>',
+        eye: '<path d="M3.5 17c3-5 7.2-7.5 12.5-7.5S25.5 12 28.5 17c-3 5-7.2 7.5-12.5 7.5S6.5 22 3.5 17z"/><circle cx="16" cy="17" r="3.8" fill="currentColor" fill-opacity=".18"/><path d="M9 10.5L7.5 8M16 9V6M23 10.5L24.5 8"/>',
+        exfoliant: '<rect x="6.5" y="8" width="19" height="4.5" rx="1.6"/><path d="M8 12.5h16v11.5a4.5 4.5 0 0 1-4.5 4.5h-7A4.5 4.5 0 0 1 8 24z" fill="currentColor" fill-opacity=".18"/><circle cx="12.5" cy="18" r="1.1" fill="currentColor"/><circle cx="16.5" cy="21.5" r="1.1" fill="currentColor"/><circle cx="20" cy="17.5" r="1.1" fill="currentColor"/><circle cx="13.5" cy="24.2" r="1.1" fill="currentColor"/><circle cx="19.5" cy="24.2" r="1.1" fill="currentColor"/>',
+        oil: '<path d="M16 3c4.2 5.6 8 10.2 8 15.2a8 8 0 0 1-16 0C8 13.2 11.8 8.6 16 3z" fill="currentColor" fill-opacity=".18"/><path d="M12 19a4.2 4.2 0 0 0 3.2 4.3"/>',
+        night: '<path d="M25 21A10.5 10.5 0 1 1 13 5.5a8.5 8.5 0 0 0 12 15.5z" fill="currentColor" fill-opacity=".18"/><path d="M24 4v4M22 6h4M28.5 11v2.5M27.2 12.2h2.6"/>',
+        treatment: '<path d="M8.5 3h3v3.5h-3z"/><rect x="6.5" y="6.5" width="7" height="17" rx="2" fill="currentColor" fill-opacity=".18"/><path d="M8.5 23.5h3V28h-3z"/><circle cx="23" cy="17" r="5.5"/><circle cx="23" cy="17" r="1.8" fill="currentColor"/>',
+        lips: '<path d="M3.5 16c3.2-4.2 6.2-6.2 9-5.6 1.5.3 2.5 1.3 3.5 1.3s2-1 3.5-1.3c2.8-.6 5.8 1.4 9 5.6-3 4.6-7.2 6.8-12.5 6.8S6.5 20.6 3.5 16z" fill="currentColor" fill-opacity=".18"/><path d="M3.5 16c4.2 1.1 8.4 1.6 12.5 1.6s8.3-.5 12.5-1.6"/>',
+        body: '<path d="M13 3h8"/><path d="M16 3v5"/><rect x="12" y="8" width="9" height="3.5" rx="1"/><rect x="8" y="11.5" width="16" height="17.5" rx="3.5" fill="currentColor" fill-opacity=".18"/><path d="M12 18h8M12 22h5"/>',
+        hair: '<rect x="10" y="3.5" width="6" height="4" rx="1"/><path d="M9 7.5h8l2 4V27a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V11.5z" fill="currentColor" fill-opacity=".18"/><path d="M23 7c3 2.2 3 5 0 7.3s-3 5 0 7.3M27.5 7c3 2.2 3 5 0 7.3s-3 5 0 7.3"/>',
+        glow: '<circle cx="13.5" cy="13.5" r="9" fill="currentColor" fill-opacity=".18"/><path d="M9.5 10.5a5 5 0 0 1 4-2.6"/><path d="M20 20l7.5 7.5"/><path d="M26 4v3M24.5 5.5h3"/>',
+        gift: '<rect x="5" y="13.5" width="22" height="14.5" rx="2" fill="currentColor" fill-opacity=".18"/><rect x="4" y="9" width="24" height="4.5" rx="1.5"/><path d="M16 9v19"/><path d="M16 9c-2-4-7.5-5-7.5-2.2S12.5 9 16 9c3.5 0 7.5.6 7.5-2.2S18 5 16 9z"/>',
+        heart: '<path d="M16 27.5S5 21 5 13a6 6 0 0 1 11-3.3A6 6 0 0 1 27 13c0 8-11 14.5-11 14.5z" fill="currentColor" fill-opacity=".18"/>',
+        box: '<path d="M4 10l12-6 12 6v12l-12 6-12-6z" fill="currentColor" fill-opacity=".18"/><path d="M4 10l12 6 12-6M16 16v12M10 7l12 6"/>'
+      };
+      function icon(name, size) {
+        if (!ICONS[name]) return '';
+        var z = size || 22;
+        return '<svg class="xpb-ico" width="' + z + '" height="' + z + '" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONS[name] + '</svg>';
+      }
+      /* "Auto" picks the icon from the step's name (Arabic or English). */
+      var GUESS = [
+        ['eye', /عين|عيون|eye/i], ['sunscreen', /واقي|صن|شمس|sun|spf/i], ['cleanser', /غسول|منظف|فوم|غسيل|clean|wash|foam/i],
+        ['toner', /تونر|toner|essence|إيسنس|ايسنس/i], ['serum', /سير|serum|ampoule|أمبول|امبول/i], ['mask', /ماسك|قناع|mask/i],
+        ['exfoliant', /مقشر|تقشير|exfol|scrub|peel/i], ['oil', /زيت|oil/i], ['night', /ليل|night/i], ['lips', /شف|lip/i],
+        ['body', /جسم|body|لوشن|lotion/i], ['hair', /شعر|hair|شامبو|shampoo/i], ['treatment', /حبوب|علاج|spot|acne|treat/i],
+        ['moisturizer', /مرطب|ترطيب|كريم|moist|cream|جل|gel/i], ['gift', /هدي|إضاف|اضاف|extra|gift/i]
+      ];
+      function stepIcon(st) {
+        if (st.icon && st.icon !== 'sparkle' && st.icon !== 'auto') return ICONS[st.icon] ? st.icon : '';
+        var txt = (st.label || '') + ' ' + (st.title || '');
+        for (var i = 0; i < GUESS.length; i++) if (GUESS[i][1].test(txt)) return GUESS[i][0];
+        return '';
+      }
+
+      /* ---------- Helpers ---------- */
+      function esc(v) {
+        return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+      }
+      function tpl(str, vars) {
+        return String(str || '').replace(/\[(\w+)\]/g, function (m, k) { return vars && vars[k] != null ? vars[k] : m; });
+      }
+      function money(cents, fmt) {
+        cents = Math.round(Number(cents) || 0);
+        function f(dec, th, dp) {
+          var n = (cents / 100).toFixed(dec).split('.');
+          return n[0].replace(/\B(?=(\d{3})+(?!\d))/g, th) + (n[1] ? dp + n[1] : '');
+        }
+        return String(fmt || '{{amount}}').replace(/\{\{\s*(\w+)\s*\}\}/, function (m, k) {
+          switch (k) {
+            case 'amount_no_decimals': return f(0, ',', '.');
+            case 'amount_with_comma_separator': return f(2, '.', ',');
+            case 'amount_no_decimals_with_comma_separator': return f(0, '.', ',');
+            case 'amount_with_apostrophe_separator': return f(2, "'", '.');
+            case 'amount_with_space_separator': return f(2, ' ', ',');
+            default: return f(2, ',', '.');
+          }
+        });
+      }
+      function sized(u, w) {
+        if (!u || u.indexOf('data:') === 0) return u;
+        return u.replace(/([?&])width=\d+&?/, '$1').replace(/[?&]$/, '') + (u.indexOf('?') > -1 ? '&' : '?') + 'width=' + w;
+      }
+
+      /* Patch the DOM instead of replacing it: unchanged nodes (and their loaded images) stay put. */
+      function pure(n) { return n.childNodes.length === n.children.length; }
+      function syncAttrs(a, b) {
+        var i, name;
+        for (i = a.attributes.length - 1; i >= 0; i--) { name = a.attributes[i].name; if (!b.hasAttribute(name)) a.removeAttribute(name); }
+        for (i = 0; i < b.attributes.length; i++) { name = b.attributes[i]; if (a.getAttribute(name.name) !== name.value) a.setAttribute(name.name, name.value); }
+      }
+      function morph(a, b, depth) {
+        var ac = Array.prototype.slice.call(a.children), bc = Array.prototype.slice.call(b.children);
+        var n = Math.min(ac.length, bc.length), i, x, y;
+        for (i = 0; i < n; i++) {
+          x = ac[i]; y = bc[i];
+          if (x.isEqualNode(y)) continue;
+          if (x.tagName === y.tagName && depth < 7 && x.children.length && y.children.length && pure(x) && pure(y)) {
+            syncAttrs(x, y);
+            morph(x, y, depth + 1);
+          } else a.replaceChild(y, x);
+        }
+        for (i = n; i < ac.length; i++) a.removeChild(ac[i]);
+        for (i = n; i < bc.length; i++) a.appendChild(bc[i]);
+      }
+
+      var QV_CACHE = {};
+
+      /* ---------- Builder ---------- */
+      function B(root) {
+        var s = this;
+        s.root = root;
+        s.mount = root.querySelector('[data-xpb-mount]');
+        try { s.c = JSON.parse(root.querySelector('[data-xpb-config]').textContent); } catch (e) { return; }
+        var c = s.c;
+        s.t = c.t || {};
+        s.vs = {};
+        s.msg = ''; s.msgType = ''; s.busy = false; s.filter = '';
+        s.rendered = false;
+        s.anim = c.anim !== false && !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+        s.pop = null; s.popStep = -1; s.swap = false; s.entering = false; s.shake = false;
+        s.wasReady = false; s.readyNow = false; s.lastTotal = null; s.prevW = null;
+        c.free = c.kitRule !== 'rules';
+        if (c.mode === 'bundle') {
+          c.size = Math.max(1, Math.min(Number(c.size) || 3, c.items.length || 1));
+          c.min = Math.max(1, Math.min(Number(c.min) || 1, c.size));
+          s.picks = [];
+          s.checked = {};
+          c.items.forEach(function (it) { s.checked[it.key] = !!it.p.available; });
+        } else {
+          c.steps.forEach(function (st) {
+            st.icon = stepIcon(st);
+            st.min = Math.max(0, Number(st.min) || 0);
+            st.max = Math.max(1, Number(st.max) || 1, st.min);
+          });
+          s.kp = c.steps.map(function () { return []; });
+          s.active = 0;
+        }
+
+        s.mount.addEventListener('click', function (e) {
+          if (s.ov && e.target.closest('.m-product-quickview-button')) { s.close(); return; }
+          var b = e.target.closest('[data-act]');
+          if (!b || !s.mount.contains(b) || b.tagName === 'SELECT' || b.type === 'checkbox' || b.disabled) return;
+          if (b.tagName === 'A') {
+            if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+            e.preventDefault();
+          }
+          s.act(b.getAttribute('data-act'), b.getAttribute('data-k'));
+        });
+        s.mount.addEventListener('change', function (e) {
+          var el = e.target, a = el.getAttribute('data-act'), k = el.getAttribute('data-k');
+          if (a === 'variant') s.setVar(k, Number(el.value));
+          else if (a === 'r-toggle') { s.checked[k] = el.checked; s.msg = ''; s.render(); }
+        });
+        document.addEventListener('shopify:block:select', function (e) {
+          if (!root.isConnected || (e.detail && e.detail.sectionId !== c.sid)) return;
+          if (s.ov) s.open();
+          if (c.mode !== 'kit') return;
+          for (var i = 0; i < c.steps.length; i++) {
+            if (c.steps[i].key === e.detail.blockId) { s.active = i; s.swap = true; s.render(); }
+          }
+        });
+
+        var ov = root.querySelector('[data-xpb-ov]');
+        if (ov) s.setupOv(ov);
+        s.setupTrigger();
+
+        var hasIO = 'IntersectionObserver' in window;
+        if (s.anim) {
+          root.classList.add('xpb-fx');
+          if (s.ov) s.ov.classList.add('xpb-fx');
+          else if (hasIO) {
+            root.classList.add('xpb-wait');
+            var io = new IntersectionObserver(function (en) {
+              for (var q = 0; q < en.length; q++) {
+                if (en[q].isIntersecting) {
+                  io.disconnect();
+                  root.classList.remove('xpb-wait');
+                  root.classList.add('xpb-on');
+                  s.entering = true;
+                  s.render();
+                  return;
+                }
+              }
+            }, { rootMargin: '0px 0px -8% 0px' });
+            io.observe(root);
+          }
+        }
+        // Build the builder only when it is about to be seen (drawer/popup: on first open).
+        if (s.ov) return;
+        if (!hasIO || c.design) { s.render(); return; }
+        var near = new IntersectionObserver(function (en) {
+          for (var q = 0; q < en.length; q++) {
+            if (en[q].isIntersecting) { near.disconnect(); if (!s.rendered) s.render(); return; }
+          }
+        }, { rootMargin: '700px 0px 700px 0px' });
+        near.observe(root);
+      }
+
+      B.prototype.defVar = function (p) {
+        for (var i = 0; i < p.variants.length; i++) if (p.variants[i].available) return p.variants[i];
+        return p.variants[0];
+      };
+      B.prototype.vById = function (p, id) {
+        for (var i = 0; i < p.variants.length; i++) if (p.variants[i].id === id) return p.variants[i];
+        return this.defVar(p);
+      };
+      B.prototype.cur = function (scope, p) {
+        return this.vs[scope] ? this.vById(p, this.vs[scope]) : this.defVar(p);
+      };
+      B.prototype.setVar = function (scope, vid) {
+        var s = this;
+        s.vs[scope] = vid;
+        if (s.c.mode === 'bundle') {
+          s.picks.forEach(function (pk) { if (pk.key === scope) pk.vid = vid; });
+        } else {
+          var m = /^s(\d+):(\d+)$/.exec(scope);
+          if (m) (s.kp[Number(m[1])] || []).forEach(function (pk) { if (String(pk.pid) === m[2]) pk.vid = vid; });
+        }
+        s.render();
+        if (s.qvState && s.qvState.scope === scope) s.qvSync();
+      };
+      B.prototype.names = function (p) {
+        var c = this.c, n = p.title, sub = '';
+        if (c.split) {
+          var parts = p.title.split(/\s[|–-]\s/);
+          if (parts.length > 1) { n = parts[0]; sub = parts.slice(1).join(' - '); }
+        }
+        if (!sub) {
+          if (c.subSource === 'vendor') sub = p.v;
+          else if (c.subSource === 'type') sub = p.ty;
+        }
+        return { n: n, sub: sub };
+      };
+      B.prototype.img = function (p, v) { return (v && v.img) || p.img; };
+      B.prototype.imgTag = function (p, v, big) {
+        var a = (v && v.img) || p.img, b = (v && v.img2) || p.img2;
+        if (!a) return PH;
+        return '<img src="' + esc(a) + '"' + (big && b ? ' srcset="' + esc(a) + ' 400w, ' + esc(b) + ' 800w" sizes="(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw"' : '') +
+          ' alt="' + esc(p.title) + '" loading="lazy" decoding="async" width="400" height="400">';
+      };
+      /* o: { p, v, extra, cls, qv (quick view key), big } */
+      B.prototype.media = function (o) {
+        var c = this.c, t = this.t, p = o.p, inner = this.imgTag(p, o.v, o.big);
+        if (o.qv && c.imgClick === 'quickview' && c.qv === 'builtin') inner = '<a class="xpb-media__link" href="' + esc(p.url) + '" data-act="qv" data-k="' + esc(o.qv) + '" aria-label="' + esc(t.quick_view + ': ' + p.title) + '">' + inner + '</a>';
+        else if (o.qv && (c.imgClick === 'page' || c.imgClick === 'page_new' || (c.imgClick === 'quickview' && c.qv !== 'builtin'))) inner = '<a class="xpb-media__link" href="' + esc(p.url) + '"' + (c.imgClick === 'page' ? '' : ' target="_blank" rel="noopener"') + ' aria-label="' + esc(p.title) + '">' + inner + '</a>';
+        var qvb = '';
+        if (o.qv && c.qv === 'builtin') qvb = '<button type="button" class="xpb-qvbtn" data-act="qv" data-k="' + esc(o.qv) + '" aria-label="' + esc(t.quick_view) + '">' + EYE + '<span>' + esc(t.quick_view) + '</span></button>';
+        else if (o.qv && c.qv === 'theme') qvb = '<button type="button" class="xpb-qvbtn m-product-quickview-button m-spinner-button" data-product-handle="' + esc(p.h) + '" data-product-url="' + esc(p.url) + '" data-product-id="' + p.id + '" aria-label="' + esc(t.quick_view) + '">' + EYE + '<span>' + esc(t.quick_view) + '</span></button>';
+        return '<div class="xpb-media' + (o.cls ? ' ' + o.cls : '') + '">' + inner + (o.extra || '') + qvb + '</div>';
+      };
+      B.prototype.selectHtml = function (scope, p, v) {
+        if (!p.variants || p.variants.length < 2) return '';
+        var t = this.t;
+        var opts = p.variants.map(function (x) {
+          return '<option value="' + x.id + '"' + (x.id === v.id ? ' selected' : '') + (x.available ? '' : ' disabled') + '>' +
+            esc(x.title + (x.available ? '' : ' (' + t.sold_out + ')')) + '</option>';
+        }).join('');
+        return '<label class="xpb-vlabel"><span class="xpb-sr">' + esc(t.variant) + '</span><select class="xpb-select" data-act="variant" data-k="' + esc(scope) + '">' + opts + '</select></label>';
+      };
+      B.prototype.nameHtml = function (p, nm) {
+        var c = this.c;
+        if (c.imgClick === 'none') return '<span class="xpb-name">' + esc(nm.n) + '</span>';
+        return '<a class="xpb-name" href="' + esc(p.url) + '"' + (c.imgClick === 'page' ? '' : ' target="_blank" rel="noopener"') + '>' + esc(nm.n) + '</a>';
+      };
+      B.prototype.info = function (p, v, extra) {
+        var nm = this.names(p);
+        return '<div class="xpb-info">' + this.nameHtml(p, nm) +
+          (nm.sub ? '<span class="xpb-sub">' + esc(nm.sub) + '</span>' : '') +
+          '<span class="xpb-price">' + esc(money(v.price, this.c.money)) + '</span>' + (extra || '') + '</div>';
+      };
+      B.prototype.card = function (o) {
+        var t = this.t, v = o.v;
+        var extra = (o.on ? '<span class="xpb-tick" aria-hidden="true">' + TICK + '</span>' : '') +
+          (!v.available ? '<span class="xpb-soldout">' + esc(t.sold_out) + '</span>' : '');
+        var dis = !v.available && !o.on;
+        return '<div class="xpb-card' + (o.on ? ' is-on' : '') + (this.pop && o.k === this.pop ? ' xpb-pop' : '') + '">' +
+          this.media({ p: o.p, v: v, extra: extra, qv: o.qv, big: true }) + this.info(o.p, v) +
+          this.selectHtml(o.scope, o.p, v) +
+          '<button type="button" class="xpb-btn xpb-btn--block ' + o.cls + '" data-act="' + o.act + '" data-k="' + esc(o.k) + '" aria-pressed="' + (o.on ? 'true' : 'false') + '"' + (dis ? ' disabled' : '') + '>' +
+          esc(dis ? t.sold_out : o.btn) + '</button></div>';
+      };
+      B.prototype.msgHtml = function () {
+        return '<div class="xpb-msg' + (this.msgType === 'err' ? ' xpb-msg--err' : '') + (this.shake && this.msg ? ' xpb-shake' : '') + '" role="status" aria-live="polite">' + esc(this.msg) + '</div>';
+      };
+      B.prototype.flash = function (m, type) { this.msg = m; this.msgType = type || ''; this.shake = type === 'err'; this.render(); };
+      B.prototype.tv = function (cents) {
+        var bump = this.anim && this.lastTotal != null && this.lastTotal !== cents;
+        this.lastTotal = cents;
+        return '<span class="xpb-total__value' + (bump ? ' xpb-bump' : '') + '">' + esc(money(cents, this.c.money)) + '</span>';
+      };
+      B.prototype.totalHtml = function (cents, label) {
+        return '<div class="xpb-total"><span class="xpb-total__label">' + esc(label || this.t.total) + '</span>' + this.tv(cents) + '</div>';
+      };
+      B.prototype.ready = function () {
+        var sh = this.anim && !this.wasReady;
+        this.readyNow = true;
+        return sh ? ' xpb-shine' : '';
+      };
+      B.prototype.ctaBtn = function (count, cls) {
+        var t = this.t;
+        if (this.busy) return '<button type="button" class="' + cls + '" disabled>' + esc(t.adding) + '</button>';
+        return '<button type="button" class="' + cls + ' xpb-btn--primary' + this.ready() + '" data-act="atc">' + esc(tpl(t.cta_count, { count: count })) + '</button>';
+      };
+
+      /* ---------- Bundle ---------- */
+      B.prototype.item = function (key) {
+        var it = this.c.items;
+        for (var i = 0; i < it.length; i++) if (it[i].key === key) return it[i];
+        return null;
+      };
+      B.prototype.pidx = function (key) {
+        for (var i = 0; i < this.picks.length; i++) if (this.picks[i].key === key) return i;
+        return -1;
+      };
+      B.prototype.toggleB = function (key) {
+        var s = this, i = s.pidx(key);
+        if (i > -1) { s.picks.splice(i, 1); s.msg = ''; s.render(); return false; }
+        if (s.picks.length >= s.c.size) { s.flash(tpl(s.t.full, { count: s.c.size }), 'err'); return false; }
+        var it = s.item(key);
+        if (!it) return false;
+        var v = s.cur(key, it.p);
+        if (!v.available) return false;
+        s.picks.push({ key: key, vid: v.id });
+        s.pop = key;
+        s.msg = '';
+        s.render();
+        return true;
+      };
+      B.prototype.bTotal = function () {
+        var s = this;
+        return s.picks.reduce(function (a, pk) { var it = s.item(pk.key); return a + (it ? s.vById(it.p, pk.vid).price : 0); }, 0);
+      };
+      B.prototype.bView = function (it) {
+        var i = this.pidx(it.key);
+        var on = i > -1;
+        return { on: on, v: on ? this.vById(it.p, this.picks[i].vid) : this.cur(it.key, it.p) };
+      };
+      B.prototype.bCta = function (block) {
+        var t = this.t, n = this.picks.length, cls = 'xpb-btn xpb-btn--lg' + (block ? ' xpb-btn--block' : '');
+        if (!this.busy && n < this.c.min) return '<button type="button" class="' + cls + '" disabled>' + esc(tpl(t.more, { left: this.c.min - n })) + '</button>';
+        return this.ctaBtn(n, cls);
+      };
+
+      B.prototype.r_hero_grid = function () {
+        var s = this, c = s.c, t = s.t, n = s.picks.length;
+        var html = '<div class="xpb-head"><span class="xpb-head__title">' + esc(tpl(t.pick, { count: c.size, min: c.min })) + '</span>' +
+          '<span class="xpb-head__count">' + esc(tpl(t.progress, { selected: n, count: c.size })) + '</span></div>' +
+          '<div class="xpb-progress" role="progressbar" aria-valuemin="0" aria-valuemax="' + c.size + '" aria-valuenow="' + n + '"><span style="width:' + (s.prevW == null ? n / c.size * 100 : s.prevW) + '%" data-w="' + (n / c.size * 100) + '"></span></div>';
+        s.prevW = n / c.size * 100;
+        html += '<div class="xpb-grid">' + c.items.map(function (it) {
+          var w = s.bView(it);
+          return s.card({ p: it.p, v: w.v, on: w.on, scope: it.key, act: 'b-toggle', k: it.key, qv: 'b:' + it.key, btn: w.on ? t.remove : t.add, cls: w.on ? 'xpb-btn--ghost' : 'xpb-btn--primary' });
+        }).join('') + '</div>';
+        var tray = '', show = Math.min(c.size, 6);
+        for (var i = 0; i < show; i++) {
+          var pk = s.picks[i];
+          if (pk) {
+            var it = s.item(pk.key), v = s.vById(it.p, pk.vid), src = s.img(it.p, v);
+            tray += '<span class="xpb-thumb' + (pk.key === s.pop ? ' xpb-pop' : '') + '">' + (src ? '<img src="' + esc(src) + '" alt="" loading="lazy" decoding="async" width="40" height="40">' : '') + '</span>';
+          } else tray += '<span class="xpb-thumb xpb-thumb--empty" aria-hidden="true">+</span>';
+        }
+        html += '<div class="xpb-bar"><div class="xpb-tray" aria-hidden="true">' + tray + '</div>' + s.totalHtml(s.bTotal()) + s.bCta(false) + s.msgHtml() + '</div>';
+        return html;
+      };
+
+      B.prototype.r_slots_chips = function () {
+        var s = this, c = s.c, t = s.t;
+        var slots = '';
+        for (var i = 0; i < c.size; i++) {
+          var pk = s.picks[i];
+          if (pk) {
+            var it = s.item(pk.key), v = s.vById(it.p, pk.vid), nm = s.names(it.p);
+            slots += '<div class="xpb-slot' + (pk.key === s.pop ? ' xpb-pop' : '') + '">' + s.media({ p: it.p, v: v }) + '<span class="xpb-name">' + esc(nm.n) + '</span>' +
+              '<button type="button" class="xpb-slot__x" data-act="b-toggle" data-k="' + esc(pk.key) + '" aria-label="' + esc(t.remove + ' ' + nm.n) + '">' + X + '</button></div>';
+          } else {
+            slots += '<div class="xpb-slot xpb-slot--empty' + (i >= c.min ? ' is-optional' : '') + '"><b aria-hidden="true">+</b><span>' + esc(tpl(t.slot, { n: i + 1 })) + '</span></div>';
+          }
+        }
+        var html = '<div class="xpb-slots" data-scroll="slots">' + slots + '</div>';
+        var concerns = [];
+        c.items.forEach(function (it) { if (it.concern && concerns.indexOf(it.concern) < 0) concerns.push(it.concern); });
+        if (concerns.length) {
+          if (t.concerns) html += '<div class="xpb-subhead"><h3>' + esc(t.concerns) + '</h3><span aria-hidden="true"></span></div>';
+          html += '<div class="xpb-chips" data-scroll="chips">' + [''].concat(concerns).map(function (cn) {
+            var on = s.filter === cn;
+            return '<button type="button" class="xpb-chip' + (on ? ' is-on' : '') + '" data-act="chip" data-k="' + esc(cn) + '" aria-pressed="' + on + '">' + esc(cn || t.all) + '</button>';
+          }).join('') + '</div>';
+        }
+        html += '<div class="xpb-list">' + c.items.filter(function (it) { return !s.filter || it.concern === s.filter; }).map(function (it) {
+          var w = s.bView(it), nm = s.names(it.p), dis = !w.v.available && !w.on;
+          return '<div class="xpb-row' + (w.on ? ' is-on' : '') + (it.key === s.pop ? ' xpb-pop' : '') + '">' +
+            s.media({ p: it.p, v: w.v, extra: !w.v.available ? '<span class="xpb-soldout">' + esc(t.sold_out) + '</span>' : '', qv: 'b:' + it.key }) +
+            s.info(it.p, w.v, s.selectHtml(it.key, it.p, w.v)) +
+            '<button type="button" class="xpb-round' + (w.on ? ' is-on' : '') + '" data-act="b-toggle" data-k="' + esc(it.key) + '" aria-pressed="' + w.on + '" aria-label="' + esc((w.on ? t.remove : t.add) + ' ' + nm.n) + '"' + (dis ? ' disabled' : '') + '>' + (w.on ? TICK : PLUS) + '</button></div>';
+        }).join('') + '</div>';
+        html += '<div class="xpb-bar xpb-bar--col"><div class="xpb-row-between"><span class="xpb-total__label">' + esc(tpl(t.progress, { selected: s.picks.length, count: c.size }) + ' · ' + t.total) + '</span>' +
+          s.tv(s.bTotal()) + '</div>' + s.bCta(true) + s.msgHtml() + '</div>';
+        return html;
+      };
+
+      B.prototype.r_routine_stack = function () {
+        var s = this, c = s.c, t = s.t, total = 0, count = 0, last = c.items.length - 1;
+        var html = '<div class="xpb-stack">' + c.items.map(function (it, i) {
+          var v = s.cur(it.key, it.p), on = s.checked[it.key] && v.available, main = c.current && it.p.id === c.current, nm = s.names(it.p);
+          if (on) { total += v.price; count++; }
+          var tags = (it.label ? '<span class="xpb-tag">' + esc(it.label) + '</span>' : '') + (main ? '<span class="xpb-tag xpb-tag--accent">' + esc(t.this_item) + '</span>' : '') +
+            (!v.available ? '<span class="xpb-soldout">' + esc(t.sold_out) + '</span>' : '');
+          var sel = s.selectHtml(it.key, it.p, v);
+          return '<div class="xpb-rcard' + (main ? ' is-main' : '') + (on ? '' : ' is-off') + '">' + s.media({ p: it.p, v: v, extra: tags, cls: 'xpb-media--wide', qv: 'b:' + it.key }) +
+            '<div class="xpb-rrow"><label class="xpb-checkrow"><input type="checkbox" data-act="r-toggle" data-k="' + esc(it.key) + '"' + (on ? ' checked' : '') + (v.available ? '' : ' disabled') + '>' +
+            '<span><span class="xpb-name">' + esc(nm.n) + '</span>' + (nm.sub ? '<span class="xpb-sub">' + esc(nm.sub) + '</span>' : '') + '</span></label>' +
+            '<span class="xpb-price">' + esc(money(v.price, c.money)) + '</span></div>' +
+            (sel ? '<div class="xpb-vrow"><span aria-hidden="true">' + esc(t.variant) + '</span>' + sel + '</div>' : '') + '</div>' +
+            (i < last ? '<div class="xpb-plus" aria-hidden="true"><span>' + PLUS + '</span></div>' : '');
+        }).join('') + '</div>';
+        var cls = 'xpb-btn xpb-btn--lg xpb-btn--block';
+        var btn = count || s.busy ? s.ctaBtn(count, cls) : '<button type="button" class="' + cls + '" disabled>' + esc(t.pick_one) + '</button>';
+        html += '<div class="xpb-summary"><div class="xpb-row-between"><span class="xpb-total__label">' + esc(t.total) + '</span>' + s.tv(total) + '</div>' + btn + s.msgHtml() + '</div>';
+        return html;
+      };
+
+      /* ---------- Kit ---------- */
+      B.prototype.kProd = function (i, pid) {
+        var ps = this.c.steps[i].products;
+        for (var j = 0; j < ps.length; j++) if (ps[j].id === pid) return ps[j];
+        return null;
+      };
+      B.prototype.done = function (i) { return this.c.free || this.kp[i].length >= this.c.steps[i].min; };
+      B.prototype.filled = function (i) { return this.kp[i].length > 0; };
+      B.prototype.count = function () { return this.kp.reduce(function (a, x) { return a + x.length; }, 0); };
+      B.prototype.allDone = function () {
+        if (!this.count()) return false;
+        for (var i = 0; i < this.kp.length; i++) if (!this.done(i)) return false;
+        return true;
+      };
+      B.prototype.left = function () {
+        var n = 0;
+        for (var i = 0; i < this.kp.length; i++) if (!this.done(i)) n++;
+        return n;
+      };
+      B.prototype.nextOpen = function (from) {
+        var n = this.c.steps.length;
+        for (var k = 1; k < n; k++) {
+          var i = (from + k) % n;
+          if (!this.filled(i) && (i > from || !this.done(i))) return i;
+        }
+        return this.c.layout === 'accordion' ? -1 : from;
+      };
+      B.prototype.canSkip = function (i) {
+        return (this.c.free || this.c.steps[i].min === 0) && i < this.c.steps.length - 1;
+      };
+      B.prototype.rule = function (st) {
+        var t = this.t;
+        if (st.min === 0 || this.c.free) {
+          if (st.max > 1) return (st.min === 0 ? t.optional + ' · ' : '') + tpl(t.rule_up, { max: st.max });
+          return st.min === 0 ? t.optional : tpl(t.rule_exact, { n: 1 });
+        }
+        if (st.min === st.max) return tpl(t.rule_exact, { n: st.min });
+        return tpl(t.rule_range, { min: st.min, max: st.max });
+      };
+      B.prototype.kTotal = function () {
+        var s = this, sum = 0;
+        s.kp.forEach(function (arr, i) { arr.forEach(function (pk) { var p = s.kProd(i, pk.pid); if (p) sum += s.vById(p, pk.vid).price; }); });
+        return sum;
+      };
+      B.prototype.kIdx = function (i, pid) {
+        var a = this.kp[i];
+        for (var j = 0; j < a.length; j++) if (a[j].pid === pid) return j;
+        return -1;
+      };
+      B.prototype.pickK = function (i, pid) {
+        var s = this, st = s.c.steps[i], arr = s.kp[i], j = s.kIdx(i, pid);
+        if (j > -1) { arr.splice(j, 1); s.msg = ''; s.render(); return false; }
+        var p = s.kProd(i, pid);
+        if (!p) return false;
+        var v = s.cur('s' + i + ':' + pid, p);
+        if (!v.available) return false;
+        if (st.max === 1) arr.length = 0;
+        else if (arr.length >= st.max) { s.flash(tpl(s.t.step_full, { max: st.max }), 'err'); return false; }
+        arr.push({ pid: pid, vid: v.id });
+        s.pop = i + ':' + pid;
+        s.popStep = i;
+        s.msg = '';
+        if (arr.length >= st.max && (s.c.layout === 'accordion' || s.c.layout === 'box')) {
+          var na = s.nextOpen(i);
+          if (na !== s.active) { s.active = na; s.swap = true; }
+        }
+        s.render();
+        return true;
+      };
+      B.prototype.kCard = function (i, p, onBtn, offBtn, onCls, offCls) {
+        var j = this.kIdx(i, p.id), on = j > -1, scope = 's' + i + ':' + p.id;
+        var v = on ? this.vById(p, this.kp[i][j].vid) : this.cur(scope, p);
+        return this.card({ p: p, v: v, on: on, scope: scope, act: 'k-pick', k: i + ':' + p.id, qv: 'k:' + i + ':' + p.id, btn: on ? onBtn : offBtn, cls: on ? onCls : offCls });
+      };
+      B.prototype.kThumb = function (i) {
+        var pk = this.kp[i][0];
+        if (!pk) return null;
+        var p = this.kProd(i, pk.pid);
+        return p ? this.img(p, this.vById(p, pk.vid)) : null;
+      };
+      /* Visual for a step: picked product > step image > icon > number. */
+      B.prototype.stepArt = function (i, allowThumb) {
+        var st = this.c.steps[i], src = allowThumb ? this.kThumb(i) : null;
+        if (src) return '<img src="' + esc(src) + '" alt="" loading="lazy" decoding="async">';
+        if (st.img) return '<img src="' + esc(st.img) + '" alt="" loading="lazy" decoding="async">';
+        if (ICONS[st.icon]) return icon(st.icon, 22);
+        return String(i + 1);
+      };
+      B.prototype.kCta = function (block) {
+        var s = this, t = s.t, n = s.count(), cls = 'xpb-btn xpb-btn--lg' + (block ? ' xpb-btn--block' : '');
+        if (s.busy) return s.ctaBtn(n, cls);
+        if (!n) return '<button type="button" class="' + cls + '" disabled>' + esc(t.pick_one) + '</button>';
+        if (!s.allDone()) return '<button type="button" class="' + cls + '" disabled>' + esc(tpl(t.steps_left, { left: Math.max(1, s.left()) })) + '</button>';
+        return s.ctaBtn(n, cls);
+      };
+
+      B.prototype.r_stepper = function () {
+        var s = this, c = s.c, t = s.t, a = s.active, st = c.steps[a], n = c.steps.length, last = a === n - 1;
+        var html = '<ol class="xpb-steps" style="--xpb-n:' + n + '">' + c.steps.map(function (x, i) {
+          var state = i === a ? 'is-active' : (s.filled(i) ? 'is-done' : '');
+          var reached = i <= a || s.filled(i);
+          var dot = state === 'is-done' ? TICK : (ICONS[x.icon] ? icon(x.icon, 22) : (i + 1));
+          return '<li class="' + state + (reached ? ' is-reached' : '') + '"><button type="button" data-act="k-go" data-k="' + i + '"' + (i === a ? ' aria-current="step"' : '') + '>' +
+            '<span class="xpb-dot">' + dot + '</span><span class="xpb-steps__label">' + esc(x.label || x.title) + '</span></button></li>';
+        }).join('') + '</ol>';
+        html += '<div class="xpb-banner">' + (st.img ? '<img src="' + esc(st.img) + '" alt="" loading="lazy" decoding="async">' : (ICONS[st.icon] ? '<span class="xpb-banner__ico" aria-hidden="true">' + icon(st.icon, 96) + '</span>' : '')) +
+          '<div class="xpb-banner__c"><span class="xpb-banner__k">' + esc(tpl(t.step, { n: a + 1, count: n }) + ' · ' + s.rule(st)) + '</span>' +
+          '<h3 class="xpb-banner__t">' + esc(st.title || st.label) + '</h3>' + (st.desc ? '<p class="xpb-banner__d">' + esc(st.desc) + '</p>' : '') + '</div></div>';
+        html += '<div class="xpb-grid">' + st.products.map(function (p) {
+          return s.kCard(a, p, t.chosen, t.choose, 'xpb-btn--primary', 'xpb-btn--ghost');
+        }).join('') + '</div>';
+        if (s.canSkip(a)) html += '<button type="button" class="xpb-btn xpb-btn--block xpb-btn--dashed xpb-skip" data-act="k-skip" data-k="' + a + '">' + esc(t.skip) + '</button>';
+        var tray = c.steps.map(function (x, i) {
+          var src = s.kThumb(i);
+          if (src) return '<span class="xpb-thumb' + (s.pop && s.popStep === i ? ' xpb-pop' : '') + '"><img src="' + esc(src) + '" alt="" loading="lazy" decoding="async" width="40" height="40"></span>';
+          return '<span class="xpb-thumb xpb-thumb--empty">' + (ICONS[x.icon] ? icon(x.icon, 18) : (i + 1)) + '</span>';
+        }).join('');
+        var nx = last ? null : c.steps[a + 1];
+        var nextBtn = '';
+        if (nx) {
+          var canNext = s.done(a);
+          nextBtn = '<button type="button" class="xpb-btn xpb-btn--lg ' + (s.count() ? 'xpb-btn--outline' : 'xpb-btn--primary') + ' xpb-next" data-act="k-next"' + (canNext ? '' : ' disabled') + '>' +
+            '<span>' + esc(tpl(s.count() ? t.next_short : t.next, { step: nx.label || nx.title })) + '</span>' + NEXT + '</button>';
+        }
+        var cta = (last || s.count()) ? s.kCta(false) : '';
+        html += '<div class="xpb-bar xpb-bar--col"><div class="xpb-bar__top"><span class="xpb-bar__label">' + esc(t.your_kit) + '</span><div class="xpb-tray" aria-hidden="true">' + tray + '</div></div>' +
+          '<div class="xpb-bar__row">' + s.totalHtml(s.kTotal()) + nextBtn + cta + '</div>' + s.msgHtml() + '</div>';
+        return html;
+      };
+
+      B.prototype.r_accordion = function () {
+        var s = this, c = s.c, t = s.t, n = c.steps.length, doneN = 0;
+        var html = '<div class="xpb-acc">' + c.steps.map(function (st, i) {
+          var open = i === s.active, ok = s.filled(i);
+          if (ok) doneN++;
+          var names = s.kp[i].map(function (pk) { var p = s.kProd(i, pk.pid); return p ? s.names(p).n : ''; }).join('، ');
+          var status = names || (st.min === 0 ? '' : t.not_yet);
+          var art = s.stepArt(i, true);
+          var head = '<button type="button" class="xpb-acc__head" data-act="k-go" data-k="' + i + '" aria-expanded="' + open + '">' +
+            '<span class="xpb-acc__img' + (art.charAt(0) === '<' && art.indexOf('<img') !== 0 ? ' is-ico' : '') + '">' + art + '</span>' +
+            '<span class="xpb-acc__txt"><span class="xpb-acc__k">' + esc(tpl(t.step, { n: i + 1, count: n }) + ' · ' + s.rule(st)) + '</span>' +
+            '<span class="xpb-acc__t">' + esc(st.title || st.label) + '</span><span class="xpb-acc__s' + (names ? ' is-done' : '') + '">' + esc(status) + '</span></span>' +
+            (ok ? '<span class="xpb-acc__ok" aria-hidden="true">' + TICK + '</span>' : '') + CHEV + '</button>';
+          var body = '';
+          if (open) {
+            body = '<div class="xpb-acc__body">' + (st.desc ? '<p class="xpb-sub xpb-desc">' + esc(st.desc) + '</p>' : '') +
+              '<div class="xpb-scroller" data-scroll="sc' + i + '">' + st.products.map(function (p) {
+                return s.kCard(i, p, t.chosen, t.choose, 'xpb-btn--ghost', 'xpb-btn--primary');
+              }).join('') + '</div>' +
+              (s.canSkip(i) ? '<button type="button" class="xpb-btn xpb-btn--block xpb-btn--dashed xpb-skip" data-act="k-skip" data-k="' + i + '">' + esc(t.skip) + '</button>' : '') + '</div>';
+          }
+          return '<div class="xpb-acc__item' + (open ? ' is-open' : '') + (s.pop && s.popStep === i ? ' xpb-pop' : '') + '">' + head + body + '</div>';
+        }).join('') + '</div>';
+        html += '<div class="xpb-summary xpb-summary--wide"><div class="xpb-row-between"><span class="xpb-total__label">' + esc(tpl(t.steps_done, { done: doneN, count: n }) + ' · ' + t.total) + '</span>' +
+          s.tv(s.kTotal()) + '</div>' + s.kCta(true) + s.msgHtml() + '</div>';
+        return html;
+      };
+
+      B.prototype.r_box = function () {
+        var s = this, c = s.c, t = s.t, n = c.steps.length, a = s.active, st = c.steps[a], filledN = 0;
+        var slots = c.steps.map(function (x, i) {
+          var label = x.label || x.title;
+          if (!s.filled(i)) {
+            var art = x.img ? '<img src="' + esc(x.img) + '" alt="" loading="lazy" decoding="async">' : (ICONS[x.icon] ? icon(x.icon, 38) : '<i aria-hidden="true">+</i>');
+            return '<button type="button" class="xpb-bslot xpb-bslot--empty' + (i === a ? ' is-on' : '') + '" data-act="k-go" data-k="' + i + '"><span class="xpb-bslot__art">' + art + '</span><span>' + esc(label) + '</span></button>';
+          }
+          filledN++;
+          var pk = s.kp[i][0], p = s.kProd(i, pk.pid), v = s.vById(p, pk.vid), src = s.img(p, v), more = s.kp[i].length - 1;
+          return '<button type="button" class="xpb-bslot' + (s.pop && s.popStep === i ? ' xpb-pop' : '') + '" data-act="k-go" data-k="' + i + '"><span class="xpb-bslot__img">' + (src ? '<img src="' + esc(src) + '" alt="" loading="lazy" decoding="async">' : PH) + '</span>' +
+            '<span class="xpb-bslot__cap"><b>' + esc(label) + '</b><span>' + esc(s.names(p).n + (more > 0 ? ' +' + more : '')) + '</span></span></button>';
+        }).join('');
+        var box = '<div class="xpb-box"' + (c.boxImg ? ' style="background-image:url(\'' + esc(c.boxImg) + '\')"' : '') + '>' +
+          (c.ribbon ? '<span class="xpb-box__rib xpb-box__rib--v" aria-hidden="true"></span><span class="xpb-box__rib xpb-box__rib--h" aria-hidden="true"></span>' : '') +
+          '<div class="xpb-box__top"><span class="xpb-box__count">' + esc(tpl(t.in_box, { selected: filledN, count: n })) + '</span></div>' +
+          '<div class="xpb-box__grid" style="--xpb-n:' + n + '">' + slots + '</div></div>';
+        var tabs = '<div class="xpb-tabs" data-scroll="tabs">' + c.steps.map(function (x, i) {
+          var ok = s.filled(i), on = i === a;
+          var dot = ok ? TICK : s.stepArt(i, false);
+          return '<button type="button" class="xpb-tab' + (on ? ' is-on' : '') + (ok ? ' is-done' : '') + '" data-act="k-go" data-k="' + i + '" aria-pressed="' + on + '">' +
+            '<span class="xpb-tab__dot">' + dot + '</span><span class="xpb-tab__txt"><b>' + esc(x.label || x.title) + '</b><span>' + esc(ok ? t.done : s.rule(x)) + '</span></span></button>';
+        }).join('') + '</div>';
+        var grid = (st.desc ? '<p class="xpb-sub xpb-desc">' + esc(st.desc) + '</p>' : '') +
+          '<div class="xpb-grid">' + st.products.map(function (p) {
+            return s.kCard(a, p, t.in, t.put, 'xpb-btn--ghost', 'xpb-btn--primary');
+          }).join('') + '</div>' +
+          (s.canSkip(a) ? '<button type="button" class="xpb-btn xpb-btn--block xpb-btn--dashed xpb-skip" data-act="k-skip" data-k="' + a + '">' + esc(t.skip) + '</button>' : '');
+        return '<div class="xpb-split"><div>' + box + '</div><div>' + tabs + grid + '</div></div>' +
+          '<div class="xpb-bar">' + s.totalHtml(s.kTotal()) + s.kCta(false) + s.msgHtml() + '</div>';
+      };
+
+      /* ---------- Quick view (built in) ---------- */
+      B.prototype.qvTarget = function (k) {
+        var s = this, m = String(k || '').split(':');
+        if (m[0] === 'b') { var it = s.item(m.slice(1).join(':')); return it ? { p: it.p, scope: it.key, act: 'b-toggle', k: it.key } : null; }
+        if (m[0] === 'k') { var i = Number(m[1]), pid = Number(m[2]), p = s.kProd(i, pid); return p ? { p: p, scope: 's' + i + ':' + pid, act: 'k-pick', k: i + ':' + pid, step: i } : null; }
+        return null;
+      };
+      B.prototype.qvOn = function () {
+        var q = this.qvState;
+        if (!q) return false;
+        if (q.act === 'b-toggle') return this.pidx(q.k) > -1;
+        return this.kIdx(q.step, q.p.id) > -1;
+      };
+      B.prototype.qvBuild = function () {
+        var s = this;
+        if (s.qvEl) return s.qvEl;
+        var el = document.createElement('div');
+        el.className = 'xpb xpb-qv' + (s.anim ? ' xpb-fx' : '');
+        el.setAttribute('style', s.root.getAttribute('style') || '');
+        if (document.documentElement.dir) el.setAttribute('dir', document.documentElement.dir);
+        el.hidden = true;
+        el.innerHTML = '<div class="xpb-qv__bg" data-qv="close"></div><div class="xpb-qv__panel" role="dialog" aria-modal="true" aria-labelledby="xpb-qv-t-' + esc(s.c.sid) + '">' +
+          '<button type="button" class="xpb-x xpb-qv__x" data-qv="close">' + XL + '<span>' + esc(s.t.close) + '</span></button><div class="xpb-qv__body"></div></div>';
+        document.body.appendChild(el);
+        el.addEventListener('click', function (e) {
+          var b = e.target.closest('[data-qv]');
+          if (!b) return;
+          var a = b.getAttribute('data-qv');
+          if (a === 'close') s.qvClose();
+          else if (a === 'toggle') {
+            var q = s.qvState, added = s.act(q.act, q.k);
+            if (added) s.qvClose(); else s.qvSync();
+          } else if (a === 'thumb') {
+            var img = el.querySelectorAll('.xpb-qv__track img')[Number(b.getAttribute('data-i'))];
+            if (img) img.scrollIntoView({ behavior: s.anim ? 'smooth' : 'auto', block: 'nearest', inline: 'start' });
+          }
+        });
+        el.addEventListener('change', function (e) {
+          if (e.target.getAttribute('data-qv') === 'variant' && s.qvState) s.setVar(s.qvState.scope, Number(e.target.value));
+        });
+        el.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); s.qvClose(); return; }
+          if (e.key !== 'Tab') return;
+          var f = Array.prototype.filter.call(el.querySelectorAll('button,select,a[href]'), function (x) { return !x.disabled && x.offsetParent !== null; });
+          if (!f.length) return;
+          if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+          else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+        });
+        s.qvEl = el;
+        return el;
+      };
+      B.prototype.qvImages = function (q) {
+        var full = QV_CACHE[q.p.h];
+        if (full && full.images && full.images.length) return full.images.map(function (u) { return sized(u, 900); });
+        return [q.p.img2 || q.p.img].filter(Boolean);
+      };
+      B.prototype.qvRender = function () {
+        var s = this, q = s.qvState, t = s.t, c = s.c, p = q.p, v = s.cur(q.scope, p), on = s.qvOn(), nm = s.names(p), full = QV_CACHE[p.h];
+        var imgs = s.qvImages(q);
+        var track = imgs.map(function (u, i) { return '<img src="' + esc(u) + '" alt="' + esc(p.title) + '" ' + (i ? 'loading="lazy" ' : '') + 'decoding="async" width="900" height="900">'; }).join('');
+        var thumbs = imgs.length > 1 ? '<div class="xpb-qv__thumbs">' + imgs.map(function (u, i) {
+          return '<button type="button" data-qv="thumb" data-i="' + i + '" aria-label="' + (i + 1) + '/' + imgs.length + '"><img src="' + esc(sized(u, 160)) + '" alt="" loading="lazy" decoding="async"></button>';
+        }).join('') + '</div>' : '';
+        var sel = '';
+        if (p.variants.length > 1) {
+          sel = '<label class="xpb-qv__var"><span>' + esc(t.variant) + '</span><select class="xpb-select" data-qv="variant">' + p.variants.map(function (x) {
+            return '<option value="' + x.id + '"' + (x.id === v.id ? ' selected' : '') + (x.available ? '' : ' disabled') + '>' + esc(x.title + (x.available ? '' : ' (' + t.sold_out + ')')) + '</option>';
+          }).join('') + '</select></label>';
+        }
+        var btnLabel = on ? (q.act === 'k-pick' ? t.chosen : t.remove) : (q.act === 'k-pick' ? t.choose : t.add);
+        s.qvEl.querySelector('.xpb-qv__body').innerHTML =
+          '<div class="xpb-qv__gallery"><div class="xpb-qv__track">' + track + '</div>' + thumbs + '</div>' +
+          '<div class="xpb-qv__info"><h2 class="xpb-qv__title" id="xpb-qv-t-' + esc(c.sid) + '">' + esc(nm.n) + '</h2>' + (nm.sub ? '<p class="xpb-sub">' + esc(nm.sub) + '</p>' : '') +
+          '<p class="xpb-qv__price">' + esc(money(v.price, c.money)) + '</p>' + sel +
+          '<button type="button" class="xpb-btn xpb-btn--lg xpb-btn--block ' + (on ? 'xpb-btn--ghost' : 'xpb-btn--primary') + '" data-qv="toggle"' + (!v.available && !on ? ' disabled' : '') + '>' + esc(!v.available && !on ? t.sold_out : btnLabel) + '</button>' +
+          '<a class="xpb-btn xpb-btn--block xpb-btn--outline" href="' + esc(p.url) + '"' + (c.imgClick === 'page' ? '' : ' target="_blank" rel="noopener"') + '>' + esc(t.view_page) + '</a>' +
+          '<div class="xpb-qv__desc">' + (full ? (full.description || '') : '<span class="xpb-skel"></span><span class="xpb-skel"></span><span class="xpb-skel xpb-skel--s"></span>') + '</div></div>';
+      };
+      B.prototype.qvSync = function () { if (this.qvState && this.qvEl && !this.qvEl.hidden) this.qvRender(); };
+      B.prototype.qvOpen = function (k) {
+        var s = this, q = s.qvTarget(k);
+        if (!q) return;
+        var el = s.qvBuild();
+        s.qvState = q;
+        s.qvFocus = document.activeElement;
+        s.qvRender();
+        el.hidden = false;
+        void el.offsetWidth;
+        el.classList.add('is-open');
+        document.documentElement.classList.add('xpb-lock');
+        var x = el.querySelector('.xpb-qv__x');
+        if (x) x.focus({ preventScroll: true });
+        if (!QV_CACHE[q.p.h] && q.p.h) {
+          fetch(String(s.c.rootUrl || '/').replace(/\/?$/, '/') + 'products/' + encodeURIComponent(q.p.h) + '.js', { headers: { Accept: 'application/json' } })
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .then(function (j) {
+              QV_CACHE[q.p.h] = j ? { images: j.images || [], description: j.description || '' } : { images: [], description: '' };
+              if (s.qvState === q) s.qvRender();
+            })
+            .catch(function () { QV_CACHE[q.p.h] = { images: [], description: '' }; if (s.qvState === q) s.qvRender(); });
+        }
+      };
+      B.prototype.qvClose = function () {
+        var s = this, el = s.qvEl;
+        if (!el || el.hidden) return;
+        el.classList.remove('is-open');
+        s.qvState = null;
+        if (!s.isOpen && !document.querySelector('.xpb-ov.is-open')) document.documentElement.classList.remove('xpb-lock');
+        setTimeout(function () { if (!el.classList.contains('is-open')) el.hidden = true; }, s.anim ? 280 : 0);
+        var f = s.qvFocus;
+        if (f && f.focus && document.contains(f)) f.focus({ preventScroll: true });
+      };
+
+      /* ---------- Actions ---------- */
+      B.prototype.act = function (a, k) {
+        var s = this, c = s.c;
+        if (a === 'b-toggle') return s.toggleB(k);
+        if (a === 'qv') return s.qvOpen(k);
+        if (a === 'chip') { if ((k || '') !== s.filter) s.swap = true; s.filter = k || ''; return s.render(); }
+        if (a === 'atc') return s.add();
+        if (a === 'k-pick') { var m = k.split(':'); return s.pickK(Number(m[0]), Number(m[1])); }
+        if (a === 'k-go') {
+          var i = Number(k);
+          var nxt = (c.layout === 'accordion' && s.active === i) ? -1 : i;
+          if (nxt !== s.active) s.swap = true;
+          s.active = nxt;
+          s.msg = '';
+          return s.render();
+        }
+        if (a === 'k-next') { s.active = Math.min(s.active + 1, c.steps.length - 1); s.swap = true; s.msg = ''; s.render(); return s.scrollTop(); }
+        if (a === 'k-skip') {
+          var j = Number(k);
+          s.kp[j] = [];
+          if (j < c.steps.length - 1) { s.active = j + 1; s.swap = true; }
+          s.render();
+          return s.scrollTop();
+        }
+      };
+      B.prototype.scrollTop = function () {
+        var top = 0;
+        if (this.ov) top = this.ov.querySelector('.xpb-panel__body').getBoundingClientRect().top;
+        if (this.mount.getBoundingClientRect().top < top) this.mount.scrollIntoView({ behavior: this.anim ? 'smooth' : 'auto', block: 'start' });
+      };
+      B.prototype.lines = function () {
+        var s = this, c = s.c, out = [], byId = {};
+        function push(id) { if (byId[id]) byId[id].quantity++; else { byId[id] = { id: id, quantity: 1 }; out.push(byId[id]); } }
+        if (c.mode === 'bundle') {
+          if (c.layout === 'routine_stack') {
+            c.items.forEach(function (it) { var v = s.cur(it.key, it.p); if (s.checked[it.key] && v.available) push(v.id); });
+          } else s.picks.forEach(function (pk) { push(pk.vid); });
+        } else s.kp.forEach(function (arr) { arr.forEach(function (pk) { push(pk.vid); }); });
+        return out;
+      };
+      /* The theme's cart drawer (Minimog: m-cart-drawer, Dawn: cart-drawer). */
+      function themeDrawer() {
+        var d = document.querySelector('m-cart-drawer') || document.querySelector('cart-drawer') || document.querySelector('cart-notification');
+        return d && typeof d.getSectionsToRender === 'function' ? d : null;
+      }
+      B.prototype.add = function () {
+        var s = this, c = s.c, t = s.t;
+        if (s.busy) return;
+        var lines = s.lines();
+        if (!lines.length) return;
+        var tag = c.name + ' #' + Date.now().toString(36).slice(-5).toUpperCase();
+        var body = { items: lines.map(function (l) { return { id: l.id, quantity: l.quantity, properties: { _bundle: tag } }; }) };
+        // Ask for the drawer's fresh HTML in the same request (no extra fetch), unless we are leaving the page.
+        var drawer = c.after === 'cart' || c.after === 'checkout' ? null : themeDrawer();
+        if (drawer) {
+          var ids = [];
+          try { drawer.getSectionsToRender().forEach(function (x) { var id = x.section || x.id; if (id && ids.indexOf(id) < 0) ids.push(id); }); } catch (e) {}
+          if (ids.length) { body.sections = ids; body.sections_url = window.location.pathname; }
+        }
+        s.busy = true;
+        s.msg = '';
+        s.render();
+        fetch(c.addUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+          body: JSON.stringify(body)
+        }).then(function (r) {
+          return r.json().then(function (j) {
+            if (!r.ok || j.status) throw new Error(j.description || j.message || t.error);
+            return j;
+          });
+        }).then(function (j) {
+          document.dispatchEvent(new CustomEvent('xpb:added', { detail: { items: body.items, response: j } }));
+          if (c.after === 'cart' || (c.after === 'drawer' && !drawer && !window.MinimogEvents)) { window.location.href = c.cartUrl; return; }
+          if (c.after === 'checkout') { window.location.href = String(c.rootUrl || '/').replace(/\/$/, '') + '/checkout'; return; }
+          s.busy = false;
+          if (c.mode === 'bundle' && c.layout !== 'routine_stack') s.picks = [];
+          if (c.mode === 'kit') { s.kp = c.steps.map(function () { return []; }); s.active = 0; }
+          s.syncTheme(drawer, j);
+          s.flash(t.added, 'ok');
+        }).catch(function (e) {
+          s.busy = false;
+          s.flash((e && e.message) || t.error, 'err');
+        });
+      };
+      /* Refresh the theme's cart UI so new items show without a page reload.
+         Minimog's "cart-update" event only refreshes the cart page and the count bubble,
+         so the drawer's HTML is filled here from the sections returned by /cart/add.js. */
+      function fillDrawer(d, j) {
+        var done = false, parser = new DOMParser(), cache = {};
+        d.getSectionsToRender().forEach(function (x) {
+          var id = x.section || x.id, html = j.sections && j.sections[id];
+          if (!html) return;
+          var el = x.selector ? document.querySelector(x.selector) : document.getElementById(x.id);
+          if (!el) return;
+          var doc = cache[id] || (cache[id] = parser.parseFromString(html, 'text/html'));
+          var src = x.selector ? doc.querySelector(x.selector) : doc.querySelector('.shopify-section');
+          if (src) { el.innerHTML = src.innerHTML; done = true; }
+        });
+        return done;
+      }
+      B.prototype.syncTheme = function (drawer, j) {
+        var s = this, c = s.c, open = c.after === 'drawer';
+        try {
+          if (drawer) {
+            if (open && s.ov) s.close(true);
+            var filled = j.sections ? fillDrawer(drawer, j) : false;
+            if (!filled && typeof drawer.onCartDrawerUpdate === 'function') drawer.onCartDrawerUpdate();
+            drawer.classList.remove('m-cart--empty', 'is-empty');
+            var items = drawer.querySelector('m-cart-drawer-items, cart-drawer-items');
+            if (items) items.classList.remove('m-cart--empty', 'is-empty');
+            if (window.FoxKitV2 && window.FoxKitV2.Modules && window.FoxKitV2.Modules.InCart) window.FoxKitV2.Modules.InCart.getCart();
+            if (open && typeof drawer.open === 'function') setTimeout(function () { drawer.open(); }, 0);
+          }
+          if (window.MinimogEvents && window.MinimogTheme && window.MinimogTheme.pubSubEvents) {
+            window.MinimogEvents.emit(window.MinimogTheme.pubSubEvents.cartUpdate, j);
+          } else if (typeof window.publish === 'function' && window.PUB_SUB_EVENTS) {
+            window.publish(window.PUB_SUB_EVENTS.cartUpdate, { source: 'xpoost-builder', cartData: j });
+          }
+        } catch (e) {}
+        document.dispatchEvent(new CustomEvent('cart:refresh', { bubbles: true }));
+      };
+
+      /* ---------- Drawer / popup ---------- */
+      B.prototype.setupTrigger = function () {
+        var s = this, btns = s.root.querySelectorAll('.xpb-tbtn');
+        if (!btns.length || !('IntersectionObserver' in window)) return;
+        // Pause the looping button animation while it is off screen.
+        var io = new IntersectionObserver(function (en) {
+          en.forEach(function (x) { x.target.classList.toggle('is-paused', !x.isIntersecting); });
+        });
+        btns.forEach(function (b) { io.observe(b); });
+      };
+      B.prototype.setupOv = function (ov) {
+        var s = this, c = s.c, root = s.root;
+        s.ov = ov;
+        s.isOpen = false;
+        document.querySelectorAll('[id="' + ov.id + '"]').forEach(function (el) { if (el !== ov) el.parentNode.removeChild(el); });
+        if (!ov.getAttribute('dir') && document.documentElement.dir) ov.setAttribute('dir', document.documentElement.dir);
+        document.body.appendChild(ov);
+        root.querySelectorAll('[data-xpb-open]').forEach(function (b) { b.addEventListener('click', function () { s.open(); }); });
+        ov.addEventListener('click', function (e) { if (e.target.closest('[data-xpb-close]')) s.close(); });
+        ov.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') { e.preventDefault(); s.close(); return; }
+          if (e.key !== 'Tab') return;
+          var f = Array.prototype.filter.call(ov.querySelectorAll('button,select,input,a[href],[tabindex]:not([tabindex="-1"])'), function (el) { return !el.disabled && el.offsetParent !== null; });
+          if (!f.length) return;
+          var first = f[0], last = f[f.length - 1];
+          if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+          else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        });
+        if (c.hash) {
+          var check = function () { if (location.hash === '#' + c.hash) s.open(); };
+          window.addEventListener('hashchange', check);
+          document.addEventListener('click', function (e) {
+            var a = e.target.closest && e.target.closest('a[href]');
+            if (!a || !root.isConnected) return;
+            var href = a.getAttribute('href') || '';
+            if (href === '#' + c.hash || (href.slice(-(c.hash.length + 1)) === '#' + c.hash && a.pathname === location.pathname)) { e.preventDefault(); s.open(); }
+          });
+          check();
+        }
+        document.addEventListener('shopify:section:select', function (e) { if (e.detail && e.detail.sectionId === c.sid && root.isConnected) s.open(); });
+        document.addEventListener('shopify:section:deselect', function (e) { if (e.detail && e.detail.sectionId === c.sid) s.close(); });
+        document.addEventListener('shopify:section:unload', function (e) {
+          if (e.detail && e.detail.sectionId === c.sid) {
+            s.close(true);
+            if (ov.parentNode) ov.parentNode.removeChild(ov);
+            if (s.qvEl && s.qvEl.parentNode) s.qvEl.parentNode.removeChild(s.qvEl);
+          }
+        });
+      };
+      B.prototype.open = function () {
+        var s = this, ov = s.ov;
+        if (!ov || s.isOpen) return;
+        s.isOpen = true;
+        s.lastFocus = document.activeElement;
+        clearTimeout(s.hideT);
+        ov.hidden = false;
+        void ov.offsetWidth;
+        ov.classList.add('is-open');
+        document.documentElement.classList.add('xpb-lock');
+        if (s.anim) { ov.classList.add('xpb-on'); s.entering = true; }
+        s.render();
+        var x = ov.querySelector('.xpb-panel__x');
+        if (x) x.focus({ preventScroll: true });
+        document.dispatchEvent(new CustomEvent('xpb:open', { detail: { section: s.c.sid } }));
+      };
+      B.prototype.close = function (now) {
+        var s = this, ov = s.ov;
+        if (!ov || !s.isOpen) return;
+        s.isOpen = false;
+        ov.classList.remove('is-open', 'xpb-on');
+        if (!document.querySelector('.xpb-ov.is-open, .xpb-qv.is-open')) document.documentElement.classList.remove('xpb-lock');
+        var hide = function () { if (!s.isOpen) ov.hidden = true; };
+        if (now) hide(); else s.hideT = setTimeout(hide, 320);
+        if (s.c.hash && location.hash === '#' + s.c.hash && window.history.replaceState) history.replaceState(null, '', location.pathname + location.search);
+        if (s.lastFocus && s.lastFocus.focus && document.contains(s.lastFocus)) s.lastFocus.focus({ preventScroll: true });
+      };
+
+      /* ---------- Render ---------- */
+      B.prototype.render = function () {
+        var s = this, c = s.c, keep = {}, fa = null, fk = null;
+        if (s.ov && !s.isOpen && !s.rendered && !c.design) return;
+        s.mount.querySelectorAll('[data-scroll]').forEach(function (el) { keep[el.getAttribute('data-scroll')] = el.scrollLeft; });
+        var ae = document.activeElement;
+        if (ae && s.mount.contains(ae)) { fa = ae.getAttribute('data-act'); fk = ae.getAttribute('data-k'); }
+        var list = c.mode === 'bundle' ? c.items : c.steps;
+        var html;
+        s.readyNow = false;
+        if (!list.length) {
+          html = c.design ? '<p class="xpb-empty">XPoost Builder: add ' + (c.mode === 'bundle' ? 'product blocks' : 'step blocks with products') + ' in the theme editor.</p>' : '';
+        } else {
+          var fn = s['r_' + c.layout] || (c.mode === 'bundle' ? s.r_hero_grid : s.r_stepper);
+          if (c.mode === 'kit' && c.layout !== 'accordion' && (s.active < 0 || s.active >= c.steps.length)) s.active = 0;
+          html = fn.call(s);
+        }
+        if (!s.rendered || s.entering) s.mount.innerHTML = html;
+        else {
+          var tmp = document.createElement('template');
+          tmp.innerHTML = html;
+          morph(s.mount, tmp.content, 0);
+        }
+        s.rendered = true;
+        if (s.anim) {
+          s.mount.classList.toggle('xpb-enter', !!s.entering);
+          s.mount.classList.toggle('xpb-swap', !!s.swap && !s.entering);
+          var bars = s.mount.querySelectorAll('[data-w]');
+          if (bars.length) requestAnimationFrame(function () { requestAnimationFrame(function () { bars.forEach(function (b) { b.style.width = b.getAttribute('data-w') + '%'; }); }); });
+        } else {
+          s.mount.querySelectorAll('[data-w]').forEach(function (b) { b.style.width = b.getAttribute('data-w') + '%'; });
+        }
+        s.entering = false; s.swap = false; s.pop = null; s.popStep = -1; s.shake = false;
+        s.wasReady = s.readyNow;
+        s.mount.querySelectorAll('[data-scroll]').forEach(function (el) {
+          var v = keep[el.getAttribute('data-scroll')];
+          if (v && el.scrollLeft !== v) el.scrollLeft = v;
+        });
+        if (fa && !s.mount.contains(document.activeElement)) {
+          var sel = '[data-act="' + fa + '"]' + (fk != null ? '[data-k="' + (window.CSS && CSS.escape ? CSS.escape(fk) : fk) + '"]' : '');
+          var el = s.mount.querySelector(sel);
+          if (el && !el.disabled) el.focus({ preventScroll: true });
+        }
+      };
+
+      window.XPBuilder = { init: function (root) { if (root && !root.__xpb) { root.__xpb = new B(root); } } };
+    })();
+    {% endraw %}
+    window.XPBuilder.init(document.getElementById('xpb-{{ section.id }}'));
+  </script>
+</section>
+
+{% schema %}
+{
+  "name": "XPoost Builder",
+  "tag": "div",
+  "class": "xpb-section",
+  "settings": [
+    { "type": "header", "content": "Builder type" },
+    {
+      "type": "select",
+      "id": "mode",
+      "label": "Type",
+      "options": [
+        { "value": "bundle", "label": "Bundle builder" },
+        { "value": "kit", "label": "Kit builder (steps)" }
+      ],
+      "default": "bundle",
+      "info": "Bundle: add Product blocks. Kit: add Step blocks, each with its own products."
+    },
+    {
+      "type": "select",
+      "id": "bundle_layout",
+      "label": "Bundle layout",
+      "options": [
+        { "value": "hero_grid", "label": "A · Hero + grid" },
+        { "value": "slots_chips", "label": "B · Slots + concern chips" },
+        { "value": "routine_stack", "label": "C · Routine stack" }
+      ],
+      "default": "hero_grid"
+    },
+    {
+      "type": "select",
+      "id": "kit_layout",
+      "label": "Kit layout",
+      "options": [
+        { "value": "stepper", "label": "A · Stepper + step banner" },
+        { "value": "accordion", "label": "B · Image accordion" },
+        { "value": "box", "label": "C · Fill the box" }
+      ],
+      "default": "stepper"
+    },
+    {
+      "type": "range",
+      "id": "bundle_size",
+      "label": "Bundle: maximum products",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "default": 3,
+      "info": "Used by layouts A and B. Layout C adds every ticked product."
+    },
+    {
+      "type": "range",
+      "id": "bundle_min",
+      "label": "Bundle: minimum to add to cart",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "default": 1,
+      "info": "1 lets shoppers add a single product."
+    },
+    {
+      "type": "select",
+      "id": "kit_rule",
+      "label": "Kit: step rules",
+      "options": [
+        { "value": "free", "label": "Free: skip any step, 1 product is enough" },
+        { "value": "rules", "label": "Strict: follow each step's minimum" }
+      ],
+      "default": "free"
+    },
+
+    { "type": "header", "content": "Display" },
+    {
+      "type": "select",
+      "id": "display",
+      "label": "Show as",
+      "options": [
+        { "value": "inline", "label": "On the page" },
+        { "value": "drawer", "label": "Side drawer" },
+        { "value": "popup", "label": "Popup (bottom sheet on mobile)" }
+      ],
+      "default": "inline"
+    },
+    { "type": "checkbox", "id": "show_trigger", "label": "Show open button on the page", "default": true, "info": "Drawer and popup only. Turn off if you only open it from a link." },
+    { "type": "text", "id": "trigger_label", "label": "Open button text", "default": "ابني روتينك" },
+    {
+      "type": "select",
+      "id": "trigger_style",
+      "label": "Open button style",
+      "options": [
+        { "value": "sparkle", "label": "Sparkle: twinkling stars + shine" },
+        { "value": "shimmer", "label": "Shimmer: shine sweep" },
+        { "value": "glow", "label": "Glow: pulsing halo" },
+        { "value": "border", "label": "Border: rotating gold edge" },
+        { "value": "float", "label": "Float: gentle bob + icon wiggle" },
+        { "value": "pulse", "label": "Pulse: heartbeat" },
+        { "value": "classic", "label": "Classic: no loop" }
+      ],
+      "default": "sparkle"
+    },
+    {
+      "type": "select",
+      "id": "trigger_icon",
+      "label": "Open button icon",
+      "options": [
+        { "value": "sparkles", "label": "Sparkles" },
+        { "value": "serum", "label": "Serum" },
+        { "value": "gift", "label": "Gift" },
+        { "value": "box", "label": "Box" },
+        { "value": "heart", "label": "Heart" },
+        { "value": "wand", "label": "Magic wand" },
+        { "value": "none", "label": "None" }
+      ],
+      "default": "sparkles"
+    },
+    {
+      "type": "select",
+      "id": "trigger_speed",
+      "label": "Open button animation speed",
+      "options": [
+        { "value": "1.5", "label": "Slow" },
+        { "value": "1", "label": "Normal" },
+        { "value": "0.65", "label": "Fast" }
+      ],
+      "default": "1"
+    },
+    { "type": "text", "id": "trigger_note", "label": "Small text under the button", "placeholder": "3 خطوات وروتينك جاهز" },
+    { "type": "checkbox", "id": "trigger_full", "label": "Full-width open button", "default": true },
+    { "type": "text", "id": "panel_title", "label": "Drawer / popup title", "info": "Leave empty to use the heading." },
+    { "type": "text", "id": "open_hash", "label": "Open from link", "placeholder": "routine", "info": "Any link to #routine (menu, banner, button) opens it. Use a different word for each builder." },
+    {
+      "type": "select",
+      "id": "drawer_side",
+      "label": "Drawer side",
+      "options": [
+        { "value": "end", "label": "End (left in Arabic, right in English)" },
+        { "value": "start", "label": "Start (right in Arabic, left in English)" }
+      ],
+      "default": "end"
+    },
+    { "type": "range", "id": "drawer_width", "label": "Drawer width on desktop", "min": 360, "max": 640, "step": 20, "unit": "px", "default": 460 },
+
+    { "type": "header", "content": "Heading" },
+    { "type": "text", "id": "eyebrow", "label": "Small label", "default": "اعمل روتينك بنفسك" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "روتين البشرة الدهنية في 3 خطوات" },
+    { "type": "textarea", "id": "subheading", "label": "Text", "default": "اختار منتجاتك وضيفهم للعربة مرة واحدة" },
+    { "type": "range", "id": "heading_size", "label": "Heading size", "min": 18, "max": 48, "step": 1, "unit": "px", "default": 26 },
+    { "type": "checkbox", "id": "show_bar", "label": "Show line under heading", "default": true },
+
+    { "type": "header", "content": "Hero image", "info": "Shown in Bundle A, Bundle B and Kit B." },
+    { "type": "image_picker", "id": "hero_image", "label": "Image" },
+    { "type": "image_picker", "id": "hero_image_mobile", "label": "Mobile image (optional)" },
+    { "type": "range", "id": "hero_height", "label": "Height", "min": 200, "max": 600, "step": 20, "unit": "px", "default": 320 },
+    { "type": "range", "id": "hero_overlay", "label": "Text shade", "min": 0, "max": 90, "step": 5, "unit": "%", "default": 70 },
+    {
+      "type": "select",
+      "id": "hero_align",
+      "label": "Text alignment",
+      "options": [
+        { "value": "center", "label": "Center" },
+        { "value": "start", "label": "Start" }
+      ],
+      "default": "center"
+    },
+    { "type": "checkbox", "id": "sparkles", "label": "Gold sparkles", "default": true },
+
+    { "type": "header", "content": "Box (Kit C)" },
+    { "type": "image_picker", "id": "box_image", "label": "Box background image" },
+    { "type": "color", "id": "box_bg", "label": "Box color", "default": "#2a2622" },
+    { "type": "checkbox", "id": "box_ribbon", "label": "Show ribbon", "default": true },
+
+    { "type": "header", "content": "Product cards" },
+    {
+      "type": "select",
+      "id": "cols_mobile",
+      "label": "Columns on mobile",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ],
+      "default": "2"
+    },
+    { "type": "range", "id": "cols_desktop", "label": "Columns on desktop", "min": 2, "max": 5, "step": 1, "default": 3 },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image shape",
+      "options": [
+        { "value": "1/1", "label": "Square" },
+        { "value": "4/5", "label": "Portrait" },
+        { "value": "3/4", "label": "Tall" }
+      ],
+      "default": "1/1"
+    },
+    {
+      "type": "select",
+      "id": "image_fit",
+      "label": "Image fit",
+      "options": [
+        { "value": "cover", "label": "Fill" },
+        { "value": "contain", "label": "Fit whole image" }
+      ],
+      "default": "cover"
+    },
+    { "type": "checkbox", "id": "split_title", "label": "Split title at \" | \" or \" - \" into name + subtitle", "default": true },
+    {
+      "type": "select",
+      "id": "subtitle_source",
+      "label": "Subtitle when title has no split",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "vendor", "label": "Vendor" },
+        { "value": "type", "label": "Product type" }
+      ],
+      "default": "none"
+    },
+    { "type": "checkbox", "id": "hide_sold_out", "label": "Hide sold out products", "default": false },
+    {
+      "type": "select",
+      "id": "quick_view",
+      "label": "Quick view button",
+      "options": [
+        { "value": "builtin", "label": "Built-in (photos, details, add to bundle)" },
+        { "value": "theme", "label": "Theme quick view (Minimog)" },
+        { "value": "none", "label": "Off" }
+      ],
+      "default": "builtin"
+    },
+    {
+      "type": "select",
+      "id": "image_click",
+      "label": "Tapping a product photo or name",
+      "options": [
+        { "value": "page_new", "label": "Opens product page in a new tab" },
+        { "value": "page", "label": "Opens product page" },
+        { "value": "quickview", "label": "Opens quick view" },
+        { "value": "none", "label": "Does nothing" }
+      ],
+      "default": "page_new",
+      "info": "A new tab keeps the shopper's picks."
+    },
+
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "accent", "label": "Accent", "default": "#CEAF0A" },
+    { "type": "color", "id": "on_accent", "label": "Text on accent", "default": "#121111" },
+    { "type": "color", "id": "bg", "label": "Background", "default": "#121111" },
+    { "type": "color", "id": "card", "label": "Card", "default": "#222222" },
+    { "type": "color", "id": "tile", "label": "Image tile", "default": "#ffffff" },
+    { "type": "color", "id": "text", "label": "Text", "default": "#ffffff" },
+    { "type": "color", "id": "muted", "label": "Secondary text", "default": "#cfcfcf" },
+    { "type": "color", "id": "border", "label": "Lines and disabled buttons", "default": "#3a3a3a" },
+    { "type": "color", "id": "bar", "label": "Total bar", "default": "#1b1a1a" },
+
+    { "type": "header", "content": "Shape and spacing" },
+    { "type": "range", "id": "radius", "label": "Card corners", "min": 0, "max": 24, "step": 1, "unit": "px", "default": 15 },
+    { "type": "range", "id": "btn_radius", "label": "Button corners", "min": 0, "max": 30, "step": 1, "unit": "px", "default": 8 },
+    { "type": "checkbox", "id": "animations", "label": "Animations", "default": true, "info": "Light motion on load, picks and totals. Turns off by itself when a shopper has \"reduce motion\" on." },
+    { "type": "range", "id": "padding_top", "label": "Top space", "min": 0, "max": 100, "step": 4, "unit": "px", "default": 32 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom space", "min": 0, "max": 100, "step": 4, "unit": "px", "default": 32 },
+
+    { "type": "header", "content": "Cart" },
+    {
+      "type": "select",
+      "id": "after_add",
+      "label": "After adding to cart",
+      "options": [
+        { "value": "drawer", "label": "Open cart drawer" },
+        { "value": "cart", "label": "Go to cart page" },
+        { "value": "checkout", "label": "Go to checkout" },
+        { "value": "stay", "label": "Stay and show a message" }
+      ],
+      "default": "drawer"
+    },
+    {
+      "type": "select",
+      "id": "price_format",
+      "label": "Price format",
+      "options": [
+        { "value": "with_currency", "label": "With currency code" },
+        { "value": "plain", "label": "Without currency code" }
+      ],
+      "default": "with_currency"
+    },
+
+    { "type": "header", "content": "Texts", "info": "[count], [left], [selected], [n], [min], [max], [step], [done] are filled in automatically." },
+    { "type": "text", "id": "t_pick", "label": "Pick title", "default": "اختار لحد [count] منتجات" },
+    { "type": "text", "id": "t_progress", "label": "Progress", "default": "[selected] من [count]" },
+    { "type": "text", "id": "t_add", "label": "Add button", "default": "ضيفه" },
+    { "type": "text", "id": "t_remove", "label": "Remove button", "default": "شيله" },
+    { "type": "text", "id": "t_full", "label": "Bundle full", "default": "الباكدج كامل. شيل منتج الأول" },
+    { "type": "text", "id": "t_more", "label": "Pick more", "default": "اختار [left] كمان" },
+    { "type": "text", "id": "t_cta", "label": "Add to cart", "default": "ضيف للعربة" },
+    { "type": "text", "id": "t_cta_count", "label": "Add to cart (Bundle C)", "default": "ضيف [count] للعربة" },
+    { "type": "text", "id": "t_total", "label": "Total", "default": "الإجمالي" },
+    { "type": "text", "id": "t_all", "label": "All chip", "default": "الكل" },
+    { "type": "text", "id": "t_concerns", "label": "Concern heading", "default": "تسوق بالمشكلة" },
+    { "type": "text", "id": "t_slot", "label": "Empty slot", "default": "خانة [n]" },
+    { "type": "text", "id": "t_sold_out", "label": "Sold out", "default": "خلصان" },
+    { "type": "text", "id": "t_this_item", "label": "This product badge", "default": "المنتج ده" },
+    { "type": "text", "id": "t_variant", "label": "Variant label", "default": "الحجم" },
+    { "type": "text", "id": "t_step", "label": "Step counter", "default": "الخطوة [n] من [count]" },
+    { "type": "text", "id": "t_rule_exact", "label": "Rule: exact", "default": "اختار [n]" },
+    { "type": "text", "id": "t_rule_range", "label": "Rule: range", "default": "اختار من [min] لـ [max]" },
+    { "type": "text", "id": "t_rule_up", "label": "Rule: up to", "default": "لحد [max]" },
+    { "type": "text", "id": "t_optional", "label": "Optional", "default": "اختياري" },
+    { "type": "text", "id": "t_choose", "label": "Choose button", "default": "اختاره" },
+    { "type": "text", "id": "t_chosen", "label": "Chosen button", "default": "مختار" },
+    { "type": "text", "id": "t_next", "label": "Next button", "default": "التالي: [step]" },
+    { "type": "text", "id": "t_skip", "label": "Skip step", "default": "مش محتاج؟ عدّي الخطوة دي" },
+    { "type": "text", "id": "t_your_kit", "label": "Your kit", "default": "روتينك" },
+    { "type": "text", "id": "t_not_yet", "label": "Not chosen yet", "default": "لسه" },
+    { "type": "text", "id": "t_steps_done", "label": "Steps done", "default": "[done] من [count] خطوات" },
+    { "type": "text", "id": "t_steps_left", "label": "Steps left", "default": "كمّل [left] خطوات" },
+    { "type": "text", "id": "t_step_full", "label": "Step full", "default": "تقدر تختار لحد [max] بس" },
+    { "type": "text", "id": "t_in_box", "label": "Box counter", "default": "[selected] من [count] في العلبة" },
+    { "type": "text", "id": "t_put", "label": "Put in box", "default": "حطه في العلبة" },
+    { "type": "text", "id": "t_in", "label": "In the box", "default": "في العلبة" },
+    { "type": "text", "id": "t_done", "label": "Step done", "default": "تم" },
+    { "type": "text", "id": "t_adding", "label": "Adding", "default": "بيتضاف…" },
+    { "type": "text", "id": "t_added", "label": "Added", "default": "اتضاف للعربة" },
+    { "type": "text", "id": "t_error", "label": "Error", "default": "حصلت مشكلة، جرّب تاني" },
+    { "type": "text", "id": "t_close", "label": "Close button", "default": "اقفل" },
+    { "type": "text", "id": "t_quick_view", "label": "Quick view", "default": "معاينة سريعة" },
+    { "type": "text", "id": "t_view_page", "label": "Full product page link", "default": "شوف تفاصيل المنتج كاملة" },
+    { "type": "text", "id": "t_pick_one", "label": "Nothing picked yet", "default": "اختار منتج واحد على الأقل" },
+    { "type": "text", "id": "t_next_short", "label": "Next (short)", "default": "التالي" }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Product (bundle)",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Product" },
+        { "type": "text", "id": "label", "label": "Step label (Bundle C)", "info": "Example: الخطوة 1 · غسول" },
+        { "type": "text", "id": "concern", "label": "Concern chip (Bundle B)", "info": "Products with the same text share a chip, for example: حبوب" }
+      ]
+    },
+    {
+      "type": "step",
+      "name": "Step (kit)",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Short name", "default": "غسول" },
+        { "type": "text", "id": "title", "label": "Title", "default": "الغسول" },
+        { "type": "textarea", "id": "description", "label": "Text" },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Step icon",
+          "options": [
+            { "value": "sparkle", "label": "Auto: match the step name" },
+            { "value": "cleanser", "label": "Cleanser" },
+            { "value": "toner", "label": "Toner" },
+            { "value": "serum", "label": "Serum" },
+            { "value": "moisturizer", "label": "Moisturizer" },
+            { "value": "sunscreen", "label": "Sunscreen" },
+            { "value": "mask", "label": "Mask" },
+            { "value": "eye", "label": "Eye care" },
+            { "value": "exfoliant", "label": "Exfoliant / scrub" },
+            { "value": "glow", "label": "Glow / brightening" },
+            { "value": "oil", "label": "Oil" },
+            { "value": "night", "label": "Night care" },
+            { "value": "treatment", "label": "Spot treatment" },
+            { "value": "lips", "label": "Lips" },
+            { "value": "body", "label": "Body" },
+            { "value": "hair", "label": "Hair" },
+            { "value": "gift", "label": "Gift / extras" },
+            { "value": "heart", "label": "Heart" },
+            { "value": "box", "label": "Box" },
+            { "value": "none", "label": "None (show step number)" }
+          ],
+          "default": "sparkle",
+          "info": "Auto picks the icon from the step name (غسول، تونر، سيروم، مرطب، واقي شمس، ماسك…). A step image, if set, shows instead."
+        },
+        { "type": "image_picker", "id": "image", "label": "Step image (optional)" },
+        { "type": "product_list", "id": "products", "label": "Products", "limit": 24 },
+        { "type": "range", "id": "min_picks", "label": "Minimum picks (0 = optional step)", "min": 0, "max": 5, "step": 1, "default": 1 },
+        { "type": "range", "id": "max_picks", "label": "Maximum picks", "min": 1, "max": 10, "step": 1, "default": 1 }
+      ]
+    }
+  ],
+  "max_blocks": 30,
+  "presets": [
+    {
+      "name": "XPoost Bundle Builder",
+      "settings": { "mode": "bundle" },
+      "blocks": [
+        { "type": "item" },
+        { "type": "item" },
+        { "type": "item" },
+        { "type": "item" }
+      ]
+    },
+    {
+      "name": "XPoost Kit Builder",
+      "settings": {
+        "mode": "kit",
+        "heading": "ابني روتينك خطوة بخطوة",
+        "subheading": "4 خطوات بسيطة، وروتينك يبقى جاهز"
+      },
+      "blocks": [
+        { "type": "step", "settings": { "label": "غسول", "title": "الغسول", "icon": "cleanser" } },
+        { "type": "step", "settings": { "label": "تونر", "title": "التونر", "icon": "toner" } },
+        { "type": "step", "settings": { "label": "سيروم", "title": "السيروم", "icon": "serum" } },
+        { "type": "step", "settings": { "label": "مرطب", "title": "المرطب", "icon": "moisturizer" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
