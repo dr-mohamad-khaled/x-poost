@@ -509,6 +509,42 @@
     return window.__xpoost_config_promise;
   };
 
+  /* Product popup: tapping an offered product's photo or name shows its details instead of opening a new tab.
+     The popup's button does what the card does (select it in the offer, or add it from the cart). */
+  var XPC_QV_ROWS = ".xpc-modal-product, .xpc-bundle-card, .xpc-bundle-item-card, .xpc-sheet-item, .xpc-spotlight-hero-card, .xpc-swipe-card, .xpc-meter-row";
+  function bindProductPopup(pp) {
+    if (!pp.prePurchase && !pp.inCart) return;
+    var go = function () {
+      if (!window.XPoostQV || document.documentElement.getAttribute("data-xpc-qv")) return;
+      document.documentElement.setAttribute("data-xpc-qv", "1");
+      window.XPoostQV.bind(document, {
+        card: XPC_QV_ROWS + ", .xpc-in-cart-item",
+        hit: "a.xpc-product-link, a.xpc-in-cart-thumb-link",
+        handle: function (c) {
+          var inCart = c.classList.contains("xpc-in-cart-item");
+          if (inCart ? !pp.inCart : !pp.prePurchase) return "";
+          var a = c.querySelector("a.xpc-product-link, a.xpc-in-cart-thumb-link");
+          return a ? window.XPoostQV.handleFromHref(a.getAttribute("href")) : "";
+        },
+        action: function (c) {
+          if (c.classList.contains("xpc-in-cart-item")) return c.querySelector(".xpc-in-cart-btn");
+          var cb = c.querySelector(".xpc-product-check");
+          if (!cb) return null;
+          return { el: c, label: cb.checked ? getUiString("selected") : getUiString("add") };
+        },
+        price: function (c) { return c.querySelector(".xpc-modal-pricing, .xpc-spotlight-pricing, .xpc-sheet-pricing, .xpc-in-cart-pricing"); },
+        colors: function (c) {
+          var cs = getComputedStyle(c);
+          var v = function (n) { return cs.getPropertyValue(n).trim(); };
+          return { accent: v("--xpc-gold"), bg: v("--xpc-bg"), text: v("--xpc-text") };
+        },
+        dir: configStore.isRtl ? "rtl" : "ltr",
+      });
+    };
+    if (window.XPoostQV) go();
+    else document.addEventListener("xpoost:qv-ready", go);
+  }
+
   function initCartEngine() {
     var mount = document.getElementById("xpoost-cart-engine");
     var proxyPath = mount ? (mount.getAttribute("data-proxy-path") || "/apps/xpoost/config") : "/apps/xpoost/config";
@@ -523,6 +559,7 @@
         configStore.translations = data.translations;
         configStore.isRtl = data.isRtl;
         configStore.storefrontLocale = data.storefrontLocale || data.locale || (data.isRtl ? 'ar' : 'en');
+        bindProductPopup(data.productPopup || {});
 
         setupAjaxInterceptor();
         setupDrawerObserver();

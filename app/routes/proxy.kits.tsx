@@ -1,6 +1,7 @@
 import type { LoaderFunctionArgs } from "react-router";
 import { authenticate } from "../shopify.server";
 import prisma from "../db.server";
+import { popupOn } from "../utils/product-popup";
 import { localDate, lookupCustomer, needsCustomer } from "../bundles.server";
 import { loadKits, storefrontKits } from "../kits.server";
 
@@ -22,7 +23,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const shopDomain = session?.shop || url.searchParams.get("shop");
     if (!shopDomain) return json({ kits: [] });
 
-    const shop = await prisma.shop.findUnique({ where: { shopDomain }, select: { id: true, kitsEnabled: true, analyticsTimezone: true } });
+    const shop = await prisma.shop.findUnique({ where: { shopDomain }, select: { id: true, kitsEnabled: true, analyticsTimezone: true, productPopupJson: true } });
     if (!shop || !shop.kitsEnabled) return json({ kits: [] });
 
     const only = (url.searchParams.get("kit") || "").trim();
@@ -49,7 +50,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       },
       lang,
     );
-    return json({ kits: list });
+    return json({ kits: list, productPopup: popupOn(shop.productPopupJson, "kits") });
   } catch (err) {
     if (err instanceof Response) return json({ kits: [] });
     console.warn("[xpoost-kits] proxy failed:", err);

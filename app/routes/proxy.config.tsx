@@ -2,6 +2,7 @@ import { EXIT_INTENT_AVAILABLE } from "../utils/features";
 import type { LoaderFunctionArgs } from "react-router";
 import { authenticate } from "../shopify.server";
 import prisma from "../db.server";
+import { popupOn } from "../utils/product-popup";
 import { getMergedTranslations } from "../utils/translations.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -523,6 +524,10 @@ function parseSocialPosition(rawPos: string | null | undefined) {
       storefrontLocale: storefrontLocale,
       isRtl: isRtl,
       translations: translations,
+      productPopup: {
+        prePurchase: popupOn(shop.productPopupJson, "prePurchase"),
+        inCart: popupOn(shop.productPopupJson, "inCart"),
+      },
       features: {
         scarcity,
         prePurchase,

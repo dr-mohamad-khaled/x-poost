@@ -1,6 +1,7 @@
 import type { LoaderFunctionArgs } from "react-router";
 import { authenticate } from "../shopify.server";
 import prisma from "../db.server";
+import { popupOn } from "../utils/product-popup";
 import { parseRecs } from "../utils/recs";
 import { productRatings, storefrontRecs } from "../recs.server";
 
@@ -25,7 +26,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const shopDomain = session?.shop || url.searchParams.get("shop");
     if (!shopDomain) return json({ rec: null });
 
-    const shop = await prisma.shop.findUnique({ where: { shopDomain }, select: { recsEnabled: true, recsJson: true } });
+    const shop = await prisma.shop.findUnique({ where: { shopDomain }, select: { recsEnabled: true, recsJson: true, productPopupJson: true } });
     if (!shop || !shop.recsEnabled) return json({ rec: null });
 
     const ratingIds = (url.searchParams.get("ratings") || "")
@@ -38,7 +39,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const rawLang = (url.searchParams.get("locale") || "en").split("-")[0].toLowerCase();
     const lang = LANGS.includes(rawLang) ? rawLang : "en";
     const rec = await storefrontRecs(admin as any, shopDomain, parseRecs(shop.recsJson, true), lang);
-    return json({ rec }, 60);
+    return json({ rec, productPopup: popupOn(shop.productPopupJson, "recs") }, 60);
   } catch (err) {
     if (err instanceof Response) return json({ rec: null });
     console.warn("[xpoost-recs] proxy failed:", err);

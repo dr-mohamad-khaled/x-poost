@@ -1,6 +1,7 @@
 import type { LoaderFunctionArgs } from "react-router";
 import { authenticate } from "../shopify.server";
 import prisma from "../db.server";
+import { popupOn } from "../utils/product-popup";
 import { loadBundles, localDate, lookupCustomer, needsCustomer, storefrontBundles } from "../bundles.server";
 
 /**
@@ -28,7 +29,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const shopDomain = session?.shop || url.searchParams.get("shop");
     if (!shopDomain) return json({ bundles: [] });
 
-    const shop = await prisma.shop.findUnique({ where: { shopDomain }, select: { id: true, bundlesEnabled: true, analyticsTimezone: true } });
+    const shop = await prisma.shop.findUnique({ where: { shopDomain }, select: { id: true, bundlesEnabled: true, analyticsTimezone: true, productPopupJson: true } });
     if (!shop || !shop.bundlesEnabled) return json({ bundles: [] });
 
     let bundles = await loadBundles(shop.id);
@@ -61,7 +62,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       },
       lang,
     );
-    return json({ bundles: list });
+    return json({ bundles: list, productPopup: popupOn(shop.productPopupJson, "bundles") });
   } catch (err) {
     if (err instanceof Response) return json({ bundles: [] });
     console.warn("[xpoost-bundles] proxy failed:", err);

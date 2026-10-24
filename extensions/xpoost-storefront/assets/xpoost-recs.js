@@ -181,10 +181,31 @@
     this.applyStyle();
     this.root.addEventListener("click", function (e) { self.onClick(e); });
     this.root.addEventListener("change", function (e) { self.onChange(e); });
+    this.bindPopup();
     this.render(true);
     if (window.XPT && !ctx.preview) window.XPT.observe(this.root, "rc", { o: "recs", d: rec.design });
     if (rec.showRating && !ctx.preview) this.loadRatings();
   }
+
+  /* Product popup: tapping a product photo or name shows its details instead of leaving the page; the popup's button adds it like the card's button. */
+  Widget.prototype.bindPopup = function () {
+    if (!this.ctx.popup || this.ctx.preview || !window.XPoostQV) return;
+    var self = this, s = this.r.style || {};
+    window.XPoostQV.bind(this.root, {
+      card: ".xpr-it",
+      hit: ".xpr-imgl, .xpr-img, .xpr-name",
+      handle: function (c) { var it = self.items[Number(c.getAttribute("data-i"))]; return it ? it.p.handle : ""; },
+      action: function (c) {
+        var b = c.querySelector('button[data-act="add"]');
+        if (b) return b;
+        var cb = c.querySelector('input[data-k="on"]');
+        return cb ? { el: cb, label: cb.checked ? self.t.added || "✓" : self.t.add || "Add" } : null;
+      },
+      price: function (c) { return c.querySelector(".xpr-price"); },
+      colors: { accent: s.accent, bg: s.bg, text: s.text, muted: s.muted, border: s.border, btn: s.btnBg, btnText: s.btnText },
+      dir: this.ctx.rtl ? "rtl" : "ltr",
+    });
+  };
 
   Widget.prototype.applyStyle = function () {
     var s = this.r.style || {};
@@ -789,6 +810,7 @@
           var list = choose(rec, res[0], ctx.productId, res[1]);
           if (!list.length) throw new Error("empty");
           el.hidden = false;
+          ctx.popup = data.productPopup !== false;
           new Widget(el, rec, list, ctx);
         });
       })

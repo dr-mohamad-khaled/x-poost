@@ -4,6 +4,7 @@ import prisma from "../db.server";
 import KIT_JS from "../../extensions/xpoost-storefront/assets/xpoost-kit.js?raw";
 import KIT_CSS from "../../extensions/xpoost-storefront/assets/xpoost-kit.css?raw";
 import TRACK_JS from "../../extensions/xpoost-storefront/assets/xpoost-track.js?raw";
+import QV_JS from "../../extensions/xpoost-storefront/assets/xpoost-quick-view.js?raw";
 
 /**
  * Kit landing page — /apps/xpoost/kit/<kitId> on the merchant's store.
@@ -39,6 +40,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   ></div>
 </div>
 <script>${raw(TRACK_JS.replace(/<\/script/gi, "<\\/script"))}</script>
+<script>${raw(QV_JS.replace(/<\/script/gi, "<\\/script"))}</script>
 <script>${raw(KIT_JS.replace(/<\/script/gi, "<\\/script"))}</script>
 `);
   } catch (err) {

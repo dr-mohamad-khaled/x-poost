@@ -205,6 +205,7 @@ export default function App() {
         <a href="/app/bundles">{t("Bundle Builder")}</a>
         <a href="/app/kits">{t("Kit Builder")}</a>
         <a href="/app/recommendations">{t("Product Recommendations")}</a>
+        <a href="/app/product-popup">{t("Product Popup")}</a>
         <a href="/app/thank-you">{t("Thank-You Page Offers")}</a>
         <a href="/app/shipping-bar">{t("Free Shipping & Rewards Bar")}</a>
         <a href="/app/quantity-breaks">{t("Volume Discounts")}</a>

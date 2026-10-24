@@ -239,11 +239,29 @@
     }
     root.addEventListener("click", function (e) { self.onClick(e); });
     root.addEventListener("change", function (e) { self.onChange(e); });
+    this.bindPopup();
 
     this.render();
     if (window.XPT && !ctx.preview) window.XPT.observe(root, "kb", { o: kit.id, d: this.design });
     this.ensure();
   }
+
+  /* Product popup: tapping a product photo or name shows its details; the popup's button picks it like the card's button. */
+  Kit.prototype.bindPopup = function () {
+    if (!this.ctx.popup || this.ctx.preview || !window.XPoostQV) return;
+    var s = this.k.style || {};
+    var opts = {
+      card: ".xpk-card",
+      hit: ".xpk-img, .xpk-pname",
+      handle: function (c) { return c.getAttribute("data-h") || ""; },
+      action: function (c) { return c.querySelector('[data-act="pick"], [data-act="inc"], .xpk-pick'); },
+      price: function (c) { return c.querySelector(".xpk-price"); },
+      colors: { accent: s.accent, bg: s.bg, text: s.text, muted: s.muted, border: s.border, btn: s.btnBg, btnText: s.btnText },
+      dir: this.ctx.rtl ? "rtl" : "ltr",
+    };
+    window.XPoostQV.bind(this.root, opts);
+    if (this.overlay) window.XPoostQV.bind(this.overlay, opts);
+  };
 
   Kit.prototype.applyStyle = function (el) {
     var s = this.k.style || {};
@@ -1395,6 +1413,7 @@
         }
         if (ds.landing) pick.display = "page";
         el.hidden = false;
+        ctx.popup = !data || data.productPopup !== false;
         new Kit(el, pick, ctx);
       })
       .catch(function () { el.remove(); });

@@ -237,6 +237,7 @@
 
     root.addEventListener("click", function (e) { self.onClick(e); });
     root.addEventListener("change", function (e) { self.onChange(e); });
+    this.bindPopup(root);
 
     this.render();
     var handles = this.allHandles();
@@ -252,6 +253,26 @@
       if (window.XPT && !ctx.preview) window.XPT.observe(self.root, "bb", { o: bundle.id, d: bundle.design });
     });
   }
+
+  /* Product popup: tapping a product photo or name shows its details; the popup's button adds it to the bundle like the card's button. */
+  Builder.prototype.bindPopup = function (el) {
+    if (!this.ctx.popup || this.ctx.preview || !window.XPoostQV) return;
+    var self = this, s = this.b.style || {};
+    window.XPoostQV.bind(el, {
+      card: ".xpb-card, .xpb-fx",
+      hit: ".xpb-img, .xpb-name",
+      handle: function (c) { return c.getAttribute("data-h") || ""; },
+      action: function (c) {
+        var el = c.querySelector('button.xpb-add, button[data-act="add"], button[data-act="slot"], button[data-act="addv"]');
+        if (!el) return null;
+        /* The +/− quantity buttons have no words: name the popup button "Add". */
+        return el.classList.contains("xpb-qbtn") ? { el: el, label: self.t.add || "Add" } : el;
+      },
+      price: function (c) { return c.querySelector(".xpb-prices"); },
+      colors: { accent: s.accent, bg: s.bg, text: s.text, muted: s.muted, border: s.border, btn: s.btnBg, btnText: s.btnText },
+      dir: this.ctx.rtl ? "rtl" : "ltr",
+    });
+  };
 
   Builder.prototype.applyStyle = function (el) {
     var s = this.b.style || {};
@@ -762,7 +783,7 @@
       }
     }
     return (
-      '<div class="xpb-card' + (picked ? " is-picked" : "") + (p.available ? "" : " is-out") + '">' +
+      '<div class="xpb-card' + (picked ? " is-picked" : "") + (p.available ? "" : " is-out") + '" data-h="' + esc(p.handle) + '">' +
       '<div class="xpb-img">' + (v && v.image ? '<img src="' + esc(img(v.image, 400)) + '" alt="" loading="lazy">' : p.image ? '<img src="' + esc(img(p.image, 400)) + '" alt="" loading="lazy">' : "") + (picked ? '<span class="xpb-check" aria-hidden="true">✓</span>' : "") + "</div>" +
       '<div class="xpb-info">' +
       '<div class="xpb-name">' + esc(p.title) + "</div>" +
@@ -1003,7 +1024,7 @@
     var usedElsewhere = !this.b.allowDuplicates && !on && s.picks.some(function (x, i) { return x && i !== slot && x.h === p.handle; });
     var dis = !p.available || usedElsewhere;
     return (
-      '<div class="xpb-card' + (on ? " is-picked" : "") + (p.available ? "" : " is-out") + '">' +
+      '<div class="xpb-card' + (on ? " is-picked" : "") + (p.available ? "" : " is-out") + '" data-h="' + esc(p.handle) + '">' +
       '<div class="xpb-img">' + (v && (v.image || p.image) ? '<img src="' + esc(img((v && v.image) || p.image, 400)) + '" alt="" loading="lazy">' : "") + (on ? '<span class="xpb-check" aria-hidden="true">✓</span>' : "") + "</div>" +
       '<div class="xpb-info"><div class="xpb-name">' + esc(p.title) + '</div><div class="xpb-prices">' + this.priceHtml(v) + "</div>" +
       (p.available ? this.variantSelect(p, key, v && v.id) : "") +
@@ -1034,7 +1055,7 @@
     var key = "f" + i;
     var qty = f.qty > 1 ? '<span class="xpb-qtytag">' + f.qty + "×</span>" : "";
     return (
-      '<div class="xpb-fx' + (p.available ? "" : " is-out") + (compact ? " is-compact" : "") + '">' +
+      '<div class="xpb-fx' + (p.available ? "" : " is-out") + (compact ? " is-compact" : "") + '" data-h="' + esc(p.handle) + '">' +
       '<div class="xpb-img">' + (v && (v.image || p.image) ? '<img src="' + esc(img((v && v.image) || p.image, 400)) + '" alt="" loading="lazy">' : "") + qty + "</div>" +
       '<div class="xpb-info"><div class="xpb-name">' + esc(p.title) + '</div><div class="xpb-prices">' + this.priceHtml(v) + "</div>" +
       (p.available ? this.variantSelect(p, key, v && v.id) : '<span class="xpb-out">' + esc(this.t.soldOut || "Sold out") + "</span>") +
@@ -1166,6 +1187,7 @@
       });
       (this.ctx.overlayHost || document.body).appendChild(ov);
       this.overlay = ov;
+      this.bindPopup(ov);
     }
     var panel = document.createElement("div");
     panel.className = "xpb xpb-panel xpb-d-" + this.b.design + " xpb-t-" + this.b.type;
@@ -1571,6 +1593,7 @@
           return;
         }
         el.hidden = false;
+        ctx.popup = !data || data.productPopup !== false;
         new Builder(el, pick, ctx);
       })
       .catch(function () { el.remove(); });

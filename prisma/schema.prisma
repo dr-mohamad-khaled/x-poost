@@ -56,6 +56,7 @@ model Shop {
   recsEnabled            Boolean @default(false)
   recsJson               String  @default("{}") // Product Recommendations: { config, style, texts }
   kitsEnabled            Boolean @default(false)
+  productPopupJson       String  @default("{}") // Product Popup: { enabled, features: { kits, bundles, recs, prePurchase, inCart } }
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
