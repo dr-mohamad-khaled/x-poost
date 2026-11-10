@@ -22,6 +22,7 @@ export default function Pricing() {
     trialDaysRemaining,
     lifetimeLeft,
     lifetimeLimit,
+    justApproved,
   } = useLoaderData<typeof loader>();
   const isMonthlyActive = Boolean(hasActivePayment && !isLifetime && activePlanName === MONTHLY_PLAN);
   const isYearlyActive = Boolean(hasActivePayment && !isLifetime && activePlanName === YEARLY_PLAN);
@@ -634,6 +635,15 @@ export default function Pricing() {
           </div>
         )}
 
+        {justApproved && !actionData && (
+          <div className="xpp-status-banner" style={{ borderLeftColor: "#4ade80", borderColor: "#4ade80" }}>
+            <div>
+              <div className="xpp-status-title" style={{ color: "#4ade80" }}><Translate text='Plan updated' /></div>
+              <p className="xpp-status-desc"><Translate text='You are now on' /> {activePlanName}. <Translate text='You can change or cancel your plan here at any time.' /></p>
+            </div>
+          </div>
+        )}
+
         {/* Current Account Status */}
         <div className="xpp-status-banner">
           <div>
@@ -675,7 +685,7 @@ export default function Pricing() {
           </h1>
           <p className="xpp-hero-subtitle">
             
-                                  <Translate text='Other apps charge you more as you grow. XPoost gives you' /> <span className="xpp-hl-gold"><Translate text='8 revenue-driving engines' /></span>  <Translate text='with' /> <span className="xpp-badge-green"><Translate text='zero impression caps' /></span>, <span className="xpp-badge-green"><Translate text='no order limits' /></span><Translate text=', and' /> <span className="xpp-badge-green"><Translate text='no hidden fees' /></span><Translate text='. Your growth should never come with a penalty.' />
+                                  <Translate text='Other apps charge you more as you grow. XPoost gives you' /> <span className="xpp-hl-gold"><Translate text='11 conversion tools' /></span>  <Translate text='with' /> <span className="xpp-badge-green"><Translate text='zero impression caps' /></span>, <span className="xpp-badge-green"><Translate text='no order limits' /></span><Translate text=', and' /> <span className="xpp-badge-green"><Translate text='no hidden fees' /></span><Translate text='. Your growth should never come with a penalty.' />
                                 </p>
         </div>
 
@@ -684,8 +694,8 @@ export default function Pricing() {
             â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <div className="xpp-proof-bar">
           <div className="xpp-proof-stat">
-            <div className="xpp-proof-num"><Translate text='1.8x' /></div>
-            <div className="xpp-proof-label"><Translate text='Average' /> <span className="xpp-hl-gold"><Translate text='Revenue Lift' /></span><br /><Translate text='for Active Stores' /></div>
+            <div className="xpp-proof-num"><Translate text='7 days' /></div>
+            <div className="xpp-proof-label"><Translate text='Free trial on Monthly and Yearly' /><br /><span className="xpp-hl-gold"><Translate text='Change or cancel your plan anytime' /></span></div>
           </div>
           <div className="xpp-proof-stat">
             <div className="xpp-proof-num" style={{ fontSize: "28px" }}><Translate text='UNLIMITED' /></div>
@@ -802,13 +812,17 @@ export default function Pricing() {
               <input type="hidden" name="plan" value={MONTHLY_PLAN} />
               <button
                 type="submit"
-                className={`xpp-btn ${isMonthlyActive ? "xpp-btn--disabled" : "xpp-btn--secondary"}`}
-                disabled={isMonthlyActive || isSubmitting}
+                className={`xpp-btn ${isMonthlyActive || isLifetime ? "xpp-btn--disabled" : "xpp-btn--secondary"}`}
+                disabled={isMonthlyActive || Boolean(isLifetime) || isSubmitting}
               >
-                {isMonthlyActive ? t("Current Active Plan") : isYearlyActive ? t("Switch to Monthly") : t("Start 7-Day Free Trial")}
+                {isLifetime ? t("Included in your Lifetime Pass") : isMonthlyActive ? t("Current Active Plan") : isYearlyActive ? t("Switch to Monthly") : t("Start 7-Day Free Trial")}
               </button>
             </Form>
-            <span className="xpp-btn-sub"><span className="xpp-hl-gold"><Translate text='Zero charge' /></span>  <Translate text='until trial ends -- 1-click cancellation' /></span>
+            {isLifetime ? null : hasActivePayment ? (
+              <span className="xpp-btn-sub"><Translate text='Plan changes apply right away. Unused trial days carry over.' /></span>
+            ) : (
+              <span className="xpp-btn-sub"><span className="xpp-hl-gold"><Translate text='Zero charge' /></span>  <Translate text='until trial ends -- 1-click cancellation' /></span>
+            )}
           </div>
 
           {/* Plan 2: Yearly */}
@@ -849,13 +863,17 @@ export default function Pricing() {
               <input type="hidden" name="plan" value={YEARLY_PLAN} />
               <button
                 type="submit"
-                className={`xpp-btn ${isYearlyActive ? "xpp-btn--disabled" : "xpp-btn--primary"}`}
-                disabled={isYearlyActive || isSubmitting}
+                className={`xpp-btn ${isYearlyActive || isLifetime ? "xpp-btn--disabled" : "xpp-btn--primary"}`}
+                disabled={isYearlyActive || Boolean(isLifetime) || isSubmitting}
               >
-                {isYearlyActive ? t("Current Active Plan") : isMonthlyActive ? t("Switch to Yearly") : t("Start 7-Day Free Trial")}
+                {isLifetime ? t("Included in your Lifetime Pass") : isYearlyActive ? t("Current Active Plan") : isMonthlyActive ? t("Switch to Yearly") : t("Start 7-Day Free Trial")}
               </button>
             </Form>
-            <span className="xpp-btn-sub"><span className="xpp-hl-gold"><Translate text='Zero charge' /></span>  <Translate text='until trial ends -- 1-click cancellation' /></span>
+            {isLifetime ? null : hasActivePayment ? (
+              <span className="xpp-btn-sub"><Translate text='Plan changes apply right away. Unused trial days carry over.' /></span>
+            ) : (
+              <span className="xpp-btn-sub"><span className="xpp-hl-gold"><Translate text='Zero charge' /></span>  <Translate text='until trial ends -- 1-click cancellation' /></span>
+            )}
           </div>
 
           {/* Plan 3: Founder's Lifetime Pass (first 100 stores) */}

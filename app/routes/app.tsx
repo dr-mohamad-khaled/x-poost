@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import type { ActionFunctionArgs, HeadersFunction, LoaderFunctionArgs } from "react-router";
-import { Link, Outlet, useFetcher, useLoaderData, useLocation, useRouteError } from "react-router";
+import { Link, Outlet, redirect, useFetcher, useLoaderData, useLocation, useRouteError } from "react-router";
 import { boundary } from "@shopify/shopify-app-react-router/server";
 import { AppProvider } from "@shopify/shopify-app-react-router/react";
 import { NavMenu } from "@shopify/app-bridge-react";
@@ -81,6 +81,12 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
             }
           } catch {}
         }
+      }
+
+      // Opened outside Shopify admin with no shop to authenticate against (for example an old
+      // bookmark of the app host). Send the visitor to the login page instead of an empty page.
+      if (!shop && !isXhr && error.status === 200 && request.method === "GET") {
+        throw redirect("/");
       }
 
       if (error.status === 401 && shop && !isXhr) {

@@ -2599,7 +2599,16 @@
     "Shoppers check a product's details, then add it to the bundle from the popup.": "Shoppers check a product's details, then add it to the bundle from the popup.",
     "Recommended products open in a popup instead of taking shoppers away from the product they're viewing.": "Recommended products open in a popup instead of taking shoppers away from the product they're viewing.",
     "Offered products open in a popup instead of a new tab, so the offer stays on screen.": "Offered products open in a popup instead of a new tab, so the offer stays on screen.",
-    "Products offered in the cart open in a popup instead of a new tab.": "Products offered in the cart open in a popup instead of a new tab."
+    "Products offered in the cart open in a popup instead of a new tab.": "Products offered in the cart open in a popup instead of a new tab.",
+    "Plan updated": "Plan updated",
+    "You are now on": "You are now on",
+    "You can change or cancel your plan here at any time.": "You can change or cancel your plan here at any time.",
+    "Included in your Lifetime Pass": "Included in your Lifetime Pass",
+    "Plan changes apply right away. Unused trial days carry over.": "Plan changes apply right away. Unused trial days carry over.",
+    "11 conversion tools": "11 conversion tools",
+    "7 days": "7 days",
+    "Free trial on Monthly and Yearly": "Free trial on Monthly and Yearly",
+    "Change or cancel your plan anytime": "Change or cancel your plan anytime"
   },
   "ar": {
     "0": "إشعارات زاوية الاستعجال",
@@ -5201,7 +5210,16 @@
     "Shoppers check a product's details, then add it to the bundle from the popup.": "العميل يشوف تفاصيل المنتج ويضيفه للباقة من النافذة.",
     "Recommended products open in a popup instead of taking shoppers away from the product they're viewing.": "المنتجات المقترحة بتفتح في نافذة بدل ما تاخد العميل بعيد عن المنتج اللي بيتفرج عليه.",
     "Offered products open in a popup instead of a new tab, so the offer stays on screen.": "المنتجات المعروضة بتفتح في نافذة بدل تبويب جديد، فالعرض يفضل قدامه.",
-    "Products offered in the cart open in a popup instead of a new tab.": "المنتجات المعروضة في السلة بتفتح في نافذة بدل تبويب جديد."
+    "Products offered in the cart open in a popup instead of a new tab.": "المنتجات المعروضة في السلة بتفتح في نافذة بدل تبويب جديد.",
+    "Plan updated": "تم تحديث الخطة",
+    "You are now on": "خطتك الحالية:",
+    "You can change or cancel your plan here at any time.": "يمكنك تغيير خطتك أو إلغاؤها من هنا في أي وقت.",
+    "Included in your Lifetime Pass": "مشمولة في اشتراكك مدى الحياة",
+    "Plan changes apply right away. Unused trial days carry over.": "يتم تطبيق تغيير الخطة فورًا، وتنتقل أيام التجربة المتبقية معك.",
+    "11 conversion tools": "11 أداة لزيادة التحويل",
+    "7 days": "7 أيام",
+    "Free trial on Monthly and Yearly": "تجربة مجانية للخطة الشهرية والسنوية",
+    "Change or cancel your plan anytime": "غيّر خطتك أو ألغها في أي وقت"
   },
   "fr": {
     "0": "Toasts d'urgence en coin",
@@ -7782,7 +7800,16 @@
     "How do I share a kit's landing page?": "Comment partager la page de destination d'un kit ?",
     "Open Kit Builder, save the kit and switch it on. Its landing page link appears under Design, and in the kit list. Add it to your menu in Online Store, Navigation, or use it in emails and ads. The page opens inside your theme.": "Ouvrez Kit Builder, enregistrez le kit et activez-le. Le lien de sa page de destination apparaît sous Design et dans la liste des kits. Ajoutez-le à votre menu dans Boutique en ligne, Navigation, ou utilisez-le dans vos e-mails et publicités. La page s'ouvre dans votre thème.",
     "Recommendations don't show on a product page.": "Les recommandations ne s'affichent pas sur une page produit.",
-    "Check that the XPoost: Recommendations block is on your product template and that the feature is on. Shopify needs some order history before it can recommend products for a new store or product; add backup products in the app so the block always has something to show.": "Vérifiez que le bloc XPoost: Recommendations est sur votre modèle de produit et que la fonctionnalité est activée. Shopify a besoin d'un historique de commandes pour recommander des produits à une nouvelle boutique ou un nouveau produit ; ajoutez des produits de secours dans l'app pour que le bloc ait toujours quelque chose à afficher."
+    "Check that the XPoost: Recommendations block is on your product template and that the feature is on. Shopify needs some order history before it can recommend products for a new store or product; add backup products in the app so the block always has something to show.": "Vérifiez que le bloc XPoost: Recommendations est sur votre modèle de produit et que la fonctionnalité est activée. Shopify a besoin d'un historique de commandes pour recommander des produits à une nouvelle boutique ou un nouveau produit ; ajoutez des produits de secours dans l'app pour que le bloc ait toujours quelque chose à afficher.",
+    "Plan updated": "Forfait mis à jour",
+    "You are now on": "Votre forfait actuel :",
+    "You can change or cancel your plan here at any time.": "Vous pouvez modifier ou annuler votre forfait ici à tout moment.",
+    "Included in your Lifetime Pass": "Inclus dans votre Pass à vie",
+    "Plan changes apply right away. Unused trial days carry over.": "Le changement de forfait s'applique immédiatement. Les jours d'essai restants sont conservés.",
+    "11 conversion tools": "11 outils de conversion",
+    "7 days": "7 jours",
+    "Free trial on Monthly and Yearly": "Essai gratuit sur les forfaits mensuel et annuel",
+    "Change or cancel your plan anytime": "Modifiez ou annulez votre forfait à tout moment"
   },
   "de": {
     "0": "Dringlichkeits-Eck-Toasts",
@@ -10363,7 +10390,16 @@
     "How do I share a kit's landing page?": "Wie teile ich die Landingpage eines Sets?",
     "Open Kit Builder, save the kit and switch it on. Its landing page link appears under Design, and in the kit list. Add it to your menu in Online Store, Navigation, or use it in emails and ads. The page opens inside your theme.": "Öffnen Sie Kit Builder, speichern Sie das Set und schalten Sie es ein. Der Landingpage-Link erscheint unter Design und in der Set-Liste. Fügen Sie ihn unter Onlineshop, Navigation Ihrem Menü hinzu oder nutzen Sie ihn in E-Mails und Anzeigen. Die Seite öffnet sich in Ihrem Theme.",
     "Recommendations don't show on a product page.": "Empfehlungen erscheinen nicht auf einer Produktseite.",
-    "Check that the XPoost: Recommendations block is on your product template and that the feature is on. Shopify needs some order history before it can recommend products for a new store or product; add backup products in the app so the block always has something to show.": "Prüfen Sie, ob der Block XPoost: Recommendations in Ihrer Produktvorlage ist und die Funktion eingeschaltet ist. Shopify braucht etwas Bestellhistorie, bevor es für einen neuen Shop oder ein neues Produkt Empfehlungen geben kann; fügen Sie in der App Ersatzprodukte hinzu, damit der Block immer etwas zeigt."
+    "Check that the XPoost: Recommendations block is on your product template and that the feature is on. Shopify needs some order history before it can recommend products for a new store or product; add backup products in the app so the block always has something to show.": "Prüfen Sie, ob der Block XPoost: Recommendations in Ihrer Produktvorlage ist und die Funktion eingeschaltet ist. Shopify braucht etwas Bestellhistorie, bevor es für einen neuen Shop oder ein neues Produkt Empfehlungen geben kann; fügen Sie in der App Ersatzprodukte hinzu, damit der Block immer etwas zeigt.",
+    "Plan updated": "Tarif aktualisiert",
+    "You are now on": "Ihr aktueller Tarif:",
+    "You can change or cancel your plan here at any time.": "Sie können Ihren Tarif hier jederzeit ändern oder kündigen.",
+    "Included in your Lifetime Pass": "In Ihrem Lifetime-Pass enthalten",
+    "Plan changes apply right away. Unused trial days carry over.": "Tarifwechsel gelten sofort. Verbleibende Testtage werden übernommen.",
+    "11 conversion tools": "11 Conversion-Tools",
+    "7 days": "7 Tage",
+    "Free trial on Monthly and Yearly": "Kostenloser Test für Monats- und Jahrestarif",
+    "Change or cancel your plan anytime": "Tarif jederzeit ändern oder kündigen"
   },
   "es": {
     "0": "Notificaciones de esquina de urgencia",
@@ -12944,7 +12980,16 @@
     "How do I share a kit's landing page?": "¿Cómo comparto la página de destino de un kit?",
     "Open Kit Builder, save the kit and switch it on. Its landing page link appears under Design, and in the kit list. Add it to your menu in Online Store, Navigation, or use it in emails and ads. The page opens inside your theme.": "Abre Kit Builder, guarda el kit y actívalo. El enlace de su página de destino aparece en Diseño y en la lista de kits. Añádelo a tu menú en Tienda online, Navegación, o úsalo en correos y anuncios. La página se abre dentro de tu tema.",
     "Recommendations don't show on a product page.": "Las recomendaciones no aparecen en una página de producto.",
-    "Check that the XPoost: Recommendations block is on your product template and that the feature is on. Shopify needs some order history before it can recommend products for a new store or product; add backup products in the app so the block always has something to show.": "Comprueba que el bloque XPoost: Recommendations está en tu plantilla de producto y que la función está activada. Shopify necesita algo de historial de pedidos para recomendar productos a una tienda o producto nuevos; añade productos de respaldo en la app para que el bloque siempre muestre algo."
+    "Check that the XPoost: Recommendations block is on your product template and that the feature is on. Shopify needs some order history before it can recommend products for a new store or product; add backup products in the app so the block always has something to show.": "Comprueba que el bloque XPoost: Recommendations está en tu plantilla de producto y que la función está activada. Shopify necesita algo de historial de pedidos para recomendar productos a una tienda o producto nuevos; añade productos de respaldo en la app para que el bloque siempre muestre algo.",
+    "Plan updated": "Plan actualizado",
+    "You are now on": "Tu plan actual:",
+    "You can change or cancel your plan here at any time.": "Puedes cambiar o cancelar tu plan aquí en cualquier momento.",
+    "Included in your Lifetime Pass": "Incluido en tu Pase de por vida",
+    "Plan changes apply right away. Unused trial days carry over.": "El cambio de plan se aplica de inmediato. Los días de prueba restantes se conservan.",
+    "11 conversion tools": "11 herramientas de conversión",
+    "7 days": "7 días",
+    "Free trial on Monthly and Yearly": "Prueba gratis en los planes mensual y anual",
+    "Change or cancel your plan anytime": "Cambia o cancela tu plan cuando quieras"
   },
   "it": {
     "0": "Notifiche angolari di urgenza",
@@ -15525,7 +15570,16 @@
     "How do I share a kit's landing page?": "Come condivido la landing page di un kit?",
     "Open Kit Builder, save the kit and switch it on. Its landing page link appears under Design, and in the kit list. Add it to your menu in Online Store, Navigation, or use it in emails and ads. The page opens inside your theme.": "Apri Kit Builder, salva il kit e attivalo. Il link della landing page compare in Design e nell'elenco dei kit. Aggiungilo al menu in Negozio online, Navigazione, o usalo in email e annunci. La pagina si apre nel tuo tema.",
     "Recommendations don't show on a product page.": "I consigli non compaiono in una pagina prodotto.",
-    "Check that the XPoost: Recommendations block is on your product template and that the feature is on. Shopify needs some order history before it can recommend products for a new store or product; add backup products in the app so the block always has something to show.": "Verifica che il blocco XPoost: Recommendations sia nel modello prodotto e che la funzione sia attiva. Shopify ha bisogno di uno storico ordini prima di consigliare prodotti per un negozio o prodotto nuovo; aggiungi prodotti di riserva nell'app così il blocco ha sempre qualcosa da mostrare."
+    "Check that the XPoost: Recommendations block is on your product template and that the feature is on. Shopify needs some order history before it can recommend products for a new store or product; add backup products in the app so the block always has something to show.": "Verifica che il blocco XPoost: Recommendations sia nel modello prodotto e che la funzione sia attiva. Shopify ha bisogno di uno storico ordini prima di consigliare prodotti per un negozio o prodotto nuovo; aggiungi prodotti di riserva nell'app così il blocco ha sempre qualcosa da mostrare.",
+    "Plan updated": "Piano aggiornato",
+    "You are now on": "Il tuo piano attuale:",
+    "You can change or cancel your plan here at any time.": "Puoi cambiare o annullare il tuo piano qui in qualsiasi momento.",
+    "Included in your Lifetime Pass": "Incluso nel tuo Pass a vita",
+    "Plan changes apply right away. Unused trial days carry over.": "Il cambio di piano si applica subito. I giorni di prova rimanenti vengono mantenuti.",
+    "11 conversion tools": "11 strumenti di conversione",
+    "7 days": "7 giorni",
+    "Free trial on Monthly and Yearly": "Prova gratuita sui piani mensile e annuale",
+    "Change or cancel your plan anytime": "Cambia o annulla il piano quando vuoi"
   },
   "pt": {
     "0": "Notificações de canto de urgência",
@@ -18106,6 +18160,15 @@
     "How do I share a kit's landing page?": "Como compartilho a página de destino de um kit?",
     "Open Kit Builder, save the kit and switch it on. Its landing page link appears under Design, and in the kit list. Add it to your menu in Online Store, Navigation, or use it in emails and ads. The page opens inside your theme.": "Abra o Kit Builder, salve o kit e ative-o. O link da página de destino aparece em Design e na lista de kits. Adicione ao menu em Loja virtual, Navegação, ou use em e-mails e anúncios. A página abre dentro do seu tema.",
     "Recommendations don't show on a product page.": "As recomendações não aparecem em uma página de produto.",
-    "Check that the XPoost: Recommendations block is on your product template and that the feature is on. Shopify needs some order history before it can recommend products for a new store or product; add backup products in the app so the block always has something to show.": "Confira se o bloco XPoost: Recommendations está no modelo de produto e se o recurso está ativado. O Shopify precisa de algum histórico de pedidos para recomendar produtos para uma loja ou produto novo; adicione produtos reserva no app para que o bloco sempre tenha algo a mostrar."
+    "Check that the XPoost: Recommendations block is on your product template and that the feature is on. Shopify needs some order history before it can recommend products for a new store or product; add backup products in the app so the block always has something to show.": "Confira se o bloco XPoost: Recommendations está no modelo de produto e se o recurso está ativado. O Shopify precisa de algum histórico de pedidos para recomendar produtos para uma loja ou produto novo; adicione produtos reserva no app para que o bloco sempre tenha algo a mostrar.",
+    "Plan updated": "Plano atualizado",
+    "You are now on": "Seu plano atual:",
+    "You can change or cancel your plan here at any time.": "Você pode alterar ou cancelar seu plano aqui a qualquer momento.",
+    "Included in your Lifetime Pass": "Incluído no seu Passe vitalício",
+    "Plan changes apply right away. Unused trial days carry over.": "A mudança de plano é aplicada na hora. Os dias de teste restantes são mantidos.",
+    "11 conversion tools": "11 ferramentas de conversão",
+    "7 days": "7 dias",
+    "Free trial on Monthly and Yearly": "Teste grátis nos planos mensal e anual",
+    "Change or cancel your plan anytime": "Altere ou cancele seu plano quando quiser"
   }
 }
