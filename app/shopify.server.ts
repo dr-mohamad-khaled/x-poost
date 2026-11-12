@@ -29,9 +29,9 @@ if (!apiSecretKey) {
 }
 
 // The API key (client_id) is public: it is also in shopify.app.toml and in every storefront URL.
-const apiKey = clean(process.env.SHOPIFY_API_KEY || "872f7f6415d1c243c11ccdfe9426b07f");
-const appUrl = clean(process.env.SHOPIFY_APP_URL || "https://sea-turtle-app-a4uct.ondigitalocean.app").replace(/\/$/, "");
-const rawScopes = clean(process.env.SCOPES || "write_discounts,read_products,read_orders,write_checkout_extensions_apis");
+const apiKey = clean(process.env.SHOPIFY_API_KEY || "352d0d1a97ca7c5cb20a6a0c1ab886b7");
+const appUrl = clean(process.env.SHOPIFY_APP_URL || "https://xpoost-instachiq-5mrss.ondigitalocean.app").replace(/\/$/, "");
+const rawScopes = clean(process.env.SCOPES || "write_discounts,read_inventory,read_products,read_orders,read_customers");
 const scopes = rawScopes.split(",").map((s) => s.trim()).filter(Boolean);
 
 const shopify = shopifyApp({
@@ -42,7 +42,7 @@ const shopify = shopifyApp({
   appUrl,
   authPathPrefix: "/auth",
   sessionStorage: new PrismaSessionStorage(prisma),
-  distribution: AppDistribution.AppStore,
+  distribution: AppDistribution.SingleMerchant,
   future: {
     expiringOfflineAccessTokens: true,
   },

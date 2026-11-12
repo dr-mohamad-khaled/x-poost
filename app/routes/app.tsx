@@ -20,7 +20,7 @@ import { TranslationProvider, translateText } from "../components/Translate";
 import { SupportChat } from "../components/SupportChat";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const currentApiKey = (process.env.SHOPIFY_API_KEY || "872f7f6415d1c243c11ccdfe9426b07f").trim().replace(/^["']|["']$/g, "").trim();
+  const currentApiKey = (process.env.SHOPIFY_API_KEY || "352d0d1a97ca7c5cb20a6a0c1ab886b7").trim().replace(/^["']|["']$/g, "").trim();
   try {
     const { session } = await authenticate.admin(request);
     const shop = await getOrCreateShop(session.shop);

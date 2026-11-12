@@ -11,7 +11,7 @@ import { useEffect, useMemo, useState } from "preact/hooks";
  */
 
 // Change this if the app is hosted somewhere else.
-const APP_URL = "https://sea-turtle-app-a4uct.ondigitalocean.app";
+const APP_URL = "https://xpoost-instachiq-5mrss.ondigitalocean.app";
 
 export default async () => {
   render(<Extension />, document.body);
